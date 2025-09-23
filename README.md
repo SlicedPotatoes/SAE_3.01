@@ -41,3 +41,10 @@ Si vous n'utilisez pas de BDD locale, vous pouvez commenter les lignes suivantes
 #liquibase.command.referencePassword: letmein
 ```
 
+## Project Structure
+├── README.md (this file) <br />
+├── SQL <br />
+└── src <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── Model <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── Presentation <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── View <br />
