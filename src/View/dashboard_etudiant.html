@@ -8,10 +8,35 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <style>
 
-        .brand-color
+        .text-uphf
         {
             color: #008CAD;
-            font-weight: bold;
+        }
+
+        .btn-uphf {
+            background: #008CAD;
+            color: white !important;
+            border: none !important;
+
+            &:hover {
+                background: #00748F;
+            }
+            &:active {
+                background: #005F77 !important;
+            }
+        }
+
+        .btn-outline-uphf {
+            background: none !important;
+            color: #008CAD !important;
+            border: #008CAD !important;
+
+            &:hover {
+                background: #00748F;
+            }
+            &:active {
+                background: #005F77 !important;
+            }
         }
 
         .header-line-brand-color
@@ -24,7 +49,89 @@
 
     </style>
 </head>
-<body class="bg-light">
+
+<!-- MODAL -->
+
+<!-- Modal pour la justification des absences -->
+<div class="modal fade" id="justifyModal" tabindex="-1" aria-labelledby="justifyModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable modal-dialog-centered">
+        <div class="modal-content">
+
+            <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Fermer"></button>
+
+            <div class="modal-header">
+                <div>
+                    <label class="modal-title h4 mb-1">Justification d’absence</label>
+                    <div class="d-flex flex-column flex-md-row gap-2 small">
+                        <div>
+                            <label class="me-2 fw-semibold">Début :</label>
+                            <input id="startDate" type="date" class="form-control form-control-sm d-inline-block">
+                        </div>
+                        <div>
+                            <label class="ms-md-4 me-2 fw-semibold">Fin :</label>
+                            <input id="endDate" type="date" class="form-control form-control-sm d-inline-block">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-body">
+                <div class="row g-4">
+
+                    <div class="col-12 col-md-7">
+                        <label for="absenceReason" class="form-label h5 mb-2">Motif de l'absence</label>
+                        <textarea id="absenceReason" class="form-control" rows="8" placeholder="Pourquoi tu était absent petit insolent ?"></textarea>
+                    </div>
+
+
+                    <div class="col-12 col-md-5">
+
+                        <div class="justification-files">
+                            <div class="justification-files-choice mb-2 pe-3">
+                                <label class="form-label h5 mb-2">Justificatif <span class="text-muted fs-6">(pdf, png, jpg)</span></label>
+                                <input type="file" class="form-control">
+                            </div>
+
+                            <div class="overflow-auto" style="max-height: 300px;">
+                            <div class="d-flex flex-column flex-md-row mb-1">
+                                <label class="me-auto">Fichier.pdf</label>
+                                <div class="mo-auto me-3">
+                                    <button class="btn btn-sm btn-outline-primary"><i class="bi bi-download"></i></button>
+                                    <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                                </div>
+                            </div>
+
+                            <div class="d-flex flex-column flex-md-row mb-1">
+                                <label class="me-auto">Rémi.png</label>
+                                <div class="mo-auto me-3">
+                                    <button class="btn btn-sm btn-outline-primary"><i class="bi bi-download"></i></button>
+                                    <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                                </div>
+                            </div>
+
+                            <div class="d-flex flex-column flex-md-row mb-1">
+                                <label class="me-auto">EnormeTaf.jpg</label>
+                                <div class="mo-auto me-3">
+                                    <button class="btn btn-sm btn-outline-primary"><i class="bi bi-download"></i></button>
+                                    <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                                </div>
+                            </div>
+                            </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+
+            <div class="modal-footer d-flex">
+                <label class="text-muted me-auto">N'oubliez pas de manger vos épinards !</label>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                <button type="button" class="btn btn-uphf" data-bs-dismiss="modal">Envoyer</button>
+            </div>
+
+        </div>
+
+    </div>
+</div>
 
 
 <!-- Modal pour la déconnexion -->
@@ -46,6 +153,8 @@
     </div>
 </div>
 
+<body class="bg-light">
+
 <!-- Bouton pour avoir le dropdown menu pour modifier les informations profiles, nous pourrons ajouter d'autres fonctionnalité plus tard -->
 <div class="d-flex justify-content-end p-3 position-relative">
     <div class="dropdown">
@@ -62,7 +171,7 @@
 </div>
 
 <div class="container mt-4">
-    <h1 class="h3">Bonjour <span class="brand-color">Kévin Masmélove</span> !</h1>
+    <h1 class="h3">Bonjour <span class="text-uphf fw-bold">Kévin Masmélove</span> !</h1>
     <div class="header-line-brand-color"></div>
 
     <div class="row row-cols-2 row-cols-md-4 g-3" style="margin-bottom: 15px;">
@@ -103,6 +212,13 @@
             </div>
         </div>
     </div>
+
+    <div class="d-flex justify-content-end mb-3">
+        <button type="button" class="btn btn-primary btn-uphf" data-bs-toggle="modal" data-bs-target="#justifyModal">
+            Justifier une absence
+        </button>
+    </div>
+
 
     <div class="card p-3">
         <h2 class="h5">Ici mettre truc de recherche fait par mon Kévinous d'amour Uwu</h2>
