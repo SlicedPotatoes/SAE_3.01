@@ -1,26 +1,47 @@
-<form class="filter-bar" action="" method="GET">
-    <label>
-        Date début:
-        <input id="startDate" type="date"/>
-    </label>
+<form class="border-bottom px-4" action="" method="GET">
+    <div class="d-flex flex-row gap-3 pb-4">
+        <div class="row g-3 align-items-center">
+            <div class="col-auto">
+                <label for="startDate" class="col-form-label">Date début:</label>
+            </div>
+            <div class="col-auto">
+                <input type="date" id="startDate" class="form-control">
+            </div>
+        </div>
 
-    <label>
-        Date fin:
-        <input id="endDate" type="date"/>
-    </label>
+        <div class="row g-3 align-items-center">
+            <div class="col-auto">
+                <label for="endDate" class="col-form-label">Date fin:</label>
+            </div>
+            <div class="col-auto">
+                <input type="date" id="endDate" class="form-control">
+            </div>
+        </div>
 
-    <label>
-        Etat:
-        <select id="state">
-            <option>A</option>
-            <option>B</option>
-        </select>
-    </label>
+        <div class="row g-3 align-items-center">
+            <div class="col-auto">
+                <label for="state" class="col-form-label">Etat:</label>
+            </div>
+            <div class="col-auto">
+                <select class="form-select" id="state">
+                    <?php
+                        foreach($states as $value) {
+                            echo "<option value='".$value->getId()."'>".$value->getLabel()."</option>";
+                        }
+                    ?>
+                </select>
+            </div>
+        </div>
 
-    <div class="checkbox-container">
-        <input id="exam" type="checkbox">
-        <label for="exam">Examen</label>
+        <div class="row g-3 align-items-center">
+            <div class="col-auto">
+                <input class="form-check-input" type="checkbox" value="" id="exam">
+            </div>
+            <div class="col-auto">
+                <label for="exam" class="form-check-label">Examen</label>
+            </div>
+        </div>
+
+        <button class="btn btn-uphf" type="submit">Appliquer</button>
     </div>
-
-    <button type="submit">Appliquer</button>
 </form>
