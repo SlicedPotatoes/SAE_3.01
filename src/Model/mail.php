@@ -2,6 +2,7 @@
 // Inclure la bibliothèque PHPMailer se trouvant dans le dossier /lib/PHPMailer/
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
+
 require __DIR__ . '/../../lib/PHPMailer-master/src/Exception.php';
 require __DIR__ . '/../../lib/PHPMailer-master/src/PHPMailer.php';
 require __DIR__ . '/../../lib/PHPMailer-master/src/SMTP.php';
@@ -22,12 +23,12 @@ try {
 
     // Destinataires
     $mail->setFrom('suivi.absences@gmail.com', 'Suivi Absences');
-    $mail->addAddress('Louis.Picouleau@uphf.fr', 'Louis Picouleau'); // Ajouter un destinataire
+    $mail->addAddress('Louis.Picouleau@uphf.fr', 'Louis Picouleau'); // le `name` est le nom qui s'affichera dans le mail au lieu de l'adresse mail (ici `à Louis Picouleau`)
 
     // Contenu du message
     $mail->isHTML(true);
     $mail->Subject = 'Test';
-    $mail->Body    = 'Ceci est un message envoyé automatiquement depuis votre site web.';
+    $mail->Body = 'Ceci est un message envoyé automatiquement depuis votre site web.';
     $mail->AltBody = 'Ceci est un message en texte brut pour les clients qui ne lisent pas le HTML.';
 
     $mail->send();
