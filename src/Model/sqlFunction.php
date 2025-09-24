@@ -1,7 +1,7 @@
 <?php
 require_once("connection.php");
 
-function absencesStudent($idStudent)
+function getAbsencesStudent($idStudent)
 {
     $request = $connection->prepare("select * from absences where idStudent=?");
     $request->bindParam(1, $idStudent);
@@ -10,7 +10,7 @@ function absencesStudent($idStudent)
     return $result;
 }
 
-function absencesStudentNotJustified($idStudent)
+function getAbsencesStudentNotJustified($idStudent)
 {
     $request = $connection->prepare("select * from absences join States using(idStates) where idStudent=? and idStates = 'Non Justifier'");
     $request->bindParam(1, $idStudent);
@@ -19,7 +19,7 @@ function absencesStudentNotJustified($idStudent)
     return $result;
 }
 
-function absencesBetween($idStudent, $start, $end)
+function getAbsencesBetween($idStudent, $start, $end)
 {
     $request = $connection->prepate("select * from absences where idStudent=? and time between '$start' and '$end'");
     $request->bindParam(1, $idStudent);
@@ -30,7 +30,7 @@ function absencesBetween($idStudent, $start, $end)
     return $result;
 }
 
-function AbsencesStudentByRessource($idStudent, $idRessource)
+function gerAbsencesStudentByRessource($idStudent, $idRessource)
 {
     $request = $connection->prepare("select * from absences where idStudent=? and idRessource=?");
     $request->bindParam(1, $idStudent);
@@ -40,7 +40,7 @@ function AbsencesStudentByRessource($idStudent, $idRessource)
     return $result;
 }
 
-function AbsencesStudentByCourseType($idStudent, $idCourseType){
+function getAbsencesStudentByCourseType($idStudent, $idCourseType){
     $request = $connection->prepare("select * from absences where idStudent=? and idCourseType=?");
     $request->bindParam(1, $idStudent);
     $request->bindParam(2, $idCourseType);
@@ -49,7 +49,7 @@ function AbsencesStudentByCourseType($idStudent, $idCourseType){
     return $result;
 }
 
-function AbsencesStudentByTeacher($idStudent, $idTeacher)
+function getAbsencesStudentByTeacher($idStudent, $idTeacher)
 {
 $request = $connection->prepare("select * from absences join ressources using(idTeacher) where idStudent=? and idTeacher=?)");
 $request->bindParam(1, $idStudent);
@@ -57,4 +57,11 @@ $request->bindParam(2, $idTeacher);
 $request->execute();
 $result = $request->fetch();
 return $result;
+}
+
+function setStudentProof($)
+
+()
+{
+
 }
