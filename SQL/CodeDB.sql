@@ -87,9 +87,8 @@ create table absenceJustification
 insert into state(label)
 values ('Validé'),
        ('Refusé'),
-       ('En révision'),
        ('Non-justifié'),
-       ('Attente');
+       ('En attente');
 
 --rollback delete from state where(idState) between 1 and 5;
 

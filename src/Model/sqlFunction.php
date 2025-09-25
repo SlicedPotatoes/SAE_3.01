@@ -30,7 +30,7 @@ function getAbsencesBetween($idStudent, $start, $end)
     return $result;
 }
 
-function gerAbsencesStudentByRessource($idStudent, $idRessource)
+function getAbsencesStudentByRessource($idStudent, $idRessource)
 {
     $request = $connection->prepare("select * from absences where idStudent=? and idRessource=?");
     $request->bindParam(1, $idStudent);
@@ -59,9 +59,3 @@ $result = $request->fetch();
 return $result;
 }
 
-function setStudentProof($)
-
-()
-{
-
-}
