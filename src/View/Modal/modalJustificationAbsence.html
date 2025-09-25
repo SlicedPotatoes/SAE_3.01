@@ -1,0 +1,80 @@
+<!-- Modal pour la justification des absences -->
+<div class="modal fade" id="justifyModal" tabindex="-1" aria-labelledby="justifyModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable modal-dialog-centered">
+        <div class="modal-content">
+
+            <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Fermer"></button>
+
+            <div class="modal-header">
+                <div>
+                    <label class="modal-title h4 mb-1">Justification d’absence</label>
+                    <div class="d-flex flex-column flex-md-row gap-2 small">
+                        <div>
+                            <label class="me-2 fw-semibold">Début :</label>
+                            <input id="startDate" type="date" class="form-control form-control-sm d-inline-block">
+                        </div>
+                        <div>
+                            <label class="ms-md-4 me-2 fw-semibold">Fin :</label>
+                            <input id="endDate" type="date" class="form-control form-control-sm d-inline-block">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-body">
+                <div class="row g-4">
+
+                    <div class="col-12 col-md-7">
+                        <label for="absenceReason" class="form-label h5 mb-2">Motif de l'absence</label>
+                        <textarea id="absenceReason" class="form-control" rows="8" placeholder="Pourquoi tu était absent petit insolent ?"></textarea>
+                    </div>
+
+
+                    <div class="col-12 col-md-5">
+
+                        <div class="justification-files">
+                            <div class="justification-files-choice mb-2 pe-3">
+                                <label class="form-label h5 mb-2">Justificatif <span class="text-muted fs-6">(pdf, png, jpg)</span></label>
+                                <input type="file" class="form-control">
+                            </div>
+
+                            <div class="overflow-auto" style="max-height: 300px;">
+                                <div class="d-flex flex-column flex-md-row mb-1">
+                                    <label class="me-auto">Fichier.pdf</label>
+                                    <div class="mo-auto me-3">
+                                        <button class="btn btn-sm btn-outline-primary"><i class="bi bi-download"></i></button>
+                                        <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex flex-column flex-md-row mb-1">
+                                    <label class="me-auto">Rémi.png</label>
+                                    <div class="mo-auto me-3">
+                                        <button class="btn btn-sm btn-outline-primary"><i class="bi bi-download"></i></button>
+                                        <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex flex-column flex-md-row mb-1">
+                                    <label class="me-auto">EnormeTaf.jpg</label>
+                                    <div class="mo-auto me-3">
+                                        <button class="btn btn-sm btn-outline-primary"><i class="bi bi-download"></i></button>
+                                        <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer d-flex">
+                <label class="text-muted me-auto">N'oubliez pas de manger vos épinards !</label>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                <button type="button" class="btn btn-uphf" data-bs-dismiss="modal">Envoyer</button>
+            </div>
+
+        </div>
+
+    </div>
+</div>
