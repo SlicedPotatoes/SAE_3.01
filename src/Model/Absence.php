@@ -132,19 +132,20 @@ class Absence {
 
         foreach ($parameters as $key => $value)
         {
-            $request->bindParam($key, $value);
+            $request->bindValue(':'.$key, $value);
         }
 
-        $request->execute();
-        $result = $request->fetchAll();
+        $rows = $request->fetchAll(PDO::FETCH_ASSOC);
 
-        //
-        // TO DO : TRANSFORMER LES ABSENCES EN OBJECT DE CLASS ABSENCE
-        //
+        $absences = [];
+        foreach ($rows as $r)
+        {
+            $absences[] = new Absence($r['id'], $r['time'], $r['duration'], $r['examen'],
+                $r['state'], $r['courseType'], $r['ressource'], $r['teacher'], $r['student'],
+                $r['allowedJustification']);
+        }
 
-
-        var_dump($result);
-        echo $query;
+        return $absences;
     }
 }
 
