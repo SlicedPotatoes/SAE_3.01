@@ -3,17 +3,19 @@ class Justification
 {
     private $id;
     private $cause;
-    private $processd;
+    private $processed;
     private $start;
     private $end;
     private $justificationAbsence;
-    public function __construct($id, $cause, $processd, $start, $end, $justificationAbsence){
+    private $justificationFile;
+    public function __construct($id, $cause, $processed, $start, $end, $justificationAbsence, $justificationFile){
         $this->id = $id;
         $this->cause = $cause;
-        $this->processd = $processd;
+        $this->processd = $processed;
         $this->start = $start;
         $this->end = $end;
         $this->justificationAbsence = $justificationAbsence;
+        $this->justificationFile = $justificationFile;
     }
 
     public function getId()
@@ -26,9 +28,9 @@ class Justification
         return $this->cause;
     }
 
-    public function getProcessd()
+    public function getProcessed()
     {
-        return $this->processd;
+        return $this->processed;
     }
 
     public function getStart()
@@ -43,5 +45,9 @@ class Justification
     public function getJustificationAbsence()
     {
         return $this->justificationAbsence;
+    }
+
+    public function getJustificationFile(){
+        return $this->justificationFile;
     }
 }
