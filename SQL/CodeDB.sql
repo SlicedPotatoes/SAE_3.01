@@ -67,6 +67,7 @@ create table absence
     time         timestamp                                not null,
     duration     interval                                 not null,
     examen       boolean                                  not null,
+    allowJustification       boolean                      not null,
     idTeacher    int references teacher (idTeacher)       not null,
     idStudent    int references student (idStudent)       not null,
     idState      int references state (idState)           not null,
