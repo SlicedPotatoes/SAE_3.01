@@ -27,27 +27,34 @@
     <!-- Contenu de l'onglet "Justificatifs" -->
     <div class="tab-pane fade show active" id="proof-tab-pane" role="tabpanel" aria-labelledby="proof-tab" tabindex="0">
         <?php
-        $states = State::getJustificationStates();
-        require "filter_bar.php";
-
-        $listJustifications = Justification::getJustifications();
-
-        foreach($listJustifications as $justification) {
-            require "lineJustification.php";
-        }
+            $states = State::getJustificationStates();
+            require "filter_bar.php";
         ?>
+
+        <div class="accordion accordion-flush" id="justificationFlush">
+            <?php
+                $listJustifications = Justification::getJustifications();
+                foreach($listJustifications as $justification) {
+                    require "lineJustification.php";
+                }
+            ?>
+        </div>
+
     </div>
     <!-- Contenu de l'onglet "Absence" -->
     <div class="tab-pane fade show" id="absence-tab-pane" role="tabpanel" aria-labelledby="absence-tab" tabindex="0">
         <?php
         $states = State::getAbsenceStates();
         require "filter_bar.php";
-
-        $listAbs = Absence::getAbsences();
-
-        foreach($listAbs as $abs) {
-            require "lineAbs.php";
-        }
         ?>
+
+        <div class="accordion accordion-flush" id="absFlush">
+            <?php
+            $listAbs = Absence::getAbsences();
+            foreach($listAbs as $abs) {
+                require "lineAbs.php";
+            }
+            ?>
+        </div>
     </div>
 </div>
