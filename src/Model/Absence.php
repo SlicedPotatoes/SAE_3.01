@@ -10,8 +10,9 @@ class Absence {
     private $ressource;
     private $teacher;
     private $student;
+    private $allowedJustification;
 
-    public function __construct($id, $time, $duration, $examen, $state, $courseType, $ressource, $teacher, $student) {
+    public function __construct($id, $time, $duration, $examen, $state, $courseType, $ressource, $teacher, $student,$allowedJustification) {
         $this->id = $id;
         $this->time = $time;
         $this->duration = $duration;
@@ -21,6 +22,7 @@ class Absence {
         $this->ressource = $ressource;
         $this->teacher = $teacher;
         $this->student = $student;
+        $this->allowedJustification = $allowedJustification;
     }
 
     public function getId() { return $this->id; }
@@ -32,6 +34,7 @@ class Absence {
     public function getRessource() { return $this->ressource; }
     public function getTeacher() { return $this->teacher; }
     public function getStudent() { return $this->student; }
+    public function getAllowedJustification() { return $this->allowedJustification; }
 
     /*
      * TODO: Connecter a la base de données, faire en sorte qu'elle sois paramétrique, avec systeme de filtre / trie (?)

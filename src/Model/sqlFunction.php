@@ -12,7 +12,7 @@ function getAbsencesStudent($idStudent)
 
 function getAbsencesStudentNotJustified($idStudent)
 {
-    $request = $connection->prepare("select * from absences join States using(idStates) where idStudent=? and idStates = 'Non Justifier'");
+    $request = $connection->prepare("select * from absences join States using(idStates) where idStudent=? and idStates = 3");
     $request->bindParam(1, $idStudent);
     $request->execute();
     $result = $request->fetch();
@@ -21,7 +21,7 @@ function getAbsencesStudentNotJustified($idStudent)
 
 function getAbsencesBetween($idStudent, $start, $end)
 {
-    $request = $connection->prepate("select * from absences where idStudent=? and time between '$start' and '$end'");
+    $request = $connection->prepate("select * from absences where idStudent=? and time between ? and ?");
     $request->bindParam(1, $idStudent);
     $request->bindParam(2, $start);
     $request->bindParam(3, $end);

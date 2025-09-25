@@ -1,4 +1,5 @@
 <?php
+
 class Justification
 {
     private $id;
@@ -8,7 +9,9 @@ class Justification
     private $end;
     private $justificationAbsence;
     private $justificationFile;
-    public function __construct($id, $cause, $processed, $start, $end, $justificationAbsence, $justificationFile){
+
+    public function __construct($id, $cause, $processed, $start, $end, $justificationAbsence, $justificationFile)
+    {
         $this->id = $id;
         $this->cause = $cause;
         $this->processd = $processed;
@@ -37,6 +40,7 @@ class Justification
     {
         return $this->start;
     }
+
     public function getEnd()
     {
         return $this->end;
@@ -47,7 +51,8 @@ class Justification
         return $this->justificationAbsence;
     }
 
-    public function getJustificationFile(){
+    public function getJustificationFile()
+    {
         return $this->justificationFile;
     }
 }
