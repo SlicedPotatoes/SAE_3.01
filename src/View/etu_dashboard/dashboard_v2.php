@@ -1,6 +1,7 @@
 <?php
     require_once "../../Model/State.php";
     require_once "../../Model/Absence.php";
+    require_once "../../Model/Justification.php";
 ?>
 
 <!doctype html>
@@ -27,6 +28,12 @@
                 <?php
                     $states = State::getJustificationStates();
                     require "filter_bar.php";
+
+                    $listJustifications = Justification::getJustifications();
+
+                    foreach($listJustifications as $justification) {
+                        require "lineJustification.php";
+                    }
                 ?>
             </div>
             <div class="tab-pane fade show" id="absence-tab-pane" role="tabpanel" aria-labelledby="absence-tab" tabindex="0">

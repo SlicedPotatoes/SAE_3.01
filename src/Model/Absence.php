@@ -1,6 +1,5 @@
 <?php
 require_once "State.php";
-require_once("connection.php");
 class Absence {
     private $id;
     private $time;
@@ -37,6 +36,52 @@ class Absence {
     public function getStudent() { return $this->student; }
     public function getAllowedJustification() { return $this->allowedJustification; }
 
+    /*
+     * TODO: Connecter a la base de données, faire en sorte qu'elle sois paramétrique, avec systeme de filtre / trie (?)
+     *
+    */
+    public static function getAbsences() {
+        $state = State::getAbsenceStates();
+
+        return array(
+            new Absence(
+                0,
+                (new DateTime)->setDate(2025, 9, 24),
+                "1h30",
+                true,
+                $state[1],
+                "TD",
+                "R3.01",
+                "J. Vion",
+                null,
+                true
+            ),
+            new Absence(
+                1,
+                (new DateTime)->setDate(2025, 9, 24),
+                "1h30",
+                true,
+                $state[2],
+                "TD",
+                "R3.01",
+                "J. Vion",
+                null,
+                true
+            ),
+            new Absence(
+                2,
+                (new DateTime)->setDate(2025, 9, 24),
+                "1h30",
+                true,
+                $state[3],
+                "TD",
+                "R3.01",
+                "J. Vion",
+                null,
+                false
+            )
+        );
+    }
 
     static public function getAbsencesStudentFiltred ($studentId=null, $startDate=null, $endDate=null, $examen=null, $allowedJustification=null, $stateId=null)
     {
@@ -103,4 +148,4 @@ class Absence {
     }
 }
 
-Absence::getAbsencesStudentFiltred(1, '2015-01-05', '2018-01-01', true, false, 2);
+//Absence::getAbsencesStudentFiltred(1, '2015-01-05', '2018-01-01', true, false, 2);
