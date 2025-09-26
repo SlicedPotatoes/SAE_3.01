@@ -61,7 +61,6 @@ class Justification
         global $connection;
         $parameters = array();
 
-        // ouais jsp ^^
 
         $query = "SELECT justification.*, absence.*, file.url
               FROM justification
@@ -75,7 +74,7 @@ class Justification
         $hasStartDate = (isset($startDate));
         $hasEndDate = (isset($endDate));
         $hasStateId = (isset($stateId));
-
+        $hasExamen = (isset($examen));
 
 
         if ($hasStudentId) {
@@ -94,16 +93,16 @@ class Justification
         }
 
 
-        if (isset($filters['examen'])) {
+        if ($hasExamen) {
             $parameters['examen'] = $filters['examen'];
             $query .= " INTERSECT select * from absence where examen = true";
         }
 
-        if (isset($filters['allowedJustification'])) {
+        if ($allowedJustification) {
             $query .= " INTERSECT select * from absence where allowedJustification = true";
         }
 
-        if ($hasStudentId) {
+        if ($hasStateId) {
             $parameters['stateId'] = $filters['stateId'];
             $query .= " INTERSECT select * from absence where idstate = :stateId";
         }
