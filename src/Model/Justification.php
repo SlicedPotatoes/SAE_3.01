@@ -56,49 +56,98 @@ class Justification
         );
     }
 
-    function getJustificationsStudentFiltred ($startDate=null, $endDate=null, $examen=null, $stateId=null)
+    static public function getJustificationsStudentFiltred($filters = [],$studentId=null, $startDate=null, $endDate=null, $examen=null, $allowedJustification=null, $stateId=null)
     {
-        $studentID = $this->getStudentId();
+        global $connection;
+        $parameters = array();
 
-        $parameters = array("studentID" => $studentID);
-        $query = "select * from absences where idStudent = :studentID";
 
-        $hasDateDebut = (isset($startDate));
-        $hasDateFin = (isset($endDate));
+        $query = "SELECT justification.*, absence.*, file.url
+              FROM justification
+              LEFT JOIN absenceJustification ON justification.idJustification = absenceJustification.idJustification
+              LEFT JOIN absence ON absenceJustification.idAbsence = absence.idAbsence
+              LEFT JOIN file ON file.idStudentProof = justification.idJustification
+              ";
+
+
+        $hasStudentId = (isset($studentId));
+        $hasStartDate = (isset($startDate));
+        $hasEndDate = (isset($endDate));
         $hasStateId = (isset($stateId));
+        $hasExamen = (isset($examen));
 
-        if ($hasDateDebut)
-        {
-            $parameters["dateDebut"] = $startDate;
-            $query .= "INTERSECT select * from absences where date_debut >= :dateDebut";
+
+        if ($hasStudentId) {
+            $parameters['idStudent'] = $filters['idStudent'];
+            $query .= " where idStudent = :studentId";
         }
 
-        if ($hasDateFin)
-        {
-            $parameters["dateFin"] = $endDate;
-            $query .= "INTERSECT select * from absences where date_fin >= :dateFin";
+        if ($hasStartDate) {
+            $parameters['startDate'] = $filters['startDate'];
+            $query .= " INTERSECT select * from absence where time >= :dateDebut";
         }
 
-        if ($examen)
-        {
-            $query .= "INTERSECT select * from absences where examen = true";
+        if ($hasEndDate) {
+            $parameters['endDate'] = $filters['endDate'];
+            $query .= " INTERSECT select * from absence where time <= :dateFin";
         }
 
-        if ($hasStateId)
-        {
-            $parameters["stateId"] = $stateId;
-            $query .= "INTERSECT select * from absences where state_id = :stateId";
+
+        if ($hasExamen) {
+            $parameters['examen'] = $filters['examen'];
+            $query .= " INTERSECT select * from absence where examen = true";
         }
 
+        if ($allowedJustification) {
+            $query .= " INTERSECT select * from absence where allowedJustification = true";
+        }
+
+        if ($hasStateId) {
+            $parameters['stateId'] = $filters['stateId'];
+            $query .= " INTERSECT select * from absence where idstate = :stateId";
+        }
         $request = $connection->prepare($query);
 
-        foreach ($parameters as $key => $value)
-        {
-            $request->bindParam($key, $value);
+        foreach ($parameters as $key => $value) {
+            $request->bindValue(':' . $key, $value);
         }
 
         $request->execute();
-        $result = $request->fetch();
-        return $result;
+        $result = $request->fetchAll();
+
+        var_dump($result);
+        echo $query;
+
+        echo "\n proute";
     }
+
+    public function sendJustification($idStudent, $cause, $startDate, $endDate)
+    {
+        global $connection;
+        $query = "INSERT INTO justification(idStudent, cause, start, end, processed) VALUES (:idStudent, :cause, :startDate, :endDate, false) RETURNING idJustification;";
+
+        $row = $connection->prepare($query);
+        $row->bindParam('idStudent', $idStudent);
+        $row->execute();
+        $idJustification = $row->fetchColumn();
+
+        $absences = Absence::getAbsencesStudentFiltred($idStudent, $startDate, $endDate, null, true, null);
+
+        foreach ($absences as $absence)
+        {
+            $query = "INSERT INTO absenceJustification VALUES(:studentID" .", " .$idJustification .");";
+            $statement = $connection->prepare($query);
+
+            $connection->exec($query);
+        }
+
+        /*
+
+        TO DO : GESTION DE FICHER DE SES MORTS AVEC LE FAIT QUE ON AJOUTE DANS LA BASE
+        DE DONNEE LES LIGNES POUR CHAQUE FICHIERS
+        JE NE SAIS PAS SI C'EST MIEUX DE LE FAIRE DIRECTEMENT ICI OU DANS UNE AUTRE FONCTION
+
+        */
+    }
+
 }
