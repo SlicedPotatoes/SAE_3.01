@@ -42,6 +42,6 @@
             </div>
         </div>
 
-        <button class="btn btn-uphf" type="submit">Appliquer</button>
+        <button class="btn btn-uphf" type="submit">Appliquer les filtres</button>
     </div>
 </form>
