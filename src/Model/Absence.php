@@ -10,8 +10,9 @@ class Absence {
     private $ressource;
     private $teacher;
     private $student;
+    private $allowedJustification;
 
-    public function __construct($id, $time, $duration, $examen, $state, $courseType, $ressource, $teacher, $student) {
+    public function __construct($id, $time, $duration, $examen, $state, $courseType, $ressource, $teacher, $student,$allowedJustification) {
         $this->id = $id;
         $this->time = $time;
         $this->duration = $duration;
@@ -21,6 +22,7 @@ class Absence {
         $this->ressource = $ressource;
         $this->teacher = $teacher;
         $this->student = $student;
+        $this->allowedJustification = $allowedJustification;
     }
 
     public function getId() { return $this->id; }
@@ -32,6 +34,7 @@ class Absence {
     public function getRessource() { return $this->ressource; }
     public function getTeacher() { return $this->teacher; }
     public function getStudent() { return $this->student; }
+    public function getAllowedJustification() { return $this->allowedJustification; }
 
     /*
      * TODO: Connecter a la base de données, faire en sorte qu'elle sois paramétrique, avec systeme de filtre / trie (?)
@@ -50,7 +53,8 @@ class Absence {
                 "TD",
                 "R3.01",
                 "J. Vion",
-                null
+                null,
+                true
             ),
             new Absence(
                 1,
@@ -61,7 +65,8 @@ class Absence {
                 "TD",
                 "R3.01",
                 "J. Vion",
-                null
+                null,
+                true
             ),
             new Absence(
                 2,
@@ -72,8 +77,76 @@ class Absence {
                 "TD",
                 "R3.01",
                 "J. Vion",
-                null
+                null,
+                false
             )
         );
     }
+
+    static public function getAbsencesStudentFiltred ($studentId=null, $startDate=null, $endDate=null, $examen=null, $allowedJustification=null, $stateId=null)
+    {
+        global $connection;
+        $parameters = array();
+        $query = "select * from absence";
+
+        $hasStudentId = (isset($studentId));
+        $hasStartDate = (isset($startDate));
+        $hasEndDate = (isset($endDate));
+        $hasStateId = (isset($stateId));
+
+        if ($hasStudentId)
+        {
+            $parameters["studentId"] = $studentId;
+            $query .= " where idStudent = :studentId";
+        }
+
+        if ($hasStartDate)
+        {
+            $parameters["dateDebut"] = $startDate;
+            $query .= " INTERSECT select * from absence where time >= :dateDebut";
+        }
+
+        if ($hasEndDate)
+        {
+            $parameters["dateFin"] = $endDate;
+            $query .= " INTERSECT select * from absence where time <= :dateFin";
+        }
+
+        if ($examen)
+        {
+            $query .= " INTERSECT select * from absence where examen = true";
+        }
+
+        if ($allowedJustification)
+        {
+            $query .= " INTERSECT select * from absence where allowedJustification = true";
+        }
+
+        if ($hasStateId)
+        {
+            $parameters["stateId"] = $stateId;
+            $query .= " INTERSECT select * from absence where idstate = :stateId";
+        }
+
+        $request = $connection->prepare($query);
+
+        foreach ($parameters as $key => $value)
+        {
+            $request->bindValue(':'.$key, $value);
+        }
+
+        $rows = $request->fetchAll(PDO::FETCH_ASSOC);
+
+        $absences = [];
+        foreach ($rows as $r)
+        {
+            $absences[] = new Absence($r['id'], $r['time'], $r['duration'], $r['examen'],
+                $r['state'], $r['courseType'], $r['ressource'], $r['teacher'], $r['student'],
+                $r['allowedJustification']);
+        }
+
+        return $absences;
+    }
 }
+
+//Absence::getAbsencesStudentFiltred(1, '2015-01-05', '2018-01-01', true, false, 2);

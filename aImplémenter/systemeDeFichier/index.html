@@ -1,0 +1,167 @@
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Upload & Preview</title>
+    <style>
+        body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 2rem; }
+        .btn { padding: .6rem 1rem; border: none; background: #2563eb; color: #fff; border-radius: .4rem; cursor: pointer; }
+        .btn:disabled { opacity: .6; cursor: not-allowed; }
+    /* Aperçu supprimé: plus d'affichage du fichier dans la page */
+        .search { margin-top: 1rem; display: flex; gap: .5rem; align-items: center; }
+        .search input[type="text"] { flex: 1; padding: .5rem .6rem; border: 1px solid #e5e7eb; border-radius: .4rem; }
+        .popup { position: fixed; inset: 0; background: rgba(0,0,0,.4); display: none; align-items: center; justify-content: center; }
+        .popup.open { display: flex; }
+        .card { background: #fff; max-width: 520px; width: calc(100% - 2rem); border-radius: .6rem; box-shadow: 0 10px 30px rgba(0,0,0,.2); overflow: hidden; }
+        .card h3 { margin: 0; padding: 1rem 1.25rem; background: #f3f4f6; font-size: 1.1rem; }
+        .card .content { padding: 1rem 1.25rem; white-space: pre-wrap; }
+        .card .actions { display: flex; justify-content: flex-end; gap: .5rem; padding: 0 1.25rem 1rem; }
+        .ok { background: #16a34a; }
+        .error { background: #dc2626; }
+    </style>
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const form = document.getElementById('upload-form');
+        const fileInput = document.querySelector('input[name="fileToUpload"]');
+    // Aperçu supprimé: on n'affiche plus le fichier dans la page
+        const searchForm = document.getElementById('search-form');
+        const searchInput = document.getElementById('search-name');
+
+        // Popup helpers
+        const popup = document.getElementById('popup');
+        const popupTitle = document.getElementById('popup-title');
+        const popupMsg = document.getElementById('popup-msg');
+        const closeBtn = document.getElementById('popup-close');
+        function showPopup(title, msg, isError) {
+            popupTitle.textContent = title;
+            popupMsg.textContent = msg;
+            popup.classList.add('open');
+            closeBtn.className = 'btn ' + (isError ? 'error' : 'ok');
+            closeBtn.textContent = isError ? 'Fermer' : 'OK';
+        }
+        function hidePopup() { popup.classList.remove('open'); }
+        popup.addEventListener('click', (e) => { if (e.target === popup) hidePopup(); });
+        closeBtn.addEventListener('click', hidePopup);
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!fileInput.files || fileInput.files.length === 0) {
+                showPopup('Erreur', 'Aucun fichier sélectionné.', true);
+                return;
+            }
+            // Ouvrir un onglet vide immédiatement pour éviter les bloqueurs de popup
+            let newTab = window.open('', '_blank');
+            const btn = form.querySelector('button[type="submit"]');
+            btn.disabled = true; btn.textContent = 'Envoi…';
+            try {
+                const fd = new FormData(form);
+                const res = await fetch(form.action, { method: 'POST', body: fd });
+                const text = await res.text();
+                let data = null;
+                try { data = JSON.parse(text); } catch (_) {}
+
+                if (!res.ok) {
+                    showPopup('Erreur', data?.message || text || `Erreur HTTP ${res.status}`, true);
+                    if (newTab && !newTab.closed) newTab.close();
+                    return;
+                }
+
+                if (data && data.ok) {
+                    showPopup('Succès', data.message || 'Upload réussi', false);
+                    form.reset();
+                    const name = data.filename;
+                    const ext = (data.ext || '').toLowerCase();
+                    const url = `file.php?name=${encodeURIComponent(name)}`;
+                    // Naviguer l'onglet vers le fichier (inline pour images/PDF, sinon téléchargement forcé)
+                    if (newTab && !newTab.closed) {
+                        const openUrl = ['jpg','jpeg','png','pdf'].includes(ext) ? url : url + (url.includes('?') ? '&' : '?') + 'dl=1';
+                        newTab.location.href = openUrl;
+                    } else {
+                        showPopup('Info', 'Lien prêt. Si l’onglet ne s’ouvre pas, autorisez les popups et réessayez.', false);
+                    }
+                } else {
+                    // Réponse texte simple
+                    const ok = /succ[eè]s/i.test(text);
+                    showPopup(ok ? 'Succès' : 'Info', text, !ok);
+                    if (newTab && !newTab.closed) newTab.close();
+                }
+            } catch (err) {
+                showPopup('Erreur', 'Impossible de contacter le serveur.\n' + (err?.message || err), true);
+                if (newTab && !newTab.closed) newTab.close();
+            } finally {
+                btn.disabled = false; btn.textContent = 'Envoyer';
+            }
+        });
+
+        // Aperçu supprimé
+
+        // Recherche d'un fichier par nom et aperçu
+        searchForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = (searchInput.value || '').trim();
+            if (!name) {
+                showPopup('Erreur', 'Saisissez le nom exact du fichier (avec extension).', true);
+                return;
+            }
+            // Ouvrir un onglet vide dès le clic
+            let newTab = window.open('', '_blank');
+            const url = `file.php?name=${encodeURIComponent(name)}`;
+            // Déduire l'extension depuis le nom, sinon HEAD pour obtenir le Content-Type
+            let ext = (name.split('.').pop() || '').toLowerCase();
+            if (ext === 'jpeg') ext = 'jpg';
+            if (!['jpg','jpeg','png','pdf'].includes(ext)) {
+                try {
+                    const head = await fetch(url, { method: 'HEAD' });
+                    if (!head.ok) {
+                        showPopup('Introuvable', 'Fichier introuvable dans le dossier.', true);
+                        if (newTab && !newTab.closed) newTab.close();
+                        return;
+                    }
+                    const ct = head.headers.get('Content-Type') || '';
+                    if (/jpeg/i.test(ct)) ext = 'jpg';
+                    else if (/png/i.test(ct)) ext = 'png';
+                    else if (/pdf/i.test(ct)) ext = 'pdf';
+                    else ext = '';
+                } catch (err) {
+                    showPopup('Erreur', 'Impossible de vérifier le fichier.\n' + (err?.message || err), true);
+                    if (newTab && !newTab.closed) newTab.close();
+                    return;
+                }
+            }
+            // Pas d'aperçu: on ouvre seulement dans un nouvel onglet
+            // Naviguer l'onglet vers le fichier
+            if (newTab && !newTab.closed) {
+                const openUrl = ['jpg','jpeg','png','pdf'].includes(ext) ? url : url + (url.includes('?') ? '&' : '?') + 'dl=1';
+                newTab.location.href = openUrl;
+            } else {
+                showPopup('Info', 'Lien prêt. Si l’onglet ne s’ouvre pas, autorisez les popups et réessayez.', false);
+            }
+        });
+    });
+    </script>
+    </head>
+<body>
+        <form id="upload-form" action="upload.php" method="post" enctype="multipart/form-data">
+                <input type="file" name="fileToUpload" accept=".jpg,.png,.pdf,.jpeg" />
+                <button type="submit" class="btn">Envoyer</button>
+        </form>
+
+        <div class="search">
+            <form id="search-form" autocomplete="off">
+                <input type="text" id="search-name" placeholder="Nom EXACT du fichier (ex: doc_20250925_....pdf)" />
+                <button type="submit" class="btn">Afficher</button>
+            </form>
+        </div>
+
+    <!-- Aperçu supprimé -->
+
+        <div id="popup" class="popup" role="dialog" aria-modal="true" aria-labelledby="popup-title">
+            <div class="card">
+                <h3 id="popup-title">Message</h3>
+                <div id="popup-msg" class="content"></div>
+                <div class="actions">
+                    <button id="popup-close" type="button" class="btn ok">OK</button>
+                </div>
+            </div>
+        </div>
+</body>
+</html>

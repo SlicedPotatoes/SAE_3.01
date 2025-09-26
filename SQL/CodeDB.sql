@@ -51,6 +51,8 @@ create table justification
     idJustification serial primary key,
     cause           text                               not null,
     processed       boolean                            not null,
+    start           timestamp                          not null,
+    end             timestamp                          not null,
     idStudent       int references student (idStudent) not null
 );
 
@@ -63,16 +65,16 @@ create table file
 
 create table absence
 (
-    idAbsence    serial primary key,
-    time         timestamp                                not null,
-    duration     interval                                 not null,
-    examen       boolean                                  not null,
-    allowJustification       boolean                      not null,
-    idTeacher    int references teacher (idTeacher)       not null,
-    idStudent    int references student (idStudent)       not null,
-    idState      int references state (idState)           not null,
-    idCourseType int references courseType (idCourseType) not null,
-    idResource   int references resource (idResource)     not null
+    idAbsence            serial primary key,
+    time                 timestamp                                not null,
+    duration             interval                                 not null,
+    examen               boolean                                  not null,
+    allowedJustification boolean                                  not null,
+    idTeacher            int references teacher (idTeacher)       not null,
+    idStudent            int references student (idStudent)       not null,
+    idState              int references state (idState)           not null,
+    idCourseType         int references courseType (idCourseType) not null,
+    idResource           int references resource (idResource)     not null
 );
 
 create table absenceJustification
@@ -88,9 +90,8 @@ create table absenceJustification
 insert into state(label)
 values ('Validé'),
        ('Refusé'),
-       ('En révision'),
        ('Non-justifié'),
-       ('Attente');
+       ('En attente');
 
 --rollback delete from state where(idState) between 1 and 5;
 
