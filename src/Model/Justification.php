@@ -58,6 +58,7 @@ class Justification
 
     function getJustificationsStudentFiltred ($startDate=null, $endDate=null, $examen=null, $stateId=null)
     {
+        global $connection;
         $studentID = $this->getStudentId();
 
         $parameters = array("studentID" => $studentID);
@@ -100,5 +101,34 @@ class Justification
         $request->execute();
         $result = $request->fetch();
         return $result;
+    }
+
+    public function sendJustification($idStudent, $cause, $startDate, $endDate)
+    {
+        global $connection;
+        $query = "INSERT INTO justification(idStudent, cause, start, end, processed) VALUES (:idStudent, :cause, :startDate, :endDate, false) RETURNING idJustification;";
+
+        $row = $connection->prepare($query);
+        $row->bindParam('idStudent', $idStudent);
+        $row->execute();
+        $idJustification = $row->fetchColumn();
+
+        $absences = Absence::getAbsencesStudentFiltred($idStudent, $startDate, $endDate, null, true, null);
+
+        foreach ($absences as $absence)
+        {
+            $query = "INSERT INTO absenceJustification VALUES(:studentID" .", " .$idJustification .");";
+            $statement = $connection->prepare($query);
+
+            $connection->exec($query);
+        }
+
+        /*
+
+        TO DO : GESTION DE FICHER DE SES MORTS AVEC LE FAIT QUE ON AJOUTE DANS LA BASE
+        DE DONNEE LES LIGNES POUR CHAQUE FICHIERS
+        JE NE SAIS PAS SI C'EST MIEUX DE LE FAIRE DIRECTEMENT ICI OU DANS UNE AUTRE FONCTION
+
+        */
     }
 }
