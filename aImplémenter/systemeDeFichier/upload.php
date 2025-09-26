@@ -8,7 +8,7 @@ header('Content-Type: text/plain; charset=UTF-8');
 // Sélection du dossier d'upload selon l'OS (dev Windows, prod Linux)
 if (stripos(PHP_OS_FAMILY, 'Windows') !== false) {
     // Dev local: dossier "upload" dans le projet
-    $uploadDir = __DIR__ . DIRECTORY_SEPARATOR . 'upload' . DIRECTORY_SEPARATOR;
+    $uploadDir = 'C:\upload';
 } else {
     // Prod Linux: dossier racine
     $uploadDir = '/var/www/upload';
