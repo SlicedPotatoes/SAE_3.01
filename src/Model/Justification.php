@@ -56,49 +56,70 @@ class Justification
         );
     }
 
-    function getJustificationsStudentFiltred ($startDate=null, $endDate=null, $examen=null, $stateId=null)
+    static public function getJustificationsStudentFiltred($filters = [],$studentId=null, $startDate=null, $endDate=null, $examen=null, $allowedJustification=null, $stateId=null)
     {
-        $studentID = $this->getStudentId();
+        global $connection;
+        $parameters = array();
 
-        $parameters = array("studentID" => $studentID);
-        $query = "select * from absences where idStudent = :studentID";
+        // ouais jsp ^^
 
-        $hasDateDebut = (isset($startDate));
-        $hasDateFin = (isset($endDate));
+        $query = "SELECT justification.*, absence.*, file.url
+              FROM justification
+              LEFT JOIN absenceJustification ON justification.idJustification = absenceJustification.idJustification
+              LEFT JOIN absence ON absenceJustification.idAbsence = absence.idAbsence
+              LEFT JOIN file ON file.idStudentProof = justification.idJustification
+              ";
+
+
+        $hasStudentId = (isset($studentId));
+        $hasStartDate = (isset($startDate));
+        $hasEndDate = (isset($endDate));
         $hasStateId = (isset($stateId));
 
-        if ($hasDateDebut)
-        {
-            $parameters["dateDebut"] = $startDate;
-            $query .= "INTERSECT select * from absences where date_debut >= :dateDebut";
+
+
+        if ($hasStudentId) {
+            $parameters['idStudent'] = $filters['idStudent'];
+            $query .= " where idStudent = :studentId";
         }
 
-        if ($hasDateFin)
-        {
-            $parameters["dateFin"] = $endDate;
-            $query .= "INTERSECT select * from absences where date_fin >= :dateFin";
+        if ($hasStartDate) {
+            $parameters['startDate'] = $filters['startDate'];
+            $query .= " INTERSECT select * from absence where time >= :dateDebut";
         }
 
-        if ($examen)
-        {
-            $query .= "INTERSECT select * from absences where examen = true";
+        if ($hasEndDate) {
+            $parameters['endDate'] = $filters['endDate'];
+            $query .= " INTERSECT select * from absence where time <= :dateFin";
         }
 
-        if ($hasStateId)
-        {
-            $parameters["stateId"] = $stateId;
-            $query .= "INTERSECT select * from absences where state_id = :stateId";
+
+        if (isset($filters['examen'])) {
+            $parameters['examen'] = $filters['examen'];
+            $query .= " INTERSECT select * from absence where examen = true";
         }
 
+        if (isset($filters['allowedJustification'])) {
+            $query .= " INTERSECT select * from absence where allowedJustification = true";
+        }
+
+        if ($hasStudentId) {
+            $parameters['stateId'] = $filters['stateId'];
+            $query .= " INTERSECT select * from absence where idstate = :stateId";
+        }
         $request = $connection->prepare($query);
 
-        foreach ($parameters as $key => $value)
-        {
-            $request->bindParam($key, $value);
+        foreach ($parameters as $key => $value) {
+            $request->bindValue(':' . $key, $value);
         }
 
         $request->execute();
-        $result = $request->fetch();
-        return $result;
+        $result = $request->fetchAll();
+
+        var_dump($result);
+        echo $query;
+
+        echo "\n proute";
     }
+
 }
