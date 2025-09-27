@@ -1,5 +1,4 @@
 <?php
-    require_once "./Model/State.php";
     require_once "./Model/Absence.php";
     require_once "./Model/Justification.php";
 
@@ -23,11 +22,11 @@
         <button class="nav-link" id="absence-tab" data-bs-toggle="tab" data-bs-target="#absence-tab-pane" type="button" role="tab" aria-controls="absence-tab-pane" aria-selected="false">Absences</button>
     </li>
 </ul>
-<div class="tab-content bg-white border-bottom border-start border-end rounded-bottom py-4" id="tab-dashboard-stuContent">
+<div class="tab-content bg-white border-bottom border-start border-end rounded-bottom pt-4" id="tab-dashboard-stuContent">
     <!-- Contenu de l'onglet "Justificatifs" -->
     <div class="tab-pane fade show active" id="proof-tab-pane" role="tabpanel" aria-labelledby="proof-tab" tabindex="0">
         <?php
-            $states = State::getJustificationStates();
+            $states = StateJustif::getAll();
             require "filter_bar.php";
         ?>
 
@@ -37,6 +36,10 @@
                 foreach($listJustifications as $justification) {
                     require "lineJustification.php";
                 }
+
+                if(count($listJustifications) == 0) {
+                    echo "<p class='fs-3 text-body-secondary text-center p-3 m-0'>Pas de justificatifs</p>";
+                }
             ?>
         </div>
 
@@ -44,15 +47,22 @@
     <!-- Contenu de l'onglet "Absence" -->
     <div class="tab-pane fade show" id="absence-tab-pane" role="tabpanel" aria-labelledby="absence-tab" tabindex="0">
         <?php
-        $states = State::getAbsenceStates();
+        $states = StateAbs::getAll();
         require "filter_bar.php";
         ?>
 
         <div class="accordion accordion-flush" id="absFlush">
             <?php
             $listAbs = Absence::getAbsences();
+            $index = 0;
+            //$listAbs = Absence::getAbsencesStudentFiltred($_SESSION['id'], null, null, false, false, null);
             foreach($listAbs as $abs) {
                 require "lineAbs.php";
+                $index++;
+            }
+
+            if(count($listAbs) == 0) {
+                echo "<p class='fs-3 text-body-secondary text-center p-3 m-0'>Pas d'absences</p>";
             }
             ?>
         </div>

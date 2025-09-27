@@ -1,23 +1,17 @@
 <?php
+require_once "Justification.php";
+class File {
+    private int $idFile;
+    private string $fileName;
+    private Justification $justification;
 
-class File
-{
-    private $id;
-    private $label;
-
-    function __construct($id, $label)
-    {
-        $this->id = $id;
-        $this->label = $label;
+    function __construct($idFile, $fileName, $justification) {
+        $this->idFile = $idFile;
+        $this->fileName = $fileName;
+        $this->justification = $justification;
     }
 
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    public function getLabel()
-    {
-        return $this->label;
-    }
+    public function getIdFile(): int { return $this->idFile; }
+    public function getFileName(): string { return $this->fileName; }
+    public function getJustification(): Justification { return $this->justification; }
 }
