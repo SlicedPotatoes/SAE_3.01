@@ -1,4 +1,4 @@
-<form class="border-bottom px-4" action="" method="GET">
+<form class="border-bottom px-4 m-0" action="" method="GET">
     <div class="d-flex flex-row gap-3 pb-4">
         <div class="row g-3 align-items-center">
             <div class="col-auto">
@@ -26,7 +26,7 @@
                 <select class="form-select" id="state">
                     <?php
                         foreach($states as $value) {
-                            echo "<option value='".$value->getId()."'>".$value->getLabel()."</option>";
+                            echo "<option value='".$value->value."'>".$value->label()."</option>";
                         }
                     ?>
                 </select>
