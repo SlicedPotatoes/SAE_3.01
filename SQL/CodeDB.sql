@@ -26,29 +26,38 @@ create table teacher
     email     text unique not null check ( email ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Za-z]{2,}$')
     );
 
-create table state
-(
-    idState serial primary key,
-    label   text not null
-);
+create type stateAbsence as enum
+    (
+        'Validated',
+        'Refused',
+        'NotJustified',
+        'Pending'
+    );
 
-create table courseType
-(
-    idCourseType serial primary key,
-    label        text not null
-);
+create type courseType as enum
+    (
+        'TP',
+        'CM',
+        'TD',
+        'BEN'
+    );
+
+create type stateJustif as enum
+    (
+        'Processed',
+        'NotProcessed'
+    );
 
 create table resource
 (
     idResource serial primary key,
     label      text not null
 );
-
 create table justification
 (
     idJustification serial primary key,
     cause           text                               not null,
-    processed       boolean                            not null,
+    currentState    stateJustif                        not null,
     startDate       timestamp                          not null,
     endDate         timestamp                          not null,
     idStudent       int references student (idStudent) not null
@@ -64,13 +73,13 @@ create table file
 create table absence
 (
     time                 timestamp                                not null,
-    duration interval not null,
+    duration             interval                                 not null,
     examen               boolean                                  not null,
     allowedJustification boolean                                  not null,
     idTeacher            int references teacher (idTeacher)       not null,
     idStudent            int references student (idStudent)       not null,
-    idState              int references state (idState)           not null,
-    idCourseType         int references courseType (idCourseType) not null,
+    currentState         stateAbsence                             not null,
+    courseType           courseType                               not null,
     idResource           int references resource (idResource)     not null,
     primary key (idStudent, time)
 );
@@ -85,23 +94,29 @@ create table absenceJustification
     primary key (idStudent, time, idJustification)
 );
 
---rollback drop table absence, file, absenceGroup, resource, courseType, state, teacher, student, groupStudent cascade;
+--rollback drop table absence, file, absenceJustification, resource, courseType, state, teacher, student, groupStudent, justification cascade;
+--rollback drop type stateAbsence, stateJustif, courseType cascade;
 
---changelog Isaac:2 label:InsertionDansStates
-insert into state(label)
-values ('Validé'),
-       ('Refusé'),
-       ('Non-justifié'),
-       ('En attente');
+--changeset Louis:2 labels:ajout-colonnes dans justification
+alter table justification add column sendDate timestamp;
+alter table justification add column processedDate timestamp;
 
---rollback delete from state where(idState) between 1 and 5;
+/* liquibase rollback
+    alter table justification drop column sendDate;
+    alter table justification drop column processedDate;
+ */
 
---changelog Isaac:3 label:InsertionDansCourseType
-insert into courseType(label)
-values ('TP'),
-       ('CM'),
-       ('TD'),
-       ('BEN')
+--changeset Louis:3 labels:drop colonne dans justification
+alter table justification drop column idStudent;
 
---rollback delete from coursesType where(idCourseType) between 1 and 4;
+--rollback alter table justification add column idStudent int references student (idStudent) not null;
 
+--changeset Louis:4 labels:ajout-colonne dans absence
+alter table absence add column dateResit timestamp;
+
+--rollback alter table absence drop column dateResit;
+
+--changeset Louis:5 labels:drop not null pour idTeacher dans absence
+alter table absence alter column idTeacher drop not null;
+
+--rollback alter table absence alter column idTeacher set not null;
