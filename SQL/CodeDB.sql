@@ -120,3 +120,8 @@ alter table absence add column dateResit timestamp;
 alter table absence alter column idTeacher drop not null;
 
 --rollback alter table absence alter column idTeacher set not null;
+
+--changeset Louis:6 labels:modif table file
+alter table file rename column url to fileName;
+
+--rollback alter table file rename column fileName to url;
