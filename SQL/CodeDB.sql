@@ -2,21 +2,20 @@
 
 --changeset Louis:1 labels:Initialisation context:initialisation
 
-create table groupe
+create table groupStudent
 (
-    idGroupe serial primary key,
-    label    text not null
+    idGroupStudent serial primary key,
+    label          text not null
 );
 
 create table student
 (
     idStudent  int primary key,
-    lastName   text                             not null,
-    firstName  text                             not null,
+    lastName   text        not null,
+    firstName  text        not null,
     firstName2 text,
-    email      text unique                      not null check (email ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Za-z]{2,}$'
-        ),
-    idGroupe   int references groupe (idGroupe) not null
+    email      text unique not null check (email ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Za-z]{2,}$') ,
+    idGroupStudent   int references groupStudent (idGroupStudent) not null
 );
 
 create table teacher
@@ -24,9 +23,8 @@ create table teacher
     idTeacher serial primary key,
     lastName  text        not null,
     firstName text        not null,
-    email     text unique not null check ( email ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Za-z]{2,}$'
-        )
-);
+    email     text unique not null check ( email ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Za-z]{2,}$')
+    );
 
 create table state
 (
@@ -51,40 +49,43 @@ create table justification
     idJustification serial primary key,
     cause           text                               not null,
     processed       boolean                            not null,
-    start           timestamp                          not null,
-    end             timestamp                          not null,
+    startDate       timestamp                          not null,
+    endDate         timestamp                          not null,
     idStudent       int references student (idStudent) not null
 );
 
 create table file
 (
-    idFile         serial primary key,
-    url            text                                           not null,
-    idStudentProof int references justification (idJustification) not null
+    idFile          serial primary key,
+    url             text                                           not null,
+    idJustification int references justification (idJustification) not null
 );
 
 create table absence
 (
-    idAbsence            serial primary key,
     time                 timestamp                                not null,
-    duration             interval                                 not null,
+    duration interval not null,
     examen               boolean                                  not null,
     allowedJustification boolean                                  not null,
     idTeacher            int references teacher (idTeacher)       not null,
     idStudent            int references student (idStudent)       not null,
     idState              int references state (idState)           not null,
     idCourseType         int references courseType (idCourseType) not null,
-    idResource           int references resource (idResource)     not null
+    idResource           int references resource (idResource)     not null,
+    primary key (idStudent, time)
 );
 
 create table absenceJustification
 (
-    idAbsence       int references absence (idAbsence),
-    idJustification int references justification (idJustification),
-    primary key (idAbsence, idJustification)
+    idStudent       int,
+    time           timestamp,
+    idjustification int references justification (idJustification),
+    constraint fk_absence
+        foreign key (idStudent, time) references absence (idStudent, time) on delete cascade,
+    primary key (idStudent, time, idJustification)
 );
 
---rollback drop table absence, file, absenceGroup, resource, courseType, state, teacher, student, groupe cascade;
+--rollback drop table absence, file, absenceGroup, resource, courseType, state, teacher, student, groupStudent cascade;
 
 --changelog Isaac:2 label:InsertionDansStates
 insert into state(label)
