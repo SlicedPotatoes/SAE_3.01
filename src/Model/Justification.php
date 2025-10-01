@@ -1,57 +1,72 @@
 <?php
+require_once "StateJustif.php";
+class Justification {
+    private int $idJustification;
+    private string $cause;
+    private StateJustif $currentState;
+    private DateTime $startDate;
+    private DateTime $endDate;
+    private DateTime $sendDate;
+    private DateTime $processedDate;
+    private array $files;
+    private array $absences;
 
-class Justification
-{
-    private $id;
-    private $cause;
-    private $processed;
-    private $start;
-    private $end;
-    private $justificationAbsence;
-    private $justificationFile;
-
-    public function __construct($id, $cause, $processed, $start, $end, $justificationAbsence, $justificationFile)
+    public function __construct($idJustification, $cause, $currentState, $startDate, $endDate, $sendDate, $processedDate)
     {
-        $this->id = $id;
+        $this->idJustification = $idJustification;
         $this->cause = $cause;
-        $this->processed = $processed;
-        $this->start = $start;
-        $this->end = $end;
-        $this->justificationAbsence = $justificationAbsence;
-        $this->justificationFile = $justificationFile;
+        $this->currentState = $currentState;
+        $this->startDate = $startDate;
+        $this->endDate = $endDate;
+        $this->sendDate = $sendDate;
+        $this->processedDate = $processedDate;
+
+        $this->files = [];
+        $this->absences = [];
     }
 
-    public function getId() { return $this->id; }
-    public function getCause() { return $this->cause; }
-    public function getProcessed() { return $this->processed; }
-    public function getStart() { return $this->start; }
-    public function getEnd() { return $this->end; }
-    public function getJustificationAbsence() { return $this->justificationAbsence; }
-    public function getJustificationFile() { return $this->justificationFile; }
+    public function getIdJustification(): int { return $this->idJustification; }
+    public function getCause(): int { return $this->cause; }
+    public function getCurrentState(): StateJustif { return $this->currentState; }
+    public function getStartDate(): DateTime { return $this->startDate; }
+    public function getEndDate(): DateTime { return $this->endDate; }
+    public function getSendDate(): DateTime { return $this->sendDate; }
+    public function getProcessedDate(): DateTime { return $this->processedDate; }
+    public function getFiles(): array {
+        if(count($this->files) == 0) {
+            // TODO: Requête SQL
+        }
+        return $this->files;
+    }
+    public function getAbsences(): array {
+        if(count($this->absences) == 0) {
+            // TODO: Requête SQL
+        }
+        return $this->absences;
+    }
 
     /*
-     * TODO: Connecter a la base de données, faire en sorte qu'elle sois paramétrique, avec systeme de filtre / trie (?)
-     *
-    */
-    public static function getJustifications() {
+     * TODO: Connecter a la base de données, faire en sorte qu'elle sois paramétrique, avec système de filtre / trie (?)
+     */
+    public static function getJustifications(): array {
         return array(
             new Justification(
-                0,
-                "",
-                false,
-                (new DateTime)->setDate(2025, 9, 24),
-                (new DateTime)->setDate(2025, 9, 25),
-                "",
-                []
+                1,
+                '',
+                StateJustif::NotProcessed,
+                (new DateTime())->setDate(2025, 9, 24),
+                (new DateTime())->setDate(2025, 9, 25),
+                (new DateTime())->setDate(2025, 9, 26),
+                (new DateTime())->setDate(2025, 9, 27)
             ),
             new Justification(
-                1,
-                "",
-                true,
-                (new DateTime)->setDate(2025, 9, 24),
-                (new DateTime)->setDate(2025, 9, 25),
-                "",
-                []
+                2,
+                '',
+                StateJustif::Processed,
+                (new DateTime())->setDate(2025, 9, 1),
+                (new DateTime())->setDate(2025, 9, 3),
+                (new DateTime())->setDate(2025, 9, 4),
+                (new DateTime())->setDate(2025, 9, 5)
             )
         );
     }
@@ -149,5 +164,4 @@ class Justification
 
         */
     }
-
 }

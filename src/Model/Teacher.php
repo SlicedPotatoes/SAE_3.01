@@ -1,37 +1,21 @@
 <?php
 
-class Teacher
-{
-    private $firstName;
-    private $lastName;
-    private $email;
-    private $id;
+class Teacher {
+    private int $idTeacher;
+    private string $lastName;
+    private string $firstName;
+    private string $email;
 
-    function __construct($firstName, $lastName, $email, $id)
-    {
-        $this->firstName = $firstName;
+
+    function __construct($idTeacher, $lastName, $firstName, $email) {
+        $this->idTeacher = $idTeacher;
         $this->lastName = $lastName;
+        $this->firstName = $firstName;
         $this->email = $email;
-        $this->id = $id;
     }
 
-    function getFirstName()
-    {
-        return $this->firstName;
-    }
-
-    function getLastName()
-    {
-        return $this->lastName;
-    }
-
-    function getEmail()
-    {
-        return $this->email;
-    }
-
-    function getId()
-    {
-        return $this->id;
-    }
+    function getIdTeacher(): int { return $this->idTeacher; }
+    function getLastName(): string { return $this->lastName; }
+    function getFirstName(): string { return $this->firstName; }
+    function getEmail(): string { return $this->email; }
 }

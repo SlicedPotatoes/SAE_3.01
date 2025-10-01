@@ -3,33 +3,28 @@
         <button class="accordion-button collapsed d-flex align-items-center gap-3 p-3"
                 type="button"
                 data-bs-toggle="collapse"
-                data-bs-target="#flush-collapse-abs-<?= $abs->getId(); ?>"
+                data-bs-target="#flush-collapse-abs-<?= $index ?>"
                 aria-expanded="false"
-                aria-controls="flush-collapse-abs-<?= $abs->getId(); ?>"
+                aria-controls="flush-collapse-abs-<?= $index ?>"
         >
             <div class="d-flex flex-column">
-                <div>Date: <?= $abs->getTime()->format('Y-m-d H:i'); ?></div>
-                <div>Durée: <?= $abs->getDuration(); ?></div>
+                <div>Date: <?= $abs->getTime()->format('Y-m-d H:i') ?></div>
+                <div>Durée: <?= $abs->getDuration()->format("%hH%I") ?></div>
             </div>
             <div class="d-flex align-items-center gap-3 flex-grow-1">
+                <span class='badge rounded-pill text-bg-<?= $abs->getCurrentState()->colorBadge() ?>'><?= $abs->getCurrentState()->label() ?></span>
                 <?php
-                $color = "success";
-                if($abs->getState()->getId() == 1) {
-                    $color = "danger";
-                }
-                if($abs->getState()->getId() == 2) {
-                    $color = "secondary";
-                }
-                echo "<span class='badge rounded-pill text-bg-$color'>".$abs->getState()->getLabel()."</span>";
-
                 if($abs->getExamen()) {
                     echo "<span class='badge rounded-pill text-bg-warning'>Examen</span>";
+                }
+                if(!$abs->getAllowedJustification()) {
+                    echo '<i style="font-size: 30px" class="bi bi-file-lock2" data-bs-toggle="tooltip" data-bs-title="Le responsable pédagogique n\'autorise pas la justification de cette absence"></i>';
                 }
                 ?>
             </div>
         </button>
     </div>
-    <div id="flush-collapse-abs-<?= $abs->getId(); ?>" class="accordion-collapse collapse" data-bs-parent="#absFlush">
+    <div id="flush-collapse-abs-<?= $index ?>" class="accordion-collapse collapse" data-bs-parent="#absFlush">
         <div class="accordion-body p-3">
             Le détail de l'abs
         </div>

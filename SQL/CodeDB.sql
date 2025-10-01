@@ -2,21 +2,20 @@
 
 --changeset Louis:1 labels:Initialisation context:initialisation
 
-create table groupe
+create table groupStudent
 (
-    idGroupe serial primary key,
-    label    text not null
+    idGroupStudent serial primary key,
+    label          text not null
 );
 
 create table student
 (
     idStudent  int primary key,
-    lastName   text                             not null,
-    firstName  text                             not null,
+    lastName   text        not null,
+    firstName  text        not null,
     firstName2 text,
-    email      text unique                      not null check (email ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Za-z]{2,}$'
-        ),
-    idGroupe   int references groupe (idGroupe) not null
+    email      text unique not null check (email ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Za-z]{2,}$') ,
+    idGroupStudent   int references groupStudent (idGroupStudent) not null
 );
 
 create table teacher
@@ -24,83 +23,105 @@ create table teacher
     idTeacher serial primary key,
     lastName  text        not null,
     firstName text        not null,
-    email     text unique not null check ( email ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Za-z]{2,}$'
-        )
-);
+    email     text unique not null check ( email ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Za-z]{2,}$')
+    );
 
-create table state
-(
-    idState serial primary key,
-    label   text not null
-);
+create type stateAbsence as enum
+    (
+        'Validated',
+        'Refused',
+        'NotJustified',
+        'Pending'
+    );
 
-create table courseType
-(
-    idCourseType serial primary key,
-    label        text not null
-);
+create type courseType as enum
+    (
+        'TP',
+        'CM',
+        'TD',
+        'BEN'
+    );
+
+create type stateJustif as enum
+    (
+        'Processed',
+        'NotProcessed'
+    );
 
 create table resource
 (
     idResource serial primary key,
     label      text not null
 );
-
 create table justification
 (
     idJustification serial primary key,
     cause           text                               not null,
-    processed       boolean                            not null,
-    start           timestamp                          not null,
-    end             timestamp                          not null,
+    currentState    stateJustif                        not null,
+    startDate       timestamp                          not null,
+    endDate         timestamp                          not null,
     idStudent       int references student (idStudent) not null
 );
 
 create table file
 (
-    idFile         serial primary key,
-    url            text                                           not null,
-    idStudentProof int references justification (idJustification) not null
+    idFile          serial primary key,
+    url             text                                           not null,
+    idJustification int references justification (idJustification) not null
 );
 
 create table absence
 (
-    idAbsence            serial primary key,
     time                 timestamp                                not null,
     duration             interval                                 not null,
     examen               boolean                                  not null,
     allowedJustification boolean                                  not null,
     idTeacher            int references teacher (idTeacher)       not null,
     idStudent            int references student (idStudent)       not null,
-    idState              int references state (idState)           not null,
-    idCourseType         int references courseType (idCourseType) not null,
-    idResource           int references resource (idResource)     not null
+    currentState         stateAbsence                             not null,
+    courseType           courseType                               not null,
+    idResource           int references resource (idResource)     not null,
+    primary key (idStudent, time)
 );
 
 create table absenceJustification
 (
-    idAbsence       int references absence (idAbsence),
-    idJustification int references justification (idJustification),
-    primary key (idAbsence, idJustification)
+    idStudent       int,
+    time           timestamp,
+    idjustification int references justification (idJustification),
+    constraint fk_absence
+        foreign key (idStudent, time) references absence (idStudent, time) on delete cascade,
+    primary key (idStudent, time, idJustification)
 );
 
---rollback drop table absence, file, absenceGroup, resource, courseType, state, teacher, student, groupe cascade;
+--rollback drop table absence, file, absenceJustification, resource, courseType, state, teacher, student, groupStudent, justification cascade;
+--rollback drop type stateAbsence, stateJustif, courseType cascade;
 
---changelog Isaac:2 label:InsertionDansStates
-insert into state(label)
-values ('Validé'),
-       ('Refusé'),
-       ('Non-justifié'),
-       ('En attente');
+--changeset Louis:2 labels:ajout-colonnes dans justification
+alter table justification add column sendDate timestamp;
+alter table justification add column processedDate timestamp;
 
---rollback delete from state where(idState) between 1 and 5;
+/* liquibase rollback
+    alter table justification drop column sendDate;
+    alter table justification drop column processedDate;
+ */
 
---changelog Isaac:3 label:InsertionDansCourseType
-insert into courseType(label)
-values ('TP'),
-       ('CM'),
-       ('TD'),
-       ('BEN')
+--changeset Louis:3 labels:drop colonne dans justification
+alter table justification drop column idStudent;
 
---rollback delete from coursesType where(idCourseType) between 1 and 4;
+--rollback alter table justification add column idStudent int references student (idStudent) not null;
 
+--changeset Louis:4 labels:ajout-colonne dans absence
+alter table absence add column dateResit timestamp;
+
+--rollback alter table absence drop column dateResit;
+
+--changeset Louis:5 labels:drop not null pour idTeacher dans absence
+alter table absence alter column idTeacher drop not null;
+
+--rollback alter table absence alter column idTeacher set not null;
+
+--changeset Louis:6 labels:modif table file
+alter table file rename column url to fileName;
+
+--rollback alter table file rename column fileName to url;
