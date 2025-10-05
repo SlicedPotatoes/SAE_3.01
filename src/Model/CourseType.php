@@ -1,8 +1,8 @@
 <?php
 
-enum CourseType {
-    case CM;
-    case TD;
-    case TP;
-    case BEN;
+enum CourseType: string {
+    case CM = "CM";
+    case TD = "TD";
+    case TP = "TP";
+    case BEN = "BEN";
 }

@@ -9,7 +9,7 @@ require_once "Resource.php";
 class Absence {
     private Student|null $student;
     private DateTime $time;
-    private DateInterval $duration; // A voir comment gérer ca
+    private string $duration; // A voir comment gérer ca
     private bool $examen;
     private bool $allowedJustification;
     private Teacher|null $teacher;
@@ -36,7 +36,7 @@ class Absence {
 
     public function getStudent(): Student { return $this->student; }
     public function getTime(): DateTime { return $this->time; }
-    public function getDuration(): DateInterval { return $this->duration; }
+    public function getDuration(): string { return $this->duration; }
     public function getExamen(): bool { return $this->examen; }
     public function getAllowedJustification(): bool { return $this->allowedJustification; }
     public function getTeacher(): Teacher { return $this->teacher; }
@@ -125,7 +125,7 @@ class Absence {
 
         if ($studentId !== null)
         {
-            $where[] = "studentId = :studentId";
+            $where[] = "idstudent = :studentId";
             $parameters["studentId"] = $studentId;
         }
 
@@ -147,22 +147,22 @@ class Absence {
             $parameters["state"] = $state;
         }
 
-        if ($examen !== null)
+        if ($examen)
         {
-            $where[] = "examen = :examen";
-            $parameters["examen"] = $examen;
+            $where[] = "examen = true";
         }
 
-        if ($allowedJustification !== null)
+        if ($allowedJustification)
         {
-            $where[] = "allowedJustification = :allowedJustification";
-            $parameters["allowedJustification"] = $allowedJustification;
+            $where[] = "allowedJustification = true";
         }
 
         if (!empty($where))
         {
             $query .= " where " . implode(" and ", $where);
         }
+
+        //echo $query;
 
         $sql = $connection->prepare($query);
 
@@ -177,9 +177,11 @@ class Absence {
         $absences = [];
         foreach ($rows as $r)
         {
-            $absences[] = new Absence($r['id'], $r['time'], $r['duration'], $r['examen'],
-                $r['state'], $r['courseType'], $r['ressource'], $r['teacher'], $r['student'],
-                $r['allowedJustification']);
+            //echo '<br>';
+            //var_dump($r);
+            $absences[] = new Absence(null, DateTime::createFromFormat("Y-m-d H:i:s", $r['time']), $r['duration'], $r['examen'],
+                $r['allowedjustification'], null, StateAbs::from($r['currentstate']), CourseType::from($r['coursetype']), null,
+                $r['dateresit']);
         }
 
         return $absences;

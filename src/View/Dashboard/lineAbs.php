@@ -9,7 +9,7 @@
         >
             <div class="d-flex flex-column">
                 <div>Date: <?= $abs->getTime()->format('Y-m-d H:i') ?></div>
-                <div>Durée: <?= $abs->getDuration()->format("%hH%I") ?></div>
+                <div>Durée: <?= $abs->getDuration() ?></div>
             </div>
             <div class="d-flex align-items-center gap-3 flex-grow-1">
                 <span class='badge rounded-pill text-bg-<?= $abs->getCurrentState()->colorBadge() ?>'><?= $abs->getCurrentState()->label() ?></span>
