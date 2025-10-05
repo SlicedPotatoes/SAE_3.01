@@ -108,65 +108,68 @@ class Absence {
         ];
     }
 
-    static public function getAbsencesStudentFiltred ($studentId=null, $startDate=null, $endDate=null, $examen=null, $allowedJustification=null, $stateId=null)
+    static public function getAbsencesStudentFiltered (
+        int $studentId = null, string $startDate = null,
+        string $endDate   = null, bool $examen = null,
+        bool $allowedJustification = null, string $state = null)
     {
         global $connection;
-        $parameters = array();
+
         $query = "select * from absence";
 
-        $hasStudentId = (isset($studentId));
-        $hasStartDate = (isset($startDate));
-        $hasEndDate = (isset($endDate));
-        $hasStateId = (isset($stateId));
+        $parameters = array();
+        $where = array();
 
-        if ($hasStudentId)
+        if ($studentId !== null)
         {
+            $where[] = "studentId = :studentId";
             $parameters["studentId"] = $studentId;
-            $query .= " where idStudent = :studentId";
         }
 
-        if ($hasStartDate)
+        if ($startDate !== null)
         {
-            $parameters["dateDebut"] = $startDate;
-            $query .= " INTERSECT select * from absence where time >= :dateDebut";
+            $where[] = "dateResit >= :startDate";
+            $parameters["startDate"] = $startDate;
         }
 
-        if ($hasEndDate)
+        if ($endDate !== null)
         {
-            $parameters["dateFin"] = $endDate;
-            $query .= " INTERSECT select * from absence where time <= :dateFin";
+            $where[] = "dateResit <= :endDate";
+            $parameters["endDate"] = $endDate;
         }
 
-        if ($examen)
+        if ($state !== null)
         {
-            $query .= " INTERSECT select * from absence where examen = true";
+            $where[] = "state = :state";
+            $parameters["state"] = $state;
         }
 
-        if ($allowedJustification)
+        if ($examen !== null)
         {
-            $query .= " INTERSECT select * from absence where allowedJustification = true";
+            $where[] = "examen = :examen";
+            $parameters["examen"] = $examen;
         }
 
-        if ($hasStateId)
+        if ($allowedJustification !== null)
         {
-            $parameters["stateId"] = $stateId;
-            $query .= " INTERSECT select * from absence where idstate = :stateId";
+            $where[] = "allowedJustification = :allowedJustification";
+            $parameters["allowedJustification"] = $allowedJustification;
         }
 
-        echo $query;
-        var_dump($parameters);
+        if (!empty($where))
+        {
+            $query .= " where " . implode(" and ", $where);
+        }
 
-        $request = $connection->prepare($query);
+        $sql = $connection->prepare($query);
 
         foreach ($parameters as $key => $value)
         {
-            $request->bindValue(':'.$key, $value);
+            $sql->bindValue(':'.$key, $value);
         }
 
-        $request->execute();
-        $rows = $request->fetchAll(PDO::FETCH_ASSOC);
-
-        var_dump($rows);
+        $sql->execute();
+        $rows = $sql->fetchAll(PDO::FETCH_ASSOC);
 
         $absences = [];
         foreach ($rows as $r)

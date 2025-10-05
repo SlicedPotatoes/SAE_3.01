@@ -146,7 +146,7 @@ class Justification {
         $row->execute();
         $idJustification = $row->fetchColumn();
 
-        $absences = Absence::getAbsencesStudentFiltred($idStudent, $startDate, $endDate, null, true, null);
+        $absences = Absence::getAbsencesStudentFiltered($idStudent, $startDate, $endDate, null, true, null);
 
         foreach ($absences as $absence)
         {
