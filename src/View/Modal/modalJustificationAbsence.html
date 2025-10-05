@@ -31,8 +31,7 @@
 
 
                     <div class="col-12 col-md-5">
-
-                        <div class="justification-files">
+                        <form id="uploadForm" action="upload.php" method="post" enctype="multipart/form-data">
                             <div class="justification-files-choice mb-2 pe-3">
                                 <label class="form-label h5 mb-2">Justificatif <span class="text-muted fs-6">(pdf, png, jpg)</span></label>
                                 <input type="file" class="form-control" multiple id="fileInput" accept=".pdf, .png, .jpg, .jpeg">
@@ -40,24 +39,19 @@
                             </div>
 
                             <div class="overflow-auto" style="max-height: 300px;">
-
                                 <div class="d-flex flex-column flex-md-row mb-1">
-                                    <label class="me-auto text-truncate" style="max-width: 300px;">Shark_biteeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee.jpg</label>
-                                    <div class="mo-auto me-3">
-                                        <button class="btn btn-sm btn-outline-primary"><i class="bi bi-download"></i></button>
-                                        <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
-                                    </div>
+
                                 </div>
                             </div>
-                        </div>
+
+                            <div class="modal-footer d-flex">
+                                <label class="text-muted me-auto">Vos déclarations doivent être exactes : toute fausse information peut entraîner des conséquences. </label>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                                <button type="submit" class="btn btn-uphf">Envoyer</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
-            </div>
-
-            <div class="modal-footer d-flex">
-                <label class="text-muted me-auto">Vos déclarations doivent être exactes : toute fausse information peut entraîner des conséquences. </label>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-                <button type="button" class="btn btn-uphf" data-bs-dismiss="modal">Envoyer</button>
             </div>
 
         </div>
@@ -66,40 +60,111 @@
 </div>
 
 <script>
+    // --- Début : Ajout de la vérification des types de fichiers autorisés ---
+    // Ce script permet de n'ajouter que les fichiers PDF, PNG, JPG ou JPEG à la liste.
+    // Si un autre type de fichier est sélectionné, une alerte s'affiche et le fichier n'est pas ajouté.
+    // Les types MIME autorisés sont listés dans allowedTypes.
+    // L'input est vidé à chaque changement pour permettre de re-sélectionner le même fichier si besoin.
+    // La fonction updateFileList() met à jour l'affichage de la liste des fichiers sélectionnés.
     let files = [];
 
+    // Lorsqu'un utilisateur sélectionne des fichiers dans l'input type="file"
     document.getElementById('fileInput').addEventListener('change', function(e) {
-        // Ajoute les nouveaux fichiers à la liste
+        // Liste des types MIME autorisés
+        const allowedTypes = [
+            'application/pdf',
+            'image/png',
+            'image/jpeg'
+        ];
+        // On parcourt tous les fichiers sélectionnés
         for (const file of e.target.files) {
-            files.push(file);
+            // Si le type du fichier est autorisé, on l'ajoute au tableau files
+            if (allowedTypes.includes(file.type)) {
+                files.push(file);
+            } else {
+                // Sinon, on affiche une alerte et on ignore le fichier
+                alert('Fichier non autorisé : ' + file.name + '\nSeuls les PDF, PNG, JPG et JPEG sont acceptés.');
+            }
         }
-        e.target.value = ""; // Vide l'input
+        // On vide l'input pour permettre de re-sélectionner le même fichier si besoin
+        e.target.value = "";
+        // On met à jour l'affichage de la liste des fichiers
         updateFileList();
     });
 
+    // Fonction pour afficher la liste des fichiers sélectionnés
     function updateFileList() {
+        // On récupère l'élément HTML qui contiendra la liste
         const list = document.getElementById('fileList');
+        // On vide la liste avant de la reconstruire
         list.innerHTML = "";
+        // Pour chaque fichier dans le tableau files
         files.forEach((file, idx) => {
+            // On crée un élément <li> pour afficher le fichier
             const li = document.createElement('li');
             li.className = "list-group-item d-flex justify-content-between align-items-center";
-            li.textContent = file.name;
-            const btn = document.createElement('button');
-            btn.className = "btn btn-sm btn-outline-danger bi bi-trash";
-            btn.onclick = () => {
+            // On crée un span pour afficher le nom du fichier
+            const nameSpan = document.createElement('span');
+            nameSpan.textContent = file.name;
+            li.appendChild(nameSpan);
+            // On crée un groupe de boutons pour chaque fichier
+            const btnGroup = document.createElement('div');
+            btnGroup.className = "btn-group btn-group-sm";
+            // Bouton Télécharger : permet de télécharger le fichier ajouté
+            const downloadBtn = document.createElement('a');
+            downloadBtn.className = "btn btn-outline-primary bi bi-download me-1";
+            downloadBtn.title = "Télécharger";
+            // On crée un lien temporaire pour le téléchargement
+            downloadBtn.href = URL.createObjectURL(file);
+            downloadBtn.download = file.name;
+            btnGroup.appendChild(downloadBtn);
+            // Bouton Supprimer : retire le fichier de la liste
+            const deleteBtn = document.createElement('button');
+            deleteBtn.className = "btn btn-outline-danger bi bi-trash";
+            deleteBtn.title = "Supprimer";
+            // Lorsqu'on clique sur supprimer, on enlève le fichier du tableau et on met à jour la liste
+            deleteBtn.onclick = () => {
                 files.splice(idx, 1);
                 updateFileList();
             };
-            li.appendChild(btn);
+            btnGroup.appendChild(deleteBtn);
+            // On ajoute le groupe de boutons à la ligne
+            li.appendChild(btnGroup);
+            // On ajoute la ligne à la liste
             list.appendChild(li);
         });
     }
 
-    // À l'envoi, on peut utiliser FormData pour envoyer les fichiers
+    // ======================
+    // Soumission du formulaire et envoi des fichiers au serveur PHP
+    // ======================
+    // On écoute la soumission du formulaire
     document.getElementById('uploadForm').addEventListener('submit', function(e) {
+        // On empêche le comportement par défaut (rechargement de la page)
         e.preventDefault();
+        // On crée un objet FormData pour envoyer les fichiers
         const formData = new FormData();
+        // On ajoute chaque fichier sélectionné dans le FormData
         files.forEach(file => formData.append('files[]', file));
-        // Envoyer formData via fetch ou XMLHttpRequest
+        // On envoie les fichiers au script PHP upload.php via fetch
+        fetch('upload.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.text())
+        .then(data => {
+            // Affiche un message de succès
+            alert('Fichiers envoyés !');
+            // Vide la liste des fichiers et met à jour l'affichage
+            files = [];
+            updateFileList();
+            // Ferme la modal Bootstrap après l'envoi
+            var modal = bootstrap.Modal.getInstance(document.getElementById('justifyModal'));
+            if (modal) modal.hide();
+        })
+        .catch(error => {
+            // Affiche un message d'erreur en cas de problème
+            alert('Erreur lors de l\'envoi des fichiers.');
+        });
     });
 </script>
