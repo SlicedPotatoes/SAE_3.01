@@ -6,7 +6,7 @@ enum StateJustif: string {
     public function label(): string {
         return match($this) {
             self::Processed => 'Traité',
-            self::NotProcessed => 'En cour',
+            self::NotProcessed => 'En cours',
         };
     }
 

@@ -109,9 +109,12 @@ class Absence {
     }
 
     static public function getAbsencesStudentFiltered (
-        int $studentId = null, string $startDate = null,
-        string $endDate   = null, bool $examen = null,
-        bool $allowedJustification = null, string $state = null)
+        int | null $studentId,
+        string | null $startDate,
+        string | null $endDate,
+        bool $examen,
+        bool $allowedJustification,
+        string | null $state): array
     {
         global $connection;
 
