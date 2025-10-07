@@ -8,7 +8,7 @@
         <div class="card shadow-sm border-primary text-center h-100 card-compact">
             <div class="card-body">
                 <div class="card-title small mb-1">Absences totales</div>
-                <div class="fs-4 text-primary mb-0">10</div>
+                <div class="fs-4 text-primary mb-0"><?=$_SESSION['student']->getAbsTotal()?></div>
             </div>
         </div>
     </div>
@@ -17,7 +17,7 @@
         <div class="card shadow-sm border-warning text-center h-100 card-compact">
             <div class="card-body">
                 <div class="card-title small mb-1">En attente</div>
-                <div class="fs-4 text-warning mb-0">1</div>
+                <div class="fs-4 text-warning mb-0"><?=$_SESSION['student']->getAbsPending()?></div>
             </div>
         </div>
     </div>
@@ -26,7 +26,7 @@
         <div class="card shadow-sm border-success text-center h-100 card-compact">
             <div class="card-body">
                 <div class="card-title small mb-1">Justifiées</div>
-                <div class="fs-4 text-success mb-0">3</div>
+                <div class="fs-4 text-success mb-0"><?=$_SESSION['student']->getAbsValidated()?></div>
             </div>
         </div>
     </div>
@@ -35,8 +35,8 @@
         <div class="card shadow-sm border-danger text-center h-100 card-compact">
             <div class="card-body">
                 <div class="card-title small mb-1">Refusées</div>
-                <div class="fs-4 text-danger mb-0">6</div>
-                <div class="text-muted small">Malus -0.6</div>
+                <div class="fs-4 text-danger mb-0"><?=$_SESSION['student']->getAbsRefused()?></div>
+                <div class="text-muted small">Malus -<?=$_SESSION['student']->malusPoints()?></div>
             </div>
         </div>
     </div>
