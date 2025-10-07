@@ -127,14 +127,3 @@ class Student
     }
 
 }
-
-$testStudent = new Student(-1, "Doe", "John", "", "sdfbfsgbd", null);
-echo $testStudent->getAbsTotal();
-echo "\n";
-echo $testStudent->getAbsValidated();
-echo "\n";
-echo $testStudent->getAbsPending();
-echo "\n";
-echo $testStudent->getAbsRefused();
-echo "\n";
-echo $testStudent->malusPoints();
