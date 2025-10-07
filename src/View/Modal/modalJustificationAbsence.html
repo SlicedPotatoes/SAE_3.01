@@ -6,16 +6,16 @@
                 <h4 class="modal-title h4 mb-1">Justification d’absence</h4>
                 <div class="d-flex flex-column flex-md-row gap-2 small">
                     <span class="me-2 fw-semibold">Début :</span>
-                    <input id="startDate" type="date" class="form-control form-control-sm d-inline-block">
+                    <input id="startDate" type="date" class="form-control form-control-sm d-inline-block" form="uploadForm">
                     <span class="ms-md-4 me-2 fw-semibold">Fin :</span>
-                    <input id="endDate" type="date" class="form-control form-control-sm d-inline-block">
+                    <input id="endDate" type="date" class="form-control form-control-sm d-inline-block" form="uploadForm">
                 </div>
             </div>
             <div class="modal-body">
                 <div class="row g-4">
                     <div class="col-12 col-md-7">
                         <label for="absenceReason" class="form-label h5 mb-2">Motif de l'absence</label>
-                        <textarea id="absenceReason" class="form-control" rows="8" placeholder="Expliquez pourquoi vous avez était absent."></textarea>
+                        <textarea id="absenceReason" class="form-control" rows="8" placeholder="Expliquez pourquoi vous avez était absent." form="uploadForm"></textarea>
                     </div>
                     <div class="col-12 col-md-5">
                         <form id="uploadForm" action="./Presentation/upload.php" method="post" enctype="multipart/form-data">
@@ -111,7 +111,8 @@
     // Soumission du formulaire et envoi des fichiers au serveur PHP
     document.getElementById('uploadForm').addEventListener('submit', function (e) {
         e.preventDefault();
-        const formData = new FormData();
+        const form = document.getElementById('uploadForm');
+        const formData = new FormData(form);
         files.forEach(file => formData.append('files[]', file));
         fetch('./Presentation/upload.php', {
             method: 'POST',
@@ -129,5 +130,6 @@
                 alert("Erreur lors de l'envoi des fichiers.");
             });
     });
+
 
 </script>

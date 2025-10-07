@@ -38,6 +38,11 @@ if (!isset($_FILES['files'])) {
     exit("Aucun fichier reçu (champ 'files' manquant).");
 }
 
+// Récupération des données du form
+$motif = $_POST['absenceReason'] ?? '';
+$date_debut = $_POST['startDate'] ?? '';
+$date_fin = $_POST['endDate'] ?? '';
+
 // Gestion de plusieurs fichiers
 $responses = [];
 $files = $_FILES['files'];
