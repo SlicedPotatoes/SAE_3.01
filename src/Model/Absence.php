@@ -51,63 +51,6 @@ class Absence {
         return $this->justifications;
     }
 
-    /*
-     * TODO: Connecter a la base de données, faire en sorte qu'elle sois paramétrique, avec systeme de filtre / trie (?)
-    */
-    public static function getAbsences(): array {
-        //$student, $time, $duration, $examen, $allowedJustification, $teacher, $currentState, $courseType, $resource, $dateResit
-        return [
-            new Absence(
-                null,
-                (new DateTime())->setDate(2025, 9, 20)->setTime(9, 30),
-                new DateInterval("PT1H30M"),
-                true,
-                false,
-                null,
-                StateAbs::Refused,
-                CourseType::CM,
-                null,
-                null
-            ),
-            new Absence(
-                null,
-                (new DateTime())->setDate(2025, 9, 20)->setTime(8, 0),
-                new DateInterval("PT1H30M"),
-                true,
-                true,
-                null,
-                StateAbs::NotJustified,
-                CourseType::CM,
-                null,
-                null
-            ),
-            new Absence(
-                null,
-                (new DateTime())->setDate(2025, 9, 25)->setTime(11, 0),
-                new DateInterval("PT1H30M"),
-                false,
-                true,
-                null,
-                StateAbs::Validated,
-                CourseType::TD,
-                null,
-                null
-            ),
-            new Absence(
-                null,
-                (new DateTime())->setDate(2025, 9, 25)->setTime(14, 0),
-                new DateInterval("PT1H30M"),
-                false,
-                true,
-                null,
-                StateAbs::Pending,
-                CourseType::TD,
-                null,
-                null
-            )
-        ];
-    }
-
     static public function getAbsencesStudentFiltered (
         int | null $studentId,
         string | null $startDate,
@@ -177,11 +120,17 @@ class Absence {
         $absences = [];
         foreach ($rows as $r)
         {
-            //echo '<br>';
-            //var_dump($r);
-            $absences[] = new Absence(null, DateTime::createFromFormat("Y-m-d H:i:s", $r['time']), $r['duration'], $r['examen'],
-                $r['allowedjustification'], null, StateAbs::from($r['currentstate']), CourseType::from($r['coursetype']), null,
-                $r['dateresit']);
+            $absences[] = new Absence(null,
+                DateTime::createFromFormat("Y-m-d H:i:s", $r['time']),
+                $r['duration'],
+                $r['examen'],
+                $r['allowedjustification'],
+                null,
+                StateAbs::from($r['currentstate']),
+                CourseType::from($r['coursetype']),
+                null,
+                (isset($r['dateresit']) ? DateTime::createFromFormat("Y-m-d H:i:s", $r['dateresit']) : null)
+            );
         }
 
         return $absences;
