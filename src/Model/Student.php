@@ -5,9 +5,9 @@ class Student
     private int $studentId;
     private string $lastName;
     private string $firstName;
-    private string $firstName2;
-    private string $email;
-    private GroupStudent $groupStudent;
+    private null | string $firstName2;
+    private null | string $email;
+    private null | GroupStudent $groupStudent;
 
     private array $absences;
     private array $justifications;

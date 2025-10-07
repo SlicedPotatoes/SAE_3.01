@@ -3,22 +3,23 @@
 require "../Model/Student.php";
 
 $names = [
-    -1 => ["Dimitri", "V."],
-    -2 => ["Isaac", "G."],
-    -3 => ["Esteban", "H."],
-    -4 => ["Yann", "D."],
-    -5 => ["Kevin", "M."],
-    -6 => ["Louis", "P."]
+    -1 => ["Dimitri", "van Steenkiste"],
+    -2 => ["Isaac", "Godisiabois"],
+    -3 => ["Esteban", "Helin"],
+    -4 => ["Yann", "Dascotte"],
+    -5 => ["Kevin", "Masmejean"],
+    -6 => ["Louis", "Picouleau"]
 ];
 
 session_start();
 
 if(isset($_POST['id'])) {
     $_SESSION['role'] = "student";
-
     $_SESSION['id'] = $_POST['id'];
     $_SESSION['fName'] = $names[$_POST['id']][0];
     $_SESSION['lName'] = $names[$_POST['id']][1];
+
+    $_SESSION['student'] = new Student($_POST['id'], $names[$_POST['id']][1], $names[$_POST['id']][0], null, null, null);
 
 }
 
