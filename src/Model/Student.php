@@ -23,11 +23,38 @@ class Student
         $this->firstName2 = $firstName2;
         $this->email = $email;
         $this->groupStudent = $groupStudent;
+
         $this->absTotal = null;
         $this->absValidated = null;
         $this->absPending = null;
+        $this->absences = [];
+        $this->justifications = [];
+    }
 
+    // Quand on passe un object dans une session, PHP fait appel a __serialize() pour le stocké
+    public function __serialize(): array {
+        return [
+            'studentId' => $this->studentId,
+            'lastName' => $this->lastName,
+            'firstName' => $this->firstName,
+            'firstName2' => $this->firstName2,
+            'email' => $this->email,
+            'groupStudent' => $this->groupStudent,
+        ];
+    }
 
+    // Quand on initialise une session, et que celle-ci contenait un object, PHP fait appel a __unserialize pour recréer l'object
+    public function __unserialize(array $data): void {
+        $this->studentId = (int)$data['studentId'];
+        $this->lastName = $data['lastName'];
+        $this->firstName = $data['firstName'];
+        $this->firstName2 = $data['firstName2'];
+        $this->email = $data['email'];
+        $this->groupStudent = $data['groupStudent'];
+
+        $this->absTotal = null;
+        $this->absValidated = null;
+        $this->absPending = null;
         $this->absences = [];
         $this->justifications = [];
     }

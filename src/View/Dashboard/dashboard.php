@@ -53,9 +53,8 @@
 
         <div class="accordion accordion-flush" id="absFlush">
             <?php
-            //$listAbs = Absence::getAbsences();
             $index = 0;
-            $listAbs = Absence::getAbsencesStudentFiltered($_SESSION['id'], null, null, false, false, null);
+            $listAbs = Absence::getAbsencesStudentFiltered($_SESSION['student']->getStudentId(), null, null, false, false, null);
             foreach($listAbs as $abs) {
                 require "lineAbs.php";
                 $index++;

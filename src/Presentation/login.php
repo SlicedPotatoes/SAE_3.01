@@ -15,9 +15,6 @@ session_start();
 
 if(isset($_POST['id'])) {
     $_SESSION['role'] = "student";
-    $_SESSION['id'] = $_POST['id'];
-    $_SESSION['fName'] = $names[$_POST['id']][0];
-    $_SESSION['lName'] = $names[$_POST['id']][1];
 
     $_SESSION['student'] = new Student($_POST['id'], $names[$_POST['id']][1], $names[$_POST['id']][0], null, null, null);
 
