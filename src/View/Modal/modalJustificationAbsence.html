@@ -6,19 +6,19 @@
                 <h4 class="modal-title h4 mb-1">Justification d’absence</h4>
                 <div class="d-flex flex-column flex-md-row gap-2 small">
                     <span class="me-2 fw-semibold">Début :</span>
-                    <input id="startDate" type="date" class="form-control form-control-sm d-inline-block">
+                    <input id="startDate" type="date" class="form-control form-control-sm d-inline-block" form="uploadForm">
                     <span class="ms-md-4 me-2 fw-semibold">Fin :</span>
-                    <input id="endDate" type="date" class="form-control form-control-sm d-inline-block">
+                    <input id="endDate" type="date" class="form-control form-control-sm d-inline-block" form="uploadForm">
                 </div>
             </div>
             <div class="modal-body">
                 <div class="row g-4">
                     <div class="col-12 col-md-7">
                         <label for="absenceReason" class="form-label h5 mb-2">Motif de l'absence</label>
-                        <textarea id="absenceReason" class="form-control" rows="8" placeholder="Expliquez pourquoi vous avez était absent."></textarea>
+                        <textarea id="absenceReason" class="form-control" rows="8" placeholder="Expliquez pourquoi vous avez était absent." form="uploadForm"></textarea>
                     </div>
                     <div class="col-12 col-md-5">
-                        <form id="uploadForm" action="upload.php" method="post" enctype="multipart/form-data">
+                        <form id="uploadForm" action="./Presentation/upload.php" method="post" enctype="multipart/form-data">
                             <div class="justification-files-choice mb-2 pe-3">
                                 <label class="form-label h5 mb-2">Justificatif <span class="text-muted fs-6">(pdf, png, jpg)</span></label>
                                 <input type="file" class="form-control" multiple id="fileInput" accept=".pdf, .png, .jpg, .jpeg">
@@ -31,8 +31,9 @@
             <div class="modal-footer d-flex">
                 <span class="text-muted me-auto">Vos déclarations doivent être exactes : toute fausse information peut entraîner des conséquences. </span>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-                <button type="submit" class="btn btn-uphf">Envoyer</button>
+                <button type="submit" form="uploadForm" class="btn btn-uphf me-2">Envoyer</button>
             </div>
+            >
         </div>
     </div>
 </div>
@@ -110,29 +111,25 @@
     // Soumission du formulaire et envoi des fichiers au serveur PHP
     document.getElementById('uploadForm').addEventListener('submit', function (e) {
         e.preventDefault();
-        // On crée un objet FormData pour envoyer les fichiers
-        const formData = new FormData();
-        // On ajoute chaque fichier sélectionné dans le FormData
+        const form = document.getElementById('uploadForm');
+        const formData = new FormData(form);
         files.forEach(file => formData.append('files[]', file));
-        // On envoie les fichiers au script PHP upload.php via fetch
-        fetch('upload.php', {
+        fetch('./Presentation/upload.php', {
             method: 'POST',
             body: formData
         })
             .then(response => response.text())
             .then(data => {
-                // Affiche un message de succès
                 alert('Fichiers envoyés !');
-                // Vide la liste des fichiers et met à jour l'affichage
                 files = [];
                 updateFileList();
-                // Ferme la modal Bootstrap après l'envoi
                 var modal = bootstrap.Modal.getInstance(document.getElementById('justifyModal'));
                 if (modal) modal.hide();
             })
             .catch(error => {
-                // Affiche un message d'erreur en cas de problème
-                alert('Erreur lors de l\'envoi des fichiers.');
+                alert("Erreur lors de l'envoi des fichiers.");
             });
     });
+
+
 </script>

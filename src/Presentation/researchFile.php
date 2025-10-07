@@ -1,6 +1,6 @@
 <?php
-// file.php: sert les fichiers uploadés de manière contrôlée
-// Usage: file.php?name=<filename>
+// researchFile.php: sert les fichiers uploadés de manière contrôlée
+// Usage: researchFile.php?name=<filename>
 
 ini_set('display_errors', 0);
 error_reporting(0);

@@ -164,4 +164,43 @@ class Justification {
 
         */
     }
+
+    static public function insertJustification($idStudent, $cause, $startDate, $endDate, $files)
+    {
+        //Récupération de la connexion
+        global $connection;
+        //Récupération des absences comprise entre startDate et endDate
+        $absences = Absence::getAbsencesStudentFiltered($idStudent, $startDate, $endDate, false, true, null);
+
+        //Insertion des données dans 'justification' et récupération de l'ID créé
+        $query = "INSERT INTO justification(idStudent,cause,startDate,endDate) VALUES (:idStudent, :cause, :startDate, :endDate) RETURNING idJustification;";
+        $row = $connection->prepare($query);
+        $row->bindParam('idStudent', $idStudent);
+        $row->bindParam('cause', $cause);
+        $row->bindParam('startDate', $startDate);
+        $row->bindParam('endDate', $endDate);
+        $row->execute();
+        $idJustification = $row->fetchColumn();
+
+        //Liaison des absences avec justifications
+        foreach ($absences as $absence)
+        {
+            $query = "INSERT INTO absenceJustification VALUES(:idStudent,:time,:idAbsence))";
+            $row = $connection->prepare($query);
+            $row->bindParam('idStudent', $idStudent);
+            $row->bindParam('time', $absence->getTime());
+            $row->bindParam('idAbsence', $absence->getIdAbsence());
+            $row->execute();
+        }
+
+        //Insertion des fichiers et liaison à un idJustification
+        foreach ($files as $file)
+        {
+            $query = "INSERT INTO file(filename,idJustification) VALUES(:filename, :justification)";
+            $row = $connection->prepare($query);
+            $row->bindParam('filename', $file);
+            $row->bindParam('justification', $idJustification);
+            $row->execute();
+        }
+    }
 }

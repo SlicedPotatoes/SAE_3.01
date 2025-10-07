@@ -98,7 +98,7 @@ create table absenceJustification
 --rollback drop type stateAbsence, stateJustif, courseType cascade;
 
 --changeset Louis:2 labels:ajout-colonnes dans justification
-alter table justification add column sendDate timestamp;
+alter table justification add column sendDate timestamp not null;
 alter table justification add column processedDate timestamp;
 
 /* liquibase rollback
