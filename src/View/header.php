@@ -1,5 +1,5 @@
 <!-- Message de bienvenu -->
-<h1 class="h3">Bonjour <span class="text-uphf fw-bold"><?= $_SESSION['fName'].' '.$_SESSION['lName'] ?></span> !</h1>
+<h1 class="h3">Bonjour <span class="text-uphf fw-bold"><?=$_SESSION['student']->getFirstName(), " ", $_SESSION['student']->getLastName()?></span> !</h1>
 <div class="header-line-brand-color"></div>
 
 <!-- Étudiant : Card avec information sur son assiduité -->

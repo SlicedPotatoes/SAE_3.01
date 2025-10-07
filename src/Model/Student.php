@@ -6,9 +6,9 @@ class Student
     private int $studentId;
     private string $lastName;
     private string $firstName;
-    private string $firstName2;
-    private string $email;
-    private GroupStudent | NULL $groupStudent;
+    private null | string $firstName2;
+    private null | string $email;
+    private null | GroupStudent $groupStudent;
 
     private NULL | int $absTotal;
     private NULL | int $absValidated;
