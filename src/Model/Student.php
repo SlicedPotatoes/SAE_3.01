@@ -1,5 +1,6 @@
 <?php
 require_once "GroupStudent.php";
+require_once "connection.php";
 class Student
 {
     private int $studentId;
@@ -7,8 +8,11 @@ class Student
     private string $firstName;
     private string $firstName2;
     private string $email;
-    private GroupStudent $groupStudent;
+    private GroupStudent | NULL $groupStudent;
 
+    private NULL | int $absTotal;
+    private NULL | int $absValidated;
+    private NULL | int $absPending;
     private array $absences;
     private array $justifications;
     public function __construct($studentId, $lastName, $firstName, $firstName2, $email, $groupStudent)
@@ -19,6 +23,10 @@ class Student
         $this->firstName2 = $firstName2;
         $this->email = $email;
         $this->groupStudent = $groupStudent;
+        $this->absTotal = null;
+        $this->absValidated = null;
+        $this->absPending = null;
+
 
         $this->absences = [];
         $this->justifications = [];
@@ -42,4 +50,91 @@ class Student
         }
         return $this->justifications;
     }
+
+    public function getAbsTotal(): int
+    {
+        if ($this->absTotal !== null) {
+            return $this->absTotal;
+        }
+
+        global $connection;
+        $request = $connection->prepare("SELECT COUNT(*) FROM absence WHERE idStudent = ?");
+        $request->bindParam(1, $this->studentId);
+        $request->execute();
+        $result = $request->fetch();
+        $this->absTotal = $result[0];
+        return $result[0];
+    }
+
+    public function getAbsValidated() : int
+    {
+        if ($this->absValidated !== null) {
+            return $this->absValidated;
+        }
+
+        global $connection;
+        $request = $connection->prepare("SELECT COUNT(*) FROM absence WHERE idStudent = ? AND currentState = 'Validated'");
+        $request->bindParam(1, $this->studentId);
+        $request->execute();
+        $result = $request->fetch();
+        $this->absValidated = $result[0];
+        return $result[0];
+    }
+
+    public function getAbsPending(): int
+    {
+        if ($this->absPending !== null) {
+            return $this->absPending;
+        }
+
+        global $connection;
+        $request = $connection->prepare("SELECT COUNT(*) FROM absence WHERE idStudent = ? AND currentState = 'Pending'");
+        $request->bindParam(1, $this->studentId);
+        $request->execute();
+        $result = $request->fetch();
+        $this->absPending = $result[0];
+        return $result[0];
+
+    }
+
+    public function getAbsRefused(): int
+    {
+        if ($this->absTotal == null) {
+            $this->getAbsTotal();
+        }
+
+        if ($this->absValidated == null) {
+            $this->getAbsValidated();
+        }
+
+        if ($this->absPending == null) {
+            $this->getAbsPending();
+        }
+
+        return $this->absTotal - $this->absValidated - $this->absPending;
+
+    }
+
+    public function malusPoints(): float
+    {
+        $absRefused = $this->getAbsRefused();
+
+        if ($absRefused >= 5) {
+            return $absRefused*0.1;
+        }
+        return 0;
+
+    }
+
 }
+
+$testStudent = new Student(-1, "Doe", "John", "", "sdfbfsgbd", null);
+echo $testStudent->getAbsTotal();
+echo "\n";
+echo $testStudent->getAbsValidated();
+echo "\n";
+echo $testStudent->getAbsPending();
+echo "\n";
+echo $testStudent->getAbsRefused();
+echo "\n";
+echo $testStudent->malusPoints();
