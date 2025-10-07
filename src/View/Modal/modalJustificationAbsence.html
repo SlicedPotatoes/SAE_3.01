@@ -18,7 +18,7 @@
                         <textarea id="absenceReason" class="form-control" rows="8" placeholder="Expliquez pourquoi vous avez était absent."></textarea>
                     </div>
                     <div class="col-12 col-md-5">
-                        <form id="uploadForm" action="upload.php" method="post" enctype="multipart/form-data">
+                        <form id="uploadForm" action="./Presentation/upload.php" method="post" enctype="multipart/form-data">
                             <div class="justification-files-choice mb-2 pe-3">
                                 <label class="form-label h5 mb-2">Justificatif <span class="text-muted fs-6">(pdf, png, jpg)</span></label>
                                 <input type="file" class="form-control" multiple id="fileInput" accept=".pdf, .png, .jpg, .jpeg">
@@ -31,8 +31,9 @@
             <div class="modal-footer d-flex">
                 <span class="text-muted me-auto">Vos déclarations doivent être exactes : toute fausse information peut entraîner des conséquences. </span>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-                <button type="submit" class="btn btn-uphf">Envoyer</button>
+                <button type="submit" form="uploadForm" class="btn btn-uphf me-2">Envoyer</button>
             </div>
+            >
         </div>
     </div>
 </div>
@@ -110,29 +111,23 @@
     // Soumission du formulaire et envoi des fichiers au serveur PHP
     document.getElementById('uploadForm').addEventListener('submit', function (e) {
         e.preventDefault();
-        // On crée un objet FormData pour envoyer les fichiers
         const formData = new FormData();
-        // On ajoute chaque fichier sélectionné dans le FormData
         files.forEach(file => formData.append('files[]', file));
-        // On envoie les fichiers au script PHP upload.php via fetch
-        fetch('upload.php', {
+        fetch('./Presentation/upload.php', {
             method: 'POST',
             body: formData
         })
             .then(response => response.text())
             .then(data => {
-                // Affiche un message de succès
                 alert('Fichiers envoyés !');
-                // Vide la liste des fichiers et met à jour l'affichage
                 files = [];
                 updateFileList();
-                // Ferme la modal Bootstrap après l'envoi
                 var modal = bootstrap.Modal.getInstance(document.getElementById('justifyModal'));
                 if (modal) modal.hide();
             })
             .catch(error => {
-                // Affiche un message d'erreur en cas de problème
-                alert('Erreur lors de l\'envoi des fichiers.');
+                alert("Erreur lors de l'envoi des fichiers.");
             });
     });
+
 </script>
