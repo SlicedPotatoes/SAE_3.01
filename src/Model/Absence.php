@@ -80,7 +80,7 @@ class Absence {
 
         if ($endDate !== null)
         {
-            $where[] = "time <= :endDate";
+            $where[] = "time <= cast(:endDate as date) + interval '1 day'";
             $parameters["endDate"] = $endDate;
         }
 

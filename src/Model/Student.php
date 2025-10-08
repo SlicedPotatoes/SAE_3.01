@@ -144,13 +144,43 @@ class Student
 
     public function malusPoints(): float
     {
-        $absRefused = $this->getAbsRefused();
+        global $connection;
 
-        if ($absRefused >= 5) {
-            return $absRefused*0.1;
-        }
-        return 0;
+        $sql = "
+        with view_morning_absences as 
+        (
+            select a.idStudent, cast(time as date) as day
+            from absence a
+            where cast(a.time as time) < time '12:30' 
+                and currentState in ('Refused','NotJustified')
+            group by a.idStudent, day
+        ),
+        view_afternoon_absences as 
+        (
+            select a.idStudent, cast(time as date) as day
+            from absence a
+            where cast(a.time as time) >= time '12:30' 
+                and currentState in ('Refused','NotJustified')
+            group by idStudent, day
+        ),
+        view_halfdays_absence as 
+        (
+        select idstudent, day from view_morning_absences
+        union all 
+        select idstudent, day from view_afternoon_absences
+        )
+        
+        select count(*)
+        from view_halfdays_absence
+        where idstudent = :idstudent
+        group by idstudent;
+        ";
 
+        $query = $connection->prepare($sql);
+        $query->bindValue(':idstudent', $this->studentId, PDO::PARAM_INT);
+        $query->execute();
+
+        $halfdays = (int)$query->fetchColumn();
+        return ($halfdays > 5) ? $halfdays * 0.1 : 0.0;
     }
-
 }
