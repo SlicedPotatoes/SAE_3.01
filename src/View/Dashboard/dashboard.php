@@ -18,15 +18,16 @@
             'DateStart' => isset($_GET['absDateStart']) && $_GET['absDateStart'] != '' ? $_GET['absDateStart'] : null,
             'DateEnd' => isset($_GET['absDateEnd']) && $_GET['absDateEnd'] != '' ? $_GET['absDateEnd'] : null,
             'State' => isset($_GET['absState']) && $_GET['absState'] != '' ? $_GET['absState'] : null,
-            'Exam' => isset($_GET['absExam']) && $_GET['absExam'] == 'on'
+            'Exam' => isset($_GET['absExam']) && $_GET['absExam'] == 'on',
+            'Locked' => isset($_GET['absLocked']) && $_GET['absLocked'] == 'on'
         ]
     ];
 
-    /*var_dump($_GET);
-
+    /*
+    var_dump($_GET);
     echo "<br><br>";
-
-    var_dump($filter);*/
+    var_dump($filter);
+    */
 ?>
 
 <!-- Étudiant : Button ouvrir modal "justifier absence" -->
@@ -79,7 +80,7 @@
         <div class="accordion accordion-flush" id="absFlush">
             <?php
             $index = 0;
-            $listAbs = Absence::getAbsencesStudentFiltered($_SESSION['student']->getStudentId(), $filter['abs']['DateStart'], $filter['abs']['DateEnd'], $filter['abs']['Exam'], false, $filter['abs']['State']);
+            $listAbs = Absence::getAbsencesStudentFiltered($_SESSION['student']->getStudentId(), $filter['abs']['DateStart'], $filter['abs']['DateEnd'], $filter['abs']['Exam'], $filter['abs']['Locked'], $filter['abs']['State']);
             foreach($listAbs as $abs) {
                 require "lineAbs.php";
                 $index++;

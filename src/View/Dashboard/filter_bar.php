@@ -70,6 +70,20 @@ global$currTabValue, $states, $filter, $currPage;
             </div>
         </div>
 
+        <div class="row g-3 align-items-center" style="<?= $currTabValue != 'abs' ? 'display: none' : '' ?>">
+            <div class="col-auto">
+                <input
+                        class="form-check-input"
+                        type="checkbox" id="<?= $currTabValue ?>Locked"
+                        name="<?= $currTabValue ?>Locked"
+                        <?= $filter[$currTabValue]['Locked'] ? 'checked' : '' ?>
+                >
+            </div>
+            <div class="col-auto">
+                <label for="<?= $currTabValue ?>Locked" class="form-check-label">Vérrouillé</label>
+            </div>
+        </div>
+
         <button class="btn btn-uphf" type="submit">Appliquer les filtres</button>
     </div>
 </form>
