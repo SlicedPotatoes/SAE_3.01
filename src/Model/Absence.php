@@ -97,7 +97,7 @@ class Absence {
 
         if ($allowedJustification)
         {
-            $where[] = "allowedJustification = true";
+            $where[] = "allowedJustification = false";
         }
 
         if (!empty($where))
