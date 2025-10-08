@@ -15,13 +15,10 @@
         "dashboard" => "Tableau de bord"
     ];
 
-    $currPage = "dashboard";
-    if(isset($_GET['currPage'])) {
-        $currPage = $_GET['currPage'];
-    }
+    $currPage = isset($_GET['currPage']) ? $_GET['currPage'] : "dashboard";
 
     session_start();
-    var_dump($_SESSION);
+    //var_dump($_SESSION);
 
     $role = null;
 

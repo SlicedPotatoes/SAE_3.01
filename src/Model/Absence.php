@@ -74,19 +74,19 @@ class Absence {
 
         if ($startDate !== null)
         {
-            $where[] = "dateResit >= :startDate";
+            $where[] = "time >= :startDate";
             $parameters["startDate"] = $startDate;
         }
 
         if ($endDate !== null)
         {
-            $where[] = "dateResit <= :endDate";
+            $where[] = "time <= :endDate";
             $parameters["endDate"] = $endDate;
         }
 
         if ($state !== null)
         {
-            $where[] = "state = :state";
+            $where[] = "currentState = :state";
             $parameters["state"] = $state;
         }
 
