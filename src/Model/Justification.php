@@ -34,13 +34,35 @@ class Justification {
     public function getProcessedDate(): DateTime { return $this->processedDate; }
     public function getFiles(): array {
         if(count($this->files) == 0) {
-            // TODO: Requête SQL
+            global $connexion;
+            $query = $connexion->prepare("SELECT * FROM files WHERE idJustification = :idJustification");
+            $query->bindParam(":idJustification", $this->idJustification);
+            $query->execute();
+            $files = $query->fetchAll();
+            foreach($files as $file) {
+                $this->files[] = new File($file["idFile"], $file["url"], $this);
+            }
         }
         return $this->files;
     }
     public function getAbsences(): array {
         if(count($this->absences) == 0) {
-            // TODO: Requête SQL
+            global $connexion;
+            $query = $connexion->prepare("SELECT * FROM absence join absenceJustification using (idStudent,time) WHERE idJustification = :idJustification");
+            $query->bindParam(":idJustification", $this->idJustification);
+            $query->execute();
+            $absences = $query->fetchAll();
+            foreach($absences as $absence) {
+                $this->absences[] = new Absence(null,
+                    $absence["time"],
+                    $absence["duration"],
+                    $absence["examen"],
+                    $absence["allowedJustification"],
+                    null,StateAbs::from($absence['currentState']),
+                    CourseType::from($absence['courseType']),
+                    null,
+                    (isset($absence['dateresit']) ? DateTime::createFromFormat("Y-m-d H:i:s", $absence['dateresit']) : null));
+            }
         }
         return $this->absences;
     }
@@ -202,5 +224,53 @@ class Justification {
             $row->bindParam('justification', $idJustification);
             $row->execute();
         }
+    }
+
+    public static function selectJustification($idStudent,$startDate,$endDate,$currentState)
+    {
+        //Récupération de la connexion et déclaration de variable
+        global $connection;
+        $justifications = array();
+        $parameters = array();
+
+        //Requête avec système de filtre
+        $query = "SELECT * FROM justification";
+        if($idStudent != null)
+        {
+            $parameters['idStudent'] = $idStudent;
+            $query .= " WHERE idStudent = :idStudent";
+        }
+        if($startDate != null)
+        {
+            $query .= " and startdate >= :startDate";
+            $parameters["startDate"] = $startDate;
+        }
+        if($endDate != null)
+        {
+            $query .= " and startdate <= :endDate";
+            $parameters["endDate"] = $endDate;
+        }
+        if($currentState != null){
+            $query .= " and idstate = :currentState";
+            $parameters["currentState"] = $currentState;
+        }
+        if (!empty($where))
+        {
+            $query .= " where " . implode(" and ", $where);
+        }
+        $row = $connection->prepare($query);
+        foreach ($parameters as $key => $value)
+        {
+            $row->bindValue(':'.$key, $value);
+        }
+        $row->execute();
+        $result = $row->fetchAll();
+
+        //Mise en objet du résultat et retour du résultat
+        foreach ($result as $justification)
+        {
+            $justifications[] = new Justification($justification["idJustification"], $justification["cause"], $justification["currentState"], $justification["startDate"], $justification["endDate"], $justification["sendDater"], $justification["processedDate"]);
+        }
+        return $justifications;
     }
 }
