@@ -12,7 +12,7 @@ function mailAccRecpJusti($name, $firstname, $emailEtu, $dateDebut, $dateFin)
 {
     $dateJour = date('d/m/Y');
     $mail = "Bonjour " . $firstname . " " . $name . ",<br><br>
-    Votre demande de récupération de justificatif d'absence du " . $dateDebut . " au " . $dateFin . " a bien été reçue ce " . $dateJour . ".<br>
+    Votre demande de justification d'absence du " . $dateDebut . " au " . $dateFin . " a bien été reçue le " . $dateJour . ".<br>
     Un email vous sera envoyé dès que votre demande aura été traitée.<br>
     Vous pouvez également consulter l'état de votre demande dans votre espace personnel.<br><br>
     Cordialement,<br>
