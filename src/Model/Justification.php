@@ -170,6 +170,8 @@ class Justification {
             where examen = true";
         }
 
+        $query .= " ORDER BY sendDate DESC";
+
         $row = $connection->prepare($query);
         foreach ($parameters as $key => $value)
         {

@@ -144,13 +144,15 @@ class Absence {
 
         if ($allowedJustification)
         {
-            $where[] = "allowedJustification = false";
+            $where[] = "allowedJustification = false AND (currentState = 'Refused' OR currentState = 'NotJustified')";
         }
 
         if (!empty($where))
         {
             $query .= " where " . implode(" and ", $where);
         }
+
+        $query .= " ORDER BY time DESC";
 
         //echo $query;
 

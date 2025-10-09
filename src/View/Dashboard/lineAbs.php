@@ -17,7 +17,7 @@
                 if($abs->getExamen()) {
                     echo "<span class='badge rounded-pill text-bg-warning'>Examen</span>";
                 }
-                if(!$abs->getAllowedJustification()) {
+                if(!$abs->getAllowedJustification() && ($abs->getCurrentState() == StateAbs::Refused || $abs->getCurrentState() == StateAbs::NotJustified)) {
                     echo '<i style="font-size: 30px" class="bi bi-file-lock2" data-bs-toggle="tooltip" data-bs-title="Le responsable pédagogique n\'autorise pas la justification de cette absence"></i>';
                 }
                 ?>
