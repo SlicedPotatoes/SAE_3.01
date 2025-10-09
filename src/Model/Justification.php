@@ -94,100 +94,6 @@ class   Justification {
         );
     }
 
-    static public function getJustificationsStudentFiltred($filters = [],$studentId=null, $startDate=null, $endDate=null, $examen=null, $allowedJustification=null, $stateId=null)
-    {
-        global $connection;
-        $parameters = array();
-
-
-        $query = "SELECT justification.*, absence.*, file.url
-              FROM justification
-              LEFT JOIN absenceJustification ON justification.idJustification = absenceJustification.idJustification
-              LEFT JOIN absence ON absenceJustification.idAbsence = absence.idAbsence
-              LEFT JOIN file ON file.idStudentProof = justification.idJustification
-              ";
-
-
-        $hasStudentId = (isset($studentId));
-        $hasStartDate = (isset($startDate));
-        $hasEndDate = (isset($endDate));
-        $hasStateId = (isset($stateId));
-        $hasExamen = (isset($examen));
-
-
-        if ($hasStudentId) {
-            $parameters['idStudent'] = $filters['idStudent'];
-            $query .= " where idStudent = :studentId";
-        }
-
-        if ($hasStartDate) {
-            $parameters['startDate'] = $filters['startDate'];
-            $query .= " INTERSECT select * from absence where time >= :dateDebut";
-        }
-
-        if ($hasEndDate) {
-            $parameters['endDate'] = $filters['endDate'];
-            $query .= " INTERSECT select * from absence where time <= :dateFin";
-        }
-
-
-        if ($hasExamen) {
-            $parameters['examen'] = $filters['examen'];
-            $query .= " INTERSECT select * from absence where examen = true";
-        }
-
-        if ($allowedJustification) {
-            $query .= " INTERSECT select * from absence where allowedJustification = true";
-        }
-
-        if ($hasStateId) {
-            $parameters['stateId'] = $filters['stateId'];
-            $query .= " INTERSECT select * from absence where idstate = :stateId";
-        }
-        $request = $connection->prepare($query);
-
-        foreach ($parameters as $key => $value) {
-            $request->bindValue(':' . $key, $value);
-        }
-
-        $request->execute();
-        $result = $request->fetchAll();
-
-        var_dump($result);
-        echo $query;
-
-        echo "\n proute";
-    }
-
-    public function sendJustification($idStudent, $cause, $startDate, $endDate)
-    {
-        global $connection;
-        $query = "INSERT INTO justification(idStudent, cause, start, end, processed) VALUES (:idStudent, :cause, :startDate, :endDate, false) RETURNING idJustification;";
-
-        $row = $connection->prepare($query);
-        $row->bindParam('idStudent', $idStudent);
-        $row->execute();
-        $idJustification = $row->fetchColumn();
-
-        $absences = Absence::getAbsencesStudentFiltered($idStudent, $startDate, $endDate, null, true, null);
-
-        foreach ($absences as $absence)
-        {
-            $query = "INSERT INTO absenceJustification VALUES(:studentID" .", " .$idJustification .");";
-            $statement = $connection->prepare($query);
-
-            $connection->exec($query);
-        }
-
-        /*
-
-        TO DO : GESTION DE FICHER DE SES MORTS AVEC LE FAIT QUE ON AJOUTE DANS LA BASE
-        DE DONNEE LES LIGNES POUR CHAQUE FICHIERS
-        JE NE SAIS PAS SI C'EST MIEUX DE LE FAIRE DIRECTEMENT ICI OU DANS UNE AUTRE FONCTION
-
-        */
-    }
-
     static public function insertJustification($idStudent, $cause, $startDate, $endDate, $files)
     {
         //Récupération de la connexion
@@ -234,7 +140,7 @@ class   Justification {
         $parameters = array();
 
         //Requête avec système de filtre
-        $query = "SELECT * FROM justification join absenceJustification using (idJustification)";
+        $query = "SELECT idJustification, cause, currentState, startDate, endDate, sendDate, processedDate FROM justification join absenceJustification using (idJustification)";
         if($idStudent != null)
         {
             $parameters['idStudent'] = $idStudent;
@@ -260,7 +166,7 @@ class   Justification {
         }
         if($examen)
         {
-            $query .= " INTERSECT SELECT * 
+            $query .= " INTERSECT SELECT idJustification, cause, currentState, startDate, endDate, sendDate, processedDate
             FROM absence join absenceJustification using (idStudent,time)
             join justification using(idJustification)
             WHERE idstudent = :idStudent and examen = true";
@@ -276,7 +182,7 @@ class   Justification {
         //Mise en objet du résultat et retour du résultat
         foreach ($result as $justification)
         {
-            $justifications[] = new Justification($justification["idJustification"], $justification["cause"], $justification["currentState"], $justification["startDate"], $justification["endDate"], $justification["sendDater"], $justification["processedDate"]);
+            $justifications[] = new Justification($justification["idJustification"], $justification["cause"], $justification["currentState"], $justification["startDate"], $justification["endDate"], $justification["sendDate"], $justification["processedDate"]);
         }
         return $justifications;
     }
