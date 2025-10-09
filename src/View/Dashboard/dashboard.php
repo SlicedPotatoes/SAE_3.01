@@ -57,7 +57,14 @@
 
         <div class="accordion accordion-flush" id="justificationFlush">
             <?php
+                /*$listJustifications = Justification::getJustificationsStudentFiltered(
+                        $_SESSION['student']->getStudentId(),
+                        $filter['proof']['DateStart'],
+                        $filter['proof']['DateEnd'],
+                        $filter['proof']['State']
+                );*/
                 $listJustifications = Justification::getJustifications();
+
                 foreach($listJustifications as $justification) {
                     require "lineJustification.php";
                 }
@@ -80,7 +87,14 @@
         <div class="accordion accordion-flush" id="absFlush">
             <?php
             $index = 0;
-            $listAbs = Absence::getAbsencesStudentFiltered($_SESSION['student']->getStudentId(), $filter['abs']['DateStart'], $filter['abs']['DateEnd'], $filter['abs']['Exam'], $filter['abs']['Locked'], $filter['abs']['State']);
+            $listAbs = Absence::getAbsencesStudentFiltered(
+                    $_SESSION['student']->getStudentId(),
+                    $filter['abs']['DateStart'],
+                    $filter['abs']['DateEnd'],
+                    $filter['abs']['Exam'],
+                    $filter['abs']['Locked'],
+                    $filter['abs']['State']
+            );
             foreach($listAbs as $abs) {
                 require "lineAbs.php";
                 $index++;

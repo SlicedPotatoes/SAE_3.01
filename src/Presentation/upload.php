@@ -1,158 +1,194 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+require_once "../Presentation/globalVariable.php";
+require_once "../Model/Student.php";
+require_once "../Model/Justification.php";
+
+global $PROD, $LIMIT_FILE_SIZE_UPLOAD, $ALLOWED_MIME_TYPE, $ALLOWED_EXTENSIONS_FILE;
+
+/*var_dump($_POST);
+var_dump($_FILES);*/
+
 session_start();
 
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
-header('Content-Type: text/plain; charset=UTF-8');
+
 
 // Sélection du dossier d'upload selon l'OS (dev Windows, prod Linux)
 if (stripos(PHP_OS_FAMILY, 'Windows') !== false) {
     // Dev local: dossier "upload" dans le projet
-    $uploadDir = 'C:\upload';
-} else {
-    // Prod Linux: dossier racine
-    $uploadDir = '/var/www/upload';
+    $uploadDir = 'C:\upload\\';
 }
-
-// Normaliser: s'assurer d'un séparateur final (évite "/var/www/uploadFICHIER")
-$uploadDir = rtrim($uploadDir, "\\/") . DIRECTORY_SEPARATOR;
+else {
+    // Prod Linux: dossier racine
+    $uploadDir = '/var/www/upload/';
+}
 
 if (!is_dir($uploadDir)) {
-    // Création automatique du dossier C:\upload si il n'existe pas
+    // Création automatique du dossier d'upload (normalement utile qu'en phase de dev)
     if (!mkdir($uploadDir, 0777, true)) {
-        http_response_code(500);
-        exit("Le dossier d'upload n'existe pas et n'a pas pu être créé: $uploadDir");
+        $errorMessage = "HTTP 500 Internal Server Error";
+        if (!$PROD) { $errorMessage = $errorMessage.": Le dossier d'upload n'existe pas et n'a pas pu être créé: $uploadDir"; }
+        header('Location: ../index.php?errorMessage[]='.urlencode($errorMessage));
+        exit;
     }
 }
+// Le dossier d'upload n'est pas accéssible en écriture
 if (!is_writable($uploadDir)) {
-    http_response_code(500);
-    exit("Le dossier n'est pas accessible en écriture: $uploadDir");
+    $errorMessage = "HTTP 500 Internal Server Error";
+    if (!$PROD) { $errorMessage = $errorMessage.": Le dossier n'est pas accessible en écriture: $uploadDir"; }
+    header('Location: ../index.php?errorMessage[]='.urlencode($errorMessage));
+    exit;
 }
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    http_response_code(200);
-    exit("Uploader prêt. Envoyez un fichier via POST multipart/form-data sous le champ 'files[]'.");
+    $errorMessage = "HTTP 405 Method Not Allowed";
+    if (!$PROD) { $errorMessage = $errorMessage.": Seulement les requêtes POST sont autorisé"; }
+    header('Location: ../index.php?errorMessage[]='.urlencode($errorMessage));
+    exit;
 }
-if (!isset($_FILES['files'])) {
-    http_response_code(400);
-    exit("Aucun fichier reçu (champ 'files' manquant).");
+if (!isset($_FILES['files']) || !isset($_POST['startDate']) || !isset($_POST['endDate']) || !isset($_POST['absenceReason'])) {
+    $errorMessage = "HTTP 400 Bad Request";
+    if (!$PROD) { $errorMessage = $errorMessage.": Un des champs obligatoires n'a pas été envoyé"; }
+    header('Location: ../index.php?errorMessage[]='.urlencode($errorMessage));
+    exit;
+}
+
+if(!isset($_SESSION['role']) || $_SESSION['role'] != 'student') {
+    $errorMessage = "HTTP 400 Bad Request";
+    if (!$PROD) { $errorMessage = $errorMessage.": Un compte étudiant est nécéssaire"; }
+    header('Location: ../index.php?errorMessage[]='.urlencode($errorMessage));
+    exit;
 }
 
 // Récupération des données du form
-$motif = $_POST['absenceReason'] ?? '';
-$date_debut = $_POST['startDate'] ?? '';
-$date_fin = $_POST['endDate'] ?? '';
-
-// Gestion de plusieurs fichiers
-$responses = [];
+$absenceReason = $_POST['absenceReason'];
+$startDate = $_POST['startDate'];
+$endDate =  $_POST['endDate'];
 $files = $_FILES['files'];
-$fileCount = is_array($files['name']) ? count($files['name']) : 0;
 
-for ($i = 0; $i < $fileCount; $i++) {
-    $err = $files['error'][$i];
-    if ($err !== UPLOAD_ERR_OK) {
-        $errors = [
-            UPLOAD_ERR_INI_SIZE   => "Dépasse upload_max_filesize",
-            UPLOAD_ERR_FORM_SIZE  => "Dépasse MAX_FILE_SIZE du formulaire",
-            UPLOAD_ERR_PARTIAL    => "Upload partiel",
-            UPLOAD_ERR_NO_FILE    => "Aucun fichier fourni",
-            UPLOAD_ERR_NO_TMP_DIR => "Dossier temporaire manquant",
-            UPLOAD_ERR_CANT_WRITE => "Échec d'écriture disque",
-            UPLOAD_ERR_EXTENSION  => "Extension PHP a stoppé l'upload",
-        ];
-        $responses[] = [
-            'ok' => false,
-            'message' => "Erreur upload: " . ($errors[$err] ?? "Inconnue"),
-            'index' => $i
-        ];
-        continue;
-    }
+// Vérifier que la dateDeDebut est inférieur ou égale a la dateDeFin
+if(DateTime::createFromFormat("Y-m-d", $startDate) > DateTime::createFromFormat("Y-m-d", $endDate)) {
+    $errorMessage = "HTTP 400 Bad Request: La date de début dois être inférieur ou égal a la date de fin";
+    header('Location: ../index.php?errorMessage[]='.urlencode($errorMessage));
+    exit;
+}
 
-    // Limite de taille (5 Mo)
-    if ($files['size'][$i] > 5 * 1024 * 1024) {
-        $responses[] = [
-            'ok' => false,
-            'message' => "Fichier trop volumineux (5Mo max).",
-            'index' => $i
-        ];
-        continue;
-    }
-
-    // Validation MIME (avec repli si l'extension fileinfo est absente)
-    $allowedMimeToExt = [
-        'image/jpeg'      => 'jpg',
-        'image/png'       => 'png',
-        'application/pdf' => 'pdf',
+// Liste des erreurs
+$errors = [];
+if(!$PROD) {
+    $errors = [
+        UPLOAD_ERR_INI_SIZE   => "Dépasse upload_max_filesize",
+        UPLOAD_ERR_FORM_SIZE  => "Dépasse MAX_FILE_SIZE du formulaire",
+        UPLOAD_ERR_PARTIAL    => "Upload partiel",
+        UPLOAD_ERR_NO_FILE    => "Aucun fichier fourni",
+        UPLOAD_ERR_NO_TMP_DIR => "Dossier temporaire manquant",
+        UPLOAD_ERR_CANT_WRITE => "Échec d'écriture disque",
+        UPLOAD_ERR_EXTENSION  => "Extension PHP a stoppé l'upload",
     ];
-    $allowedExtensions = ['jpg','jpeg','png','pdf'];
+}
+else {
+    $errors = [
+        UPLOAD_ERR_INI_SIZE   => "Dépasse de la taille maximale",
+        UPLOAD_ERR_FORM_SIZE  => "Dépasse de la taille maximale",
+    ];
+}
+
+$warningMessages = [];
+$filesNameForDB = [];
+
+for($i = 0; $i < count($files['name']); $i++) {
+    $file = [
+        "name" => $files["name"][$i],
+        "full_path" => $files["full_path"][$i],
+        "type" => $files["type"][$i],
+        "tmp_name" => $files["tmp_name"][$i],
+        "error" => $files["error"][$i],
+        "size" => $files["size"][$i]
+    ];
+
+    //var_dump($file);
+
+    // Vérification des erreurs d'upload
+    $err = $file['error'];
+    if ($err !== UPLOAD_ERR_OK) {
+        if(array_key_exists($err, $errors)) {
+            $warningMessages[] = urlencode($file['name'].': '.$errors[$err]);
+        }
+        continue;
+    }
+
+    // Vérification de la taille du fichier
+    if($file['size'] > $LIMIT_FILE_SIZE_UPLOAD) {
+        $warningMessages[] = urlencode($file['name'].': Dépasse de la taille maximale');
+        continue;
+    }
+
+    // Vérification de si le fichier a été upload dans les fichiers temporaire
+    if (!is_uploaded_file($file['tmp_name'])) {
+        if(!$PROD) { $warningMessages[] = urlencode($file['name'].': Upload Error'); }
+        else { $warningMessages[] = urlencode($file['name'].': Erreur lors de la réception du fichier'); }
+        continue;
+    }
+
+    // Vérification du MIME Type du fichier
 
     $mime = null;
     if (class_exists('finfo')) {
         $finfo = new finfo(FILEINFO_MIME_TYPE);
-        $mime  = @$finfo->file($files['tmp_name'][$i]) ?: null;
+        $mime  = @$finfo->file($file['tmp_name']) ?: null;
     } elseif (function_exists('mime_content_type')) {
-        $mime = @mime_content_type($files['tmp_name'][$i]) ?: null;
+        $mime = @mime_content_type($file['tmp_name']) ?: null;
     }
 
-    // Extension fournie par le nom du fichier (repli)
-    $ext = strtolower(pathinfo($files['name'][$i], PATHINFO_EXTENSION));
-    if ($ext === 'jpeg') { $ext = 'jpg'; }
-
-    if ($mime !== null) {
-        if (!isset($allowedMimeToExt[$mime])) {
-            $responses[] = [
-                'ok' => false,
-                'message' => "Format de fichier non autorisé.",
-                'index' => $i
-            ];
-            continue;
-        }
-        $ext = $allowedMimeToExt[$mime];
-    } else {
-        if (!in_array($ext, $allowedExtensions, true)) {
-            $responses[] = [
-                'ok' => false,
-                'message' => "Format de fichier non autorisé.",
-                'index' => $i
-            ];
-            continue;
-        }
-}
-
-    // Nom de fichier sûr + unique
-    $base = pathinfo($files['name'][$i], PATHINFO_FILENAME);
-    $base = preg_replace('/[^A-Za-z0-9._-]/', '_', $base);
-    $filename = $base . '_' . date('Ymd_His') . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
-
-    $targetPath = $uploadDir . $filename;
-
-    if (!is_uploaded_file($files['tmp_name'][$i])) {
-        $responses[] = [
-            'ok' => false,
-            'message' => "Fichier non valide.",
-            'index' => $i
-        ];
+    if($mime == null || !in_array($mime, $ALLOWED_MIME_TYPE) ) {
+        if(!$PROD) { $warningMessages[] = urlencode($file['name'].': MIME Type Not Allowed '.$mime); }
+        else { $warningMessages[] = urlencode($file['name'].': Format de fichier non autorisé.'); }
         continue;
     }
 
-    if (move_uploaded_file($files['tmp_name'][$i], $targetPath)) {
-        @chmod($targetPath, 0644);
-        $responses[] = [
-            'ok' => true,
-            'message' => 'Fichier uploadé avec succès',
-            'filename' => $filename,
-            'ext' => $ext,
-            'index' => $i
-        ];
-    } else {
-        $responses[] = [
-            'ok' => false,
-            'message' => "Erreur lors de l’upload (droits/chemin).",
-            'index' => $i
-        ];
+    // Vérification de l'extension du fichier
+    $ext = strtolower(pathinfo($files['name'][$i], PATHINFO_EXTENSION));
+    if($ext == null || !in_array($ext, $ALLOWED_EXTENSIONS_FILE)) {
+        if(!$PROD) { $warningMessages[] = urlencode($file['name'].': File Extension Not Allowed '.$ext); }
+        else { $warningMessages[] = urlencode($file['name'].': Format de fichier non autorisé.'); }
+        continue;
+    }
+
+    // Nom de fichier sûr + unique
+    $base = pathinfo($file['name'], PATHINFO_FILENAME);
+    $base = preg_replace('/[^A-Za-z0-9._-]/', '_', $base);
+    $filename = $base . '_' . date('Ymd_His') . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
+
+    $targetPath = $uploadDir.$filename;
+
+    if (move_uploaded_file($file['tmp_name'], $targetPath)) {
+        chmod($targetPath, 0644);
+        $filesNameForDB[] = $filename;
+    }
+    else {
+        if(!$PROD) { $warningMessages[] = urlencode($file['name'].': Move in uploadDirectory error'); }
+        else { $warningMessages[] = urlencode($file['name'].': Erreur lors de la réception du fichier'); }
     }
 }
 
-// Réponse JSON globale
-header('Content-Type: application/json; charset=UTF-8');
-echo json_encode($responses);
+// Ajout dans la BDD
+if(!Justification::insertJustification($_SESSION['student']->getStudentId(), $absenceReason, $startDate, $endDate, $filesNameForDB)) {
+    // TODO: Supprimer les fichiers qui ont été upload
+    $errorMessage = "HTTP 400 Bad Request: Pas d'absence sur la période sélectionné";
+    header('Location: ../index.php?errorMessage[]='.urlencode($errorMessage));
+    exit;
+}
+
+// Envoie du mail
+
+$successParameter = 'successMessage[]='.urlencode("Justificatif envoyer avec succès");
+$warningParameter = "";
+
+if(count($warningMessages) != 0) {
+    $warningParameter = "&warningMessage[]=". implode("&warningMessage[]=", $warningMessages);
+}
+
+header('Location: ../index.php?'.$successParameter.$warningParameter);

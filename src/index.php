@@ -15,7 +15,7 @@
         "dashboard" => "Tableau de bord"
     ];
 
-    $currPage = isset($_GET['currPage']) ? $_GET['currPage'] : "dashboard";
+    $currPage = $_GET['currPage'] ?? "dashboard";
 
     session_start();
     //var_dump($_SESSION);
@@ -59,6 +59,28 @@
             <?php
                 if(array_key_exists($currPage, $title) && $role != null) {
                     require "./View/header.php";
+                }
+
+                if(isset($_GET['successMessage']) ) {
+                    foreach($_GET['successMessage'] as $message) {
+                        if($message != '') {
+                            require "./View/Alert/success.php";
+                        }
+                    }
+                }
+                if(isset($_GET['warningMessage'])) {
+                    foreach($_GET['warningMessage'] as $message) {
+                        if($message != '') {
+                            require "./View/Alert/warning.php";
+                        }
+                    }
+                }
+                if(isset($_GET['errorMessage'])) {
+                    foreach($_GET['errorMessage'] as $message) {
+                        if($message != '') {
+                            require "./View/Alert/error.php";
+                        }
+                    }
                 }
             ?>
 
