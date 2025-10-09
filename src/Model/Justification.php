@@ -58,7 +58,8 @@ class   Justification {
                     $absence["duration"],
                     $absence["examen"],
                     $absence["allowedJustification"],
-                    null,StateAbs::from($absence['currentState']),
+                    null,
+                    StateAbs::from($absence['currentState']),
                     CourseType::from($absence['courseType']),
                     null,
                     (isset($absence['dateresit']) ? DateTime::createFromFormat("Y-m-d H:i:s", $absence['dateresit']) : null));
@@ -225,7 +226,7 @@ class   Justification {
         }
     }
 
-    public static function selectJustification($idStudent,$startDate,$endDate,$currentState)
+    public static function selectJustification($idStudent,$startDate,$endDate,$currentState,$examen)
     {
         //Récupération de la connexion et déclaration de variable
         global $connection;
@@ -233,7 +234,7 @@ class   Justification {
         $parameters = array();
 
         //Requête avec système de filtre
-        $query = "SELECT * FROM justification";
+        $query = "SELECT * FROM justification join absenceJustification using (idJustification)";
         if($idStudent != null)
         {
             $parameters['idStudent'] = $idStudent;
@@ -256,6 +257,13 @@ class   Justification {
         if (!empty($where))
         {
             $query .= " where " . implode(" and ", $where);
+        }
+        if($examen)
+        {
+            $query .= " INTERSECT SELECT * 
+            FROM absence join absenceJustification using (idStudent,time)
+            join justification using(idJustification)
+            WHERE idstudent = :idStudent and examen = true";
         }
         $row = $connection->prepare($query);
         foreach ($parameters as $key => $value)
