@@ -130,6 +130,9 @@ class Justification {
             $row->bindParam('time', $timeAbs);
             $row->bindParam('idJustification', $idJustification);
             $row->execute();
+
+            $absence->setState(StateAbs::Pending->value);
+            $absence->setAllowedJustification(false);
         }
 
         //Insertion des fichiers et liaison à un idJustification

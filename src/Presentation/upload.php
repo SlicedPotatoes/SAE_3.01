@@ -6,6 +6,7 @@ error_reporting(E_ALL);
 require_once "../Presentation/globalVariable.php";
 require_once "../Model/Student.php";
 require_once "../Model/Justification.php";
+require_once "../Model/mail/mailAccRecpJusti.php";
 
 global $PROD, $LIMIT_FILE_SIZE_UPLOAD, $ALLOWED_MIME_TYPE, $ALLOWED_EXTENSIONS_FILE;
 
@@ -13,8 +14,6 @@ global $PROD, $LIMIT_FILE_SIZE_UPLOAD, $ALLOWED_MIME_TYPE, $ALLOWED_EXTENSIONS_F
 var_dump($_FILES);*/
 
 session_start();
-
-
 
 // Sélection du dossier d'upload selon l'OS (dev Windows, prod Linux)
 if (stripos(PHP_OS_FAMILY, 'Windows') !== false) {
@@ -182,7 +181,13 @@ if(!Justification::insertJustification($_SESSION['student']->getStudentId(), $ab
     exit;
 }
 
-// Envoie du mail
+mailAccRecpJusti(
+    $_SESSION['student']->getLastName(),
+    $_SESSION['student']->getFirstName(),
+    $_SESSION['student']->getEmail(),
+    DateTime::createFromFormat("Y-m-d", $startDate)->format("d/m/Y"),
+    DateTime::createFromFormat("Y-m-d", $endDate)->format("d/m/Y")
+);
 
 $successParameter = 'successMessage[]='.urlencode("Justificatif envoyer avec succès");
 $warningParameter = "";

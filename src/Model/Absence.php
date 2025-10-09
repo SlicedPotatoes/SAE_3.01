@@ -7,7 +7,7 @@ require_once "Student.php";
 require_once "Teacher.php";
 require_once "Resource.php";
 class Absence {
-    private Student|null $student;
+    private Student|int $student;
     private DateTime $time;
     private string $duration; // A voir comment gérer ca
     private bool $examen;
@@ -34,7 +34,22 @@ class Absence {
         $this->justifications = [];
     }
 
-    public function getStudent(): Student { return $this->student; }
+    public function getStudent(): Student {
+        if(gettype($this->student) == 'integer') {
+            // TODO Requete pour récupérer le student
+        }
+
+        return $this->student;
+    }
+
+    public function getIdStudent():int {
+        if(gettype($this->student) != 'integer') {
+            return $this->student->getStudentId();
+        }
+
+        return $this->student;
+    }
+
     public function getTime(): DateTime { return $this->time; }
     public function getDuration(): string { return $this->duration; }
     public function getExamen(): bool { return $this->examen; }
@@ -49,6 +64,38 @@ class Absence {
             // TODO: Requête SQL
         }
         return $this->justifications;
+    }
+
+    public function setAllowedJustification($value): void {
+        global $connection;
+        $query = "UPDATE Absence SET allowedJustification = :value WHERE idStudent = :idStudent AND time = :time";
+        $row = $connection->prepare($query);
+
+        $idStudent = $this->getIdStudent();
+        $dateString = $this->time->format('Y-m-d H:i:s');
+
+        $row->bindParam('value', $value, PDO::PARAM_BOOL);
+        $row->bindParam('idStudent', $idStudent);
+        $row->bindParam('time', $dateString);
+        $row->execute();
+
+        $this->allowedJustification = $value;
+    }
+
+    public function setState($state): void {
+        global $connection;
+        $query = "UPDATE Absence SET currentState = :value WHERE idStudent = :idStudent AND time = :time";
+        $row = $connection->prepare($query);
+
+        $idStudent = $this->getIdStudent();
+        $dateString = $this->time->format('Y-m-d H:i:s');
+
+        $row->bindParam('value', $state);
+        $row->bindParam('idStudent', $idStudent);
+        $row->bindParam('time', $dateString);
+        $row->execute();
+
+        $this->currentState = StateAbs::from($state);
     }
 
     static public function getAbsencesStudentFiltered (
@@ -120,7 +167,8 @@ class Absence {
         $absences = [];
         foreach ($rows as $r)
         {
-            $absences[] = new Absence(null,
+            $absences[] = new Absence(
+                $r['idstudent'],
                 DateTime::createFromFormat("Y-m-d H:i:s", $r['time']),
                 $r['duration'],
                 $r['examen'],
@@ -135,4 +183,5 @@ class Absence {
 
         return $absences;
     }
+
 }
