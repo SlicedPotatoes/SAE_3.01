@@ -124,22 +124,66 @@ class Student
 
     }
 
+    public function getAbsNotJustified(): int
+    {
+        global $connection;
+        $request = $connection->prepare("SELECT COUNT(*) FROM absence WHERE idStudent = ? AND currentState = 'NotJustified'");
+        $request->bindParam(1, $this->studentId);
+        $request->execute();
+        $result = $request->fetch();
+        $this->absPending = $result[0];
+        return $result[0];
+    }
+
     public function getAbsRefused(): int
     {
-        if ($this->absTotal == null) {
-            $this->getAbsTotal();
-        }
+        global $connection;
+        $request = $connection->prepare("SELECT COUNT(*) FROM absence WHERE idStudent = ? AND currentState = 'Refused'");
+        $request->bindParam(1, $this->studentId);
+        $request->execute();
+        $result = $request->fetch();
+        $this->absPending = $result[0];
+        return $result[0];
 
-        if ($this->absValidated == null) {
-            $this->getAbsValidated();
-        }
+    }
 
-        if ($this->absPending == null) {
-            $this->getAbsPending();
-        }
+    public function getHalfdaysAbsences()
+    {
+        global $connection;
 
-        return $this->absTotal - $this->absValidated - $this->absPending;
+        $sql = "
+        with view_morning_absences as 
+        (
+            select a.idStudent, cast(time as date) as day
+            from absence a
+            where cast(a.time as time) < time '12:30' 
+            group by a.idStudent, day
+        ),
+        view_afternoon_absences as 
+        (
+            select a.idStudent, cast(time as date) as day
+            from absence a
+            where cast(a.time as time) >= time '12:30'
+            group by idStudent, day
+        ),
+        view_halfdays_absence as 
+        (
+        select idstudent, day from view_morning_absences
+        union all 
+        select idstudent, day from view_afternoon_absences
+        )
+        
+        select count(*)
+        from view_halfdays_absence
+        where idstudent = :idstudent
+        group by idstudent;
+        ";
 
+        $query = $connection->prepare($sql);
+        $query->bindValue(':idstudent', $this->studentId, PDO::PARAM_INT);
+        $query->execute();
+
+        return (int)$query->fetchColumn();
     }
 
     public function malusPoints(): float
