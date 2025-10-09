@@ -8,7 +8,7 @@ class Justification {
     private DateTime $startDate;
     private DateTime $endDate;
     private DateTime $sendDate;
-    private DateTime $processedDate;
+    private DateTime|null $processedDate;
     private array $files;
     private array $absences;
 
@@ -69,32 +69,6 @@ class Justification {
         return $this->absences;
     }
 
-    /*
-     * TODO: Connecter a la base de données, faire en sorte qu'elle sois paramétrique, avec système de filtre / trie (?)
-     */
-    public static function getJustifications(): array {
-        return array(
-            new Justification(
-                1,
-                '',
-                StateJustif::NotProcessed,
-                (new DateTime())->setDate(2025, 9, 24),
-                (new DateTime())->setDate(2025, 9, 25),
-                (new DateTime())->setDate(2025, 9, 26),
-                (new DateTime())->setDate(2025, 9, 27)
-            ),
-            new Justification(
-                2,
-                '',
-                StateJustif::Processed,
-                (new DateTime())->setDate(2025, 9, 1),
-                (new DateTime())->setDate(2025, 9, 3),
-                (new DateTime())->setDate(2025, 9, 4),
-                (new DateTime())->setDate(2025, 9, 5)
-            )
-        );
-    }
-
     static public function insertJustification($idStudent, $cause, $startDate, $endDate, $files): bool
     {
         //Récupération de la connexion
@@ -102,9 +76,7 @@ class Justification {
         //Récupération des absences comprise entre startDate et endDate
         $absences = Absence::getAbsencesStudentFiltered($idStudent, $startDate, $endDate, false, false, null);
 
-        if(count($absences) == 0) {
-            return false;
-        }
+        $countAbs = 0;
 
         //Insertion des données dans 'justification' et récupération de l'ID créé
         $query = "INSERT INTO justification(cause,currentState,startDate,endDate,sendDate) VALUES (:cause,'NotProcessed' , :startDate, :endDate,now()) RETURNING idJustification;";
@@ -133,6 +105,13 @@ class Justification {
 
             $absence->setState(StateAbs::Pending->value);
             $absence->setAllowedJustification(false);
+
+            $countAbs++;
+        }
+
+        if($countAbs == 0) {
+            // TODO: Annuler les changements
+            return false;
         }
 
         //Insertion des fichiers et liaison à un idJustification
@@ -148,7 +127,7 @@ class Justification {
         return true;
     }
 
-    public static function selectJustification($idStudent,$startDate,$endDate,$currentState,$examen)
+    public static function selectJustification($idStudent,$startDate,$endDate,$currentState,$examen): array
     {
         //Récupération de la connexion et déclaration de variable
         global $connection;
@@ -156,7 +135,10 @@ class Justification {
         $parameters = array();
 
         //Requête avec système de filtre
-        $query = "SELECT idJustification, cause, currentState, startDate, endDate, sendDate, processedDate FROM justification join absenceJustification using (idJustification)";
+
+        $query = "SELECT DISTINCT idJustification, cause, currentState, startDate, endDate, sendDate, processedDate 
+        FROM justification join absenceJustification using (idJustification)";
+
         if($idStudent != null)
         {
             $parameters['idStudent'] = $idStudent;
@@ -164,7 +146,7 @@ class Justification {
         }
         if($startDate != null)
         {
-            $query .= " and startdate >= :startDate";
+            $query .= " and endDate >= :startDate";
             $parameters["startDate"] = $startDate;
         }
         if($endDate != null)
@@ -173,7 +155,7 @@ class Justification {
             $parameters["endDate"] = $endDate;
         }
         if($currentState != null){
-            $query .= " and idstate = :currentState";
+            $query .= " and currentState = :currentState";
             $parameters["currentState"] = $currentState;
         }
         if (!empty($where))
@@ -182,11 +164,12 @@ class Justification {
         }
         if($examen)
         {
-            $query .= " INTERSECT SELECT idJustification, cause, currentState, startDate, endDate, sendDate, processedDate
-            FROM absence join absenceJustification using (idStudent,time)
-            join justification using(idJustification)
-            WHERE idstudent = :idStudent and examen = true";
+            $query .= " INTERSECT SELECT DISTINCT idJustification, cause, j.currentState, startDate, endDate, sendDate, processedDate
+            FROM absence a join absenceJustification using (idStudent,time)
+            join justification j using(idJustification)
+            where examen = true";
         }
+
         $row = $connection->prepare($query);
         foreach ($parameters as $key => $value)
         {
@@ -198,7 +181,15 @@ class Justification {
         //Mise en objet du résultat et retour du résultat
         foreach ($result as $justification)
         {
-            $justifications[] = new Justification($justification["idJustification"], $justification["cause"], $justification["currentState"], $justification["startDate"], $justification["endDate"], $justification["sendDate"], $justification["processedDate"]);
+            $justifications[] = new Justification(
+                $justification["idjustification"],
+                $justification["cause"],
+                StateJustif::from($justification["currentstate"]),
+                DateTime::createFromFormat("Y-m-d H:i:s", $justification["startdate"]),
+                DateTime::createFromFormat("Y-m-d H:i:s", $justification["enddate"]),
+                DateTime::createFromFormat("Y-m-d H:i:s.u", $justification["senddate"]),
+                isset($justification["processeddate"]) ? DateTime::createFromFormat("Y-m-d H:i:s", $justification["processeddate"]) : null
+            );
         }
         return $justifications;
     }

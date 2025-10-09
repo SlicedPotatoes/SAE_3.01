@@ -57,13 +57,13 @@
 
         <div class="accordion accordion-flush" id="justificationFlush">
             <?php
-                /*$listJustifications = Justification::getJustificationsStudentFiltered(
+                $listJustifications = Justification::selectJustification(
                         $_SESSION['student']->getStudentId(),
                         $filter['proof']['DateStart'],
                         $filter['proof']['DateEnd'],
-                        $filter['proof']['State']
-                );*/
-                $listJustifications = Justification::getJustifications();
+                        $filter['proof']['State'],
+                        $filter['proof']['Exam']
+                );
 
                 foreach($listJustifications as $justification) {
                     require "lineJustification.php";
