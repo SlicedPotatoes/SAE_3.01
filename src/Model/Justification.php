@@ -59,7 +59,8 @@ class Justification {
                     $absence["duration"],
                     $absence["examen"],
                     $absence["allowedJustification"],
-                    null,StateAbs::from($absence['currentState']),
+                    null,
+                    StateAbs::from($absence['currentState']),
                     CourseType::from($absence['courseType']),
                     null,
                     (isset($absence['dateresit']) ? DateTime::createFromFormat("Y-m-d H:i:s", $absence['dateresit']) : null));
@@ -144,7 +145,7 @@ class Justification {
         return true;
     }
 
-    public static function selectJustification($idStudent,$startDate,$endDate,$currentState)
+    public static function selectJustification($idStudent,$startDate,$endDate,$currentState,$examen)
     {
         //Récupération de la connexion et déclaration de variable
         global $connection;
@@ -152,7 +153,7 @@ class Justification {
         $parameters = array();
 
         //Requête avec système de filtre
-        $query = "SELECT * FROM justification";
+        $query = "SELECT idJustification, cause, currentState, startDate, endDate, sendDate, processedDate FROM justification join absenceJustification using (idJustification)";
         if($idStudent != null)
         {
             $parameters['idStudent'] = $idStudent;
@@ -176,6 +177,13 @@ class Justification {
         {
             $query .= " where " . implode(" and ", $where);
         }
+        if($examen)
+        {
+            $query .= " INTERSECT SELECT idJustification, cause, currentState, startDate, endDate, sendDate, processedDate
+            FROM absence join absenceJustification using (idStudent,time)
+            join justification using(idJustification)
+            WHERE idstudent = :idStudent and examen = true";
+        }
         $row = $connection->prepare($query);
         foreach ($parameters as $key => $value)
         {
@@ -187,7 +195,7 @@ class Justification {
         //Mise en objet du résultat et retour du résultat
         foreach ($result as $justification)
         {
-            $justifications[] = new Justification($justification["idJustification"], $justification["cause"], $justification["currentState"], $justification["startDate"], $justification["endDate"], $justification["sendDater"], $justification["processedDate"]);
+            $justifications[] = new Justification($justification["idJustification"], $justification["cause"], $justification["currentState"], $justification["startDate"], $justification["endDate"], $justification["sendDate"], $justification["processedDate"]);
         }
         return $justifications;
     }
