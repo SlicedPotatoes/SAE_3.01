@@ -1,6 +1,6 @@
 <?php
 require_once "StateJustif.php";
-class Justification {
+class   Justification {
     private int $idJustification;
     private string $cause;
     private StateJustif $currentState;
@@ -195,9 +195,8 @@ class Justification {
         $absences = Absence::getAbsencesStudentFiltered($idStudent, $startDate, $endDate, false, true, null);
 
         //Insertion des données dans 'justification' et récupération de l'ID créé
-        $query = "INSERT INTO justification(idStudent,cause,startDate,endDate) VALUES (:idStudent, :cause, :startDate, :endDate) RETURNING idJustification;";
+        $query = "INSERT INTO justification(cause,currentState,startDate,endDate,sendDate) VALUES (:cause,'NotProcessed' , :startDate, :endDate,now()) RETURNING idJustification;";
         $row = $connection->prepare($query);
-        $row->bindParam('idStudent', $idStudent);
         $row->bindParam('cause', $cause);
         $row->bindParam('startDate', $startDate);
         $row->bindParam('endDate', $endDate);
