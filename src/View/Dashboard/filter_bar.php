@@ -80,7 +80,7 @@ global$currTabValue, $states, $filter, $currPage;
                 >
             </div>
             <div class="col-auto">
-                <label for="<?= $currTabValue ?>Locked" class="form-check-label">Vérrouillé</label>
+                <label for="<?= $currTabValue ?>Locked" class="form-check-label">Verrouillé</label>
             </div>
         </div>
 
