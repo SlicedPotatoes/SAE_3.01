@@ -11,8 +11,11 @@ class Student
     private null | GroupStudent $groupStudent;
 
     private NULL | int $absTotal;
-    private NULL | int $absValidated;
-    private NULL | int $absPending;
+    private NULL | int $absCanBeJustified;
+    private NULL | int $absNotJustified;
+    private NULL | int $absRefused;
+    private NULL | int $halfdaysAbsences;
+    private NULL | float $malusPoints;
     private array $absences;
     private array $justifications;
     public function __construct($studentId, $lastName, $firstName, $firstName2, $email, $groupStudent)
@@ -25,8 +28,11 @@ class Student
         $this->groupStudent = $groupStudent;
 
         $this->absTotal = null;
-        $this->absValidated = null;
-        $this->absPending = null;
+        $this->absCanBeJustified = null;
+        $this->absNotJustified = null;
+        $this->absRefused = null;
+        $this->halfdaysAbsences = null;
+        $this->malusPoints = null;
         $this->absences = [];
         $this->justifications = [];
     }
@@ -53,8 +59,11 @@ class Student
         $this->groupStudent = $data['groupStudent'];
 
         $this->absTotal = null;
-        $this->absValidated = null;
-        $this->absPending = null;
+        $this->absCanBeJustified = null;
+        $this->absNotJustified = null;
+        $this->absRefused = null;
+        $this->halfdaysAbsences = null;
+        $this->malusPoints = null;
         $this->absences = [];
         $this->justifications = [];
     }
@@ -93,62 +102,59 @@ class Student
         return $result[0];
     }
 
-    public function getAbsValidated() : int
-    {
-        if ($this->absValidated !== null) {
-            return $this->absValidated;
+    public function getAbsCanBeJustified(): int {
+        if ($this->absCanBeJustified !== null) {
+            return $this->absCanBeJustified;
         }
 
         global $connection;
-        $request = $connection->prepare("SELECT COUNT(*) FROM absence WHERE idStudent = ? AND currentState = 'Validated'");
+
+        $query = "SELECT COUNT(*) FROM absence WHERE idStudent = ? AND allowedJustification = true";
+
+        $request = $connection->prepare($query);
         $request->bindParam(1, $this->studentId);
         $request->execute();
         $result = $request->fetch();
-        $this->absValidated = $result[0];
+        $this->absCanBeJustified = $result[0];
         return $result[0];
     }
-
-    public function getAbsPending(): int
-    {
-        if ($this->absPending !== null) {
-            return $this->absPending;
-        }
-
-        global $connection;
-        $request = $connection->prepare("SELECT COUNT(*) FROM absence WHERE idStudent = ? AND currentState = 'Pending'");
-        $request->bindParam(1, $this->studentId);
-        $request->execute();
-        $result = $request->fetch();
-        $this->absPending = $result[0];
-        return $result[0];
-
-    }
-
     public function getAbsNotJustified(): int
     {
+        if ($this->absNotJustified !== null) {
+            return $this->absNotJustified;
+        }
+
         global $connection;
         $request = $connection->prepare("SELECT COUNT(*) FROM absence WHERE idStudent = ? AND currentState = 'NotJustified'");
         $request->bindParam(1, $this->studentId);
         $request->execute();
         $result = $request->fetch();
-        $this->absPending = $result[0];
+        $this->absNotJustified = $result[0];
         return $result[0];
     }
 
     public function getAbsRefused(): int
     {
+        if ($this->absRefused !== null) {
+            return $this->absRefused;
+        }
+
         global $connection;
         $request = $connection->prepare("SELECT COUNT(*) FROM absence WHERE idStudent = ? AND currentState = 'Refused'");
         $request->bindParam(1, $this->studentId);
         $request->execute();
         $result = $request->fetch();
-        $this->absPending = $result[0];
+        $this->absRefused = $result[0];
         return $result[0];
 
     }
 
-    public function getHalfdaysAbsences()
+    public function getHalfdaysAbsences(): int
     {
+        if ($this->halfdaysAbsences !== null) {
+            return $this->halfdaysAbsences;
+        }
+
         global $connection;
 
         $sql = "
@@ -175,19 +181,24 @@ class Student
         
         select count(*)
         from view_halfdays_absence
-        where idstudent = :idstudent
-        group by idstudent;
+        where idstudent = :idstudent;
         ";
 
         $query = $connection->prepare($sql);
         $query->bindValue(':idstudent', $this->studentId, PDO::PARAM_INT);
         $query->execute();
 
-        return (int)$query->fetchColumn();
+        $this->halfdaysAbsences = (int)$query->fetchColumn();
+
+        return $this->halfdaysAbsences;
     }
 
-    public function malusPoints(): float
+    public function getMalusPoints(): float
     {
+        if ($this->malusPoints !== null) {
+            return $this->malusPoints;
+        }
+
         global $connection;
 
         $sql = "
@@ -216,8 +227,7 @@ class Student
         
         select count(*)
         from view_halfdays_absence
-        where idstudent = :idstudent
-        group by idstudent;
+        where idstudent = :idstudent;
         ";
 
         $query = $connection->prepare($sql);
@@ -225,6 +235,9 @@ class Student
         $query->execute();
 
         $halfdays = (int)$query->fetchColumn();
-        return ($halfdays > 5) ? $halfdays * 0.1 : 0.0;
+
+        $this->malusPoints = ($halfdays >= 5) ? $halfdays * 0.1 : 0.0;
+
+        return $this->malusPoints;
     }
 }

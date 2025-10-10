@@ -8,7 +8,7 @@
                 aria-controls="flush-collapse-abs-<?= $index ?>"
         >
             <div class="d-flex flex-column">
-                <div>Date: <?= $abs->getTime()->format('Y-m-d H:i') ?></div>
+                <div>Date: <?= $abs->getTime()->format('d/m/Y H:i') ?></div>
                 <div>Durée: <?= $abs->getDuration() ?></div>
             </div>
             <div class="d-flex align-items-center gap-3 flex-grow-1">

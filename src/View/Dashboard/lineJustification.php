@@ -7,8 +7,8 @@
                 aria-expanded="false" aria-controls="flush-collapse-justification-<?= $justification->getIdJustification(); ?>"
         >
             <div class="d-flex flex-column">
-                <div>Date de début: <?= $justification->getStartDate()->format('Y-m-d'); ?></div>
-                <div>Date de fin: <?= $justification->getEndDate()->format('Y-m-d') ?></div>
+                <div>Date de début: <?= $justification->getStartDate()->format('d/m/Y'); ?></div>
+                <div>Date de fin: <?= $justification->getEndDate()->format('d/m/Y') ?></div>
             </div>
             <div class="d-flex align-items-center gap-3 flex-grow-1">
                 <span class='badge rounded-pill text-bg-<?= $justification->getCurrentState()->colorBadge() ?>'><?= $justification->getCurrentState()->label() ?></span>

@@ -29,7 +29,7 @@
             <div class="card-body">
                 <div class="card-title small mb-1">Absences à justifier</div>
                 <div class="fs-4 text-info mb-0">
-                    <?= (int) $_SESSION['student']->getAbsNotJustified() ?>
+                    <?= (int) $_SESSION['student']->getAbsCanBeJustified() ?>
                 </div>
             </div>
         </div>
@@ -47,12 +47,12 @@
     </div>
 
     <div class="col">
-        <?php $malus = (int) $_SESSION['student']->malusPoints(); ?>
+        <?php $malus = $_SESSION['student']->getMalusPoints(); ?>
         <?php if ($malus > 0): ?>
             <div class="card shadow-sm border-danger text-center h-100 card-compact">
                 <div class="card-body">
                     <div class="card-title small mb-1">Malus</div>
-                    <div class="fs-4 text-danger mb-0">-<?= $malus ?></div>
+                    <div class="fs-4 text-danger mb-0">-<?= $malus ?>&nbsp;</div>
                 </div>
             </div>
         <?php else: ?>
