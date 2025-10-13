@@ -1,5 +1,5 @@
 <?php
-
+// Cette classe représente les groupes des étudiants stockés dans la base de données
 class GroupStudent {
     private int $idGroupStudent;
     private string $label;

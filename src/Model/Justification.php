@@ -33,6 +33,10 @@ class Justification {
     public function getEndDate(): DateTime { return $this->endDate; }
     public function getSendDate(): DateTime { return $this->sendDate; }
     public function getProcessedDate(): DateTime { return $this->processedDate; }
+    /*
+    Cette fonction sert à récupérer les noms des fichiers.
+    Si la liste est vide, une requête est effectuée dans la base de données pour les récupérer.
+    */
     public function getFiles(): array {
         if(count($this->files) == 0) {
             global $connexion;
@@ -46,6 +50,10 @@ class Justification {
         }
         return $this->files;
     }
+    /*
+    Cette fonction sert à récupérer les absences stockées dans le justificatif. S’il n’y a pas d’absences enregistrées,
+    elle récupère celles qui sont liées au justificatif dans la base de données.
+    */
     public function getAbsences(): array {
         if(count($this->absences) == 0) {
             global $connexion;
@@ -68,7 +76,10 @@ class Justification {
         }
         return $this->absences;
     }
-
+    /*
+    Cette fonction sert à insérer les données d’un justificatif dans la base de données, à lier les justificatifs aux absences,
+    à insérer des fichiers dans la base de données et à les associer au justificatif.
+     */
     static public function insertJustification($idStudent, $cause, $startDate, $endDate, $files): bool
     {
         //Récupération de la connexion
@@ -126,7 +137,10 @@ class Justification {
 
         return true;
     }
-
+    /*
+    Cette fonction sert à récupérer les justificatifs stockés dans la base de données, filtrés à l’aide des différentes variables d’entrée.
+    Si la variable examen est définie sur false, alors la fonction renverra tous les justificatifs en ignorant les contraintes liés aux examens.
+    */
     public static function selectJustification($idStudent,$startDate,$endDate,$currentState,$examen): array
     {
         //Récupération de la connexion et déclaration de variable

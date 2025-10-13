@@ -1,5 +1,5 @@
 <?php
-
+//Cette classe représente les enseignants dans la base donnée
 class Teacher {
     private int $idTeacher;
     private string $lastName;

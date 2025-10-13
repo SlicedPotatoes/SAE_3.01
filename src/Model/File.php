@@ -1,4 +1,5 @@
 <?php
+// Cette classe représente les fichiers stockés dans la base de données.
 require_once "Justification.php";
 class File {
     private int $idFile;
