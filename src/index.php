@@ -67,24 +67,18 @@
                 }
 
                 // Gestion des messages de "notification"
-                if(isset($_GET['successMessage']) ) {
-                    foreach($_GET['successMessage'] as $message) {
-                        if($message != '') {
-                            require "./View/Alert/success.php";
-                        }
-                    }
-                }
-                if(isset($_GET['warningMessage'])) {
-                    foreach($_GET['warningMessage'] as $message) {
-                        if($message != '') {
-                            require "./View/Alert/warning.php";
-                        }
-                    }
-                }
-                if(isset($_GET['errorMessage'])) {
-                    foreach($_GET['errorMessage'] as $message) {
-                        if($message != '') {
-                            require "./View/Alert/error.php";
+                $typeNotifications = [
+                    "successMessage",
+                    "warningMessage",
+                    "errorMessage"
+                ];
+
+                foreach ($typeNotifications as $type) {
+                    if(isset($_GET[$type])) {
+                        foreach ($_GET[$type] as $message) {
+                            if($message != "") {
+                                require "./View/alert.php";
+                            }
                         }
                     }
                 }

@@ -1,11 +1,21 @@
 <?php
+/*
+ * Font end du dash board
+ */
     require_once "./Model/Absence.php";
     require_once "./Model/Justification.php";
 
     require_once "./View/Modal/modalJustificationAbsence.php";
 
+    // Récupérer l'onglet courrant, pour pouvoir ouvrir la page sur le bon onglet
     $currTab = isset($_GET['currTab']) ? $_GET['currTab'] : 'proof';
 
+    /*
+     * Tableau contenant les filtres
+     * Utiliser pour la requête des filtres
+     * Et egalement pour afficher la valeur du filtre actuel
+     */
+    // Tableau contenant les filtres, utilisé pour effectuer la requete e
     $filter = [
         'proof' => [
             'DateStart' => isset($_GET['proofDateStart']) && $_GET['proofDateStart'] != '' ? $_GET['proofDateStart'] : null,
