@@ -1,6 +1,12 @@
 <?php
-// researchFile.php: sert les fichiers uploadés de manière contrôlée
-// Usage: researchFile.php?name=<filename>
+
+/*
+Ce fichier permet la recherche et la récupération des justificatifs d'absence pour les étudiants.
+Il vérifie la validité des paramètres fournis, sécurise l'accès aux fichiers (formats acceptés : jpeg, jpg, png, pdf),
+et gère l'envoi du fichier demandé avec les bons en-têtes HTTP.
+*/
+
+
 
 ini_set('display_errors', 0);
 error_reporting(0);

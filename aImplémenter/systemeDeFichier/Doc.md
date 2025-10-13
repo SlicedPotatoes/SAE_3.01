@@ -118,3 +118,8 @@ sudo rm /var/www/html/phpinfo.php
 - Taille upload: dans php.ini, ajuster `upload_max_filesize` et `post_max_size` (et côté Nginx `client_max_body_size` si applicable)
 
 
+# _**A ajouter proprement par la suite dans la doc**_
+Ajouter l'extension : `extension=fileinfo` dans le dossier `php.ini`
+
+Configurer la taille maximale du fichier envoyé par upload.php
+
