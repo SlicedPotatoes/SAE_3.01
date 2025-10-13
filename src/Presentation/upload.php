@@ -1,3 +1,11 @@
+/*
+Ce fichier gère l'upload des justificatifs d'absence pour les étudiants.
+Il permet d'envoyer un justificatif (formats acceptés : jpeg, jpg, png, pdf) dans un dossier spécifique,
+de vérifier la validité des fichiers et des données associées (dates, motif),
+d'enregistrer les informations en base de données,
+et d'envoyer une notification par mail à l'étudiant après traitement.
+*/
+
 <?php
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
