@@ -2,8 +2,7 @@
     require_once "./Model/Absence.php";
     require_once "./Model/Justification.php";
 
-    require_once "./View/Modal/modalJustificationAbsence.html";
-    require_once "./View/Modal/modalLogOut.html";
+    require_once "./View/Modal/modalJustificationAbsence.php";
 
     $currTab = isset($_GET['currTab']) ? $_GET['currTab'] : 'proof';
 

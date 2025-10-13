@@ -1,3 +1,11 @@
+<?php
+/*
+    modalJustificationAbsence.html
+    Ce fichier contient le code du modal permettant à un utilisateur de justifier une absence.
+    Il inclut un formulaire pour saisir les dates, le motif, et ajouter des fichiers justificatifs (PDF, PNG, JPG).
+    Le script gère l'affichage, la sélection et la suppression des fichiers avant l'envoi du formulaire.
+*/
+?>
 <div class="modal fade" id="justifyModal" tabindex="-1" aria-labelledby="justifyModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-scrollable modal-dialog-centered">
         <div class="modal-content">
@@ -28,7 +36,7 @@
                         <div class="col-12 col-md-5">
                             <div class="justification-files-choice mb-2 pe-3">
                                 <label class="form-label h5 mb-2">Justificatif <span class="text-muted fs-6">(pdf, png, jpg)</span></label>
-                                <input type="file" class="form-control" multiple id="justificationFileInput" accept=".pdf, .png, .jpg, .jpeg">
+                                <input type="file" class="form-control" multiple id="justificationFileInput" accept="<?= '.'.implode(', .', $ALLOWED_EXTENSIONS_FILE) ?>">
                             </div>
                             <ul id="justificationFileList" class="list-group mb-2 overflow-auto" style="max-height: 200px"></ul>
                         </div>
