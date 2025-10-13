@@ -29,7 +29,7 @@ if (stripos(PHP_OS_FAMILY, 'Windows') !== false) {
     $uploadDir = 'C:\upload\\';
 }
 else {
-    // Prod Linux: dossier racine
+    // Prod Linux : dossier racine
     $uploadDir = '/var/www/upload/';
 }
 
@@ -42,7 +42,7 @@ if (!is_dir($uploadDir)) {
         exit;
     }
 }
-// Le dossier d'upload n'est pas accéssible en écriture
+// Le dossier d'upload n'est pas accessible en écriture
 if (!is_writable($uploadDir)) {
     $errorMessage = "HTTP 500 Internal Server Error";
     if (!$PROD) { $errorMessage = $errorMessage.": Le dossier n'est pas accessible en écriture: $uploadDir"; }
@@ -52,7 +52,7 @@ if (!is_writable($uploadDir)) {
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     $errorMessage = "HTTP 405 Method Not Allowed";
-    if (!$PROD) { $errorMessage = $errorMessage.": Seulement les requêtes POST sont autorisé"; }
+    if (!$PROD) { $errorMessage = $errorMessage.": Seulement les requêtes POST sont autorisées"; }
     header('Location: ../index.php?errorMessage[]='.urlencode($errorMessage));
     exit;
 }
@@ -65,7 +65,7 @@ if (!isset($_FILES['files']) || !isset($_POST['startDate']) || !isset($_POST['en
 
 if(!isset($_SESSION['role']) || $_SESSION['role'] != 'student') {
     $errorMessage = "HTTP 400 Bad Request";
-    if (!$PROD) { $errorMessage = $errorMessage.": Un compte étudiant est nécéssaire"; }
+    if (!$PROD) { $errorMessage = $errorMessage.": Un compte étudiant est nécessaire"; }
     header('Location: ../index.php?errorMessage[]='.urlencode($errorMessage));
     exit;
 }
@@ -76,9 +76,9 @@ $startDate = $_POST['startDate'];
 $endDate =  $_POST['endDate'];
 $files = $_FILES['files'];
 
-// Vérifier que la dateDeDebut est inférieur ou égale a la dateDeFin
+// Vérifier que la dateDeDebut est inférieur ou égale à la dateDeFin
 if(DateTime::createFromFormat("Y-m-d", $startDate) > DateTime::createFromFormat("Y-m-d", $endDate)) {
-    $errorMessage = "HTTP 400 Bad Request: La date de début dois être inférieur ou égal a la date de fin";
+    $errorMessage = "HTTP 400 Bad Request: La date de début doit être inférieur ou égal a la date de fin";
     header('Location: ../index.php?errorMessage[]='.urlencode($errorMessage));
     exit;
 }
@@ -133,7 +133,7 @@ for($i = 0; $i < count($files['name']); $i++) {
         continue;
     }
 
-    // Vérification de si le fichier a été upload dans les fichiers temporaire
+    // Vérification de si le fichier a été upload dans les fichiers temporaires
     if (!is_uploaded_file($file['tmp_name'])) {
         if(!$PROD) { $warningMessages[] = urlencode($file['name'].': Upload Error'); }
         else { $warningMessages[] = urlencode($file['name'].': Erreur lors de la réception du fichier'); }
@@ -184,7 +184,7 @@ for($i = 0; $i < count($files['name']); $i++) {
 // Ajout dans la BDD
 if(!Justification::insertJustification($_SESSION['student']->getStudentId(), $absenceReason, $startDate, $endDate, $filesNameForDB)) {
     // TODO: Supprimer les fichiers qui ont été upload
-    $errorMessage = "HTTP 400 Bad Request: Pas d'absence sur la période sélectionné";
+    $errorMessage = "HTTP 400 Bad Request: Pas d'absence sur la période sélectionnée";
     header('Location: ../index.php?errorMessage[]='.urlencode($errorMessage));
     exit;
 }
@@ -197,7 +197,7 @@ mailAccRecpJusti(
     DateTime::createFromFormat("Y-m-d", $endDate)->format("d/m/Y")
 );
 
-$successParameter = 'successMessage[]='.urlencode("Justificatif envoyer avec succès");
+$successParameter = 'successMessage[]='.urlencode("Justificatif envoyé avec succès");
 $warningParameter = "";
 
 if(count($warningMessages) != 0) {

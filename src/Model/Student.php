@@ -29,7 +29,7 @@ class Student
     private array $absences;
     private array $justifications;
 
-    // Constante de la classe : evitement des valeurs hasardeuse
+    // Constante de la classe : évitement des valeurs hasardeuses
     private const MALUS_TRESSHOLD = 5; // Utilisé pour la limite d'affichage du malus
     private const MALUS_POINTS = 0.1; // Utilisé pour la multiplication du malus
 
@@ -66,7 +66,7 @@ class Student
         ];
     }
 
-    // La classe est réinitialisé avec rafraichissement des données volatives avec requête SQL
+    // La classe est réinitialisé avec rafraichissement des données volatiles avec requête SQL
     public function __unserialize(array $data): void {
         $this->studentId = (int)$data['studentId'];
         $this->lastName = $data['lastName'];
@@ -183,7 +183,7 @@ class Student
 
     /*
      * Nombre de demi-journées d'absence (matin < 12:30 ; après-midi ≥ 12:30)
-     * Peut ainsi compter deux absences le même jour mais pas plus
+     * Peut ainsi compter deux absences le même jour, mais pas plus
      */
     public function getHalfdaysAbsences(): int
     {
