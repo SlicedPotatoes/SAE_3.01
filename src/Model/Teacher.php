@@ -1,5 +1,5 @@
 <?php
-
+//Cette classe
 class Teacher {
     private int $idTeacher;
     private string $lastName;

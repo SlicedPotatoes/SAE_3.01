@@ -1,4 +1,5 @@
 <?php
+// établit une variable connexion qui fait la liaison avec la base de données
 $host = "tommytech.net";
 $user = "kevin";
 $password = "patate360";
