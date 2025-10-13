@@ -1,4 +1,9 @@
 <?php
+/*
+ * Front de la page de connexion
+ */
+
+    // Rediriger vers le dashboard, si l'utilisateur est connecté
     if($role != null) {
         header("Location: index.php?currPage=dashboard");
     }
@@ -6,6 +11,8 @@
 
 <div class="d-flex gap-2">
     <?php
+
+    // Temporaire, compte hardcodé
     $datas = [
         -1 => "Dimitri van Steenkiste",
         -2 => "Isaac Godisiabois",

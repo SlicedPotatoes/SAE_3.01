@@ -1,3 +1,8 @@
+<?php
+/*
+ * Front d'une ligne d'un justificatifs daans le dashboard
+ */
+?>
 <div class="accordion-item">
     <div class="accordion-header">
         <button class="accordion-button collapsed d-flex align-items-center gap-3 p-3"
