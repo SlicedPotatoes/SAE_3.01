@@ -75,8 +75,10 @@ class Student
         $this->email = $data['email'];
         $this->groupStudent = $data['groupStudent'];
 
-        // Attribution des valeurs calculé en SQL à null
-        // Forcera leurs recalcule
+        /*
+         * Attribution des valeurs calculé en SQL à null
+         * Forcera leurs recalcule
+         */
         $this->absTotal = null;
         $this->absCanBeJustified = null;
         $this->absNotJustified = null;
@@ -179,8 +181,10 @@ class Student
 
     }
 
-    //    Nombre de demi-journées d'absence (matin < 12:30 ; après-midi ≥ 12:30)
-    //    Peut ainsi compter deux absences le même jour mais pas plus
+    /*
+     * Nombre de demi-journées d'absence (matin < 12:30 ; après-midi ≥ 12:30)
+     * Peut ainsi compter deux absences le même jour mais pas plus
+     */
     public function getHalfdaysAbsences(): int
     {
         if ($this->halfdaysAbsences !== null) {
@@ -225,8 +229,10 @@ class Student
         return $this->halfdaysAbsences;
     }
 
-    //    Points de malus incluant les états Pending/NotJustified/Refused.
-    //    0 si < seuil, sinon demi-journées * taux
+    /*
+     * Points de malus incluant les états Pending/NotJustified/Refused.
+     * 0 si < seuil, sinon demi-journées * taux
+     */
     public function getMalusPoints(): float
     {
         if ($this->malusPoints !== null) {
@@ -275,8 +281,10 @@ class Student
         return $this->malusPoints;
     }
 
-    //    Points de malus incluant les états NotJustified/Refused.
-    //    Utile pour afficher l'impacte de la validation des absences en attente
+    /*
+     * Points de malus incluant les états NotJustified/Refused,
+     * Utile pour afficher l'impacte de la validation des absences en attente
+     */
     public function getMalusPointsWithoutPending(): float
     {
         if ($this->malusPointsWithoutPending !== null) {

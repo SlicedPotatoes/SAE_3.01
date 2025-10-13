@@ -66,7 +66,6 @@ $malusWithoutPending = $_SESSION['student']->getMalusPointsWithoutPending();
 <!--    Malus actuel et projection du malus avec justification des absences en attente -->
     <div class="col">
 <!--        If permettant d'avoir deux affichages différents si l'étudiant à un malus ou non-->
-
 <!--        Si l'étudiant à un malus la card sera rouge -->
         <?php if ($malus > 0): ?>
             <div class="card shadow-sm border-danger text-center h-100 card-compact">
