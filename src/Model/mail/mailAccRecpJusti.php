@@ -1,3 +1,8 @@
+/*
+Permet d'envoyer un mail d'accusé de réception à l'étudiant lorsque celui-ci soumet une demande de justificatif d'absence.
+Le fichier contient une fonction mailAccRecpJusti($name, $firstname, $emailEtu, $dateDebut, $dateFin) qui prend en paramètre le nom, le prénom, l'email de l'étudiant, la date de début et la date de fin de l'absence.
+*/
+
 <?php
 // Inclure la bibliothèque PHPMailer se trouvant dans le dossier /lib/PHPMailer/
 use PHPMailer\PHPMailer\PHPMailer;
