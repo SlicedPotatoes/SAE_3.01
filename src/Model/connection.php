@@ -1,6 +1,6 @@
 <?php
+require __DIR__. "/../Presentation/globalVariable.php";
 global $TEST;
-require "../Presentation/globalVariables.php";
 // établit une variable connexion qui fait la liaison avec la base de données
 if($TEST){
     $host = "localhost";
