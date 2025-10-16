@@ -6,10 +6,15 @@ require_once "CourseType.php";
 require_once "Student.php";
 require_once "Teacher.php";
 require_once "Resource.php";
+
+/**
+ * Classe d'Absence, basé sur la base de données.
+ */
 class Absence {
+    //    Attribus de base
     private Student|int $student;
     private DateTime $time;
-    private string $duration; // A voir comment gérer ca
+    private string $duration;
     private bool $examen;
     private bool $allowedJustification;
     private Teacher|null $teacher;
@@ -17,6 +22,8 @@ class Absence {
     private CourseType $courseType;
     private Resource|null $resource;
     private DateTime|null $dateResit;
+
+    //    Array de la classe
     private array $justifications;
 
     public function __construct($student, $time, $duration, $examen, $allowedJustification, $teacher, $currentState, $courseType, $resource, $dateResit) {
@@ -50,6 +57,7 @@ class Absence {
         return $this->student;
     }
 
+//    Getter de base
     public function getTime(): DateTime { return $this->time; }
     public function getDuration(): string { return $this->duration; }
     public function getExamen(): bool { return $this->examen; }
@@ -66,6 +74,10 @@ class Absence {
         return $this->justifications;
     }
 
+    /*
+     * Mes a jour la collonne allowedJustification dens la bace 2 donner
+     * Et localement sur l'objet
+     */
     public function setAllowedJustification($value): void {
         global $connection;
         $query = "UPDATE Absence SET allowedJustification = :value WHERE idStudent = :idStudent AND time = :time";
@@ -82,7 +94,10 @@ class Absence {
         $this->allowedJustification = $value;
     }
 
-    public function setState($state): void {
+    /*
+         * Mes a jour la collonne state dans la base de données
+         * Et localement sur l'objet
+         */    public function setState($state): void {
         global $connection;
         $query = "UPDATE Absence SET currentState = :value WHERE idStudent = :idStudent AND time = :time";
         $row = $connection->prepare($query);
@@ -98,21 +113,32 @@ class Absence {
         $this->currentState = StateAbs::from($state);
     }
 
+    /**
+     * Recherche d’absences avec filtres optionnels.
+     *
+     * - Fenêtre de dates incluse.
+     * - Si $examen = true, on restreint aux absences d’examen ; sinon on ne filtre pas sur examen.
+     * - Si $state est fourni, on filtre exactement cet état.
+     * - Si $locked, on restreint à allowedJustification = false AND currentState IN ('Refused','NotJustified').
+     *
+     * Retour : liste d’objets Absence filtré et trié par time DESC.
+     */
     static public function getAbsencesStudentFiltered (
-        int | null $studentId,
+        int | null    $studentId,
         string | null $startDate,
         string | null $endDate,
-        bool $examen,
-        bool $allowedJustification,
+        bool          $examen,
+        bool          $locked,
         string | null $state): array
     {
         global $connection;
 
         $query = "select * from absence";
 
-        $parameters = array();
-        $where = array();
+        $parameters = array(); // valeurs à binder sur la requête préparée
+        $where = array(); // conditions SQL
 
+        // Filtre par étudiant si fourni
         if ($studentId !== null)
         {
             $where[] = "idstudent = :studentId";
@@ -131,22 +157,26 @@ class Absence {
             $parameters["endDate"] = $endDate;
         }
 
+        // Si $state = true, on limite strictement au state sinon on ne filtre pas
         if ($state !== null)
         {
             $where[] = "currentState = :state";
             $parameters["state"] = $state;
         }
 
+        // Si $examen = true, on limite aux absences d'examen sinon on ne filtre pas
         if ($examen)
         {
             $where[] = "examen = true";
         }
 
-        if ($allowedJustification)
+        // Si $locked = true, on limite aux absences qui sont vérouillé parmis les refusés et les non-justifiée
+        if ($locked)
         {
             $where[] = "allowedJustification = false AND (currentState = 'Refused' OR currentState = 'NotJustified')";
         }
 
+        // Construction finale de la requête
         if (!empty($where))
         {
             $query .= " where " . implode(" and ", $where);
@@ -154,10 +184,9 @@ class Absence {
 
         $query .= " ORDER BY time DESC";
 
-        //echo $query;
-
         $sql = $connection->prepare($query);
 
+        // Préparation + binding des paramètres
         foreach ($parameters as $key => $value)
         {
             $sql->bindValue(':'.$key, $value);
@@ -166,6 +195,7 @@ class Absence {
         $sql->execute();
         $rows = $sql->fetchAll(PDO::FETCH_ASSOC);
 
+        // Initialisation des lignes de la base de données vers des objets Absence
         $absences = [];
         foreach ($rows as $r)
         {
