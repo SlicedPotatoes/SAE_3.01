@@ -3,6 +3,7 @@ require __DIR__. "/../Presentation/globalVariable.php";
 global $TEST;
 // établit une variable connexion qui fait la liaison avec la base de données
 if($TEST){
+    echo "Base de données de test";
     $host = "localhost";
     $user = "postgres";
     $password = "12345";

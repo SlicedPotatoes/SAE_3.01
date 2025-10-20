@@ -27,7 +27,7 @@ class Justification {
     }
 
     public function getIdJustification(): int { return $this->idJustification; }
-    public function getCause(): int { return $this->cause; }
+    public function getCause(): string { return $this->cause; }
     public function getCurrentState(): StateJustif { return $this->currentState; }
     public function getStartDate(): DateTime { return $this->startDate; }
     public function getEndDate(): DateTime { return $this->endDate; }
@@ -204,9 +204,43 @@ class Justification {
                 DateTime::createFromFormat("Y-m-d H:i:s", $justification["startdate"]),
                 DateTime::createFromFormat("Y-m-d H:i:s", $justification["enddate"]),
                 DateTime::createFromFormat("Y-m-d H:i:s.u", $justification["senddate"]),
-                isset($justification["processeddate"]) ? DateTime::createFromFormat("Y-m-d H:i:s", $justification["processeddate"]) : null
+                isset($justification["processeddate"]) ? DateTime::createFromFormat("Y-m-d H:i:s.u",
+                $justification["processeddate"]) : null
             );
         }
         return $justifications;
+    }
+
+    /*
+     * Cette fonction sert à basculer l'état du justificatif et
+     * appliquer le nouvel état dans l'objet courant et dans la base de données.
+     */
+    function changeStateJustification(): void
+    {
+        //Connexion à la base de données
+        global $connection;
+
+        //Requête SQL pour changer la valur dans la base de données
+        $query = "update justification
+        set currentState = :currentState
+        where idJustification = :idJustification";
+        $row = $connection->prepare($query);
+        $row->bindParam('idJustification', $this->idJustification);
+
+        //Changement selon l'état du justificatif
+        if($this->currentState == StateJustif::NotProcessed)
+        {
+            $this->currentState = StateJustif::Processed;
+            $temp = StateJustif::Processed->value;
+            $row->bindParam('currentState', $temp);
+            $row->execute();
+
+        }else
+        {
+            $this->currentState = StateJustif::NotProcessed;
+            $temp = StateJustif::NotProcessed->value;
+            $row->bindParam('currentState', $temp);
+            $row->execute();
+        }
     }
 }
