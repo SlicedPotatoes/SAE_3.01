@@ -4,7 +4,8 @@
  */
 
     // Rediriger vers le dashboard, si l'utilisateur est connecté
-    if($role != null) {
+global $role;
+if($role != null) {
         header("Location: index.php?currPage=dashboard");
     }
 ?>
