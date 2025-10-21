@@ -332,4 +332,15 @@ class Student
 
         return $this->malusPointsWithoutPending;
     }
+
+    public function getPenalizingAbsence(): int
+    {
+        global $connection;
+        $request = $connection->prepare("SELECT COUNT(*) FROM absence WHERE idStudent = ? and currentState in ('Refused','NotJustified', 'Pending')");
+        $request->bindParam(1, $this->studentId);
+        $request->execute();
+        $result = $request->fetch();
+        $this->absNotJustified = $result[0];
+        return $result[0];
+    }
 }

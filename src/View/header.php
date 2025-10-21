@@ -9,6 +9,7 @@ $absenceNotJustified = $_SESSION['student']->getAbsNotJustified();
 $absenceRefused = $_SESSION['student']->getAbsRefused();
 $malus = $_SESSION['student']->getMalusPoints();
 $malusWithoutPending = $_SESSION['student']->getMalusPointsWithoutPending();
+$PenalizingAbsence = $_SESSION['student']->getPenalizingAbsence();
 ?>
 
 <!-- En tête saluant l'étudiant -->
@@ -57,7 +58,7 @@ $malusWithoutPending = $_SESSION['student']->getMalusPointsWithoutPending();
             <div class="card-body">
                 <div class="card-title small mb-1">Absences pénalisantes</div>
                 <div class="fs-4 text-warning mb-0">
-                    <?= (int) ($absenceNotJustified + $absenceRefused) ?>
+                    <?= (int) $PenalizingAbsence ?>
                 </div>
             </div>
         </div>
