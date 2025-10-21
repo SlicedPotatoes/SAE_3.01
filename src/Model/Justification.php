@@ -50,6 +50,8 @@ class Justification {
         }
         return $this->files;
     }
+
+
     /*
     Cette fonction sert à récupérer les absences stockées dans le justificatif. S’il n’y a pas d’absences enregistrées,
     elle récupère celles qui sont liées au justificatif dans la base de données.
@@ -63,8 +65,7 @@ class Justification {
             $absences = $query->fetchAll();
             foreach($absences as $absence) {
                 $this->absences[] = new Absence(null,
-                    $absence["time"],
-                    $absence["duration"],
+                    DateTime::createFromFormat("Y-m-d H:i:s", $absence["time"]),                    $absence["duration"],
                     $absence["examen"],
                     $absence["allowedJustification"],
                     null,
@@ -76,6 +77,8 @@ class Justification {
         }
         return $this->absences;
     }
+
+
     /*
     Cette fonction sert à insérer les données d’un justificatif dans la base de données, à lier les justificatifs aux absences,
     à insérer des fichiers dans la base de données et à les associer au justificatif.
@@ -125,6 +128,7 @@ class Justification {
             return false;
         }
 
+
         //Insertion des fichiers et liaison à un idJustification
         foreach ($files as $file)
         {
@@ -137,6 +141,9 @@ class Justification {
 
         return true;
     }
+
+
+
     /*
     Cette fonction sert à récupérer les justificatifs stockés dans la base de données, filtrés à l’aide des différentes variables d’entrée.
     Si la variable examen est définie sur false, alors la fonction renverra tous les justificatifs en ignorant les contraintes liés aux examens.

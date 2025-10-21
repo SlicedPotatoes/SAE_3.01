@@ -1,5 +1,5 @@
 <?php
-
+require_once "connection.php";
 /*
 Ce fichier permet la recherche et la récupération des justificatifs d'absence pour les étudiants.
 Il vérifie la validité des paramètres fournis, sécurise l'accès aux fichiers (formats acceptés : jpeg, jpg, png, pdf),
@@ -44,6 +44,52 @@ if (!is_file($path)) {
     http_response_code(404);
     header('Content-Type: text/plain; charset=UTF-8');
     exit('Fichier introuvable');
+}
+
+// Récupération des infos du fichier et de la justification
+if (!isset($connection) || !$connection) {
+    http_response_code(500);
+    header('Content-Type: text/plain; charset=UTF-8');
+    exit('Connexion à la base de données non initialisée');
+}
+$pdo = $connection;
+
+// Chercher le fichier dans la table File
+$stmt = $pdo->prepare('SELECT idJustification FROM File WHERE fileName = ?');
+$stmt->execute([$name]);
+$row = $stmt->fetch(PDO::FETCH_ASSOC);
+if (!$row) {
+    http_response_code(404);
+    header('Content-Type: text/plain; charset=UTF-8');
+    exit('Fichier non trouvé en base');
+}
+$idJustif = $row['idJustification'];
+
+// Récupérer les infos de la justification
+$stmt = $pdo->prepare('SELECT cause, startDate, endDate FROM Justification WHERE idJustification = ?');
+$stmt->execute([$idJustif]);
+$info = $stmt->fetch(PDO::FETCH_ASSOC);
+if (!$info) {
+    http_response_code(404);
+    header('Content-Type: text/plain; charset=UTF-8');
+    exit('Justification non trouvée');
+}
+
+// Récupérer tous les fichiers liés à cette justification
+$stmt = $pdo->prepare('SELECT fileName FROM File WHERE idJustification = ?');
+$stmt->execute([$idJustif]);
+$files = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+// Si info=1, renvoyer les infos en JSON
+if (isset($_GET['info']) && $_GET['info'] === '1') {
+    header('Content-Type: application/json; charset=UTF-8');
+    echo json_encode([
+        'motif' => $info['cause'],
+        'date_debut' => $info['startDate'],
+        'date_fin' => $info['endDate'],
+        'fichiers' => $files
+    ]);
+    exit;
 }
 
 // Détecter le MIME

@@ -6,8 +6,8 @@ if($TEST){
     echo "Base de données de test";
     $host = "localhost";
     $user = "postgres";
-    $password = "12345";
-    $dbname = "postgres";
+    $password = "1234";
+    $dbname = "bddperso";
     $port = "5432";
 }else{
     $host = "tommytech.net";
@@ -20,5 +20,4 @@ try {
     $connection = new PDO("pgsql:host=$host;dbname=$dbname", $user, $password);
     $connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $e) {
-    echo $e->getMessage();
 }
