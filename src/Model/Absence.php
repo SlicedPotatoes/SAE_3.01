@@ -66,7 +66,7 @@ class Absence {
     public function getCurrentState(): StateAbs { return $this->currentState; }
     public function getCourseType(): CourseType { return $this->courseType; }
     public function getResource(): Resource { return $this->resource; }
-    public function getDateResit(): ?DateTime { return $this->dateResit; }
+    public function getDateResit(): null | DateTime { return $this->dateResit; }
     public function getJustifications(): array {
         if(count($this->justifications) == 0) {
             // TODO: Requête SQL
@@ -134,7 +134,6 @@ class Absence {
         global $connection;
 
 
-        // TODO ajouter les jointure pour : récup la ressource et le nom du prof
         $query = "select * from absence
                     join Resource using (idResource)
                     join Account on idteacher = idAccount";
@@ -202,10 +201,8 @@ class Absence {
         // Initialisation des lignes de la base de données vers des objets Absence
         $absences = [];
 
-        //TODO créé les objets de type Teacher et de type Ressource
         foreach ($rows as $r)
         {
-            //var_dump($r);
             $absences[] = new Absence(
                 $r['idstudent'],
                 DateTime::createFromFormat("Y-m-d H:i:s", $r['time']),
@@ -213,15 +210,12 @@ class Absence {
                 $r['examen'],
                 $r['allowedjustification'],
 
-                //TODO ajout teacher
                 new Teacher($r['idteacher'], $r['lastname'], $r['firstname'], $r['email']),
 
                 StateAbs::from($r['currentstate']),
                 CourseType::from($r['coursetype']),
 
-                //TODO
                 new Resource($r['idresource'], $r['label']),
-
 
                 (isset($r['dateresit']) ? DateTime::createFromFormat("Y-m-d H:i:s", $r['dateresit']) : null)
             );

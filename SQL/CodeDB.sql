@@ -23,7 +23,7 @@ create table teacher
     idTeacher serial primary key,
     lastName  text        not null,
     firstName text        not null,
-    email     teaxt unique not null check ( email ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Za-z]{2,}$')
+    email     text unique not null check ( email ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Za-z]{2,}$')
 );
 
 create type stateAbsence as enum
