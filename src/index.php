@@ -65,6 +65,11 @@
             <?php
                 if(array_key_exists($currPage, $title) && $role != null) {
                     require "./View/header.php";
+
+                    if ($role == AccountType::Student || $role == AccountType::EducationalManager && $currPage="studentProfile")
+                    {
+                        require "./View/Dashboard/Student/cards.php";
+                    }
                 }
 
                 // Gestion des messages de "notification"
