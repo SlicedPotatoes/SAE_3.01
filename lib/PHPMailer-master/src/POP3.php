@@ -21,6 +21,8 @@
 
 namespace PHPMailer\PHPMailer;
 
+use Resource;
+
 /**
  * PHPMailer POP-Before-SMTP Authentication Class.
  * Specifically for PHPMailer to use for RFC1939 POP-before-SMTP authentication.

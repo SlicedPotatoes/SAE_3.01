@@ -1,7 +1,7 @@
 <?php
 require_once "Account.php";
 require_once "GroupStudent.php";
-require_once "connection.php";
+require_once __DIR__ . "/../connection.php";
 
 /**
  * Classe de Student, basé sur la base de données.
@@ -50,7 +50,7 @@ class Student extends Account {
     }
 
     // getter basique
-    public function getStudentId(): int { return $this->studentId; }
+    public function getStudentNumber(): int { return $this->studentNumber; }
     public function getLastName(): string { return $this->lastName; }
     public function getFirstName(): string { return $this->firstName; }
     public function getFirstName2(): string { return $this->firstName2; }
