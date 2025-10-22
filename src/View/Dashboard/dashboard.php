@@ -1,6 +1,6 @@
 <?php
 /*
- * Font end du dash board
+ * Front end du dash board
  */
     require_once "./Model/Absence.php";
     require_once "./Model/Justification.php";
