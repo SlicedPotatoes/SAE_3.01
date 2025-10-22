@@ -3,17 +3,16 @@ require __DIR__. "/../Presentation/globalVariable.php";
 global $TEST;
 // établit une variable connexion qui fait la liaison avec la base de données
 if($TEST){
+    echo "Base de données de test";
     $host = "localhost";
     $user = "postgres";
     $password = "1234";
     $dbname = "bddperso";
-    $port = "5432";
 }else{
     $host = "tommytech.net";
     $user = "kevin";
     $password = "patate360";
     $dbname = "postgres";
-    $port = "5432";
 }
 try {
     $connection = new PDO("pgsql:host=$host;dbname=$dbname", $user, $password);
