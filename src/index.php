@@ -18,10 +18,12 @@
     $route = [
         "login" => "./View/login.php",
         "dashboard" => "./View/Dashboard/dashboard.php",
+        "detailJustification" => "./View/detailJustification.php",
     ];
     $title = [
         "login" => "Connexion",
-        "dashboard" => "Tableau de bord"
+        "dashboard" => "Tableau de bord",
+        "detailJustification" => "Detail Justification",
     ];
 
     // Valeur par défault, si currPage n'est pas définie

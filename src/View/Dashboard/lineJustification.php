@@ -80,11 +80,9 @@ if (!$info && $fileName) {
 <div class="accordion-item">
     <div class="accordion-header">
         <?php if (isset($justification) && is_object($justification) && method_exists($justification, 'getIdJustification')): ?>
-            <button class="accordion-button collapsed d-flex align-items-center gap-3 p-3"
-                    type="button"
-                    data-bs-toggle="collapse"
-                    data-bs-target="#flush-collapse-justification-<?= $justification->getIdJustification(); ?>"
-                    aria-expanded="false" aria-controls="flush-collapse-justification-<?= $justification->getIdJustification(); ?>"
+            <div class="accordion-header d-flex align-items-center gap-3 p-3" 
+                 style="cursor: pointer; background-color: #f8f9fa; border: 1px solid #dee2e6; border-radius: 0.375rem;"
+                 onclick="window.location.href='index.php?currPage=detailJustification&id=<?= $justification->getIdJustification(); ?>'"
             >
                 <div class="d-flex flex-column">
                     <div>Date de début: <?= $justification->getStartDate() instanceof DateTime ? $justification->getStartDate()->format('d/m/Y') : htmlspecialchars((string)$justification->getStartDate()); ?></div>
@@ -93,66 +91,9 @@ if (!$info && $fileName) {
                 <div class="d-flex align-items-center gap-3 flex-grow-1">
                     <span class='badge rounded-pill text-bg-<?= htmlspecialchars($justification->getCurrentState()->colorBadge()) ?>'><?= htmlspecialchars($justification->getCurrentState()->label()) ?></span>
                 </div>
-            </button>
+            </div>
         <?php else: ?>
             <div class="alert alert-danger">Erreur : justification non définie ou méthode manquante.</div>
         <?php endif; ?>
     </div>
-    <?php if (isset($justification) && is_object($justification) && method_exists($justification, 'getIdJustification')): ?>
-        <div id="flush-collapse-justification-<?= $justification->getIdJustification(); ?>" class="accordion-collapse collapse" data-bs-parent="#justificationFlush">
-            <div class="accordion-body p-3">
-                <?php if ($info): ?>
-                    <div><strong>Motif :</strong> <?= htmlspecialchars($info['motif'] ?? '') ?></div>
-                    <?php
-                    // Priorité aux dates de l'objet $justification s'il existe
-                    $startFormatted = '';
-                    $endFormatted = '';
-
-                    if (isset($justification) && is_object($justification) && method_exists($justification, 'getStartDate') && $justification->getStartDate() instanceof DateTime) {
-                        $startFormatted = $justification->getStartDate()->format('d/m/Y');
-                    } else {
-                        $rawStart = $info['date_debut'] ?? '';
-                        if ($rawStart !== '') {
-                            try {
-                                $d = new DateTime($rawStart);
-                                $startFormatted = $d->format('d/m/Y');
-                            } catch (Exception $e) {
-                                $startFormatted = (string)$rawStart;
-                            }
-                        }
-                    }
-
-                    if (isset($justification) && is_object($justification) && method_exists($justification, 'getEndDate') && $justification->getEndDate() instanceof DateTime) {
-                        $endFormatted = $justification->getEndDate()->format('d/m/Y');
-                    } else {
-                        $rawEnd = $info['date_fin'] ?? '';
-                        if ($rawEnd !== '') {
-                            try {
-                                $d2 = new DateTime($rawEnd);
-                                $endFormatted = $d2->format('d/m/Y');
-                            } catch (Exception $e) {
-                                $endFormatted = (string)$rawEnd;
-                            }
-                        }
-                    }
-                    ?>
-                    <div><strong>Date de début :</strong> <?= htmlspecialchars($startFormatted ?? '') ?></div>
-                    <div><strong>Date de fin :</strong> <?= htmlspecialchars($endFormatted ?? '') ?></div>
-                    <div><strong>Fichiers associés :</strong>
-                        <ul>
-                            <?php if (!empty($info['fichiers']) && is_array($info['fichiers'])): ?>
-                                <?php foreach ($info['fichiers'] as $f): ?>
-                                    <li><?= htmlspecialchars((string)$f) ?></li>
-                                <?php endforeach; ?>
-                            <?php else: ?>
-                                <li>Aucun fichier associé</li>
-                            <?php endif; ?>
-                        </ul>
-                    </div>
-                <?php else: ?>
-                    <div class="alert alert-info">Détails non disponibles pour cette justification.</div>
-                <?php endif; ?>
-            </div>
-        </div>
-    <?php endif; ?>
 </div>

@@ -58,25 +58,41 @@ class Justification {
     */
     public function getAbsences(): array {
         if(count($this->absences) == 0) {
-            global $connexion;
-            $query = $connexion->prepare("SELECT * FROM absence join absenceJustification using (idStudent,time) WHERE idJustification = :idJustification");
+            global $connection;
+            $query = $connection->prepare(
+                "SELECT * FROM absence 
+             JOIN absenceJustification USING (idStudent,time) 
+             WHERE idJustification = :idJustification"
+            );
             $query->bindParam(":idJustification", $this->idJustification);
             $query->execute();
-            $absences = $query->fetchAll();
+            $absences = $query->fetchAll(PDO::FETCH_ASSOC);
+
             foreach($absences as $absence) {
-                $this->absences[] = new Absence(null,
-                    DateTime::createFromFormat("Y-m-d H:i:s", $absence["time"]),                    $absence["duration"],
-                    $absence["examen"],
-                    $absence["allowedJustification"],
+                $stateAbs = isset($absence['currentState']) && $absence['currentState'] !== null
+                    ? StateAbs::from($absence['currentState'])
+                    : StateAbs::Pending; // par défaut
+
+                $allowedJustification = $absence['allowedJustification'] ?? false;
+                $courseType = isset($absence['courseType']) ? CourseType::from($absence['courseType']) : null;
+
+                $this->absences[] = new Absence(
+                    $absence["idstudent"],
+                    DateTime::createFromFormat("Y-m-d H:i:s", $absence["time"]),
+                    $absence["duration"],
+                    $absence["examen"] ?? false,
+                    $allowedJustification,
                     null,
-                    StateAbs::from($absence['currentState']),
-                    CourseType::from($absence['courseType']),
+                    $stateAbs,
+                    $courseType,
                     null,
-                    (isset($absence['dateresit']) ? DateTime::createFromFormat("Y-m-d H:i:s", $absence['dateresit']) : null));
+                    isset($absence['dateresit']) ? DateTime::createFromFormat("Y-m-d H:i:s", $absence['dateresit']) : null
+                );
             }
         }
         return $this->absences;
     }
+
 
 
     /*
@@ -250,4 +266,35 @@ class Justification {
             $row->execute();
         }
     }
+    /*
+    Cette fonction sert à récupérer une justification par son ID.
+    */
+    public static function getById(int $idJustification): ?Justification {
+        global $connection;
+        if (!isset($connection) || !$connection) return null;
+
+        $query = "SELECT idjustification, cause, currentstate, startdate, enddate, senddate, processeddate 
+                  FROM justification 
+                  WHERE idjustification = ?";
+        $stmt = $connection->prepare($query);
+        $stmt->execute([$idJustification]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$row) {
+            return null;
+        }
+
+        return new Justification(
+            $row['idjustification'],
+            $row['cause'],
+            StateJustif::from($row['currentstate']),
+            DateTime::createFromFormat("Y-m-d H:i:s", $row['startdate']),
+            DateTime::createFromFormat("Y-m-d H:i:s", $row['enddate']),
+            DateTime::createFromFormat("Y-m-d H:i:s.u", $row['senddate']),
+            isset($row['processeddate']) ? DateTime::createFromFormat("Y-m-d H:i:s.u", $row['processeddate']) : null
+        );
+    }
+
+
+
 }
