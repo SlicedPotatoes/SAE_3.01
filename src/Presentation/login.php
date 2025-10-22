@@ -7,8 +7,8 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-require "../Model/Account.php";
-require "../Model/Student.php";
+require "../Model/Account/Account.php";
+require "../Model/Account/Student.php";
 
 // Compte "Hard codé"
 $account = Account::getAllAccount();

@@ -1,7 +1,7 @@
 <?php
 require_once "StateJustif.php";
-require_once "Absence.php";
-require_once "connection.php";
+require_once "./Model/Absence/Absence.php";
+
 class Justification {
     private int $idJustification;
     private string $cause;

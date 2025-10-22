@@ -10,14 +10,14 @@
     ini_set('display_startup_errors', 1);
     error_reporting(E_ALL);
 
-    require_once "./Model/Account.php";
-    require_once "./Model/Student.php";
+    require_once "./Model/Account/Account.php";
+    require_once "./Model/Account/Student.php";
     require_once "./Presentation/globalVariable.php";
 
     // Définition des routes
     $route = [
         "login" => "./View/login.php",
-        "dashboard" => "./View/Dashboard/dashboard.php",
+            "dashboard" => "./View/Dashboard/studentDashboard.php",
         "searchpage" => "./View/SearchPage/searchPageMain.php"
     ];
     $title = [
@@ -65,10 +65,6 @@
         <!-- Contenue de la page -->
         <div class="container mt-4">
             <?php
-                if(array_key_exists($currPage, $title) && $role != null) {
-                    require "./View/header.php";
-                }
-
                 // Gestion des messages de "notification"
                 $typeNotifications = [
                     "successMessage",
@@ -87,13 +83,11 @@
                 }
             ?>
 
-            <div class="card p-3">
-                <?php
-                    // Afficher le contenue de la page
-                    if(array_key_exists($currPage, $route)) { require $route[$currPage]; }
-                    else { require "./View/404.html"; }
-                ?>
-            </div>
+            <?php
+            // Afficher le contenue de la page
+            if(array_key_exists($currPage, $route)) { require $route[$currPage]; }
+            else { require "./View/404.html"; }
+            ?>
         </div>
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

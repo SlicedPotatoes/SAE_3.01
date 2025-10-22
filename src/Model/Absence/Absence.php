@@ -1,10 +1,10 @@
 <?php
-require_once "connection.php";
+require_once "./Model/connection.php";
 
 require_once "StateAbs.php";
 require_once "CourseType.php";
-require_once "Student.php";
-require_once "Teacher.php";
+require_once "./Model/Account/Student.php";
+require_once "./Model/Account/Teacher.php";
 require_once "Resource.php";
 
 /**
@@ -49,9 +49,9 @@ class Absence {
         return $this->student;
     }
 
-    public function getIdStudent():int {
+    public function getIdAccount():int {
         if(gettype($this->student) != 'integer') {
-            return $this->student->getStudentId();
+            return $this->student->getIdAccount();
         }
 
         return $this->student;
@@ -83,7 +83,7 @@ class Absence {
         $query = "UPDATE Absence SET allowedJustification = :value WHERE idStudent = :idStudent AND time = :time";
         $row = $connection->prepare($query);
 
-        $idStudent = $this->getIdStudent();
+        $idStudent = $this->getIdAccount();
         $dateString = $this->time->format('Y-m-d H:i:s');
 
         $row->bindParam('value', $value, PDO::PARAM_BOOL);
@@ -102,7 +102,7 @@ class Absence {
         $query = "UPDATE Absence SET currentState = :value WHERE idStudent = :idStudent AND time = :time";
         $row = $connection->prepare($query);
 
-        $idStudent = $this->getIdStudent();
+        $idStudent = $this->getIdAccount();
         $dateString = $this->time->format('Y-m-d H:i:s');
 
         $row->bindParam('value', $state);
