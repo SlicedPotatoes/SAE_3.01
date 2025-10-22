@@ -15,6 +15,7 @@ require_once "../Presentation/globalVariable.php";
 require_once "../Model/Student.php";
 require_once "../Model/Justification.php";
 require_once "../Model/mail/mailAccRecpJusti.php";
+require_once "../Model/AccountType.php";
 
 global $PROD, $LIMIT_FILE_SIZE_UPLOAD, $ALLOWED_MIME_TYPE, $ALLOWED_EXTENSIONS_FILE;
 
@@ -63,7 +64,7 @@ if (!isset($_FILES['files']) || !isset($_POST['startDate']) || !isset($_POST['en
     exit;
 }
 
-if(!isset($_SESSION['role']) || $_SESSION['role'] != 'student') {
+if(!isset($_SESSION['role']) || $_SESSION['role'] != AccountType::Student) {
     $errorMessage = "HTTP 400 Bad Request";
     if (!$PROD) { $errorMessage = $errorMessage.": Un compte étudiant est nécessaire"; }
     header('Location: ../index.php?errorMessage[]='.urlencode($errorMessage));
@@ -182,7 +183,7 @@ for($i = 0; $i < count($files['name']); $i++) {
 }
 
 // Ajout dans la BDD
-if(!Justification::insertJustification($_SESSION['student']->getStudentId(), $absenceReason, $startDate, $endDate, $filesNameForDB)) {
+if(!Justification::insertJustification($_SESSION['account']->getIdAccount(), $absenceReason, $startDate, $endDate, $filesNameForDB)) {
     // TODO: Supprimer les fichiers qui ont été upload
     $errorMessage = "HTTP 400 Bad Request: Pas d'absence sur la période sélectionnée";
     header('Location: ../index.php?errorMessage[]='.urlencode($errorMessage));
@@ -190,9 +191,9 @@ if(!Justification::insertJustification($_SESSION['student']->getStudentId(), $ab
 }
 
 mailAccRecpJusti(
-    $_SESSION['student']->getLastName(),
-    $_SESSION['student']->getFirstName(),
-    $_SESSION['student']->getEmail(),
+    $_SESSION['account']->getLastName(),
+    $_SESSION['account']->getFirstName(),
+    $_SESSION['account']->getEmail(),
     DateTime::createFromFormat("Y-m-d", $startDate)->format("d/m/Y"),
     DateTime::createFromFormat("Y-m-d", $endDate)->format("d/m/Y")
 );
