@@ -31,7 +31,16 @@
     </div>
     <div id="flush-collapse-abs-<?= $index ?>" class="accordion-collapse collapse" data-bs-parent="#absFlush">
         <div class="accordion-body p-3">
-            Le détail de l'abs
+            <!-- mettre les info grâce a Absence-->
+            <p><strong>Professeur :</strong> <?= htmlspecialchars($abs->getTeacher()->getFirstname() . ' ' . $abs->getTeacher()->getLastname()) ?></p>
+
+            <p><strong>Matière :</strong> <?= htmlspecialchars($abs->getCourseType()->value ?? $abs->getCourseType()->name) ?> <?= htmlspecialchars( $abs->getResource()->getlabel()) ?></p>
+
+            <?php if($abs->getExamen()): ?>
+                <p><strong>Rattrapage :</strong> <?= $abs->getDateResit() ? $abs->getDateResit()->format('d/m/Y H:i') : 'Pas de date fixée' ?></p>
+            <?php endif; ?>
+
+
         </div>
     </div>
 </div>
