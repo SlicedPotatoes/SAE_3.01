@@ -31,6 +31,7 @@
     </div>
     <div id="flush-collapse-abs-<?= $index ?>" class="accordion-collapse collapse" data-bs-parent="#absFlush">
         <div class="accordion-body p-3">
+            <!-- mettre les info grâce a Absence-->
             Le détail de l'abs
         </div>
     </div>

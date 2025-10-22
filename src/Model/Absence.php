@@ -133,7 +133,11 @@ class Absence {
     {
         global $connection;
 
-        $query = "select * from absence";
+
+        // TODO ajouter les jointure pour : récup la ressource et le nom du prof
+        $query = "select absence.*, Resource.label, Account.lastname from absence
+                    join Resource using (idResource)
+                    join Account on idteacher = idAccount";
 
         $parameters = array(); // valeurs à binder sur la requête préparée
         $where = array(); // conditions SQL
@@ -197,18 +201,28 @@ class Absence {
 
         // Initialisation des lignes de la base de données vers des objets Absence
         $absences = [];
+
+        //TODO créé les objets de type Teacher et de type Ressource
         foreach ($rows as $r)
         {
+            var_dump($r);
             $absences[] = new Absence(
                 $r['idstudent'],
                 DateTime::createFromFormat("Y-m-d H:i:s", $r['time']),
                 $r['duration'],
                 $r['examen'],
                 $r['allowedjustification'],
-                null,
+
+                //TODO ajout teacher
+                $r['lastname'],
+
                 StateAbs::from($r['currentstate']),
                 CourseType::from($r['coursetype']),
-                null,
+
+                //TODO
+                $r['label'],
+
+
                 (isset($r['dateresit']) ? DateTime::createFromFormat("Y-m-d H:i:s", $r['dateresit']) : null)
             );
         }
