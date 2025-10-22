@@ -17,11 +17,13 @@
     // Définition des routes
     $route = [
         "login" => "./View/login.php",
-        "dashboard" => "./View/Dashboard/studentDashboard.php",
+            "dashboard" => "./View/Dashboard/studentDashboard.php",
+        "searchpage" => "./View/SearchPage/searchPageMain.php"
     ];
     $title = [
         "login" => "Connexion",
-        "dashboard" => "Tableau de bord"
+        "dashboard" => "Tableau de bord",
+        "searchpage" => "Page de recherche"
     ];
 
     // Valeur par défault, si currPage n'est pas définie
@@ -54,7 +56,7 @@
 
     <body class="bg-light">
         <?php
-            // Si l'utilisateur est connecter, afficher le bouton d'option
+            // Si l'utilisateur est connecté, afficher le bouton d'option
             if($role != null) {
                 require "./View/ButtonSettings.php";
             }

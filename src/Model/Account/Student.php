@@ -50,11 +50,7 @@ class Student extends Account {
     }
 
     // getter basique
-    public function getStudentNumber(): int { return $this->studentNumber; }
-    public function getLastName(): string { return $this->lastName; }
-    public function getFirstName(): string { return $this->firstName; }
-    public function getFirstName2(): string { return $this->firstName2; }
-    public function getEmail(): string { return $this->email; }
+    public function getStudentNumber(): int{return $this->studentNumber;}
     public function getGroupStudent(): GroupStudent { return $this->groupStudent; }
 
     /**

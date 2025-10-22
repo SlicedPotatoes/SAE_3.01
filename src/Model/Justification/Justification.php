@@ -59,20 +59,22 @@ class Justification {
     */
     public function getAbsences(): array {
         if(count($this->absences) == 0) {
-            global $connexion;
-            $query = $connexion->prepare("SELECT * FROM absence join absenceJustification using (idStudent,time) WHERE idJustification = :idJustification");
+            global $connection;
+            $query = $connection->prepare("SELECT * FROM absenceJustification join absence using(idStudent,time)
+            join resource using (idResource) join account on idteacher = idaccount where idJustification = :idJustification");
             $query->bindParam(":idJustification", $this->idJustification);
             $query->execute();
             $absences = $query->fetchAll();
             foreach($absences as $absence) {
-                $this->absences[] = new Absence(null,
-                    DateTime::createFromFormat("Y-m-d H:i:s", $absence["time"]),                    $absence["duration"],
+                    $this->absences[] = new Absence($absence["idstudent"],
+                    DateTime::createFromFormat("Y-m-d H:i:s", $absence["time"]),
+                    $absence["duration"],
                     $absence["examen"],
-                    $absence["allowedJustification"],
-                    null,
-                    StateAbs::from($absence['currentState']),
-                    CourseType::from($absence['courseType']),
-                    null,
+                    $absence["allowedjustification"],
+                    new Teacher($absence["idteacher"], $absence["lastname"], $absence["firstname"], $absence["email"]),
+                    StateAbs::from($absence['currentstate']),
+                    CourseType::from($absence['coursetype']),
+                    new Resource($absence["idresource"],$absence["label"]),
                     (isset($absence['dateresit']) ? DateTime::createFromFormat("Y-m-d H:i:s", $absence['dateresit']) : null));
             }
         }
