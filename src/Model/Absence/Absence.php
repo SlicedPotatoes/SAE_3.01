@@ -62,7 +62,7 @@ class Absence {
     public function getDuration(): string { return $this->duration; }
     public function getExamen(): bool { return $this->examen; }
     public function getAllowedJustification(): bool { return $this->allowedJustification; }
-    public function getTeacher(): Teacher { return $this->teacher; }
+    public function getTeacher(): null | Teacher { return $this->teacher; }
     public function getCurrentState(): StateAbs { return $this->currentState; }
     public function getCourseType(): CourseType { return $this->courseType; }
     public function getResource(): Resource { return $this->resource; }
@@ -136,7 +136,7 @@ class Absence {
 
         $query = "select * from absence
                     join Resource using (idResource)
-                    join Account on idteacher = idAccount";
+                    left join Account on idteacher = idAccount";
 
         $parameters = array(); // valeurs à binder sur la requête préparée
         $where = array(); // conditions SQL
@@ -210,7 +210,7 @@ class Absence {
                 $r['examen'],
                 $r['allowedjustification'],
 
-                new Teacher($r['idteacher'], $r['lastname'], $r['firstname'], $r['email']),
+                isset($r['idteacher']) ? new Teacher($r['idteacher'], $r['lastname'], $r['firstname'], $r['email']) : null,
 
                 StateAbs::from($r['currentstate']),
                 CourseType::from($r['coursetype']),

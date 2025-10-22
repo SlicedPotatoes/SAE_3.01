@@ -1,5 +1,5 @@
 <?php
-$TEST = true;// À mettre sûr true pendant un test unitaire
+$TEST = false;// À mettre sûr true pendant un test unitaire
 // établit une variable connexion qui fait la liaison avec la base de données
 if($TEST){
     echo "Base de données de test";
