@@ -11,6 +11,8 @@ $groupe2 = new GroupStudent(-2, "Groupe -2");
 $groupe3 = new GroupStudent(-3, "Groupe -3");
 $groupe4 = new GroupStudent(-4, "Groupe -4");
 
+$listGroupes = [$groupe, $groupe2, $groupe3, $groupe4];
+
 $students = [
         new Student(-1, "Vansteekiste", "Dimitri", null, "Dimitri.Vansteekiste@uphf.fr", $groupe),
         new Student(-2, "Godisiabois", "Isaac", null, "Isaac.Godisiabois@uphf.fr", $groupe),
@@ -21,18 +23,24 @@ $students = [
 ];
 ?>
 
-<!-- Conteneur principal: colonne flex, la hauteur peut être contrôlée par le parent; ici on fixe une hauteur raisonnable pour demo -->
+<!-- Conteneur principal: colonne flex, la hauteur peut être contrôlée par `max-height` -->
 <div class="search-panel" style="max-height:60vh; display:flex; flex-direction:column; border-radius:6px;">
 
     <!-- Barre de recherche collée en haut du conteneur -->
     <nav class="navbar navbar-light search-bar" style="position:sticky; top:0; z-index:10; background:var(#fff);">
         <div class="container-fluid">
             <form class="d-flex w-100" role="search" method="GET" action="recherche.php">
-                <input class="form-control me-2" type="search" placeholder="Rechercher un étudiant" name="q">
-                <select class="form-select me-2" name="groupe">
-                    <option selected>Groupe</option>
-                    <option value="name">
-
+                <!-- rendre l'input flexible pour céder de la place au select compact -->
+                <input class="form-control me-2" style="flex:1 1 auto; min-width:0;" type="search"
+                       placeholder="Rechercher un étudiant" name="q">
+                <!-- select plus compact: small + largeur auto limité -->
+                <select class="form-select form-select-sm me-2" name="groupe"
+                        style="flex:0 0 auto; width:auto; max-width:320px; min-width:160px;">
+                    <option value="" disabled selected>Groupe</option>
+                    <?php foreach ($listGroupes as $groupeOption): ?>
+                        <option value="<?= htmlspecialchars($groupeOption->getLabel(), ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars($groupeOption->getLabel(), ENT_QUOTES, 'UTF-8') ?></option>
+                    <?php endforeach; ?>
+                </select>
                 <button class="btn btn-uphf btn-outline-success" type="submit">
                     <i class="bi bi-search"></i>
                 </button>
