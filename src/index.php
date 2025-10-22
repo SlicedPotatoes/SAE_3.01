@@ -17,8 +17,8 @@
     // Définition des routes
     $route = [
         "login" => "./View/login.php",
-            "dashboard" => "./View/Dashboard/studentDashboard.php",
-        "searchpage" => "./View/SearchPage/searchPageMain.php"
+        "dashboard" => "./View/Dashboard/studentDashboard.php",
+        "searchpage" => "./View/SearchPage/searchPageMain.php",
     ];
     $title = [
         "login" => "Connexion",

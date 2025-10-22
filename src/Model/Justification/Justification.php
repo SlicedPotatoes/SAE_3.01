@@ -1,6 +1,6 @@
 <?php
 require_once "StateJustif.php";
-require_once "./Model/Absence/Absence.php";
+require_once __DIR__ . "/../Absence/Absence.php";
 
 class Justification {
     private int $idJustification;

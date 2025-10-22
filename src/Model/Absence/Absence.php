@@ -1,10 +1,10 @@
 <?php
-require_once "./Model/connection.php";
+require_once __DIR__ . "/../connection.php";
 
 require_once "StateAbs.php";
 require_once "CourseType.php";
-require_once "./Model/Account/Student.php";
-require_once "./Model/Account/Teacher.php";
+require_once __DIR__ . "/../Account/Student.php";
+require_once __DIR__ . "/../Account/Teacher.php";
 require_once "Resource.php";
 
 /**

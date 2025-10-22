@@ -1,7 +1,7 @@
 <?php
-require_once __DIR__ . "/../../Model/Student.php";
-require_once __DIR__ . "/../../Model/Absence.php";
-require_once __DIR__ . "/../../Model/GroupStudent.php";
+require_once __DIR__ . "/../../Model/Account/Student.php";
+require_once __DIR__ . "/../../Model/Absence/Absence.php";
+require_once __DIR__ . "/../../Model/Account/GroupStudent.php";
 ?>
 
 <?php
@@ -61,6 +61,7 @@ $students = [
 //echo '<pre>' . htmlspecialchars(print_r($students, true), ENT_QUOTES, 'UTF-8') . '</pre>';
 ?>
 
+<div class="card p-3">
 <!-- Conteneur principal: colonne flex, la hauteur peut être contrôlée par `max-height` -->
 <div class="search-panel" style="height:70vh; display:flex; flex-direction:column; border-radius:6px; min-height:0;">
 
@@ -104,7 +105,7 @@ $students = [
                         </div>
                         <div class="p-2 text-end">
                             <a href="index.php?currPage=studentProfile&studentId=<?= urlencode((string)$student->getIdAccount()) ?>"
-                               class="btn btn-primary">Voir le profil</a>
+                               class="btn btn-uphf">Voir le profil</a>
                         </div>
                     </div>
                 </div>
@@ -112,4 +113,5 @@ $students = [
         <?php endif; ?>
     </div>
 
+</div>
 </div>
