@@ -1,21 +1,8 @@
 <?php
 //Cette classe représente les enseignants dans la base donnée
-class Teacher {
-    private int $idTeacher;
-    private string $lastName;
-    private string $firstName;
-    private string $email;
-
+class Teacher extends Account {
 
     function __construct($idTeacher, $lastName, $firstName, $email) {
-        $this->idTeacher = $idTeacher;
-        $this->lastName = $lastName;
-        $this->firstName = $firstName;
-        $this->email = $email;
+        parent::__construct($idTeacher, $lastName, $firstName, $email);
     }
-
-    function getIdTeacher(): int { return $this->idTeacher; }
-    function getLastName(): string { return $this->lastName; }
-    function getFirstName(): string { return $this->firstName; }
-    function getEmail(): string { return $this->email; }
 }
