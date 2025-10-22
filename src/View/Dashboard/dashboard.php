@@ -67,7 +67,7 @@
         <div class="accordion accordion-flush" id="justificationFlush">
             <?php
                 $listJustifications = Justification::selectJustification(
-                        $_SESSION['student']->getStudentId(),
+                        $_SESSION['account']->getIdAccount(),
                         $filter['proof']['DateStart'],
                         $filter['proof']['DateEnd'],
                         $filter['proof']['State'],
@@ -97,7 +97,7 @@
             <?php
             $index = 0;
             $listAbs = Absence::getAbsencesStudentFiltered(
-                    $_SESSION['student']->getStudentId(),
+                    $_SESSION['account']->getIdAccount(),
                     $filter['abs']['DateStart'],
                     $filter['abs']['DateEnd'],
                     $filter['abs']['Exam'],

@@ -11,7 +11,7 @@ require_once "Resource.php";
  * Classe d'Absence, basé sur la base de données.
  */
 class Absence {
-    //    Attribus de base
+    // Attribut de base
     private Student|int $student;
     private DateTime $time;
     private string $duration;
@@ -23,7 +23,7 @@ class Absence {
     private Resource|null $resource;
     private DateTime|null $dateResit;
 
-    //    Array de la classe
+    // Array de la classe
     private array $justifications;
 
     public function __construct($student, $time, $duration, $examen, $allowedJustification, $teacher, $currentState, $courseType, $resource, $dateResit) {
@@ -57,7 +57,7 @@ class Absence {
         return $this->student;
     }
 
-//    Getter de base
+    //    Getter de base
     public function getTime(): DateTime { return $this->time; }
     public function getDuration(): string { return $this->duration; }
     public function getExamen(): bool { return $this->examen; }
@@ -94,7 +94,7 @@ class Absence {
         $this->allowedJustification = $value;
     }
 
-    /*
+        /*
          * Mes a jour la collonne state dans la base de données
          * Et localement sur l'objet
          */    public function setState($state): void {

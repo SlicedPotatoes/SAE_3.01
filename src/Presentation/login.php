@@ -3,23 +3,29 @@
  * Script de connexion
  */
 
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+require "../Model/Account.php";
 require "../Model/Student.php";
 
 // Compte "Hard codé"
-$names = [
-    -1 => ["Dimitri", "van Steenkiste", "Dimitri.Vansteenkiste@uphf.fr"],
-    -2 => ["Isaac", "Godisiabois", "Isaac.Godisiabois@uphf.fr"],
-    -3 => ["Esteban", "Helin", "Esteban.Helin@uphf.fr"],
-    -4 => ["Yann", "Dascotte", "Yann.Dascotte@uphf.fr"],
-    -5 => ["Kevin", "Masmejean", "Kevin.Masmejean@uphf.fr"],
-    -6 => ["Louis", "Picouleau", "Louis.Picouleau@uphf.fr"]
-];
-
+$account = Account::getAllAccount();
 session_start();
 
+var_dump($account);
+var_dump($_POST['id']);
+
 if(isset($_POST['id'])) {
-    $_SESSION['role'] = "student";
-    $_SESSION['student'] = new Student($_POST['id'], $names[$_POST['id']][1], $names[$_POST['id']][0], null, $names[$_POST['id']][2], null);
+    var_dump($account[$_POST['id']]);
+
+    $_SESSION['role'] = $account[$_POST['id']]->getAccountType();
+    $_SESSION['account'] = $account[$_POST['id']];
+
+    if($_SESSION['role'] == AccountType::Student) {
+        $_SESSION['account'] = Student::getStudentByIdAccount($_POST['id']);
+    }
 }
 
 header("Location: ../index.php");

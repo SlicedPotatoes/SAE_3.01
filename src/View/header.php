@@ -1,15 +1,16 @@
 <!--Récupération des données-->
 <?php
-$lastName = $_SESSION['student']->getLastName();
-$firstName = $_SESSION['student']->getFirstName();
-$absenceTotal = $_SESSION['student']->getAbsTotal();
-$halfdayTotal = $_SESSION['student']->getHalfdaysAbsences();
-$absenceAllowJustification = $_SESSION['student']->getAbsCanBeJustified();
-$absenceNotJustified = $_SESSION['student']->getAbsNotJustified();
-$absenceRefused = $_SESSION['student']->getAbsRefused();
-$malus = $_SESSION['student']->getMalusPoints();
-$malusWithoutPending = $_SESSION['student']->getMalusPointsWithoutPending();
-$PenalizingAbsence = $_SESSION['student']->getPenalizingAbsence();
+$lastName = $_SESSION['account']->getLastName();
+$firstName = $_SESSION['account']->getFirstName();
+
+$absenceTotal = $_SESSION['account']->getAbsTotal();
+$halfdayTotal = $_SESSION['account']->getHalfdaysAbsences();
+$absenceAllowJustification = $_SESSION['account']->getAbsCanBeJustified();
+$absenceNotJustified = $_SESSION['account']->getAbsNotJustified();
+$absenceRefused = $_SESSION['account']->getAbsRefused();
+$malus = $_SESSION['account']->getMalusPoints();
+$malusWithoutPending = $_SESSION['account']->getMalusPointsWithoutPending();
+$PenalizingAbsence = $_SESSION['account']->getPenalizingAbsence();
 ?>
 
 <!-- En tête saluant l'étudiant -->

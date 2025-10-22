@@ -1,4 +1,5 @@
 <?php
+require_once "Account.php";
 require_once "GroupStudent.php";
 require_once "connection.php";
 
@@ -6,88 +7,46 @@ require_once "connection.php";
  * Classe de Student, basé sur la base de données.
  */
 
-class Student
-{
-//    Attribus de base de la classe
-    private int $studentId;
-    private string $lastName;
-    private string $firstName;
-    private null | string $firstName2;
-    private null | string $email;
+class Student extends Account {
+    //    Attribut de base de la classe
+    private int $studentNumber;
     private null | GroupStudent $groupStudent;
 
-//    Attribus métrique, si null pas encore calculé
-    private NULL | int $absTotal;
-    private NULL | int $absCanBeJustified;
-    private NULL | int $absNotJustified;
-    private NULL | int $absRefused;
-    private NULL | int $halfdaysAbsences;
-    private NULL | float $malusPoints;
-    private NULL | float $malusPointsWithoutPending;
+    // Attribut métrique, si null pas encore calculé
+    private NULL | int $absTotal = null;
+    private NULL | int $absCanBeJustified = null;
+    private NULL | int $absNotJustified = null;
+    private NULL | int $absRefused = null;
+    private NULL | int $halfdaysAbsences = null;
+    private NULL | float $malusPoints = null;
+    private NULL | float $malusPointsWithoutPending = null;
 
     //    Array de la classe
-    private array $absences;
-    private array $justifications;
+    private array $absences = [];
+    private array $justifications = [];
 
     // Constante de la classe : évitement des valeurs hasardeuses
     private const MALUS_TRESSHOLD = 5; // Utilisé pour la limite d'affichage du malus
     private const MALUS_POINTS = 0.1; // Utilisé pour la multiplication du malus
 
 
-    public function __construct($studentId, $lastName, $firstName, $firstName2, $email, $groupStudent)
+    public function __construct($idAccount, $lastName, $firstName, $email, $accountType, $studentNumber, $groupStudent)
     {
-        $this->studentId = $studentId;
-        $this->lastName = $lastName;
-        $this->firstName = $firstName;
-        $this->firstName2 = $firstName2;
-        $this->email = $email;
+        parent::__construct($idAccount, $lastName, $firstName, $email, $accountType);
+        $this->studentNumber = $studentNumber;
         $this->groupStudent = $groupStudent;
-
-        $this->absTotal = null;
-        $this->absCanBeJustified = null;
-        $this->absNotJustified = null;
-        $this->absRefused = null;
-        $this->halfdaysAbsences = null;
-        $this->malusPoints = null;
-        $this->malusPointsWithoutPending = null;
-        $this->absences = [];
-        $this->justifications = [];
     }
 
     // Serialization uniquement des données fixes
     public function __serialize(): array {
-        return [
-            'studentId' => $this->studentId,
-            'lastName' => $this->lastName,
-            'firstName' => $this->firstName,
-            'firstName2' => $this->firstName2,
-            'email' => $this->email,
-            'groupStudent' => $this->groupStudent,
-        ];
+        return parent::__serialize() + ['studentNumber' => $this->studentNumber, 'groupStudent' => $this->groupStudent];
     }
 
     // La classe est réinitialisé avec rafraichissement des données volatiles avec requête SQL
     public function __unserialize(array $data): void {
-        $this->studentId = (int)$data['studentId'];
-        $this->lastName = $data['lastName'];
-        $this->firstName = $data['firstName'];
-        $this->firstName2 = $data['firstName2'];
-        $this->email = $data['email'];
+        parent::__unserialize($data);
+        $this->studentNumber = $data['studentNumber'];
         $this->groupStudent = $data['groupStudent'];
-
-        /*
-         * Attribution des valeurs calculé en SQL à null
-         * Forcera leurs recalcule
-         */
-        $this->absTotal = null;
-        $this->absCanBeJustified = null;
-        $this->absNotJustified = null;
-        $this->absRefused = null;
-        $this->halfdaysAbsences = null;
-        $this->malusPoints = null;
-        $this->malusPointsWithoutPending = null;
-        $this->absences = [];
-        $this->justifications = [];
     }
 
     // getter basique
@@ -114,7 +73,7 @@ class Student
         return $this->justifications;
     }
 
-//    Nombre d'absence total
+    //    Nombre d'absence total
     public function getAbsTotal(): int
     {
         if ($this->absTotal !== null) {
@@ -123,7 +82,7 @@ class Student
 
         global $connection;
         $request = $connection->prepare("SELECT COUNT(*) FROM absence WHERE idStudent = ?");
-        $request->bindParam(1, $this->studentId);
+        $request->bindParam(1, $this->idAccount);
         $request->execute();
         $result = $request->fetch();
         $this->absTotal = $result[0];
@@ -141,7 +100,7 @@ class Student
         $query = "SELECT COUNT(*) FROM absence WHERE idStudent = ? AND allowedJustification = true";
 
         $request = $connection->prepare($query);
-        $request->bindParam(1, $this->studentId);
+        $request->bindParam(1, $this->idAccount);
         $request->execute();
         $result = $request->fetch();
         $this->absCanBeJustified = $result[0];
@@ -157,7 +116,7 @@ class Student
 
         global $connection;
         $request = $connection->prepare("SELECT COUNT(*) FROM absence WHERE idStudent = ? AND currentState = 'NotJustified'");
-        $request->bindParam(1, $this->studentId);
+        $request->bindParam(1, $this->idAccount);
         $request->execute();
         $result = $request->fetch();
         $this->absNotJustified = $result[0];
@@ -173,7 +132,7 @@ class Student
 
         global $connection;
         $request = $connection->prepare("SELECT COUNT(*) FROM absence WHERE idStudent = ? AND currentState = 'Refused'");
-        $request->bindParam(1, $this->studentId);
+        $request->bindParam(1, $this->idAccount);
         $request->execute();
         $result = $request->fetch();
         $this->absRefused = $result[0];
@@ -221,7 +180,7 @@ class Student
         ";
 
         $query = $connection->prepare($sql);
-        $query->bindValue(':idstudent', $this->studentId, PDO::PARAM_INT);
+        $query->bindValue(':idstudent', $this->idAccount, PDO::PARAM_INT);
         $query->execute();
 
         $this->halfdaysAbsences = (int)$query->fetchColumn();
@@ -271,7 +230,7 @@ class Student
         ";
 
         $query = $connection->prepare($sql);
-        $query->bindValue(':idstudent', $this->studentId, PDO::PARAM_INT);
+        $query->bindValue(':idstudent', $this->idAccount, PDO::PARAM_INT);
         $query->execute();
 
         $halfdays = (int)$query->fetchColumn();
@@ -323,7 +282,7 @@ class Student
         ";
 
         $query = $connection->prepare($sql);
-        $query->bindValue(':idstudent', $this->studentId, PDO::PARAM_INT);
+        $query->bindValue(':idstudent', $this->idAccount, PDO::PARAM_INT);
         $query->execute();
 
         $halfdays = (int)$query->fetchColumn();
@@ -337,10 +296,33 @@ class Student
     {
         global $connection;
         $request = $connection->prepare("SELECT COUNT(*) FROM absence WHERE idStudent = ? and currentState in ('Refused','NotJustified', 'Pending')");
-        $request->bindParam(1, $this->studentId);
+        $request->bindParam(1, $this->idAccount);
         $request->execute();
         $result = $request->fetch();
         $this->absNotJustified = $result[0];
         return $result[0];
+    }
+
+    public static function getStudentByIdAccount($id): Student {
+        global $connection;
+
+        $query = "SELECT * FROM Account 
+                  JOIN Student USING(idAccount) 
+                  JOIN GroupStudent USING(idGroupStudent)           
+                  WHERE idAccount = ?";
+        $req = $connection->prepare($query);
+        $req->execute(array($id));
+
+        $res = $req->fetch();
+
+        return new Student(
+            $res['idaccount'],
+            $res['lastname'],
+            $res['firstname'],
+            $res['email'],
+            AccountType::from($res['accounttype']),
+            $res['studentnumber'],
+            new GroupStudent($res['idgroupstudent'], $res['label'])
+        );
     }
 }
