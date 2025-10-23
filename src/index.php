@@ -1,7 +1,7 @@
 <?php
 /*
- * Ce script permet de gérer l'affichage
- * Il choisie quel vue afficher en fonction
+ * Ce script permet de gérer l'affichage.
+ * Il choisi quel vu afficher en fonction
  * de l'état de l'application.
  */
 
