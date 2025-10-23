@@ -1,6 +1,5 @@
 <?php
 require_once __DIR__ . "/StudentPresentation.php";
-require_once __DIR__ . "/../Model/Filter/FilterJustification.php";
 
 /**
  * Classe JustificationPresentation, permettant de faire la liaison entre Model et View pour tout ce qui concerne les Justificatifs
