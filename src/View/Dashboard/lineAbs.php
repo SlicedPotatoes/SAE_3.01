@@ -5,7 +5,7 @@
 
 global $index, $abs;
 ?>
-<div class="accordion-item">
+<div class="accordion-item border-bottom">
     <div class="accordion-header">
         <button class="accordion-button collapsed d-flex align-items-center gap-3 p-3"
                 type="button"
@@ -43,8 +43,6 @@ global $index, $abs;
             <?php if($abs->getExamen()): ?>
                 <p><strong>Rattrapage :</strong> <?= $abs->getDateResit() ? $abs->getDateResit()->format('d/m/Y H:i') : 'Pas de date fixée' ?></p>
             <?php endif; ?>
-
-
         </div>
     </div>
 </div>

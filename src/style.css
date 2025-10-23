@@ -1,3 +1,7 @@
+html, body {
+    height: 100vh;
+}
+
 .btn-uphf {
     background: #008CAD;
     border: none;

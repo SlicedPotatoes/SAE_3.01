@@ -25,8 +25,11 @@ else
 ?>
 
 <!-- En tête saluant l'étudiant -->
-<h1 class="h3"> <?= $message ?></h1>
-<div class="header-line-brand-color"></div>
+<div>
+    <h1 class="h3"> <?= $message ?></h1>
+    <div class="header-line-brand-color"></div>
+</div>
+
 
 <?php
 if ($role == AccountType::Student || $role == AccountType::EducationalManager && $currPage="studentProfile")

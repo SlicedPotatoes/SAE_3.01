@@ -76,7 +76,7 @@ if (!$info && $fileName) {
     }
 }
 ?>
-<div class="accordion-item">
+<div class="accordion-item border-bottom">
     <div class="accordion-header">
         <?php if (isset($justification) && is_object($justification) && method_exists($justification, 'getIdJustification')): ?>
             <button class="accordion-button collapsed d-flex align-items-center gap-3 p-3"
