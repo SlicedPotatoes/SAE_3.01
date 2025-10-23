@@ -67,16 +67,17 @@ else { $currPage = "login"; }
             <?php
                 // Gestion des messages de "notification"
                 $typeNotifications = [
-                    "successMessage",
+                    "errorMessage",
                     "warningMessage",
-                    "errorMessage"
+                    "successMessage"
                 ];
-
+                $idNotification = 0;
                 foreach ($typeNotifications as $type) {
                     if(isset($_GET[$type])) {
                         foreach ($_GET[$type] as $message) {
                             if($message != "") {
                                 require "./View/alert.php";
+                                $idNotification++;
                             }
                         }
                     }
@@ -89,6 +90,7 @@ else { $currPage = "login"; }
         </div>
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="./Script/alert.js"></script>
         <script>
             // Script pour initialiser les tooltips dans bootstrap.
             const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')

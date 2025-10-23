@@ -1,0 +1,42 @@
+/**
+ * Script de gestion des alertes
+ */
+
+// Récupérer les alertes
+const alerts = document.getElementsByClassName('alert');
+const countAlertMaxShow = 3;
+
+// Stocke les alertes non affichées
+let alertToDisplay = [];
+
+// Pour chaque alerte
+for(let i = 0; i < alerts.length; i++) {
+    const alert = alerts[i];
+    const btnClose = alert.getElementsByClassName('btn-close')[0];
+
+    if(i >= countAlertMaxShow) {
+        // Ajoute l'alerte aux stack, si i est supérieur au nombre d'alerte que l'on veut afficher
+        alertToDisplay.push(alert);
+    }
+    else {
+        alert.classList.add('showing');
+        alert.classList.add('show');
+    }
+
+    // Au click du bouton close de l'alerte
+    btnClose.addEventListener('click', () => {
+        // S'il reste des alertes à afficher
+        if(alertToDisplay.length > 0) {
+            // Les afficher
+            alertToDisplay.at(-1).classList.add('showing')
+            requestAnimationFrame(() => {
+                alertToDisplay.at(-1).classList.add('show');
+                alertToDisplay.pop();
+            })
+        }
+    });
+}
+
+// Inverser la liste pour les afficher dans l'ordre
+alertToDisplay.reverse();
+
