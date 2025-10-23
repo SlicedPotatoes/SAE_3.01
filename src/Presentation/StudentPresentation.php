@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Classe StudentPresentation, permettant de faire la liaison entre Model et View pour tout ce qui concerne les etudiants
+ */
 class StudentPresentation
 {
     public static function getStudentAccountDashboard() : null | Student

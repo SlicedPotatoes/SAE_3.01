@@ -1,6 +1,9 @@
 <?php
-global $currTab;
-global $filter;
+/**
+ * Page avec onglet et contenue, affichant les justificatifs et les absences
+ */
+
+global $currTab, $filter;
 ?>
 
 <!-- Tab bar -->

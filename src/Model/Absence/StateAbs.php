@@ -1,12 +1,17 @@
 <?php
-//Cette énumération représente les différents états dans lequel les absences peuvent être
+/**
+ * Enumeration représentant les types états d'une absence
+ */
 enum StateAbs: string {
     case Validated = 'Validated';
     case Refused = 'Refused';
     case NotJustified = 'NotJustified';
     case Pending = 'Pending';
 
-    //Cette fonction sert à récupérer le label associé à l'énumération
+    /**
+     * Récupérer le label associé à une énumération
+     * @return string
+     */
     public function label(): string {
         return match($this) {
             self::Validated => 'Validé',
@@ -15,7 +20,11 @@ enum StateAbs: string {
             self::Pending => 'En attente'
         };
     }
-    //Cette fonction sert à récupérer la catégorie de couleur de l'énumération associée
+
+    /**
+     * Récupérer la catégorie de couleur associée à une énumération
+     * @return string
+     */
     public function colorBadge(): string {
         return match($this) {
             self::Validated => 'success',
@@ -23,7 +32,11 @@ enum StateAbs: string {
             self::Pending => 'secondary'
         };
     }
-    //Cette fonction sert à récupérer toutes les énumérations créées
+
+    /**
+     * Récupérer l'ensemble des énumérations de type StateAbs
+     * @return StateAbs[]
+     */
     public static function getAll(): array {
         return [
           self::Validated,

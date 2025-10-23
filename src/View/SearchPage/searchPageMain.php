@@ -1,10 +1,12 @@
 <?php
+/**
+ * Front end de la page de recherche d'étudiant
+ */
+
 require_once __DIR__ . "/../../Model/Account/Student.php";
 require_once __DIR__ . "/../../Model/Absence/Absence.php";
 require_once __DIR__ . "/../../Model/Account/GroupStudent.php";
-?>
 
-<?php
 // Données temporaires
 $groupe = new GroupStudent(-1, "Groupe -1");
 $groupe2 = new GroupStudent(-2, "Groupe -2");
@@ -72,7 +74,7 @@ $students = [
                 <!-- rendre l'input flexible pour céder de la place au select compact -->
                 <input class="form-control me-2" style="flex:1 1 auto; min-width:0;" type="search"
                        placeholder="Rechercher un étudiant" name="q" aria-label="Rechercher un étudiant">
-                <!-- select plus compact: small + largeur auto limité -->
+                <!-- select plus compact : small + largeur auto limité -->
                 <select class="form-select form-select-sm me-2 w-auto" name="groupe"
                         style="flex:0 0 auto; width:auto; min-width:120px; max-width:200px;">
                     <option value="" disabled selected>Groupe</option>

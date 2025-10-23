@@ -1,5 +1,7 @@
 <?php
-//Cette énumération représente tous les types de cours
+/**
+ * Enumeration représentant les types de cours
+ */
 enum CourseType: string {
     case CM = "CM";
     case TD = "TD";

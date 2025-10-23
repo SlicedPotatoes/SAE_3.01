@@ -2,6 +2,9 @@
 require_once "StateJustif.php";
 require_once __DIR__ . "/../Absence/Absence.php";
 
+/**
+ * Classe Justification, basé sur la base de données.
+ */
 class Justification {
     private int $idJustification;
     private string $cause;
@@ -27,17 +30,22 @@ class Justification {
         $this->absences = [];
     }
 
+    // Getter de base
     public function getIdJustification(): int { return $this->idJustification; }
     public function getCause(): string { return $this->cause; }
     public function getCurrentState(): StateJustif { return $this->currentState; }
     public function getStartDate(): DateTime { return $this->startDate; }
     public function getEndDate(): DateTime { return $this->endDate; }
     public function getSendDate(): DateTime { return $this->sendDate; }
-    public function getProcessedDate(): DateTime { return $this->processedDate; }
-    /*
-    Cette fonction sert à récupérer les noms des fichiers.
-    Si la liste est vide, une requête est effectuée dans la base de données pour les récupérer.
-    */
+    public function getProcessedDate(): DateTime|null { return $this->processedDate; }
+
+    /**
+     * Récupérer les fichiers liés à un justificatif
+     *
+     * Si c'est le premier appel de cette méthode, récupère les données depuis la base
+     *
+     * @return File[]
+     */
     public function getFiles(): array {
         if(count($this->files) == 0) {
             global $connexion;
@@ -52,11 +60,13 @@ class Justification {
         return $this->files;
     }
 
-
-    /*
-    Cette fonction sert à récupérer les absences stockées dans le justificatif. S’il n’y a pas d’absences enregistrées,
-    elle récupère celles qui sont liées au justificatif dans la base de données.
-    */
+    /**
+     * Récupérer les absences liées aux justificatifs
+     *
+     * Si c'est le premier appel de cette méthode, récupère les données depuis la base
+     *
+     * @return Absence[]
+     */
     public function getAbsences(): array {
         if(count($this->absences) == 0) {
             global $connection;
@@ -81,10 +91,26 @@ class Justification {
         return $this->absences;
     }
 
-
-    /*
-    Cette fonction sert à insérer les données d’un justificatif dans la base de données, à lier les justificatifs aux absences,
-    à insérer des fichiers dans la base de données et à les associer au justificatif.
+    /**
+     * Inserer un justificatif dans la base de données
+     *
+     * Fais la liaison avec les absences de l'étudiant pouvant être justifié sur le période sélectionné
+     *
+     * Inserer les fichiers du justificatif
+     *
+     * S'il n'y a pas d'absence justifiable sur la periode sélectionné, l'insertion est annulé
+     *
+     * Renvoie true ou false en fonction de si le justificatif a été inséré ou non
+     *
+     * TODO: Utilisation de Transaction
+     * TODO: Enlever les boucle d'insertion en faisant une seul requête
+     *
+     * @param $idStudent
+     * @param $cause
+     * @param $startDate
+     * @param $endDate
+     * @param $files
+     * @return bool
      */
     static public function insertJustification($idStudent, $cause, $startDate, $endDate, $files): bool
     {
@@ -120,7 +146,7 @@ class Justification {
             $row->bindParam('idJustification', $idJustification);
             $row->execute();
 
-            $absence->setState(StateAbs::Pending->value);
+            $absence->setState(StateAbs::Pending);
             $absence->setAllowedJustification(false);
 
             $countAbs++;
@@ -145,12 +171,20 @@ class Justification {
         return true;
     }
 
-
-
-    /*
-    Cette fonction sert à récupérer les justificatifs stockés dans la base de données, filtrés à l’aide des différentes variables d’entrée.
-    Si la variable examen est définie sur false, alors la fonction renverra tous les justificatifs en ignorant les contraintes liés aux examens.
-    */
+    /**
+     * Recherche de justificatifs avec filtres optionnels.
+     *
+     * - Fenêtre de dates incluse.
+     * - Si `$examen` = true, on restreint aux justificatifs contenant une absence à un examen ; sinon on ne filtre pas sur examen.
+     * - Si `$currentState` est fourni, on filtre exactement cet état.
+     *
+     * @param $idStudent
+     * @param $startDate
+     * @param $endDate
+     * @param $currentState
+     * @param $examen
+     * @return Justification[]
+     */
     public static function selectJustification($idStudent,$startDate,$endDate,$currentState,$examen): array
     {
         //Récupération de la connexion et déclaration de variable
@@ -238,19 +272,16 @@ class Justification {
         $row->bindParam('idJustification', $this->idJustification);
 
         //Changement selon l'état du justificatif
-        if($this->currentState == StateJustif::NotProcessed)
-        {
+        if($this->currentState == StateJustif::NotProcessed) {
             $this->currentState = StateJustif::Processed;
-            $temp = StateJustif::Processed->value;
-            $row->bindParam('currentState', $temp);
-            $row->execute();
-
-        }else
-        {
-            $this->currentState = StateJustif::NotProcessed;
-            $temp = StateJustif::NotProcessed->value;
-            $row->bindParam('currentState', $temp);
-            $row->execute();
+            $value = StateJustif::Processed->value;
         }
+        else {
+            $this->currentState = StateJustif::NotProcessed;
+            $value = StateJustif::NotProcessed->value;
+        }
+
+        $row->bindParam('currentState', $value);
+        $row->execute();
     }
 }

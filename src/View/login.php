@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * Front de la page de connexion
  */
 

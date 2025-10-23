@@ -1,12 +1,12 @@
 <?php
-/*
+/**
  * Front de la barre de filtre, pour les justificatifs et les absences
  */
 
 global $currTabValue, $states, $filter, $currPage;
 ?>
 <form class="border-bottom px-4 m-0" action="index.php" method="GET">
-    <!-- Envoie de la page courante et de l'onglet -->
+    <!-- Envoi de la page courante et de l'onglet -->
     <input type="hidden" name="currPage" value="<?=$currPage?>">
     <input type="hidden" name="currTab" value="<?= $currTabValue ?>">
 
@@ -44,7 +44,7 @@ global $currTabValue, $states, $filter, $currPage;
         <!-- Select State -->
         <div class="row g-3 align-items-center">
             <div class="col-auto">
-                <label for="<?= $currTabValue ?>State" class="col-form-label">Etat:</label>
+                <label for="<?= $currTabValue ?>State" class="col-form-label">État:</label>
             </div>
             <div class="col-auto">
                 <select
@@ -54,7 +54,7 @@ global $currTabValue, $states, $filter, $currPage;
                 >
                     <option value="" <?= $filter[$currTabValue]['State'] == null ? 'selected' : '' ?>>Tout</option>
                     <?php
-                        // Liste des différents etats
+                        // Liste des différents états
                         foreach($states as $state) {
                             echo "<option value='".$state->value."'". ($filter[$currTabValue]['State'] == $state->value ? 'selected' : '') .">".$state->label()."</option>";
                         }

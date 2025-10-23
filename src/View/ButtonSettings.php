@@ -1,5 +1,9 @@
 <?php
-require_once "./View/Modal/modalLogOut.html";
+/**
+ * Frontend du bouton parametre
+ */
+
+require_once __DIR__ . "/Modal/modalLogOut.html";
 ?>
 
 <!-- Bouton pour avoir le dropdown menu pour modifier les informations profiles, nous pourrons ajouter d'autres fonctionnalité plus tard -->

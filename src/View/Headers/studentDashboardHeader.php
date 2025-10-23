@@ -1,7 +1,12 @@
- <!--Récupération des données-->
 <?php
-require_once "./Presentation/StudentPresentation.php";
+/**
+ * Header du dashboard / profil étudiant
+ */
+
+require_once __DIR__ . "/../../Presentation/StudentPresentation.php";
 global $role;
+
+// Récupération des données
 
 $studentAccount = StudentPresentation::getStudentAccountDashboard();
 
@@ -26,6 +31,6 @@ else
 <?php
 if ($role == AccountType::Student || $role == AccountType::EducationalManager && $currPage="studentProfile")
 {
-    require "./View/Dashboard/Student/cards.php";
+    require __DIR__ . "/../../View/Dashboard/Student/cards.php";
 }
 ?>

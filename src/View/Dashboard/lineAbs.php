@@ -1,7 +1,9 @@
 <?php
-/*
+/**
  * Front d'une ligne d'absence dans le dashboard
  */
+
+global $index, $abs;
 ?>
 <div class="accordion-item">
     <div class="accordion-header">
@@ -31,7 +33,7 @@
     </div>
     <div id="flush-collapse-abs-<?= $index ?>" class="accordion-collapse collapse" data-bs-parent="#absFlush">
         <div class="accordion-body p-3">
-            <!-- mettre les info grâce a Absence-->
+            <!-- mettre les infos grâce à Absence-->
             <?php if($abs->getTeacher() != null): ?>
                 <p><strong>Professeur :</strong> <?= htmlspecialchars($abs->getTeacher()->getFirstname() . ' ' . $abs->getTeacher()->getLastname()) ?></p>
             <?php endif; ?>

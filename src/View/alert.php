@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * Front end d'une alerte
  */
 

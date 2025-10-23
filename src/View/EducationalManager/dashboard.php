@@ -1,6 +1,6 @@
 <?php
-/*
- * Font end du dash board
+/**
+ * Font end Dashboard du responsable pédagogique
  */
 require_once "./Model/Absence.php";
 require_once "./Model/Justification.php";
@@ -13,7 +13,7 @@ $currTab = isset($_GET['currTab']) ? $_GET['currTab'] : 'proof';
 /*
  * Tableau contenant les filtres
  * Utiliser pour la requête des filtres
- * Et egalement pour afficher la valeur du filtre actuel
+ * Et également pour afficher la valeur du filtre actuel
  */
 // Tableau contenant les filtres, utilisé pour effectuer la requete e
 $filter = [

@@ -1,9 +1,8 @@
 <?php
-/*
+/**
  * Front d'une ligne d'un justificatif dans le dashboard.
  */
-?>
-<?php
+
 // Récupération des infos de la justification via researchFile.php ou via la BDD
 $fileName = isset($fileName) ? $fileName : null;
 $info = null;

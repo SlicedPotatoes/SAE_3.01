@@ -1,42 +1,42 @@
 <?php
-/*
- * Ce script permet de gérer l'affichage.
- * Il choisi quel vu afficher en fonction
- * de l'état de l'application.
+/**
+ * Point d'entrée de l'application
+ *
+ * Gére l'affichage de la page en fonction de l'état de l'application
  */
 
-    // Pour le debug
-    ini_set('display_errors', 1);
-    ini_set('display_startup_errors', 1);
-    error_reporting(E_ALL);
+// Pour le debug
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
-    require_once "./Model/Account/Account.php";
-    require_once "./Model/Account/Student.php";
-    require_once "./Presentation/globalVariable.php";
+require_once "./Model/Account/Account.php";
+require_once "./Model/Account/Student.php";
+require_once "./Presentation/globalVariable.php";
 
-    // Définition des routes
-    $route = [
+// Définition des routes
+$route = [
         "login" => "./View/login.php",
         "dashboard" => "./View/Dashboard/studentDashboard.php",
         "searchpage" => "./View/SearchPage/searchPageMain.php",
-    ];
-    $title = [
+];
+$title = [
         "login" => "Connexion",
         "dashboard" => "Tableau de bord",
         "searchpage" => "Page de recherche"
-    ];
+];
 
-    // Valeur par défault, si currPage n'est pas définie
-    $currPage = $_GET['currPage'] ?? "dashboard";
+// Valeur par défault, si currPage n'est pas définie
+$currPage = $_GET['currPage'] ?? "dashboard";
 
-    session_start();
-    //var_dump($_SESSION);
+session_start();
+//var_dump($_SESSION);
 
-    $role = null;
+$role = null;
 
-    // Si l'utilisateur n'est pas connecté, rediriger vers la page de connexion.
-    if(isset($_SESSION['role'])) { $role = $_SESSION['role']; }
-    else { $currPage = "login"; }
+// Si l'utilisateur n'est pas connecté, rediriger vers la page de connexion.
+if(isset($_SESSION['role'])) { $role = $_SESSION['role']; }
+else { $currPage = "login"; }
 ?>
 
 <!doctype html>
@@ -81,12 +81,10 @@
                         }
                     }
                 }
-            ?>
 
-            <?php
-            // Afficher le contenue de la page
-            if(array_key_exists($currPage, $route)) { require $route[$currPage]; }
-            else { require "./View/404.html"; }
+                // Afficher le contenu de la page
+                if(array_key_exists($currPage, $route)) { require $route[$currPage]; }
+                else { require "./View/404.html"; }
             ?>
         </div>
 

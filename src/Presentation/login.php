@@ -1,6 +1,12 @@
 <?php
-/*
- * Script de connexion
+/**
+ * Script de gestion de connexion
+ *
+ * Vérification des identifiants fournis par l'utilisateur
+ *
+ * Si les identifiants fournis sont correcte, création d'une session avec les éléments nécéssaire au bon fonctionnement de l'application.
+ *
+ * TODO: Connecter a la BDD
  */
 
 ini_set('display_errors', 1);

@@ -57,7 +57,7 @@ class Absence {
         return $this->student;
     }
 
-    //    Getter de base
+    // Getter de base
     public function getTime(): DateTime { return $this->time; }
     public function getDuration(): string { return $this->duration; }
     public function getExamen(): bool { return $this->examen; }
@@ -74,11 +74,13 @@ class Absence {
         return $this->justifications;
     }
 
-    /*
-     * Mes a jour la collonne allowedJustification dens la bace 2 donner
+    /**
+     * Mes a jour la colonne allowedJustification dans la BDD
      * Et localement sur l'objet
+     *
+     * @param bool $value
      */
-    public function setAllowedJustification($value): void {
+    public function setAllowedJustification(bool $value): void {
         global $connection;
         $query = "UPDATE Absence SET allowedJustification = :value WHERE idStudent = :idStudent AND time = :time";
         $row = $connection->prepare($query);
@@ -94,10 +96,13 @@ class Absence {
         $this->allowedJustification = $value;
     }
 
-        /*
-         * Mes a jour la collonne state dans la base de données
-         * Et localement sur l'objet
-         */    public function setState($state): void {
+    /**
+     * Mes a jour la colonne state dans la BDD
+     * Et localement sur l'objet
+     *
+     * @param StateAbs $state
+     */
+    public function setState(StateAbs $state): void {
         global $connection;
         $query = "UPDATE Absence SET currentState = :value WHERE idStudent = :idStudent AND time = :time";
         $row = $connection->prepare($query);
@@ -105,23 +110,34 @@ class Absence {
         $idStudent = $this->getIdAccount();
         $dateString = $this->time->format('Y-m-d H:i:s');
 
-        $row->bindParam('value', $state);
+        $stateString = $state->value;
+
+        $row->bindParam('value', $stateString);
         $row->bindParam('idStudent', $idStudent);
         $row->bindParam('time', $dateString);
         $row->execute();
 
-        $this->currentState = StateAbs::from($state);
+        $this->currentState = $state;
     }
 
     /**
      * Recherche d’absences avec filtres optionnels.
      *
      * - Fenêtre de dates incluse.
-     * - Si $examen = true, on restreint aux absences d’examen ; sinon on ne filtre pas sur examen.
-     * - Si $state est fourni, on filtre exactement cet état.
-     * - Si $locked, on restreint à allowedJustification = false AND currentState IN ('Refused','NotJustified').
+     * - Si `$examen` = true, on restreint aux absences d’examen ; sinon on ne filtre pas sur examen.
+     * - Si `$state` est fourni, on filtre exactement cet état.
+     * - Si `$locked` on restreint à allowedJustification = false AND currentState IN ('Refused','NotJustified').
      *
-     * Retour : liste d’objets Absence filtré et trié par time DESC.
+     * Retour : liste d’objets Absence filtrée et trié par time DESC.
+     *
+     * @param int|null $studentId
+     * @param string|null $startDate
+     * @param string|null $endDate
+     * @param bool $examen
+     * @param bool $locked
+     * @param string|null $state
+     *
+     * @return Absence[]
      */
     static public function getAbsencesStudentFiltered (
         int | null    $studentId,
@@ -173,7 +189,7 @@ class Absence {
             $where[] = "examen = true";
         }
 
-        // Si $locked = true, on limite aux absences qui sont vérouillé parmis les refusés et les non-justifiée
+        // Si $locked = true, on limite aux absences qui sont vérrouillé parmi les refusés et les non-justifiée
         if ($locked)
         {
             $where[] = "allowedJustification = false AND (currentState = 'Refused' OR currentState = 'NotJustified')";
