@@ -3,6 +3,8 @@ require_once __DIR__ . "/Account.php";
 require_once __DIR__ . "/GroupStudent.php";
 require_once __DIR__ . "/../connection.php";
 
+require_once __DIR__ . "/../Filter/FilterStudent.php";
+
 /**
  * Classe Student, basé sur la BDD
  */
@@ -371,5 +373,68 @@ class Student extends Account {
             $res['studentnumber'],
             new GroupStudent($res['idgroupstudent'], $res['label'])
         );
+    }
+
+    /**
+     * Récupérer depuis la BDD les étudiants correspondant au filtre
+     * Trier par ordre croissant des noms / prénoms
+     *
+     * @param FilterStudent $filter
+     * @return Student[]
+     */
+    public static function getAllStudents(FilterStudent $filter): array {
+        global $connection;
+
+        $query = "SELECT Account.*, Student.*, GroupStudent.label AS GroupStudent FROM Account
+                  JOIN Student USING(idAccount)
+                  JOIN GroupStudent USING(idGroupStudent)";
+
+        $parameters = array(); // valeurs à binder sur la requête préparée
+        $where = array(); // conditions SQL
+
+        if($filter->getGroupStudent() != null) {
+            $where[] = "idGroupStudent = :idGroupStudent";
+            $parameters['idGroupStudent'] = $filter->getGroupStudent();
+        }
+
+        if($filter->getSearch() != null) {
+            $where[] = "lastname ILIKE :search OR firstname ILIKE :search";
+            $parameters['search'] = '%'.$filter->getSearch().'%';
+        }
+
+        // Construction finale de la requête
+        if (!empty($where)) {
+            $query .= " where " . implode(" and ", $where);
+        }
+
+        $query .= " ORDER BY lastname, firstname";
+
+        // Préparation + binding des paramètres
+        $req = $connection->prepare($query);
+        foreach ($parameters as $key => $value) {
+            $req->bindValue(':'.$key, $value);
+        }
+        $req->execute();
+
+        $res = $req->fetchAll();
+
+        $students = [];
+
+        foreach ($res as $r) {
+            $students[] = new Student(
+                $r['idaccount'],
+                $r['lastname'],
+                $r['firstname'],
+                $r['email'],
+                AccountType::from($r['accounttype']),
+                $r['studentnumber'],
+                new GroupStudent(
+                    $r['idgroupstudent'],
+                    $r['groupstudent']
+                )
+            );
+        }
+
+        return $students;
     }
 }
