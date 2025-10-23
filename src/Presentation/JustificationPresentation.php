@@ -14,4 +14,7 @@ class JustificationPresentation
                         $filter['proof']['Exam']
         );
     }
+    public static function getJustificationById($id) {
+        return Justification::getJustificationById($id);
+    }
 }

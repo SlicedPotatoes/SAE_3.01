@@ -80,20 +80,22 @@ if (!$info && $fileName) {
 <div class="accordion-item">
     <div class="accordion-header">
         <?php if (isset($justification) && is_object($justification) && method_exists($justification, 'getIdJustification')): ?>
-            <div class="accordion-header d-flex align-items-center gap-3 p-3" 
-                 style="cursor: pointer; background-color: #f8f9fa; border: 1px solid #dee2e6; border-radius: 0.375rem;"
-                 onclick="window.location.href='index.php?currPage=detailJustification&id=<?= $justification->getIdJustification(); ?>'"
-            >
-                <div class="d-flex flex-column">
-                    <div>Date de début: <?= $justification->getStartDate() instanceof DateTime ? $justification->getStartDate()->format('d/m/Y') : htmlspecialchars((string)$justification->getStartDate()); ?></div>
-                    <div>Date de fin: <?= $justification->getEndDate() instanceof DateTime ? $justification->getEndDate()->format('d/m/Y') : htmlspecialchars((string)$justification->getEndDate()); ?></div>
-                </div>
-                <div class="d-flex align-items-center gap-3 flex-grow-1">
-                    <span class='badge rounded-pill text-bg-<?= htmlspecialchars($justification->getCurrentState()->colorBadge()) ?>'><?= htmlspecialchars($justification->getCurrentState()->label()) ?></span>
-                </div>
-            </div>
+            <a href="?currPage=detailsJustification&id=<?= $justification->getIdJustification(); ?>"
+               class="text-decoration-none">
+                <button class="accordion-button collapsed d-flex align-items-center gap-3 p-3"
+                        type="button"
+                >
+                    <div class="d-flex flex-column">
+                        <div>Date de début: <?= $justification->getStartDate() instanceof DateTime ? $justification->getStartDate()->format('d/m/Y') : htmlspecialchars((string)$justification->getStartDate()); ?></div>
+                        <div>Date de fin: <?= $justification->getEndDate() instanceof DateTime ? $justification->getEndDate()->format('d/m/Y') : htmlspecialchars((string)$justification->getEndDate()); ?></div>
+                    </div>
+                    <div class="d-flex align-items-center gap-3 flex-grow-1">
+                        <span class='badge rounded-pill text-bg-<?= htmlspecialchars($justification->getCurrentState()->colorBadge()) ?>'><?= htmlspecialchars($justification->getCurrentState()->label()) ?></span>
+                    </div>
+                </button>
+            </a>
         <?php else: ?>
-            <div class="alert alert-danger">Erreur : justification non définie ou méthode manquante.</div>
+            <div class="alert alert-danger">Erreur : justification non définie ou méthode manquante.</div>
         <?php endif; ?>
     </div>
 </div>
