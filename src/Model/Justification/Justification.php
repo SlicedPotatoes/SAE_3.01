@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . "/StateJustif.php";
 require_once __DIR__ . "/../Absence/Absence.php";
-
+require_once __DIR__ . "/../Filter/FilterJustification.php";
 /**
  * Classe Justification, basé sur la base de données.
  */
@@ -178,14 +178,13 @@ class Justification {
      * - Si `$examen` = true, on restreint aux justificatifs contenant une absence à un examen ; sinon on ne filtre pas sur examen.
      * - Si `$currentState` est fourni, on filtre exactement cet état.
      *
-     * @param $idStudent
-     * @param $startDate
-     * @param $endDate
-     * @param $currentState
-     * @param $examen
+     * Retour : liste d’objets Justificatifs filtrée et trié par sendDate DESC.
+     *
+     * @param null | int $idStudent
+     * @param FilterJustification $filter
      * @return Justification[]
      */
-    public static function selectJustification($idStudent,$startDate,$endDate,$currentState,$examen): array
+    public static function selectJustification(null | int $idStudent, FilterJustification $filter): array
     {
         //Récupération de la connexion et déclaration de variable
         global $connection;
@@ -202,25 +201,25 @@ class Justification {
             $parameters['idStudent'] = $idStudent;
             $query .= " WHERE idStudent = :idStudent";
         }
-        if($startDate != null)
+        if($filter->getDateStart() != null)
         {
             $query .= " and endDate >= :startDate";
-            $parameters["startDate"] = $startDate;
+            $parameters["startDate"] = $filter->getDateStart();
         }
-        if($endDate != null)
+        if($filter->getDateEnd() != null)
         {
             $query .= " and startdate <= :endDate";
-            $parameters["endDate"] = $endDate;
+            $parameters["endDate"] = $filter->getDateEnd();
         }
-        if($currentState != null){
+        if($filter->getState() != null){
             $query .= " and currentState = :currentState";
-            $parameters["currentState"] = $currentState;
+            $parameters["currentState"] = $filter->getState();
         }
         if (!empty($where))
         {
             $query .= " where " . implode(" and ", $where);
         }
-        if($examen)
+        if($filter->getExamen())
         {
             $query .= " INTERSECT SELECT DISTINCT idJustification, cause, j.currentState, startDate, endDate, sendDate, processedDate
             FROM absence a join absenceJustification using (idStudent,time)

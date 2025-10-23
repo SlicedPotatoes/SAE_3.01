@@ -5,6 +5,7 @@ require_once __DIR__ . "/CourseType.php";
 require_once __DIR__ . "/../Account/Student.php";
 require_once __DIR__ . "/../Account/Teacher.php";
 require_once __DIR__ . "/Resource.php";
+require_once __DIR__ . "/../Filter/FilterAbsence.php";
 
 /**
  * Classe d'Absence, basé sur la base de données.
@@ -129,22 +130,11 @@ class Absence {
      *
      * Retour : liste d’objets Absence filtrée et trié par time DESC.
      *
-     * @param int|null $studentId
-     * @param string|null $startDate
-     * @param string|null $endDate
-     * @param bool $examen
-     * @param bool $locked
-     * @param string|null $state
-     *
+     * @param null | int $studentId
+     * @param FilterAbsence $filter
      * @return Absence[]
      */
-    static public function getAbsencesStudentFiltered (
-        int | null    $studentId,
-        string | null $startDate,
-        string | null $endDate,
-        bool          $examen,
-        bool          $locked,
-        string | null $state): array
+    static public function getAbsencesStudentFiltered (null | int $studentId, FilterAbsence $filter): array
     {
         global $connection;
 
@@ -163,33 +153,33 @@ class Absence {
             $parameters["studentId"] = $studentId;
         }
 
-        if ($startDate !== null)
+        if ($filter->getDateStart() !== null)
         {
             $where[] = "time >= :startDate";
-            $parameters["startDate"] = $startDate;
+            $parameters["startDate"] = $filter->getDateStart();
         }
 
-        if ($endDate !== null)
+        if ($filter->getDateEnd() !== null)
         {
             $where[] = "time <= cast(:endDate as date) + interval '1 day'";
-            $parameters["endDate"] = $endDate;
+            $parameters["endDate"] = $filter->getDateEnd();
         }
 
         // Si $state = true, on limite strictement au state sinon on ne filtre pas
-        if ($state !== null)
+        if ($filter->getState() !== null)
         {
             $where[] = "currentState = :state";
-            $parameters["state"] = $state;
+            $parameters["state"] = $filter->getState();
         }
 
         // Si $examen = true, on limite aux absences d'examen sinon on ne filtre pas
-        if ($examen)
+        if ($filter->getExamen())
         {
             $where[] = "examen = true";
         }
 
         // Si $locked = true, on limite aux absences qui sont vérrouillé parmi les refusés et les non-justifiée
-        if ($locked)
+        if ($filter->getLocked())
         {
             $where[] = "allowedJustification = false AND (currentState = 'Refused' OR currentState = 'NotJustified')";
         }
@@ -224,14 +214,10 @@ class Absence {
                 $r['duration'],
                 $r['examen'],
                 $r['allowedjustification'],
-
                 isset($r['idteacher']) ? new Teacher($r['idteacher'], $r['lastname'], $r['firstname'], $r['email']) : null,
-
                 StateAbs::from($r['currentstate']),
                 CourseType::from($r['coursetype']),
-
                 new Resource($r['idresource'], $r['label']),
-
                 (isset($r['dateresit']) ? DateTime::createFromFormat("Y-m-d H:i:s", $r['dateresit']) : null)
             );
         }

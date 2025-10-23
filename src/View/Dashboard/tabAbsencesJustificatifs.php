@@ -27,7 +27,7 @@ global $currTab, $filter;
 
         <div class="accordion accordion-flush" id="justificationFlush">
             <?php
-                $listJustifications = JustificationPresentation::getJustifications($filter);
+                $listJustifications = JustificationPresentation::getJustifications($filter['proof']);
 
                 foreach($listJustifications as $justification) {
                     require __DIR__ . "/lineJustification.php";
@@ -52,7 +52,7 @@ global $currTab, $filter;
         <div class="accordion accordion-flush" id="absFlush">
             <?php
             $index = 0;
-            $listAbs = AbsencePresentation::getAbsences($filter);
+            $listAbs = AbsencePresentation::getAbsences($filter['abs']);
 
             foreach($listAbs as $abs) {
                 require "lineAbs.php";
