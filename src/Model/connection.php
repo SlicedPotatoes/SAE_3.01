@@ -1,13 +1,12 @@
 <?php
-require __DIR__. "/../Presentation/globalVariable.php";
-global $TEST;
+$TEST = false;// À mettre sûr true pendant un test unitaire
 // établit une variable connexion qui fait la liaison avec la base de données
 if($TEST){
     echo "Base de données de test";
     $host = "localhost";
     $user = "postgres";
-    $password = "1234";
-    $dbname = "bddperso";
+    $password = "12345";
+    $dbname = "postgres";
 }else{
     $host = "tommytech.net";
     $user = "kevin";
@@ -18,4 +17,5 @@ try {
     $connection = new PDO("pgsql:host=$host;dbname=$dbname", $user, $password);
     $connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $e) {
+    echo "Connection failed: " . $e->getMessage();
 }

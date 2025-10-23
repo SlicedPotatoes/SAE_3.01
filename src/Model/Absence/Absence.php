@@ -1,10 +1,10 @@
 <?php
-require_once "connection.php";
+require_once __DIR__ . "/../connection.php";
 
 require_once "StateAbs.php";
 require_once "CourseType.php";
-require_once "Student.php";
-require_once "Teacher.php";
+require_once __DIR__ . "/../Account/Student.php";
+require_once __DIR__ . "/../Account/Teacher.php";
 require_once "Resource.php";
 
 /**
@@ -49,9 +49,9 @@ class Absence {
         return $this->student;
     }
 
-    public function getIdStudent():int {
+    public function getIdAccount():int {
         if(gettype($this->student) != 'integer') {
-            return $this->student->getStudentId();
+            return $this->student->getIdAccount();
         }
 
         return $this->student;
@@ -62,11 +62,11 @@ class Absence {
     public function getDuration(): string { return $this->duration; }
     public function getExamen(): bool { return $this->examen; }
     public function getAllowedJustification(): bool { return $this->allowedJustification; }
-    public function getTeacher(): Teacher { return $this->teacher; }
+    public function getTeacher(): null | Teacher { return $this->teacher; }
     public function getCurrentState(): StateAbs { return $this->currentState; }
     public function getCourseType(): CourseType { return $this->courseType; }
     public function getResource(): Resource { return $this->resource; }
-    public function getDateResit(): DateTime { return $this->dateResit; }
+    public function getDateResit(): null | DateTime { return $this->dateResit; }
     public function getJustifications(): array {
         if(count($this->justifications) == 0) {
             // TODO: Requête SQL
@@ -83,7 +83,7 @@ class Absence {
         $query = "UPDATE Absence SET allowedJustification = :value WHERE idStudent = :idStudent AND time = :time";
         $row = $connection->prepare($query);
 
-        $idStudent = $this->getIdStudent();
+        $idStudent = $this->getIdAccount();
         $dateString = $this->time->format('Y-m-d H:i:s');
 
         $row->bindParam('value', $value, PDO::PARAM_BOOL);
@@ -102,7 +102,7 @@ class Absence {
         $query = "UPDATE Absence SET currentState = :value WHERE idStudent = :idStudent AND time = :time";
         $row = $connection->prepare($query);
 
-        $idStudent = $this->getIdStudent();
+        $idStudent = $this->getIdAccount();
         $dateString = $this->time->format('Y-m-d H:i:s');
 
         $row->bindParam('value', $state);
@@ -133,7 +133,10 @@ class Absence {
     {
         global $connection;
 
-        $query = "select * from absence";
+
+        $query = "select * from absence
+                    join Resource using (idResource)
+                    left join Account on idteacher = idAccount";
 
         $parameters = array(); // valeurs à binder sur la requête préparée
         $where = array(); // conditions SQL
@@ -197,6 +200,7 @@ class Absence {
 
         // Initialisation des lignes de la base de données vers des objets Absence
         $absences = [];
+
         foreach ($rows as $r)
         {
             $absences[] = new Absence(
@@ -205,10 +209,14 @@ class Absence {
                 $r['duration'],
                 $r['examen'],
                 $r['allowedjustification'],
-                null,
+
+                isset($r['idteacher']) ? new Teacher($r['idteacher'], $r['lastname'], $r['firstname'], $r['email']) : null,
+
                 StateAbs::from($r['currentstate']),
                 CourseType::from($r['coursetype']),
-                null,
+
+                new Resource($r['idresource'], $r['label']),
+
                 (isset($r['dateresit']) ? DateTime::createFromFormat("Y-m-d H:i:s", $r['dateresit']) : null)
             );
         }

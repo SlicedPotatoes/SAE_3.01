@@ -1,6 +1,7 @@
 <?php
 require_once "StateJustif.php";
-require_once "Absence.php";
+require_once __DIR__ . "/../Absence/Absence.php";
+
 class Justification {
     private int $idJustification;
     private string $cause;
@@ -59,40 +60,26 @@ class Justification {
     public function getAbsences(): array {
         if(count($this->absences) == 0) {
             global $connection;
-            $query = $connection->prepare(
-                "SELECT * FROM absence 
-             JOIN absenceJustification USING (idStudent,time) 
-             WHERE idJustification = :idJustification"
-            );
+            $query = $connection->prepare("SELECT * FROM absenceJustification join absence using(idStudent,time)
+            join resource using (idResource) join account on idteacher = idaccount where idJustification = :idJustification");
             $query->bindParam(":idJustification", $this->idJustification);
             $query->execute();
-            $absences = $query->fetchAll(PDO::FETCH_ASSOC);
-
+            $absences = $query->fetchAll();
             foreach($absences as $absence) {
-                $stateAbs = isset($absence['currentState']) && $absence['currentState'] !== null
-                    ? StateAbs::from($absence['currentState'])
-                    : StateAbs::Pending; // par défaut
-
-                $allowedJustification = $absence['allowedJustification'] ?? false;
-                $courseType = isset($absence['courseType']) ? CourseType::from($absence['courseType']) : null;
-
-                $this->absences[] = new Absence(
-                    $absence["idstudent"],
+                    $this->absences[] = new Absence($absence["idstudent"],
                     DateTime::createFromFormat("Y-m-d H:i:s", $absence["time"]),
                     $absence["duration"],
-                    $absence["examen"] ?? false,
-                    $allowedJustification,
-                    null,
-                    $stateAbs,
-                    $courseType,
-                    null,
-                    isset($absence['dateresit']) ? DateTime::createFromFormat("Y-m-d H:i:s", $absence['dateresit']) : null
-                );
+                    $absence["examen"],
+                    $absence["allowedjustification"],
+                    new Teacher($absence["idteacher"], $absence["lastname"], $absence["firstname"], $absence["email"]),
+                    StateAbs::from($absence['currentstate']),
+                    CourseType::from($absence['coursetype']),
+                    new Resource($absence["idresource"],$absence["label"]),
+                    (isset($absence['dateresit']) ? DateTime::createFromFormat("Y-m-d H:i:s", $absence['dateresit']) : null));
             }
         }
         return $this->absences;
     }
-
 
 
     /*

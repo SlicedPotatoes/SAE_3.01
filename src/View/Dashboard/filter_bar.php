@@ -1,6 +1,6 @@
 <?php
 /*
- * Front de de la barre de filtre, pour les justificatifs et les absences
+ * Front de la barre de filtre, pour les justificatifs et les absences
  */
 
 global $currTabValue, $states, $filter, $currPage;
