@@ -1,6 +1,6 @@
 <?php
-require_once "Account.php";
-require_once "GroupStudent.php";
+require_once __DIR__ . "/Account.php";
+require_once __DIR__ . "/GroupStudent.php";
 require_once __DIR__ . "/../connection.php";
 
 /**

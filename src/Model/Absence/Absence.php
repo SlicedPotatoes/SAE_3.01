@@ -1,11 +1,10 @@
 <?php
 require_once __DIR__ . "/../connection.php";
-
-require_once "StateAbs.php";
-require_once "CourseType.php";
+require_once __DIR__ . "/StateAbs.php";
+require_once __DIR__ . "/CourseType.php";
 require_once __DIR__ . "/../Account/Student.php";
 require_once __DIR__ . "/../Account/Teacher.php";
-require_once "Resource.php";
+require_once __DIR__ . "/Resource.php";
 
 /**
  * Classe d'Absence, basé sur la base de données.

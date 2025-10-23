@@ -1,5 +1,5 @@
 <?php
-require_once "StateJustif.php";
+require_once __DIR__ . "/StateJustif.php";
 require_once __DIR__ . "/../Absence/Absence.php";
 
 /**

@@ -6,7 +6,7 @@ error_reporting(E_ALL);
 
 require_once __DIR__ . '/../Presentation/globalVariable.php';
 require_once __DIR__ . '/../Model/connection.php';
-require_once __DIR__ . '/../Model/Justification.php';
+require_once __DIR__ . '/../Model/Justification/Justification.php';
 
 $studentId = $argv[1] ?? null;
 if ($studentId === null) {

@@ -1,7 +1,7 @@
 <?php
 
 require_once __DIR__ . "/../connection.php";
-require_once "AccountType.php";
+require_once __DIR__ . "/AccountType.php";
 
 /**
  * Classe Account, basé sur la base de données.

@@ -2,13 +2,19 @@
 /**
  * Font end du dashboard d'un étudiant
  */
-    require_once "./Model/Absence/Absence.php";
-    require_once "./Model/Justification/Justification.php";
 
-    require_once "./View/Modal/modalJustificationAbsence.php";
+require_once __DIR__ . "/../../Model/Absence/Absence.php";
+require_once __DIR__ . "/../../Model/Justification/Justification.php";
 
-    // Récupérer l'onglet courrant, pour pouvoir ouvrir la page sur le bon onglet
-    $currTab = isset($_GET['currTab']) ? $_GET['currTab'] : 'proof';
+require_once __DIR__ . "/../../Presentation/StudentPresentation.php";
+require_once __DIR__ . "/../../Presentation/AbsencePresentation.php";
+require_once __DIR__ . "/../../Presentation/JustificationPresentation.php";
+
+require_once __DIR__ . "/../Headers/studentDashboardHeader.php";
+require_once __DIR__ . "/../Modal/modalJustificationAbsence.php";
+
+// Récupérer l'onglet courant, pour pouvoir ouvrir la page sur le bon onglet
+$currTab = isset($_GET['currTab']) ? $_GET['currTab'] : 'proof';
 
 /*
  * Tableau contenant les filtres
@@ -37,10 +43,10 @@ $filter = [
     <?php
     if ($_SESSION["role"] == AccountType::Student)
     {
-        require "./View/Dashboard/Student/justificationButton.html";
+        require __DIR__ . "/Student/justificationButton.html";
     }
 
-    require "./View/Dashboard/tabAbsencesJustificatifs.php";
+    require __DIR__ . "/tabAbsencesJustificatifs.php";
 
     ?>
 </div>

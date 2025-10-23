@@ -2,10 +2,10 @@
 /**
  * Font end Dashboard du responsable pédagogique
  */
-require_once "./Model/Absence.php";
-require_once "./Model/Justification.php";
+require_once __DIR__ . "/../../Model/Absence/Absence.php";
+require_once __DIR__ . "/../../Model/Justification/Justification.php";
 
-require_once "./View/Modal/modalJustificationAbsence.php";
+require_once __DIR__ . "/../../View/Modal/modalJustificationAbsence.php";
 
 // Récupérer l'onglet courrant, pour pouvoir ouvrir la page sur le bon onglet
 $currTab = isset($_GET['currTab']) ? $_GET['currTab'] : 'proof';
@@ -15,7 +15,6 @@ $currTab = isset($_GET['currTab']) ? $_GET['currTab'] : 'proof';
  * Utiliser pour la requête des filtres
  * Et également pour afficher la valeur du filtre actuel
  */
-// Tableau contenant les filtres, utilisé pour effectuer la requete e
 $filter = [
     'proof' => [
         'DateStart' => isset($_GET['proofDateStart']) && $_GET['proofDateStart'] != '' ? $_GET['proofDateStart'] : null,
@@ -49,7 +48,7 @@ $filter = [
         <?php
         $states = StateJustif::getAll();
         $currTabValue = 'proof';
-        require "filter_bar.php";
+        require __DIR__ . "/../Dashboard/filter_bar.php";
         ?>
 
         <div class="accordion accordion-flush" id="justificationFlush">
@@ -63,7 +62,7 @@ $filter = [
             );
 
             foreach($listJustifications as $justification) {
-                require "lineJustification.php";
+                require __DIR__ . "/../Dashboard/lineJustification.php";
             }
 
             if(count($listJustifications) == 0) {
@@ -78,7 +77,7 @@ $filter = [
         <?php
         $states = StateJustif::getAll();
         $currTabValue = 'proof';
-        require "filter_bar.php";
+        require __DIR__ . "/../Dashboard/filter_bar.php";
         ?>
 
         <div class="accordion accordion-flush" id="justificationFlush">
@@ -92,7 +91,7 @@ $filter = [
             );
 
             foreach($listJustifications as $justification) {
-                require "lineJustification.php";
+                require __DIR__ . "/../Dashboard/lineJustification.php";
             }
 
             if(count($listJustifications) == 0) {

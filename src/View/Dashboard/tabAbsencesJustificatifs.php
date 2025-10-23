@@ -22,7 +22,7 @@ global $currTab, $filter;
         <?php
             $states = StateJustif::getAll();
             $currTabValue = 'proof';
-            require "filter_bar.php";
+            require __DIR__ . "/filter_bar.php";
         ?>
 
         <div class="accordion accordion-flush" id="justificationFlush">
@@ -30,7 +30,7 @@ global $currTab, $filter;
                 $listJustifications = JustificationPresentation::getJustifications($filter);
 
                 foreach($listJustifications as $justification) {
-                    require "lineJustification.php";
+                    require __DIR__ . "/lineJustification.php";
                 }
 
                 if(count($listJustifications) == 0) {

@@ -6,6 +6,8 @@
  *
  * Le script gère l'affichage, la sélection et la suppression des fichiers avant l'envoi du formulaire.
  */
+
+global $ALLOWED_EXTENSIONS_FILE;
 ?>
 <div class="modal fade" id="justifyModal" tabindex="-1" aria-labelledby="justifyModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-scrollable modal-dialog-centered">
