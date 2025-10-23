@@ -15,11 +15,11 @@ class JustificationPresentation
     {
         return Justification::selectJustification
         (
-                        StudentPresentation::getStudentAccountDashboard()->getIdAccount(),
-                        $filter['proof']['DateStart'],
-                        $filter['proof']['DateEnd'],
-                        $filter['proof']['State'],
-                        $filter['proof']['Exam']
+            StudentPresentation::getStudentAccountDashboard()->getIdAccount(),
+            $filter['proof']['DateStart'],
+            $filter['proof']['DateEnd'],
+            $filter['proof']['State'],
+            $filter['proof']['Exam']
         );
     }
 }
