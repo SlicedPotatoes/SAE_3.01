@@ -25,3 +25,16 @@
     margin-top: 5px;
     margin-bottom: 10px;
 }
+
+/* Animer l'affichage des alertes */
+.alert{
+    display: none!important;
+    opacity: 0;
+    transition: opacity 1s ease;
+}
+.alert.showing {
+    display: flex!important;
+}
+.alert.show {
+    opacity: 1;
+}
