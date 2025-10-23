@@ -1,7 +1,7 @@
 <?php
 require_once "Account.php";
 require_once "GroupStudent.php";
-require_once "connection.php";
+require_once __DIR__ . "/../connection.php";
 
 /**
  * Classe de Student, basé sur la base de données.

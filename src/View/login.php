@@ -9,7 +9,7 @@ if($role != null) {
     header("Location: index.php?currPage=dashboard");
 }
 
-require_once './Model/Account.php';
+require_once './Model/Account/Account.php';
 ?>
 
 <div class="d-flex gap-2">
