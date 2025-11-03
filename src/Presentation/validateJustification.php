@@ -1,0 +1,107 @@
+<?php
+/*
+Ce fichier gère la validation des justificatifs par le responsable pédagogique.
+Il permet de valider ou refuser les absences liées à un justificatif, d'enregistrer le motif de refus si nécessaire,
+et de changer l'état du justificatif vers "Traité".
+*/
+
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+session_start();
+
+require_once "../Presentation/globalVariable.php";
+require_once "../Model/connection.php";
+require_once "../Model/Justification/Justification.php";
+require_once "../Model/Absence/Absence.php";
+require_once "../Model/Account/AccountType.php";
+
+global $PROD;
+
+// Vérifier que la requête est bien POST
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    $errorMessage = "HTTP 405 Method Not Allowed";
+    if (!$PROD) { $errorMessage = $errorMessage.": Seulement les requêtes POST sont autorisées"; }
+    header('Location: ../index.php?errorMessage[]='.urlencode($errorMessage));
+    exit;
+}
+
+// Vérifier que les champs requis sont présents
+if (!isset($_POST['idJustification'])) {
+    $errorMessage = "HTTP 400 Bad Request";
+    if (!$PROD) { $errorMessage = $errorMessage.": L'ID du justificatif est requis"; }
+    header('Location: ../index.php?errorMessage[]='.urlencode($errorMessage));
+    exit;
+}
+
+// Récupération des données du formulaire
+$idJustification = $_POST['idJustification'];
+$rejectionReason = trim($_POST['rejectionReason'] ?? '');
+$absences = $_POST['absences'] ?? [];
+
+try {
+    // Récupérer le justificatif
+    $justification = Justification::getJustificationById($idJustification);
+    
+    // Vérifier que le justificatif existe et est en attente de traitement
+    if (!$justification) {
+        $errorMessage = "HTTP 404 Not Found";
+        if (!$PROD) { $errorMessage = $errorMessage.": Le justificatif n'existe pas"; }
+        header('Location: ../index.php?errorMessage[]='.urlencode($errorMessage));
+        exit;
+    }
+
+    if ($justification->getCurrentState() !== StateJustif::NotProcessed) {
+        $errorMessage = "HTTP 400 Bad Request";
+        if (!$PROD) { $errorMessage = $errorMessage.": Le justificatif a déjà été traité"; }
+        header('Location: ../index.php?currPage=dashboard&errorMessage[]='.urlencode($errorMessage));
+        exit;
+    }
+    
+    // Traiter chaque absence
+    $hasRefused = false;
+    foreach ($absences as $key => $state) {
+        // Format de la clé: "idStudent_time"
+        list($idStudent, $time) = explode('_', $key, 2);
+        
+        // Convertir le state en valeur de l'enum
+        $stateValue = ucfirst($state); // 'validated' -> 'Validated', 'refused' -> 'Refused'
+        
+        if ($stateValue === 'Refused') {
+            $hasRefused = true;
+        }
+        
+        // Mettre à jour l'état de l'absence
+        $query = "UPDATE absence SET currentState = :state WHERE idStudent = :idStudent AND time = :time";
+        $stmt = $connection->prepare($query);
+        $stmt->execute([
+            ':state' => $stateValue,
+            ':idStudent' => $idStudent,
+            ':time' => $time
+        ]);
+    }
+    
+    // Si des absences ont été refusées, enregistrer le motif de refus
+    if ($hasRefused && !empty($rejectionReason)) {
+        $justification->setRefusalReason($rejectionReason);
+    }
+    
+    // Changer l'état du justificatif vers "Traité"
+    $justification->changeStateJustification();
+    
+    // Redirection avec message de succès
+    $successMessage = "Justificatif traité avec succès";
+    header('Location: ../index.php?currPage=dashboard&successMessage[]='.urlencode($successMessage));
+    exit;
+    
+} catch (Exception $e) {
+    // En cas d'erreur
+    $errorMessage = "HTTP 500 Internal Server Error";
+    if (!$PROD) { 
+        $errorMessage = $errorMessage.": ".$e->getMessage();
+        error_log("Erreur lors de la validation du justificatif : " . $e->getMessage());
+    }
+    header('Location: ../index.php?currPage=dashboard&errorMessage[]='.urlencode($errorMessage));
+    exit;
+}

@@ -304,3 +304,16 @@ ALTER TABLE Account ADD CONSTRAINT account_email_check CHECK (email ~* '^[A-Za-z
    SET email = regexp_replace(email, '\.error$', '')
    WHERE email ~* '\.error$';
 */
+
+
+--changeset Yann:4 labels:addColumn context:ajout motif refus
+
+-- Ajout de la colonne motifRefus dans la table justification
+ALTER TABLE justification
+ADD COLUMN refusalreason TEXT;
+
+/* liquibase rollback
+   ALTER TABLE justification DROP COLUMN refusalreason;
+ */
+
+
