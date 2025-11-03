@@ -1,9 +1,13 @@
 <?php
-/*
+/**
  * Front d'une ligne d'absence dans le dashboard
  */
+
+use Uphf\GestionAbsence\Model\Absence\StateAbs;
+
+global $index, $abs;
 ?>
-<div class="accordion-item">
+<div class="accordion-item border-bottom">
     <div class="accordion-header">
         <button class="accordion-button collapsed d-flex align-items-center gap-3 p-3"
                 type="button"
@@ -31,9 +35,9 @@
     </div>
     <div id="flush-collapse-abs-<?= $index ?>" class="accordion-collapse collapse" data-bs-parent="#absFlush">
         <div class="accordion-body p-3">
-            <!-- mettre les info grâce a Absence-->
+            <!-- mettre les infos grâce à Absence-->
             <?php if($abs->getTeacher() != null): ?>
-                <p><strong>Professeur :</strong> <?= htmlspecialchars($abs->getTeacher()->getFirstname() . ' ' . $abs->getTeacher()->getLastname()) ?></p>
+                <p><strong>Professeur :</strong> <?= htmlspecialchars($abs->getTeacher()->getFirstname() . ' lineAbs.php' . $abs->getTeacher()->getLastname()) ?></p>
             <?php endif; ?>
 
             <p><strong>Matière :</strong> <?= htmlspecialchars($abs->getCourseType()->value ?? $abs->getCourseType()->name) ?> <?= htmlspecialchars( $abs->getResource()->getlabel()) ?></p>
@@ -41,8 +45,6 @@
             <?php if($abs->getExamen()): ?>
                 <p><strong>Rattrapage :</strong> <?= $abs->getDateResit() ? $abs->getDateResit()->format('d/m/Y H:i') : 'Pas de date fixée' ?></p>
             <?php endif; ?>
-
-
         </div>
     </div>
 </div>

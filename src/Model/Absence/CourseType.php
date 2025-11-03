@@ -1,5 +1,10 @@
 <?php
-//Cette énumération représente tous les types de cours
+
+namespace Uphf\GestionAbsence\Model\Absence;
+
+/**
+ * Enumeration représentant les types de cours
+ */
 enum CourseType: string {
     case CM = "CM";
     case TD = "TD";

@@ -1,12 +1,15 @@
 <?php
-require_once __DIR__ . "/../connection.php";
 
-require_once "StateAbs.php";
-require_once "CourseType.php";
-require_once __DIR__ . "/../Account/Student.php";
-require_once __DIR__ . "/../Account/Teacher.php";
-require_once "Resource.php";
+namespace Uphf\GestionAbsence\Model\Absence;
 
+use Uphf\GestionAbsence\Model\Account\Student;
+use Uphf\GestionAbsence\Model\Account\Teacher;
+use Uphf\GestionAbsence\Model\Connection;
+use Uphf\GestionAbsence\Model\Filter\FilterAbsence;
+use PDO;
+use DateTime;
+
+require_once __DIR__ . "/../Connection.php";
 /**
  * Classe d'Absence, basé sur la base de données.
  */
@@ -57,7 +60,7 @@ class Absence {
         return $this->student;
     }
 
-    //    Getter de base
+    // Getter de base
     public function getTime(): DateTime { return $this->time; }
     public function getDuration(): string { return $this->duration; }
     public function getExamen(): bool { return $this->examen; }
@@ -74,12 +77,14 @@ class Absence {
         return $this->justifications;
     }
 
-    /*
-     * Mes a jour la collonne allowedJustification dens la bace 2 donner
+    /**
+     * Mes a jour la colonne allowedJustification dans la BDD
      * Et localement sur l'objet
+     *
+     * @param bool $value
      */
-    public function setAllowedJustification($value): void {
-        global $connection;
+    public function setAllowedJustification(bool $value): void {
+        $connection = Connection::getInstance();
         $query = "UPDATE Absence SET allowedJustification = :value WHERE idStudent = :idStudent AND time = :time";
         $row = $connection->prepare($query);
 
@@ -94,44 +99,47 @@ class Absence {
         $this->allowedJustification = $value;
     }
 
-        /*
-         * Mes a jour la collonne state dans la base de données
-         * Et localement sur l'objet
-         */    public function setState($state): void {
-        global $connection;
+    /**
+     * Mes a jour la colonne state dans la BDD
+     * Et localement sur l'objet
+     *
+     * @param StateAbs $state
+     */
+    public function setState(StateAbs $state): void {
+        $connection = Connection::getInstance();
         $query = "UPDATE Absence SET currentState = :value WHERE idStudent = :idStudent AND time = :time";
         $row = $connection->prepare($query);
 
         $idStudent = $this->getIdAccount();
         $dateString = $this->time->format('Y-m-d H:i:s');
 
-        $row->bindParam('value', $state);
+        $stateString = $state->value;
+
+        $row->bindParam('value', $stateString);
         $row->bindParam('idStudent', $idStudent);
         $row->bindParam('time', $dateString);
         $row->execute();
 
-        $this->currentState = StateAbs::from($state);
+        $this->currentState = $state;
     }
 
     /**
      * Recherche d’absences avec filtres optionnels.
      *
      * - Fenêtre de dates incluse.
-     * - Si $examen = true, on restreint aux absences d’examen ; sinon on ne filtre pas sur examen.
-     * - Si $state est fourni, on filtre exactement cet état.
-     * - Si $locked, on restreint à allowedJustification = false AND currentState IN ('Refused','NotJustified').
+     * - Si `$examen` = true, on restreint aux absences d’examen ; sinon on ne filtre pas sur examen.
+     * - Si `$state` est fourni, on filtre exactement cet état.
+     * - Si `$locked` on restreint à allowedJustification = false AND currentState IN ('Refused','NotJustified').
      *
-     * Retour : liste d’objets Absence filtré et trié par time DESC.
+     * Retour : liste d’objets Absence filtrée et trié par time DESC.
+     *
+     * @param null | int $studentId
+     * @param FilterAbsence $filter
+     * @return Absence[]
      */
-    static public function getAbsencesStudentFiltered (
-        int | null    $studentId,
-        string | null $startDate,
-        string | null $endDate,
-        bool          $examen,
-        bool          $locked,
-        string | null $state): array
+    static public function getAbsencesStudentFiltered (null | int $studentId, FilterAbsence $filter): array
     {
-        global $connection;
+        $connection = Connection::getInstance();
 
 
         $query = "select * from absence
@@ -148,33 +156,33 @@ class Absence {
             $parameters["studentId"] = $studentId;
         }
 
-        if ($startDate !== null)
+        if ($filter->getDateStart() !== null)
         {
             $where[] = "time >= :startDate";
-            $parameters["startDate"] = $startDate;
+            $parameters["startDate"] = $filter->getDateStart();
         }
 
-        if ($endDate !== null)
+        if ($filter->getDateEnd() !== null)
         {
             $where[] = "time <= cast(:endDate as date) + interval '1 day'";
-            $parameters["endDate"] = $endDate;
+            $parameters["endDate"] = $filter->getDateEnd();
         }
 
         // Si $state = true, on limite strictement au state sinon on ne filtre pas
-        if ($state !== null)
+        if ($filter->getState() !== null)
         {
             $where[] = "currentState = :state";
-            $parameters["state"] = $state;
+            $parameters["state"] = $filter->getState();
         }
 
         // Si $examen = true, on limite aux absences d'examen sinon on ne filtre pas
-        if ($examen)
+        if ($filter->getExamen())
         {
             $where[] = "examen = true";
         }
 
-        // Si $locked = true, on limite aux absences qui sont vérouillé parmis les refusés et les non-justifiée
-        if ($locked)
+        // Si $locked = true, on limite aux absences qui sont vérrouillé parmi les refusés et les non-justifiée
+        if ($filter->getLocked())
         {
             $where[] = "allowedJustification = false AND (currentState = 'Refused' OR currentState = 'NotJustified')";
         }
@@ -209,14 +217,10 @@ class Absence {
                 $r['duration'],
                 $r['examen'],
                 $r['allowedjustification'],
-
                 isset($r['idteacher']) ? new Teacher($r['idteacher'], $r['lastname'], $r['firstname'], $r['email']) : null,
-
                 StateAbs::from($r['currentstate']),
                 CourseType::from($r['coursetype']),
-
                 new Resource($r['idresource'], $r['label']),
-
                 (isset($r['dateresit']) ? DateTime::createFromFormat("Y-m-d H:i:s", $r['dateresit']) : null)
             );
         }

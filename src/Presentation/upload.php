@@ -1,26 +1,39 @@
 <?php
-/*
-Ce fichier gère l'upload des justificatifs d'absence pour les étudiants.
-Il permet d'envoyer un justificatif (formats acceptés : jpeg, jpg, png, pdf) dans un dossier spécifique,
-de vérifier la validité des fichiers et des données associées (dates, motif),
-d'enregistrer les informations en base de données,
-et d'envoyer une notification par mail à l'étudiant après traitement.
-*/
+/**
+ * Script de gestion d'upload de fichier pour les justificatifs d'absence des étudiants
+ *
+ * Vérifie le format des fichiers envoyé, et les transfère avec un nom unique dans un dossier spécifique
+ *
+ * Vérifie si les données fournies (dates et motifs) sont valides
+ *
+ * Enregistre les données dans la base de données
+ *
+ * Envoie une notification à l'étudiant par mail si tout s'est bien passé
+ *
+ * Envoie les erreurs dans le cas contraire
+ *
+ * TODO: Supprimer les fichiers qui ont été upload en cas de problème
+ */
 
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-require_once "../Presentation/globalVariable.php";
-require_once "../Model/Account/Student.php";
-require_once "../Model/Justification/Justification.php";
-require_once "../Model/mail/mailAccRecpJusti.php";
-require_once "../Model/Account/AccountType.php";
+require_once __DIR__ . "/../../vendor/autoload.php";
+
+use Uphf\GestionAbsence\Model\Account\Account;
+use Uphf\GestionAbsence\Model\Account\Student;
+use Uphf\GestionAbsence\Model\Justification\Justification;
+use Uphf\GestionAbsence\Model\Account\AccountType;
+
+require_once __DIR__ . "/../Presentation/globalVariable.php";
+require_once __DIR__ . "/../Model/mail/mailAccRecpJusti.php";
 
 global $PROD, $LIMIT_FILE_SIZE_UPLOAD, $ALLOWED_MIME_TYPE, $ALLOWED_EXTENSIONS_FILE;
 
 /*var_dump($_POST);
 var_dump($_FILES);*/
+
 
 session_start();
 

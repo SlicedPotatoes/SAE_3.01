@@ -1,12 +1,12 @@
 <?php
-/*
+/**
  * Front de la barre de filtre, pour les justificatifs et les absences
  */
 
 global $currTabValue, $states, $filter, $currPage;
 ?>
 <form class="border-bottom px-4 m-0" action="index.php" method="GET">
-    <!-- Envoie de la page courante et de l'onglet -->
+    <!-- Envoi de la page courante et de l'onglet -->
     <input type="hidden" name="currPage" value="<?=$currPage?>">
     <input type="hidden" name="currTab" value="<?= $currTabValue ?>">
 
@@ -22,7 +22,7 @@ global $currTabValue, $states, $filter, $currPage;
                         id="<?= $currTabValue ?>DateStart"
                         class="form-control"
                         name="<?= $currTabValue ?>DateStart"
-                        value="<?= $filter[$currTabValue]['DateStart'] ?>"
+                        value="<?= $filter[$currTabValue]->getDateStart() ?>"
                 >
             </div>
         </div>
@@ -37,14 +37,14 @@ global $currTabValue, $states, $filter, $currPage;
                         id="<?= $currTabValue ?>DateEnd"
                         class="form-control"
                         name="<?= $currTabValue ?>DateEnd"
-                        value="<?= $filter[$currTabValue]['DateEnd'] ?>"
+                        value="<?= $filter[$currTabValue]->getDateEnd() ?>"
                 >
             </div>
         </div>
         <!-- Select State -->
         <div class="row g-3 align-items-center">
             <div class="col-auto">
-                <label for="<?= $currTabValue ?>State" class="col-form-label">Etat:</label>
+                <label for="<?= $currTabValue ?>State" class="col-form-label">État:</label>
             </div>
             <div class="col-auto">
                 <select
@@ -52,11 +52,11 @@ global $currTabValue, $states, $filter, $currPage;
                         id="<?= $currTabValue ?>State"
                         name="<?= $currTabValue ?>State"
                 >
-                    <option value="" <?= $filter[$currTabValue]['State'] == null ? 'selected' : '' ?>>Tout</option>
+                    <option value="" <?= $filter[$currTabValue]->getState() == null ? 'selected' : '' ?>>Tout</option>
                     <?php
-                        // Liste des différents etats
+                        // Liste des différents états
                         foreach($states as $state) {
-                            echo "<option value='".$state->value."'". ($filter[$currTabValue]['State'] == $state->value ? 'selected' : '') .">".$state->label()."</option>";
+                            echo "<option value='".$state->value."'". ($filter[$currTabValue]->getState() == $state->value ? 'selected' : '') .">".$state->label()."</option>";
                         }
                     ?>
                 </select>
@@ -69,7 +69,7 @@ global $currTabValue, $states, $filter, $currPage;
                         class="form-check-input"
                         type="checkbox" id="<?= $currTabValue ?>Exam"
                         name="<?= $currTabValue ?>Exam"
-                        <?= $filter[$currTabValue]['Exam'] ? 'checked' : '' ?>
+                        <?= $filter[$currTabValue]->getExamen() ? 'checked' : '' ?>
                 >
             </div>
             <div class="col-auto">
@@ -84,7 +84,7 @@ global $currTabValue, $states, $filter, $currPage;
                         class="form-check-input"
                         type="checkbox" id="<?= $currTabValue ?>Locked"
                         name="<?= $currTabValue ?>Locked"
-                        <?= $filter[$currTabValue]['Locked'] ? 'checked' : '' ?>
+                        <?= $filter[$currTabValue]->getLocked() ? 'checked' : '' ?>
                 >
             </div>
             <div class="col-auto">

@@ -1,9 +1,13 @@
 <?php
+/**
+ * Résumé de l'assiduité d'un étudiant avec quelques statistiques
+ */
 
-require_once "./Presentation/StudentPresentation.php";
-
+use Uphf\GestionAbsence\Presentation\StudentPresentation;
+// Récupération de l'étudiant
 $studentAccount = StudentPresentation::getStudentAccountDashboard();
 
+// Récupération des valeurs à afficher
 $absenceTotal = $studentAccount->getAbsTotal();
 $halfdayTotal = $studentAccount->getHalfdaysAbsences();
 $absenceAllowJustification = $studentAccount->getAbsCanBeJustified();
@@ -17,20 +21,20 @@ $PenalizingAbsence = $studentAccount->getPenalizingAbsence();
 <!-- Card du dashboard avec informations sur l'assiduité -->
 <div class="row row-cols-2 row-cols-md-4 g-3 mb-3">
 
-<!--    Card pour afficher les absences totals de l'étudiant-->
+<!--    Card pour afficher les absences totaux de l'étudiant-->
     <div class="col">
         <div class="card shadow-sm border-primary text-center h-100 card-compact">
             <div class="card-body">
                 <div class="card-title small mb-1">Absences totales</div>
                 <div class="fs-4 text-primary mb-0">
-                    <?= (int)$absenceTotal ?>
+                    <?= $absenceTotal ?>
                 </div>
 
 <!--                Affichage des demi-journées d'absences si elles sont différentes des absences-->
                 <?php if ($absenceTotal ==! $halfdayTotal): ?>
                     <div class="text-muted small">
                         Demi-journées d’absence totales :
-                        <?= (int) $halfdayTotal ?>
+                        <?= $halfdayTotal ?>
                     </div>
                 <?php endif; ?>
 
@@ -44,19 +48,19 @@ $PenalizingAbsence = $studentAccount->getPenalizingAbsence();
             <div class="card-body">
                 <div class="card-title small mb-1">Absences à justifier</div>
                 <div class="fs-4 text-info mb-0">
-                    <?= (int) $absenceAllowJustification ?>
+                    <?= $absenceAllowJustification ?>
                 </div>
             </div>
         </div>
     </div>
 
-<!--    Absences pénalisante, contribue au malus-->
+<!--    Absences pénalisantes, contribue au malus-->
     <div class="col">
         <div class="card shadow-sm  border-warning text-center h-100 card-compact">
             <div class="card-body">
                 <div class="card-title small mb-1">Absences pénalisantes</div>
                 <div class="fs-4 text-warning mb-0">
-                    <?= (int) $PenalizingAbsence ?>
+                    <?= $PenalizingAbsence ?>
                 </div>
             </div>
         </div>
@@ -71,9 +75,9 @@ $PenalizingAbsence = $studentAccount->getPenalizingAbsence();
                 <div class="card-body">
                     <div class="card-title small mb-1">Malus</div>
                     <div class="fs-4 text-danger mb-0">-<?= $malus ?>&nbsp;</div>
-<!--                Si l'étudiant a des absences en attente alors le malus pourrais être réduit ou même retiré
-                    Ainsi il est important de montrer à l'étudiant l'impacte de la justification de ses absences
-                    sur le malus-->
+<!--                Si l'étudiant a des absences en attente alors le malus pourrait être réduit ou même retiré
+                    Ainsi, il est important de montrer à l'étudiant l'impacte de la justification de ses absences
+                    sur le malus.-->
                 <?php if ($malusWithoutPending ==! $malus): ?>
                     <div class="text-muted small">
                         Malus si validation des absences : -

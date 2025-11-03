@@ -1,7 +1,13 @@
- <!--Récupération des données-->
 <?php
-require_once "./Presentation/StudentPresentation.php";
+/**
+ * Header du dashboard / profil étudiant
+ */
+
+use Uphf\GestionAbsence\Presentation\StudentPresentation;
+use Uphf\GestionAbsence\Model\Account\AccountType;
 global $role;
+
+// Récupération des données
 
 $studentAccount = StudentPresentation::getStudentAccountDashboard();
 
@@ -20,12 +26,12 @@ else
 ?>
 
 <!-- En tête saluant l'étudiant -->
-<h1 class="h3"> <?= $message ?></h1>
-<div class="header-line-brand-color"></div>
+<div>
+    <h1 class="h3"> <?= $message ?></h1>
+    <div class="header-line-brand-color"></div>
+</div>
+
 
 <?php
-if ($role == AccountType::Student || $role == AccountType::EducationalManager && $currPage="studentProfile")
-{
-    require "./View/Dashboard/Student/cards.php";
-}
+require __DIR__ . "/../cards.php";
 ?>

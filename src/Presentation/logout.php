@@ -1,7 +1,7 @@
 <?php
-/*
- * Script pour ce déconnecter
+/**
+ * Script de gestion de la deconnexion
  */
-    session_start();
-    session_destroy();
-    header("Location: ../index.php");
+session_start();
+session_destroy();
+header("Location: ../index.php");

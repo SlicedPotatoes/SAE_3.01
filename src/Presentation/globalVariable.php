@@ -1,7 +1,7 @@
 <?php
-/*
- * Dans ce fichier, certaine variable global sont présente
- * Pour simplifié leurs modifications
+/**
+ * Dans ce fichier est contenue un certain nombre de variables global
+ * Permet de les centralisés et de simplifier leurs modifications
  */
 
 $PROD = false; // Permet de faire des actions différentes en prod, par exemple message d'erreur différent

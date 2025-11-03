@@ -1,5 +1,9 @@
 <?php
-//Cette classe représente les enseignants dans la base donnée
+namespace Uphf\GestionAbsence\Model\Account;
+
+/**
+ * Classe Teacher, basé sur la base de données.
+ */
 class Teacher extends Account {
 
     function __construct($idTeacher, $lastName, $firstName, $email) {

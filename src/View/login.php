@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * Front de la page de connexion
  */
 
@@ -9,7 +9,8 @@ if($role != null) {
     header("Location: index.php?currPage=dashboard");
 }
 
-require_once './Model/Account/Account.php';
+use Uphf\GestionAbsence\Model\Account\Account;
+use Uphf\GestionAbsence\Model\Account\AccountType;
 ?>
 
 <div class="d-flex gap-2">

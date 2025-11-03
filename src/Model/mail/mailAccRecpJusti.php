@@ -1,9 +1,8 @@
-/*
-Permet d'envoyer un mail d'accusé de réception à l'étudiant lorsque celui-ci soumet une demande de justificatif d'absence.
-Le fichier contient une fonction mailAccRecpJusti($name, $firstname, $emailEtu, $dateDebut, $dateFin) qui prend en paramètre le nom, le prénom, l'email de l'étudiant, la date de début et la date de fin de l'absence.
-*/
-
 <?php
+/**
+ * Envoyer un mail d'accusé de réception à l'étudiant lorsque celui-ci soumet une demande de justificatifs d'absence.
+ */
+
 // Inclure la bibliothèque PHPMailer se trouvant dans le dossier /lib/PHPMailer/
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
@@ -12,8 +11,7 @@ require __DIR__ . '/../../../lib/PHPMailer-master/src/Exception.php';
 require __DIR__ . '/../../../lib/PHPMailer-master/src/PHPMailer.php';
 require __DIR__ . '/../../../lib/PHPMailer-master/src/SMTP.php';
 
-
-function mailAccRecpJusti($name, $firstname, $emailEtu, $dateDebut, $dateFin)
+function mailAccRecpJusti($name, $firstname, $emailEtu, $dateDebut, $dateFin): void
 {
     $dateJour = date('d/m/Y');
     $mail = "Bonjour " . $firstname . " " . $name . ",<br><br>
@@ -27,12 +25,12 @@ function mailAccRecpJusti($name, $firstname, $emailEtu, $dateDebut, $dateFin)
     try {
         // Configuration SMTP
         $email->isSMTP();
-        $email->Host = 'smtp.gmail.com';                   // Serveur SMTP Gmail - on ne touche pas
-        $email->SMTPAuth = true;                            // Activer authentification SMTP - on ne touche pas
-        $email->Username = 'suivi.absences@gmail.com';      // Adresse Gmail - mail d'envoi
-        $email->Password = 'utah jvpz ehui nhvk';   // Mot de passe d’application Google - mot de passe d'application, ici "utah jvpz ehui nhvk"
+        $email->Host = 'smtp.gmail.com';                     // Serveur SMTP Gmail - on ne touche pas
+        $email->SMTPAuth = true;                             // Activer authentification SMTP - on ne touche pas
+        $email->Username = 'suivi.absences@gmail.com';       // Adresse Gmail - mail d'envoi
+        $email->Password = 'utah jvpz ehui nhvk';            // Mot de passe d’application Google - mot de passe d'application, ici "utah jvpz ehui nhvk"
         $email->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; // Activer chiffrement TLS - pas touche
-        $email->Port = 587;                                 // Port TLS - pas touche
+        $email->Port = 587;                                  // Port TLS - pas touche
 
         // Destinataires
         $email->setFrom('suivi.absences@gmail.com', 'Suivi Absences');

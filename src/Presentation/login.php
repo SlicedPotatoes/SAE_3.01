@@ -1,14 +1,24 @@
 <?php
-/*
- * Script de connexion
+/**
+ * Script de gestion de connexion
+ *
+ * Vérification des identifiants fournis par l'utilisateur
+ *
+ * Si les identifiants fournis sont correcte, création d'une session avec les éléments nécéssaire au bon fonctionnement de l'application.
+ *
+ * TODO: Connecter a la BDD
  */
 
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-require "../Model/Account/Account.php";
-require "../Model/Account/Student.php";
+require_once __DIR__ . "/../../vendor/autoload.php";
+
+use Uphf\GestionAbsence\Model\Account\Student;
+use Uphf\GestionAbsence\Model\Account\Account;
+use Uphf\GestionAbsence\Model\Account\AccountType;
+
 
 // Compte "Hard codé"
 $account = Account::getAllAccount();

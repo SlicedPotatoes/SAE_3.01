@@ -1,9 +1,8 @@
 <?php
-/*
+/**
  * Front d'une ligne d'un justificatif dans le dashboard.
  */
-?>
-<?php
+
 // Récupération des infos de la justification via researchFile.php ou via la BDD
 $fileName = isset($fileName) ? $fileName : null;
 $info = null;
@@ -14,8 +13,8 @@ if (isset($justification) && is_object($justification) && method_exists($justifi
     try {
         // include connection si nécessaire
         if (!isset($connection) || !$connection) {
-            // la connection est généralement dans src/Model/connection.php
-            $connPath = __DIR__ . '/../../Model/connection.php';
+            // la connection est généralement dans src/Model/Connection.php
+            $connPath = __DIR__ . '/../../Model/Connection.php';
             if (file_exists($connPath)) {
                 require_once $connPath;
             }
@@ -66,7 +65,7 @@ if (!$info && $fileName) {
     // fallback: essayer via path depuis document root (existant dans l'ancien code)
     if (!$infoJson) {
         $localUrl = '/aImplémenter/systemeDeFichier/researchFile.php?name=' . urlencode($fileName) . '&info=1';
-        $path = rtrim($_SERVER['DOCUMENT_ROOT'], DIRECTORY_SEPARATOR) . $localUrl;
+        $path = lineJustification . phprtrim($_SERVER['DOCUMENT_ROOT'], DIRECTORY_SEPARATOR) . $localUrl;
         $infoJson = @file_get_contents($path);
     }
     if ($infoJson) {
@@ -77,7 +76,7 @@ if (!$info && $fileName) {
     }
 }
 ?>
-<div class="accordion-item">
+<div class="accordion-item border-bottom">
     <div class="accordion-header">
         <?php if (isset($justification) && is_object($justification) && method_exists($justification, 'getIdJustification')): ?>
             <a href="?currPage=detailsJustification&id=<?= $justification->getIdJustification(); ?>"

@@ -1,9 +1,9 @@
 <?php
-/*
+/**
  * Front end d'une alerte
  */
 
-    global $message, $type;
+    global $message, $type, $idNotification;
 
     $color = $type == "successMessage" ? "success" : ($type == "warningMessage" ? "warning" : "danger");
     $icon = $type == "successMessage" ? "bi-check-circle-fill" : "bi-exclamation-triangle-fill";
@@ -14,5 +14,5 @@
     <div class="text-<?= $color ?>">
         <?= $message ?>
     </div>
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    <button id="notification-<?= $idNotification ?>" type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>

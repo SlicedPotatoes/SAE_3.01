@@ -1,6 +1,9 @@
 <?php
-// Cette classe représente les fichiers stockés dans la base de données.
-require_once "Justification.php";
+namespace Uphf\GestionAbsence\Model\Justification;
+
+/**
+ *  Classe File, basé sur la base de données.
+ */
 class File {
     private int $idFile;
     private string $fileName;
@@ -12,6 +15,7 @@ class File {
         $this->justification = $justification;
     }
 
+    // Getter de base
     public function getIdFile(): int { return $this->idFile; }
     public function getFileName(): string { return $this->fileName; }
     public function getJustification(): Justification { return $this->justification; }

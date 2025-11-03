@@ -1,14 +1,15 @@
 <?php
-require_once "Account.php";
-require_once "GroupStudent.php";
-require_once __DIR__ . "/../connection.php";
+namespace Uphf\GestionAbsence\Model\Account;
+
+use Uphf\GestionAbsence\Model\Connection;
+use Uphf\GestionAbsence\Model\Filter\FilterStudent;
+use PDO;
 
 /**
- * Classe de Student, basé sur la base de données.
+ * Classe Student, basé sur la BDD
  */
-
 class Student extends Account {
-    //    Attribut de base de la classe
+    // Attribut de base de la classe
     private int $studentNumber;
     private null | GroupStudent $groupStudent;
 
@@ -21,12 +22,12 @@ class Student extends Account {
     private NULL | float $malusPoints = null;
     private NULL | float $malusPointsWithoutPending = null;
 
-    //    Array de la classe
+    // Array de la classe
     private array $absences = [];
     private array $justifications = [];
 
     // Constante de la classe : évitement des valeurs hasardeuses
-    private const MALUS_TRESSHOLD = 5; // Utilisé pour la limite d'affichage du malus
+    private const MALUS_THRESHOLD = 5; // Utilisé pour la limite d'affichage du malus
     private const MALUS_POINTS = 0.1; // Utilisé pour la multiplication du malus
 
 
@@ -37,12 +38,21 @@ class Student extends Account {
         $this->groupStudent = $groupStudent;
     }
 
-    // Serialization uniquement des données fixes
+    /**
+     * Serialization
+     * Utilisé quand on met un objet dans $_SESSION
+     * @return array
+     */
     public function __serialize(): array {
         return parent::__serialize() + ['studentNumber' => $this->studentNumber, 'groupStudent' => $this->groupStudent];
     }
 
-    // La classe est réinitialisé avec rafraichissement des données volatiles avec requête SQL
+    /**
+     * Unserialization
+     * Utilisé par session_start pour récupérer un objet stocké dans la session
+     * @param array $data
+     * @return void
+     */
     public function __unserialize(array $data): void {
         parent::__unserialize($data);
         $this->studentNumber = $data['studentNumber'];
@@ -69,14 +79,17 @@ class Student extends Account {
         return $this->justifications;
     }
 
-    //    Nombre d'absence total
+    /**
+     * Récupérer le nombre d'absences total d'un étudiant
+     * @return int
+     */
     public function getAbsTotal(): int
     {
         if ($this->absTotal !== null) {
             return $this->absTotal;
         }
 
-        global $connection;
+        $connection = Connection::getInstance();
         $request = $connection->prepare("SELECT COUNT(*) FROM absence WHERE idStudent = ?");
         $request->bindParam(1, $this->idAccount);
         $request->execute();
@@ -85,13 +98,16 @@ class Student extends Account {
         return $result[0];
     }
 
-    //    Absences pouvant encore être justifiées (allowedJustification = true)
+    /**
+     * Récupérer le nombre d'absences pouvant être justifiées (allowedJustification = true)
+     * @return int
+     */
     public function getAbsCanBeJustified(): int {
         if ($this->absCanBeJustified !== null) {
             return $this->absCanBeJustified;
         }
 
-        global $connection;
+        $connection = Connection::getInstance();
 
         $query = "SELECT COUNT(*) FROM absence WHERE idStudent = ? AND allowedJustification = true";
 
@@ -103,14 +119,17 @@ class Student extends Account {
         return $result[0];
     }
 
-    //    Absences à l'état "Non-justifié"
+    /**
+     * Récupérer le nombre d'absences avec l'état "Non-justifié"
+     * @return int
+     */
     public function getAbsNotJustified(): int
     {
         if ($this->absNotJustified !== null) {
             return $this->absNotJustified;
         }
 
-        global $connection;
+        $connection = Connection::getInstance();
         $request = $connection->prepare("SELECT COUNT(*) FROM absence WHERE idStudent = ? AND currentState = 'NotJustified'");
         $request->bindParam(1, $this->idAccount);
         $request->execute();
@@ -119,14 +138,17 @@ class Student extends Account {
         return $result[0];
     }
 
-    //    Absences à l'état "Refusé"
+    /**
+     * Récupérer le nombre d'absences avec l'état "Refusé"
+     * @return int
+     */
     public function getAbsRefused(): int
     {
         if ($this->absRefused !== null) {
             return $this->absRefused;
         }
 
-        global $connection;
+        $connection = Connection::getInstance();
         $request = $connection->prepare("SELECT COUNT(*) FROM absence WHERE idStudent = ? AND currentState = 'Refused'");
         $request->bindParam(1, $this->idAccount);
         $request->execute();
@@ -136,9 +158,11 @@ class Student extends Account {
 
     }
 
-    /*
-     * Nombre de demi-journées d'absence (matin < 12:30 ; après-midi ≥ 12:30)
-     * Peut ainsi compter deux absences le même jour, mais pas plus
+    /**
+     * Récupérer le nombre de demi-journées d'absence (matin < 12h30 ; après-midi ≥ 12h30)
+     *
+     * Peut ainsi comptabiliser deux demi-journées d'absence le même jour.
+     * @return int
      */
     public function getHalfdaysAbsences(): int
     {
@@ -146,7 +170,7 @@ class Student extends Account {
             return $this->halfdaysAbsences;
         }
 
-        global $connection;
+        $connection = Connection::getInstance();
 
         $sql = "
         with view_morning_absences as 
@@ -184,9 +208,16 @@ class Student extends Account {
         return $this->halfdaysAbsences;
     }
 
-    /*
-     * Points de malus incluant les états Pending/NotJustified/Refused.
-     * 0 si < seuil, sinon demi-journées * taux
+    /**
+     * Récupérer le malus cosé par les demi-journées d'absence.
+     *
+     * Le malus est calculé sur les demi-journées ayant des absences avec les états suivants:
+     * - Pending
+     * - NotJustified
+     * - Refused
+     *
+     * 0 si malus < seuil, sinon demiJournees * taux
+     * @return float
      */
     public function getMalusPoints(): float
     {
@@ -194,7 +225,7 @@ class Student extends Account {
             return $this->malusPoints;
         }
 
-        global $connection;
+        $connection = Connection::getInstance();
 
         $sql = "
         with view_morning_absences as 
@@ -231,14 +262,20 @@ class Student extends Account {
 
         $halfdays = (int)$query->fetchColumn();
 
-        $this->malusPoints = ($halfdays >= self::MALUS_TRESSHOLD) ? $halfdays * self::MALUS_POINTS : 0.0;
+        $this->malusPoints = ($halfdays >= self::MALUS_THRESHOLD) ? $halfdays * self::MALUS_POINTS : 0.0;
 
         return $this->malusPoints;
     }
 
-    /*
-     * Points de malus incluant les états NotJustified/Refused,
-     * Utile pour afficher l'impacte de la validation des absences en attente
+    /**
+     * Récupérer le malus cosé par les demi-journées d'absence.
+     *
+     * Le malus est calculé sur les mêmes états que la méthode getMalusPoints()
+     * en excluant l'état Pending.
+     *
+     * Utilisé pour afficher l'impacte de la validation des absences en attente
+     *
+     * @return float
      */
     public function getMalusPointsWithoutPending(): float
     {
@@ -246,7 +283,7 @@ class Student extends Account {
             return $this->malusPointsWithoutPending;
         }
 
-        global $connection;
+        $connection = Connection::getInstance();
 
         $sql = "
         with view_morning_absences as 
@@ -283,14 +320,24 @@ class Student extends Account {
 
         $halfdays = (int)$query->fetchColumn();
 
-        $this->malusPointsWithoutPending = ($halfdays >= self::MALUS_TRESSHOLD) ? $halfdays * self::MALUS_POINTS : 0.0;
+        $this->malusPointsWithoutPending = ($halfdays >= self::MALUS_THRESHOLD) ? $halfdays * self::MALUS_POINTS : 0.0;
 
         return $this->malusPointsWithoutPending;
     }
 
+    /**
+     * Récupérer le nombre d'absences "Pénalisante"
+     *
+     * Cela inclut toutes les absences avec l'état suivant:
+     * - Pending
+     * - NotJustified
+     * - Refused
+     *
+     * @return int
+     */
     public function getPenalizingAbsence(): int
     {
-        global $connection;
+        $connection = Connection::getInstance();
         $request = $connection->prepare("SELECT COUNT(*) FROM absence WHERE idStudent = ? and currentState in ('Refused','NotJustified', 'Pending')");
         $request->bindParam(1, $this->idAccount);
         $request->execute();
@@ -299,8 +346,14 @@ class Student extends Account {
         return $result[0];
     }
 
+    /**
+     * Récupérer dans la BDD un étudiant par son ID
+     *
+     * @param $id
+     * @return Student
+     */
     public static function getStudentByIdAccount($id): Student {
-        global $connection;
+        $connection = Connection::getInstance();
 
         $query = "SELECT * FROM Account 
                   JOIN Student USING(idAccount) 
@@ -320,5 +373,68 @@ class Student extends Account {
             $res['studentnumber'],
             new GroupStudent($res['idgroupstudent'], $res['label'])
         );
+    }
+
+    /**
+     * Récupérer depuis la BDD les étudiants correspondant au filtre
+     * Trier par ordre croissant des noms / prénoms
+     *
+     * @param FilterStudent $filter
+     * @return Student[]
+     */
+    public static function getAllStudents(FilterStudent $filter): array {
+        $connection = Connection::getInstance();
+
+        $query = "SELECT Account.*, Student.*, GroupStudent.label AS GroupStudent FROM Account
+                  JOIN Student USING(idAccount)
+                  JOIN GroupStudent USING(idGroupStudent)";
+
+        $parameters = array(); // valeurs à binder sur la requête préparée
+        $where = array(); // conditions SQL
+
+        if($filter->getGroupStudent() != null) {
+            $where[] = "idGroupStudent = :idGroupStudent";
+            $parameters['idGroupStudent'] = $filter->getGroupStudent();
+        }
+
+        if($filter->getSearch() != null) {
+            $where[] = "lastname ILIKE :search OR firstname ILIKE :search";
+            $parameters['search'] = '%'.$filter->getSearch().'%';
+        }
+
+        // Construction finale de la requête
+        if (!empty($where)) {
+            $query .= " where " . implode(" and ", $where);
+        }
+
+        $query .= " ORDER BY lastname, firstname";
+
+        // Préparation + binding des paramètres
+        $req = $connection->prepare($query);
+        foreach ($parameters as $key => $value) {
+            $req->bindValue(':'.$key, $value);
+        }
+        $req->execute();
+
+        $res = $req->fetchAll();
+
+        $students = [];
+
+        foreach ($res as $r) {
+            $students[] = new Student(
+                $r['idaccount'],
+                $r['lastname'],
+                $r['firstname'],
+                $r['email'],
+                AccountType::from($r['accounttype']),
+                $r['studentnumber'],
+                new GroupStudent(
+                    $r['idgroupstudent'],
+                    $r['groupstudent']
+                )
+            );
+        }
+
+        return $students;
     }
 }
