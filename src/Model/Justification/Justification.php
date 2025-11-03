@@ -10,10 +10,11 @@ class Justification {
     private DateTime $endDate;
     private DateTime $sendDate;
     private DateTime|null $processedDate;
+    private string|null $refusalReason;
     private array $files;
     private array $absences;
 
-    public function __construct($idJustification, $cause, $currentState, $startDate, $endDate, $sendDate, $processedDate)
+    public function __construct($idJustification, $cause, $currentState, $startDate, $endDate, $sendDate, $processedDate, $refusalReason = null)
     {
         $this->idJustification = $idJustification;
         $this->cause = $cause;
@@ -22,6 +23,7 @@ class Justification {
         $this->endDate = $endDate;
         $this->sendDate = $sendDate;
         $this->processedDate = $processedDate;
+        $this->refusalReason = $refusalReason;
 
         $this->files = [];
         $this->absences = [];
@@ -34,6 +36,7 @@ class Justification {
     public function getEndDate(): DateTime { return $this->endDate; }
     public function getSendDate(): DateTime { return $this->sendDate; }
     public function getProcessedDate(): DateTime { return $this->processedDate; }
+    public function getRefusalReason(): ?string { return $this->refusalReason; }
     /*
     Cette fonction sert à récupérer les noms des fichiers.
     Si la liste est vide, une requête est effectuée dans la base de données pour les récupérer.
@@ -277,8 +280,17 @@ class Justification {
             DateTime::createFromFormat('Y-m-d H:i:s', $result['startdate']),
             DateTime::createFromFormat('Y-m-d H:i:s', $result['enddate']),
             DateTime::createFromFormat('Y-m-d H:i:s.u', $result['senddate']),
-            isset($result['processeddate']) ? DateTime::createFromFormat('Y-m-d H:i:s.u', $result['processeddate']) : null
+            isset($result['processeddate']) ? DateTime::createFromFormat('Y-m-d H:i:s.u', $result['processeddate']) : null,
+            $result['refusalreason'] ?? null
         );
+    }
+
+    public function setRefusalReason($reason) : void{
+        global $connection;
+        $query = "UPDATE justification SET refusalreason = :reason WHERE idJustification = :idJustification";
+        $row = $connection->prepare($query);
+        $row->execute([':reason' => $reason, ':idJustification' => $this->idJustification]);
+        $this->refusalReason = $reason;
     }
 
 
