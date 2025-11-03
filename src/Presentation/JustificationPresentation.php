@@ -19,4 +19,7 @@ class JustificationPresentation
     {
         return Justification::selectJustification(StudentPresentation::getStudentAccountDashboard()->getIdAccount(), $filter);
     }
+    public static function getJustificationById($id) {
+        return Justification::getJustificationById($id);
+    }
 }

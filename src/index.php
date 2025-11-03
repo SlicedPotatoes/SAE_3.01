@@ -26,6 +26,7 @@ $route =
                 "studentProfile" => "./View/studentProfile.php",
                 "justificationList" => "./View/justificationList.php",
                 "searchStudent" => "./View/searchStudent.php",
+                "detailsJustification" => "./View/EducationalManager/detailsJustification.php",
         ];
 
 $title =
@@ -34,6 +35,7 @@ $title =
                 "studentProfile" => "Profile étudiant",
                 "justificationList" => "Liste des justifications",
                 "searchStudent" => "Recherche étudiant",
+                "detailsJustification" => "Détails des justifications",
         ];
 
 session_start();
@@ -56,8 +58,6 @@ if ($currPage === null)
         $currPage = 'justificationList';
     }
 }
-
-$connexion = Connection::getInstance();
 
 ?>
 
