@@ -1,0 +1,15 @@
+{
+    "name": "uphf/gestion-absence",
+    "autoload": {
+        "psr-4": {
+            "Uphf\\GestionAbsence\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Dimitri van Steenkiste",
+            "email": "167211948+Steenkiste@users.noreply.github.com"
+        }
+    ],
+    "require": {}
+}

@@ -1,9 +1,9 @@
 <?php
-require_once __DIR__ . "/Account.php";
-require_once __DIR__ . "/GroupStudent.php";
-require_once __DIR__ . "/../connection.php";
+namespace Uphf\GestionAbsence\Model\Account;
 
-require_once __DIR__ . "/../Filter/FilterStudent.php";
+use Uphf\GestionAbsence\Model\Connection;
+use Uphf\GestionAbsence\Model\Filter\FilterStudent;
+use PDO;
 
 /**
  * Classe Student, basé sur la BDD
@@ -89,7 +89,7 @@ class Student extends Account {
             return $this->absTotal;
         }
 
-        global $connection;
+        $connection = Connection::getInstance();
         $request = $connection->prepare("SELECT COUNT(*) FROM absence WHERE idStudent = ?");
         $request->bindParam(1, $this->idAccount);
         $request->execute();
@@ -107,7 +107,7 @@ class Student extends Account {
             return $this->absCanBeJustified;
         }
 
-        global $connection;
+        $connection = Connection::getInstance();
 
         $query = "SELECT COUNT(*) FROM absence WHERE idStudent = ? AND allowedJustification = true";
 
@@ -129,7 +129,7 @@ class Student extends Account {
             return $this->absNotJustified;
         }
 
-        global $connection;
+        $connection = Connection::getInstance();
         $request = $connection->prepare("SELECT COUNT(*) FROM absence WHERE idStudent = ? AND currentState = 'NotJustified'");
         $request->bindParam(1, $this->idAccount);
         $request->execute();
@@ -148,7 +148,7 @@ class Student extends Account {
             return $this->absRefused;
         }
 
-        global $connection;
+        $connection = Connection::getInstance();
         $request = $connection->prepare("SELECT COUNT(*) FROM absence WHERE idStudent = ? AND currentState = 'Refused'");
         $request->bindParam(1, $this->idAccount);
         $request->execute();
@@ -170,7 +170,7 @@ class Student extends Account {
             return $this->halfdaysAbsences;
         }
 
-        global $connection;
+        $connection = Connection::getInstance();
 
         $sql = "
         with view_morning_absences as 
@@ -225,7 +225,7 @@ class Student extends Account {
             return $this->malusPoints;
         }
 
-        global $connection;
+        $connection = Connection::getInstance();
 
         $sql = "
         with view_morning_absences as 
@@ -283,7 +283,7 @@ class Student extends Account {
             return $this->malusPointsWithoutPending;
         }
 
-        global $connection;
+        $connection = Connection::getInstance();
 
         $sql = "
         with view_morning_absences as 
@@ -337,7 +337,7 @@ class Student extends Account {
      */
     public function getPenalizingAbsence(): int
     {
-        global $connection;
+        $connection = Connection::getInstance();
         $request = $connection->prepare("SELECT COUNT(*) FROM absence WHERE idStudent = ? and currentState in ('Refused','NotJustified', 'Pending')");
         $request->bindParam(1, $this->idAccount);
         $request->execute();
@@ -353,7 +353,7 @@ class Student extends Account {
      * @return Student
      */
     public static function getStudentByIdAccount($id): Student {
-        global $connection;
+        $connection = Connection::getInstance();
 
         $query = "SELECT * FROM Account 
                   JOIN Student USING(idAccount) 
@@ -383,7 +383,7 @@ class Student extends Account {
      * @return Student[]
      */
     public static function getAllStudents(FilterStudent $filter): array {
-        global $connection;
+        $connection = Connection::getInstance();
 
         $query = "SELECT Account.*, Student.*, GroupStudent.label AS GroupStudent FROM Account
                   JOIN Student USING(idAccount)

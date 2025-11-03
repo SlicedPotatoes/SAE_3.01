@@ -1,6 +1,5 @@
 <?php
-
-require_once __DIR__ . '/Account.php';
+namespace Uphf\GestionAbsence\Model\Account;
 
 /**
  * Classe Teacher, basé sur la base de données.

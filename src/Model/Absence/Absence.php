@@ -1,12 +1,15 @@
 <?php
-require_once __DIR__ . "/../connection.php";
-require_once __DIR__ . "/StateAbs.php";
-require_once __DIR__ . "/CourseType.php";
-require_once __DIR__ . "/../Account/Student.php";
-require_once __DIR__ . "/../Account/Teacher.php";
-require_once __DIR__ . "/Resource.php";
-require_once __DIR__ . "/../Filter/FilterAbsence.php";
 
+namespace Uphf\GestionAbsence\Model\Absence;
+
+use Uphf\GestionAbsence\Model\Account\Student;
+use Uphf\GestionAbsence\Model\Account\Teacher;
+use Uphf\GestionAbsence\Model\Connection;
+use Uphf\GestionAbsence\Model\Filter\FilterAbsence;
+use PDO;
+use DateTime;
+
+require_once __DIR__ . "/../Connection.php";
 /**
  * Classe d'Absence, basé sur la base de données.
  */
@@ -81,7 +84,7 @@ class Absence {
      * @param bool $value
      */
     public function setAllowedJustification(bool $value): void {
-        global $connection;
+        $connection = Connection::getInstance();
         $query = "UPDATE Absence SET allowedJustification = :value WHERE idStudent = :idStudent AND time = :time";
         $row = $connection->prepare($query);
 
@@ -103,7 +106,7 @@ class Absence {
      * @param StateAbs $state
      */
     public function setState(StateAbs $state): void {
-        global $connection;
+        $connection = Connection::getInstance();
         $query = "UPDATE Absence SET currentState = :value WHERE idStudent = :idStudent AND time = :time";
         $row = $connection->prepare($query);
 
@@ -136,7 +139,7 @@ class Absence {
      */
     static public function getAbsencesStudentFiltered (null | int $studentId, FilterAbsence $filter): array
     {
-        global $connection;
+        $connection = Connection::getInstance();
 
 
         $query = "select * from absence

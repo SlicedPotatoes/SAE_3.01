@@ -1,8 +1,9 @@
 <?php
 
-require_once __DIR__ . "/../connection.php";
-require_once __DIR__ . "/AccountType.php";
+namespace Uphf\GestionAbsence\Model\Account;
 
+use Uphf\GestionAbsence\Model\Connection;
+use PDO;
 /**
  * Classe Account, basé sur la base de données.
  */
@@ -59,7 +60,7 @@ class Account {
 
     // Utilisé pour le "login temporaire", TODO: à enlever
     public static function getAllAccount() : array {
-        global $connection;
+        $connection = Connection::getInstance();
 
         $query = "SELECT * FROM Account";
 

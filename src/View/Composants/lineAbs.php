@@ -3,6 +3,8 @@
  * Front d'une ligne d'absence dans le dashboard
  */
 
+use Uphf\GestionAbsence\Model\Absence\StateAbs;
+
 global $index, $abs;
 ?>
 <div class="accordion-item border-bottom">
@@ -35,7 +37,7 @@ global $index, $abs;
         <div class="accordion-body p-3">
             <!-- mettre les infos grâce à Absence-->
             <?php if($abs->getTeacher() != null): ?>
-                <p><strong>Professeur :</strong> <?= htmlspecialchars($abs->getTeacher()->getFirstname() . ' ' . $abs->getTeacher()->getLastname()) ?></p>
+                <p><strong>Professeur :</strong> <?= htmlspecialchars($abs->getTeacher()->getFirstname() . ' lineAbs.php' . $abs->getTeacher()->getLastname()) ?></p>
             <?php endif; ?>
 
             <p><strong>Matière :</strong> <?= htmlspecialchars($abs->getCourseType()->value ?? $abs->getCourseType()->name) ?> <?= htmlspecialchars( $abs->getResource()->getlabel()) ?></p>

@@ -1,4 +1,6 @@
 <?php
+namespace Uphf\GestionAbsence\Model\Account;
+
 /**
  * Enumeration représentant les types de compte
  */

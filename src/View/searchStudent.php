@@ -3,11 +3,11 @@
  * Front end de la page de recherche d'étudiant
  */
 
-require_once __DIR__ . "/../../Presentation/StudentPresentation.php";
-require_once __DIR__ . "/../../Model/Account/Student.php";
-require_once __DIR__ . "/../../Model/Absence/Absence.php";
-require_once __DIR__ . "/../../Model/Account/GroupStudent.php";
-require_once __DIR__ . "/../../Model/Filter/FilterStudent.php";
+use Uphf\GestionAbsence\Presentation\StudentPresentation;
+use Uphf\GestionAbsence\Model\Account\Student;
+use Uphf\GestionAbsence\Model\Absence\Absence;
+use Uphf\GestionAbsence\Model\Account\GroupStudent;
+use Uphf\GestionAbsence\Model\Filter\FilterStudent;
 
 $filter = new FilterStudent(
         isset($_GET['studentSearchValue']) && $_GET['studentSearchValue'] != '' ? $_GET['studentSearchValue'] : null,
@@ -56,7 +56,7 @@ $students = StudentPresentation::getAllStudents($filter);
                     <div class="card-body d-flex align-items-center">
                         <i class="bi bi-person-circle icon-uphf me-3 fs-2"></i>
                         <div class="p-2 flex-fill">
-                            <h5 class="card-title mb-0"><?= $student->getFirstName() . ' ' . $student->getLastName() ?></h5>
+                            <h5 class="card-title mb-0"><?= $student->getFirstName() . ' searchStudent.php' . $student->getLastName() ?></h5>
                             <p class="card-text mb-0"><?= $student->getGroupStudent()->getLabel() ?></p>
                             <p class="card-text mb-0">Numéro étudiant: <?= $student->getStudentNumber() ?></p>
                         </div>

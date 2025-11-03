@@ -1,7 +1,13 @@
 <?php
-require_once __DIR__ . "/StateJustif.php";
-require_once __DIR__ . "/../Absence/Absence.php";
-require_once __DIR__ . "/../Filter/FilterJustification.php";
+namespace Uphf\GestionAbsence\Model\Justification;
+
+use Uphf\GestionAbsence\Model\Absence\Absence;
+use Uphf\GestionAbsence\Model\Absence\StateAbs;
+use Uphf\GestionAbsence\Model\Connection;
+use Uphf\GestionAbsence\Model\Filter\FilterAbsence;
+use Uphf\GestionAbsence\Model\Filter\FilterJustification;
+use DateTime;
+
 /**
  * Classe Justification, basé sur la base de données.
  */
@@ -69,7 +75,7 @@ class Justification {
      */
     public function getAbsences(): array {
         if(count($this->absences) == 0) {
-            global $connection;
+            $connection = Connection::getInstance();
             $query = $connection->prepare("SELECT * FROM absenceJustification join absence using(idStudent,time)
             join resource using (idResource) join account on idteacher = idaccount where idJustification = :idJustification");
             $query->bindParam(":idJustification", $this->idJustification);
@@ -115,9 +121,15 @@ class Justification {
     static public function insertJustification($idStudent, $cause, $startDate, $endDate, $files): bool
     {
         //Récupération de la connexion
-        global $connection;
+        $connection = Connection::getInstance();
         //Récupération des absences comprise entre startDate et endDate
-        $absences = Absence::getAbsencesStudentFiltered($idStudent, $startDate, $endDate, false, false, null);
+        $absences = Absence::getAbsencesStudentFiltered($idStudent, new FilterAbsence(
+            $startDate,
+            $endDate,
+            null,
+            false,
+            false
+        ));
 
         $countAbs = 0;
 
@@ -187,7 +199,7 @@ class Justification {
     public static function selectJustification(null | int $idStudent, FilterJustification $filter): array
     {
         //Récupération de la connexion et déclaration de variable
-        global $connection;
+        $connection = Connection::getInstance();
         $justifications = array();
         $parameters = array();
 
@@ -261,7 +273,7 @@ class Justification {
     function changeStateJustification(): void
     {
         //Connexion à la base de données
-        global $connection;
+        $connection = Connection::getInstance();
 
         //Requête SQL pour changer la valur dans la base de données
         $query = "update justification

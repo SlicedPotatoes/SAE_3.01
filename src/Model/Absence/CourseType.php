@@ -1,4 +1,7 @@
 <?php
+
+namespace Uphf\GestionAbsence\Model\Absence;
+
 /**
  * Enumeration représentant les types de cours
  */

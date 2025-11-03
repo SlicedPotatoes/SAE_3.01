@@ -1,6 +1,8 @@
 <?php
-require_once __DIR__ . "/StudentPresentation.php";
-require_once __DIR__ . "/../Model/Filter/FilterAbsence.php";
+namespace Uphf\GestionAbsence\Presentation;
+
+use Uphf\GestionAbsence\Model\Filter\FilterAbsence;
+use Uphf\GestionAbsence\Model\Absence\Absence;
 
 /**
  * Classe AbsencePresentation, permettant de faire la liaison entre Model et View pour tout ce qui concerne les absences

@@ -1,4 +1,5 @@
 <?php
+namespace Uphf\GestionAbsence\Model\Filter;
 
 /**
  * Représente un filtre utilisé pour filtrer les etudiants

@@ -1,7 +1,9 @@
 <?php
+namespace Uphf\GestionAbsence\Presentation;
 
-require_once __DIR__ . "/../Model/Account/Student.php";
-require_once __DIR__ . "/../Model/Account/GroupStudent.php";
+use Uphf\GestionAbsence\Model\Account\Student;
+use Uphf\GestionAbsence\Model\Account\GroupStudent;
+use Uphf\GestionAbsence\Model\Account\AccountType;
 
 /**
  * Classe StudentPresentation, permettant de faire la liaison entre Model et View pour tout ce qui concerne les etudiants

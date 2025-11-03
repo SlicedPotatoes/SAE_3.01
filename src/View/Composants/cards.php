@@ -3,8 +3,7 @@
  * Résumé de l'assiduité d'un étudiant avec quelques statistiques
  */
 
-require_once __DIR__ . "/../../../Presentation/StudentPresentation.php";
-
+use Uphf\GestionAbsence\Presentation\StudentPresentation;
 // Récupération de l'étudiant
 $studentAccount = StudentPresentation::getStudentAccountDashboard();
 

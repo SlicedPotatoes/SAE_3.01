@@ -1,9 +1,13 @@
 <?php
-require_once __DIR__ . "/StudentPresentation.php";
+namespace Uphf\GestionAbsence\Presentation;
 
 /**
  * Classe JustificationPresentation, permettant de faire la liaison entre Model et View pour tout ce qui concerne les Justificatifs
  */
+
+use Uphf\GestionAbsence\Model\Filter\FilterJustification;
+use Uphf\GestionAbsence\Model\Justification\Justification;
+
 class JustificationPresentation
 {
     /**

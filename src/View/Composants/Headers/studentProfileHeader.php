@@ -3,7 +3,8 @@
  * Header du dashboard / profil étudiant
  */
 
-require_once __DIR__ . "/../../Presentation/StudentPresentation.php";
+use Uphf\GestionAbsence\Presentation\StudentPresentation;
+use Uphf\GestionAbsence\Model\Account\AccountType;
 global $role;
 
 // Récupération des données
@@ -32,8 +33,5 @@ else
 
 
 <?php
-if ($role == AccountType::Student || $role == AccountType::EducationalManager && $currPage="studentProfile")
-{
-    require __DIR__ . "/../../View/Dashboard/Student/cards.php";
-}
+require __DIR__ . "/../cards.php";
 ?>

@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . "/Justification.php";
+namespace Uphf\GestionAbsence\Model\Justification;
 
 /**
  *  Classe File, basé sur la base de données.
