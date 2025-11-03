@@ -76,7 +76,7 @@ $connexion = Connection::getInstance();
         <link rel="stylesheet" href="style.css">
     </head>
 
-    <body class="bg-light d-flex flex-column gap-3 m-0">
+    <body class="bg-light d-flex flex-column m-0">
         <?php
         // Si l'utilisateur est connecté, afficher le bouton d'option
         if(isset($_SESSION['role'])) {

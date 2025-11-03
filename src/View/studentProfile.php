@@ -16,7 +16,6 @@ use Uphf\GestionAbsence\Presentation\AbsencePresentation;
 use Uphf\GestionAbsence\Presentation\JustificationPresentation;
 
 require_once __DIR__ . "/Composants/Headers/studentProfileHeader.php";
-require_once __DIR__ . "/Composants/Modal/modalJustificationAbsence.php";
 
 // Récupérer l'onglet courant, pour pouvoir ouvrir la page sur le bon onglet
 $currTab = isset($_GET['currTab']) ? $_GET['currTab'] : 'proof';
@@ -46,13 +45,5 @@ $filter = [
 ?>
 
 <div class="card p-3 flex-fill d-flex flex-column" style="min-height: 0">
-    <?php
-    if ($_SESSION["role"] == AccountType::Student)
-    {
-        require __DIR__ . "/Composants/justificationButton.html";
-    }
-
-    require __DIR__ . "/Composants/tabsStudentProfile.php";
-
-    ?>
+    <?php require __DIR__ . "/Composants/tabsStudentProfile.php"; ?>
 </div>

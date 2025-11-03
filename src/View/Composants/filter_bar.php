@@ -10,7 +10,7 @@ global $currTabValue, $states, $filter, $currPage;
     <input type="hidden" name="currPage" value="<?=$currPage?>">
     <input type="hidden" name="currTab" value="<?= $currTabValue ?>">
 
-    <div class="d-flex flex-row gap-3 pb-4">
+    <div class="d-flex flex-row gap-3 pb-3">
         <!-- Input DateStart, type date -->
         <div class="row g-3 align-items-center">
             <div class="col-auto">

@@ -19,7 +19,7 @@ $PenalizingAbsence = $studentAccount->getPenalizingAbsence();
 ?>
 
 <!-- Card du dashboard avec informations sur l'assiduité -->
-<div class="row row-cols-2 row-cols-md-4 g-3 mb-3">
+<div class="row row-cols-2 row-cols-md-4 g-3">
 
 <!--    Card pour afficher les absences totaux de l'étudiant-->
     <div class="col">

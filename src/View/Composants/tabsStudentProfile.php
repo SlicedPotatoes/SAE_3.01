@@ -19,11 +19,19 @@ global $currTab, $filter;
     <li class="nav-item" role="presentation">
         <button class="nav-link <?= $currTab == 'abs' ? 'active' : '' ?>" id="absence-tab" data-bs-toggle="tab" data-bs-target="#absence-tab-pane" type="button" role="tab" aria-controls="absence-tab-pane" aria-selected="false">Absences</button>
     </li>
+    <?php if (true): ?>
+    <li class="ms-auto">
+        <?php
+        require __DIR__ . "/../Composants/Modal/modalJustificationAbsence.php";
+        require __DIR__ . "/../Composants/justificationButton.html";
+        ?>
+    </li>
+    <?php endif; ?>
 </ul>
 
-<div class="tab-content bg-white border-bottom border-start border-end rounded-bottom pt-4 flex-fill d-flex flex-column" style="min-height: 0" id="tab-dashboard-stuContent">
+<div class="tab-content bg-white border-bottom border-start border-end rounded-bottom pt-3 flex-fill d-flex flex-column" style="min-height: 0" id="tab-dashboard-stuContent">
     <!-- Contenu de l'onglet "Justificatifs" -->
-    <div class="tab-pane fade show <?= $currTab == 'proof' ? 'active' : '' ?> flex-column flex-fill" style="min-height: 0" id="proof-tab-pane" role="tabpanel" aria-labelledby="proof-tab" tabindex="0">
+    <div class="tab-pane fade show <?= $currTab == 'proof' ? 'active' : '' ?> flex-column flex-fill d-flex" style="min-height: 0" id="proof-tab-pane" role="tabpanel" aria-labelledby="proof-tab" tabindex="0">
         <?php
             $states = StateJustif::getAll();
             $currTabValue = 'proof';

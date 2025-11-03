@@ -26,8 +26,6 @@ html, body {
 .header-line-brand-color {
     height: 3px;
     background-color: #008CAD;
-    margin-top: 5px;
-    margin-bottom: 10px;
 }
 
 /* Animer l'affichage des alertes */
