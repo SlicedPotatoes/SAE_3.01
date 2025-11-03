@@ -1,6 +1,6 @@
 <?php
 /**
- * Page avec onglet et contenue, affichant les justificatifs et les absences
+ * Page avec onglet et contenue, affichant les justificatifs et les absences pour le profil étudiant
  */
 
 use Uphf\GestionAbsence\Model\Justification\StateJustif;
@@ -38,7 +38,7 @@ global $currTab, $filter;
             require __DIR__ . "/filter_bar.php";
         ?>
 
-        <div class="accordion accordion-flush h-100 overflow-y-auto" id="justificationFlush">
+        <div class="h-100 overflow-y-auto" id="justificationFlush">
             <?php
                 $listJustifications = JustificationPresentation::getJustifications($filter['proof']);
 
@@ -84,7 +84,7 @@ global $currTab, $filter;
 </div>
 
 <script>
-    // Script pour ajouter une classe personnalisé à la div du contenu d'une tab et enlevé cette même classe a la tab précédente
+    // Script pour ajouter une classe personnalisé à la div du contenu d'une tab et enlevé cette même classe à la tab précédente
     const tabsButtonDashboard = document.querySelectorAll('#tab-dashboard-stu button');
 
     tabsButtonDashboard.forEach((tab) => {

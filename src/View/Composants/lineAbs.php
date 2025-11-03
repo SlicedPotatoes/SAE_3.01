@@ -8,6 +8,7 @@ use Uphf\GestionAbsence\Model\Absence\StateAbs;
 global $index, $abs;
 ?>
 <div class="accordion-item border-bottom">
+    <!-- Information générale de l'absence -->
     <div class="accordion-header">
         <button class="accordion-button collapsed d-flex align-items-center gap-3 p-3"
                 type="button"
@@ -33,6 +34,7 @@ global $index, $abs;
             </div>
         </button>
     </div>
+    <!-- Détail d'une absence -->
     <div id="flush-collapse-abs-<?= $index ?>" class="accordion-collapse collapse" data-bs-parent="#absFlush">
         <div class="accordion-body p-3">
             <!-- mettre les infos grâce à Absence-->

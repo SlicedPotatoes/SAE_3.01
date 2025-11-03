@@ -4,6 +4,10 @@ namespace Uphf\GestionAbsence\Model;
 
 use PDO;
 
+/**
+ * Singleton de connexion
+ * Chaque développeur peut configurer une BDD Locale de test dans ce fichier
+ */
 class Connection
 {
     private static $testSettings = [
@@ -31,7 +35,8 @@ class Connection
     private static $dbname = null;
 
     /**
-     * @return Connetion|null
+     * Récupérer l'instance de la connexion PDO
+     * @return PDO
      */
     public static function getInstance(): PDO
     {

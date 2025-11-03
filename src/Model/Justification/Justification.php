@@ -275,9 +275,10 @@ class Justification {
         return $justifications;
     }
 
-    /*
-     * Cette fonction sert à basculer l'état du justificatif et
-     * appliquer le nouvel état dans l'objet courant et dans la base de données.
+    /**
+     * Changer l'état du justificatif, met à jour la BDD
+     *
+     * @return void
      */
     function changeStateJustification(): void
     {
@@ -304,10 +305,14 @@ class Justification {
         $row->bindParam('currentState', $value);
         $row->execute();
     }
-    /*
-    Cette fonction sert à récupérer une justification par son ID.
-    */
-    static function getJustificationById($idJustification){
+
+    /**
+     * Récupérer un justificatif par son ID
+     *
+     * @param $idJustification
+     * @return Justification
+     */
+    public static function getJustificationById($idJustification): Justification {
         $connection = Connection::getInstance();
 
         $query = "SELECT * from justification where idJustification = :idJustification";
@@ -328,6 +333,12 @@ class Justification {
         );
     }
 
+    /**
+     * Ajouter une raison de refus au justificatif
+     *
+     * @param $reason
+     * @return void
+     */
     public function setRefusalReason($reason) : void{
         $connection = Connection::getInstance();
         $query = "UPDATE justification SET refusalreason = :reason WHERE idJustification = :idJustification";
