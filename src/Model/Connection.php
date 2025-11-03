@@ -10,7 +10,7 @@ use PDO;
  */
 class Connection
 {
-    private static $testSettings = [
+    private static array $testSettings = [
         "host" => "localhost",
         "port" => "5432",
         "user" => "postgres",
@@ -18,7 +18,7 @@ class Connection
         "dbname" => "postgres",
     ];
 
-    private static $prodSettings = [
+    private static array $prodSettings = [
         "host" => "tommytech.net",
         "port" => "5432",
         "user" => "kevin",
@@ -28,11 +28,6 @@ class Connection
 
     private static PDO | null $instance = null;
     private static bool $test = false;
-
-    private static $host = null;
-    private static $user = null;
-    private static $password = null;
-    private static $dbname = null;
 
     /**
      * Récupérer l'instance de la connexion PDO

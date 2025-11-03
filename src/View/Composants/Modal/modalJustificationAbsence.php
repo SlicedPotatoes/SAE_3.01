@@ -12,9 +12,12 @@ global $ALLOWED_EXTENSIONS_FILE;
 <div class="modal fade" id="justifyModal" tabindex="-1" aria-labelledby="justifyModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-scrollable modal-dialog-centered">
         <div class="modal-content">
+            <!-- Button Close -->
             <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Fermer"></button>
+
             <form id="addJustificationForm" action="./Presentation/upload.php" method="post" enctype="multipart/form-data">
                 <div class="modal-header">
+                    <!-- Date de début et de fin -->
                     <div>
                         <h4 class="modal-title h4 mb-1">Justification d’absence</h4>
                         <div class="d-flex flex-column flex-md-row gap-2 small">
@@ -28,19 +31,23 @@ global $ALLOWED_EXTENSIONS_FILE;
                             </div>
                         </div>
                     </div>
-
                 </div>
+
                 <div class="modal-body">
                     <div class="row g-4">
+                        <!-- Motif de l'absence -->
                         <div class="col-12 col-md-7">
                             <label for="justificationAbsenceReason" class="form-label h5 mb-2">Motif de l'absence</label>
                             <textarea name="absenceReason" id="justificationAbsenceReason" class="form-control" rows="8" placeholder="Expliquez pourquoi vous avez était absent." form="addJustificationForm" required></textarea>
                         </div>
+
                         <div class="col-12 col-md-5">
+                            <!-- Upload un fichier -->
                             <div class="justification-files-choice mb-2 pe-3">
                                 <label class="form-label h5 mb-2">Justificatif <span class="text-muted fs-6">(pdf, png, jpg)</span></label>
                                 <input type="file" class="form-control" multiple id="justificationFileInput" accept="<?= '.'.implode(', .', $ALLOWED_EXTENSIONS_FILE) ?>">
                             </div>
+                            <!-- Liste des fichiers upload -->
                             <ul id="justificationFileList" class="list-group mb-2 overflow-auto" style="max-height: 200px"></ul>
                         </div>
                     </div>
@@ -51,6 +58,7 @@ global $ALLOWED_EXTENSIONS_FILE;
                     <button type="submit" id="justificationSubmitForm" form="addJustificationForm" class="btn btn-uphf me-2">Envoyer</button>
                 </div>
             </form>
+
         </div>
     </div>
 </div>
@@ -97,10 +105,13 @@ global $ALLOWED_EXTENSIONS_FILE;
 
         // On crée un élément <li> pour afficher le fichier
         const li = document.createElement('li');
-        li.className = "list-group-item d-flex justify-content-between align-items-center";
+        li.className = "list-group-item d-flex justify-content-between align-items-center pe-2";
 
         // On crée un span pour afficher le nom du fichier
         const nameSpan = document.createElement('span');
+        nameSpan.className = "text-truncate";
+        nameSpan.setAttribute("title", f.name);
+
         nameSpan.textContent = f.name;
         li.appendChild(nameSpan);
 

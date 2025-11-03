@@ -4,9 +4,6 @@
  */
 
 use Uphf\GestionAbsence\Presentation\StudentPresentation;
-use Uphf\GestionAbsence\Model\Account\Student;
-use Uphf\GestionAbsence\Model\Absence\Absence;
-use Uphf\GestionAbsence\Model\Account\GroupStudent;
 use Uphf\GestionAbsence\Model\Filter\FilterStudent;
 
 $filter = new FilterStudent(
@@ -19,7 +16,7 @@ $students = StudentPresentation::getAllStudents($filter);
 
 ?>
 
-<div class="card p-3 flex-fill d-flex flex-column" style="min-height: 0">
+<div class="card p-3 flex-fill d-flex flex-column mt-3" style="min-height: 0">
     <!-- Barre de recherche -->
     <nav class="navbar navbar-light search-bar">
         <form class="d-flex w-100" method="GET" action="index.php">
@@ -56,7 +53,7 @@ $students = StudentPresentation::getAllStudents($filter);
                     <div class="card-body d-flex align-items-center">
                         <i class="bi bi-person-circle icon-uphf me-3 fs-2"></i>
                         <div class="p-2 flex-fill">
-                            <h5 class="card-title mb-0"><?= $student->getFirstName() . ' searchStudent.php' . $student->getLastName() ?></h5>
+                            <h5 class="card-title mb-0"><?= $student->getFirstName() . ' ' . $student->getLastName() ?></h5>
                             <p class="card-text mb-0"><?= $student->getGroupStudent()->getLabel() ?></p>
                             <p class="card-text mb-0">Numéro étudiant: <?= $student->getStudentNumber() ?></p>
                         </div>
