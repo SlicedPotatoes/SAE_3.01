@@ -5,38 +5,60 @@
  * Gére l'affichage de la page en fonction de l'état de l'application
  */
 
+require_once __DIR__ . "/../vendor/autoload.php";
+
 // Pour le debug
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-require_once "./Model/Account/Account.php";
-require_once "./Model/Account/Student.php";
+use Uphf\GestionAbsence\Model\Account\AccountType;
+use Uphf\GestionAbsence\Model\Account\Account;
+use Uphf\GestionAbsence\Model\Account\Student;
+use Uphf\GestionAbsence\Model\Connection;
+
 require_once "./Presentation/globalVariable.php";
 
 // Définition des routes
-$route = [
-        "login" => "./View/login.php",
-        "dashboard" => "./View/Dashboard/studentDashboard.php",
-        "searchpage" => "./View/SearchPage/searchPageMain.php",
-];
-$title = [
-        "login" => "Connexion",
-        "dashboard" => "Tableau de bord",
-        "searchpage" => "Page de recherche"
-];
+$route =
+        [
+                "login" => "./View/login.php",
+                "studentProfile" => "./View/studentProfile.php",
+                "justificationList" => "./View/justificationList.php",
+                "searchStudent" => "./View/searchStudent.php",
+        ];
 
-// Valeur par défault, si currPage n'est pas définie
-$currPage = $_GET['currPage'] ?? "dashboard";
+$title =
+        [
+                "login" => "Connexion",
+                "studentProfile" => "Profile étudiant",
+                "justificationList" => "Liste des justifications",
+                "searchStudent" => "Recherche étudiant",
+        ];
 
 session_start();
 //var_dump($_SESSION);
 
-$role = null;
+$currPage = $_GET['currPage'] ?? null;
+// Valeur par défault, si currPage n'est pas définie
+if ($currPage === null)
+{
+    if (!isset($_SESSION['role']))
+    {
+        $currPage = "login";
+    }
+    else if ($_SESSION['role'] === AccountType::Student)
+    {
+        $currPage = 'studentProfile';
+    }
+    else if ($_SESSION['role'] === AccountType::EducationalManager)
+    {
+        $currPage = 'justificationList';
+    }
+}
 
-// Si l'utilisateur n'est pas connecté, rediriger vers la page de connexion.
-if(isset($_SESSION['role'])) { $role = $_SESSION['role']; }
-else { $currPage = "login"; }
+$connexion = Connection::getInstance();
+
 ?>
 
 <!doctype html>
@@ -57,8 +79,8 @@ else { $currPage = "login"; }
     <body class="bg-light d-flex flex-column gap-3 m-0">
         <?php
         // Si l'utilisateur est connecté, afficher le bouton d'option
-        if($role != null) {
-            require "./View/ButtonSettings.php";
+        if(isset($_SESSION['role'])) {
+            require "./View/Composants/ButtonSettings.php";
         }
         ?>
         <div class="container">
@@ -74,7 +96,7 @@ else { $currPage = "login"; }
                 if(isset($_GET[$type])) {
                     foreach ($_GET[$type] as $message) {
                         if($message != "") {
-                            require "./View/alert.php";
+                            require "./View/Composants/alert.php";
                             $idNotification++;
                         }
                     }

@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . "/connection.php";
+require_once __DIR__ . "/Connection.php";
 /*
 Ce fichier permet la recherche et la récupération des justificatifs d'absence pour les étudiants.
 Il vérifie la validité des paramètres fournis, sécurise l'accès aux fichiers (formats acceptés : jpeg, jpg, png, pdf),

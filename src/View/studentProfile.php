@@ -3,18 +3,20 @@
  * Font end du dashboard d'un étudiant
  */
 
-require_once __DIR__ . "/../../Model/Absence/Absence.php";
-require_once __DIR__ . "/../../Model/Justification/Justification.php";
+use Uphf\GestionAbsence\Model\Account\AccountType;
+use Uphf\GestionAbsence\Model\Absence\StateAbs;
+use Uphf\GestionAbsence\Model\Absence\Absence;
+use Uphf\GestionAbsence\Model\Justification\Justification;
 
-require_once __DIR__ . '/../../Model/Filter/FilterJustification.php';
-require_once __DIR__ . '/../../Model/Filter/FilterAbsence.php';
+use Uphf\GestionAbsence\Model\Filter\FilterJustification;
+use Uphf\GestionAbsence\Model\Filter\FilterAbsence;
 
-require_once __DIR__ . "/../../Presentation/StudentPresentation.php";
-require_once __DIR__ . "/../../Presentation/AbsencePresentation.php";
-require_once __DIR__ . "/../../Presentation/JustificationPresentation.php";
+use Uphf\GestionAbsence\Presentation\StudentPresentation;
+use Uphf\GestionAbsence\Presentation\AbsencePresentation;
+use Uphf\GestionAbsence\Presentation\JustificationPresentation;
 
-require_once __DIR__ . "/../Headers/studentDashboardHeader.php";
-require_once __DIR__ . "/../Modal/modalJustificationAbsence.php";
+require_once __DIR__ . "/Composants/Headers/studentProfileHeader.php";
+require_once __DIR__ . "/Composants/Modal/modalJustificationAbsence.php";
 
 // Récupérer l'onglet courant, pour pouvoir ouvrir la page sur le bon onglet
 $currTab = isset($_GET['currTab']) ? $_GET['currTab'] : 'proof';
@@ -47,10 +49,10 @@ $filter = [
     <?php
     if ($_SESSION["role"] == AccountType::Student)
     {
-        require __DIR__ . "/Student/justificationButton.html";
+        require __DIR__ . "/Composants/justificationButton.html";
     }
 
-    require __DIR__ . "/tabAbsencesJustificatifs.php";
+    require __DIR__ . "/Composants/tabsStudentProfile.php";
 
     ?>
 </div>

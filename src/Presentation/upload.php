@@ -19,16 +19,21 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
+require_once __DIR__ . "/../../vendor/autoload.php";
+
+use Uphf\GestionAbsence\Model\Account\Account;
+use Uphf\GestionAbsence\Model\Account\Student;
+use Uphf\GestionAbsence\Model\Justification\Justification;
+use Uphf\GestionAbsence\Model\Account\AccountType;
+
 require_once __DIR__ . "/../Presentation/globalVariable.php";
-require_once __DIR__ . "/../Model/Account/Student.php";
-require_once __DIR__ . "/../Model/Justification/Justification.php";
 require_once __DIR__ . "/../Model/mail/mailAccRecpJusti.php";
-require_once __DIR__ . "/../Model/Account/AccountType.php";
 
 global $PROD, $LIMIT_FILE_SIZE_UPLOAD, $ALLOWED_MIME_TYPE, $ALLOWED_EXTENSIONS_FILE;
 
 /*var_dump($_POST);
 var_dump($_FILES);*/
+
 
 session_start();
 

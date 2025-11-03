@@ -9,7 +9,8 @@ if($role != null) {
     header("Location: index.php?currPage=dashboard");
 }
 
-require_once __DIR__ . '/../Model/Account/Account.php';
+use Uphf\GestionAbsence\Model\Account\Account;
+use Uphf\GestionAbsence\Model\Account\AccountType;
 ?>
 
 <div class="d-flex gap-2">

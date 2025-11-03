@@ -3,6 +3,11 @@
  * Page avec onglet et contenue, affichant les justificatifs et les absences
  */
 
+use Uphf\GestionAbsence\Model\Justification\StateJustif;
+use Uphf\GestionAbsence\Presentation\JustificationPresentation;
+use Uphf\GestionAbsence\Model\Absence\StateAbs;
+use Uphf\GestionAbsence\Presentation\AbsencePresentation;
+
 global $currTab, $filter;
 ?>
 

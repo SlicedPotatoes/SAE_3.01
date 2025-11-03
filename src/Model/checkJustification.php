@@ -5,7 +5,7 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 require_once __DIR__ . '/../Presentation/globalVariable.php';
-require_once __DIR__ . '/../Model/connection.php';
+require_once __DIR__ . '/../Model/Connection.php';
 require_once __DIR__ . '/../Model/Justification/Justification.php';
 
 $studentId = $argv[1] ?? null;
@@ -20,7 +20,7 @@ echo "Test connection et récupération des justificatifs pour studentId = $stud
 if (isset($connection) && $connection instanceof PDO) {
     echo "Connection OK (PDO).\n";
 } else {
-    echo "Connection NON initialisée. Vérifie src/Model/connection.php et les credentials.\n";
+    echo "Connection NON initialisée. Vérifie src/Model/Connection.php et les credentials.\n";
     exit(2);
 }
 

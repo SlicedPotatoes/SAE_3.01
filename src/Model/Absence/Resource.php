@@ -1,4 +1,7 @@
 <?php
+
+namespace Uphf\GestionAbsence\Model\Absence;
+
 /**
  * Classe Ressource, basé sur la base de données.
  */

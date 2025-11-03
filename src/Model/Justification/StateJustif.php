@@ -1,4 +1,6 @@
 <?php
+namespace Uphf\GestionAbsence\Model\Justification;
+
 /**
  * Enumération représentant les différents états des justificatifs
  */

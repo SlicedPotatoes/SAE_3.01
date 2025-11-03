@@ -1,4 +1,8 @@
 <?php
+namespace Uphf\GestionAbsence\Model\Account;
+
+use Uphf\GestionAbsence\Model\Connection;
+
 /**
  * Représente les groupes des étudiants, basé sur la base de données.
  */
@@ -20,7 +24,7 @@ class GroupStudent {
      * @return GroupStudent[]
      */
     public static function getAllGroupsStudent(): array {
-        global $connection;
+        $connection = Connection::getInstance();
 
         $query = "SELECT * FROM GroupStudent";
 

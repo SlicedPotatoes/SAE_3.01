@@ -2,5 +2,5 @@ SQL/*
 !SQL/CodeDB.sql
 !SQL/Diagramme.png
 !SQL/UML BASE DE DONNEES.mdj
-!src/Model/connection.php
 
+/vendor/
