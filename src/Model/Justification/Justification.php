@@ -7,6 +7,8 @@ use Uphf\GestionAbsence\Model\Connection;
 use Uphf\GestionAbsence\Model\Filter\FilterAbsence;
 use Uphf\GestionAbsence\Model\Filter\FilterJustification;
 use DateTime;
+use Uphf\GestionAbsence\Model\Absence\CourseType;
+use Uphf\GestionAbsence\Model\Absence\Resource;
 
 /**
  * Classe Justification, basé sur la base de données.
@@ -46,7 +48,6 @@ class Justification {
     public function getEndDate(): DateTime { return $this->endDate; }
     public function getSendDate(): DateTime { return $this->sendDate; }
     public function getProcessedDate(): DateTime|null { return $this->processedDate; }
-    public function getProcessedDate(): DateTime { return $this->processedDate; }
     public function getRefusalReason(): ?string { return $this->refusalReason; }
     /**
      * Récupérer les fichiers liés à un justificatif

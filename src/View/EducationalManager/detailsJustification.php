@@ -1,9 +1,10 @@
 <?php
 // detailsJustification
 
-require_once __DIR__ . "/../../Model/Justification/Justification.php";
-require_once __DIR__ . "/../../Presentation/JustificationPresentation.php";
-require_once __DIR__ . "/../../Model/Justification/File.php";
+use Uphf\GestionAbsence\Model\Justification\Justification;
+use Uphf\GestionAbsence\Presentation\JustificationPresentation;
+use Uphf\GestionAbsence\Model\Justification\File;
+use Uphf\GestionAbsence\Model\Justification\StateJustif;
 
 
 $idJustification = $_GET['id'] ?? null;
