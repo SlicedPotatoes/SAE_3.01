@@ -31,7 +31,7 @@ global $currTab, $filter;
 
 <div class="tab-content bg-white border-bottom border-start border-end rounded-bottom pt-3 flex-fill d-flex flex-column" style="min-height: 0" id="tab-dashboard-stuContent">
     <!-- Contenu de l'onglet "Justificatifs" -->
-    <div class="tab-pane fade show <?= $currTab == 'proof' ? 'active' : '' ?> flex-column flex-fill d-flex" style="min-height: 0" id="proof-tab-pane" role="tabpanel" aria-labelledby="proof-tab" tabindex="0">
+    <div class="tab-pane fade show <?= $currTab == 'proof' ? 'active d-flex' : '' ?> flex-column flex-fill" style="min-height: 0" id="proof-tab-pane" role="tabpanel" aria-labelledby="proof-tab" tabindex="0">
         <?php
             $states = StateJustif::getAll();
             $currTabValue = 'proof';
@@ -56,7 +56,7 @@ global $currTab, $filter;
 
 
     <!-- Contenu de l'onglet "Absence" -->
-    <div class="tab-pane fade show <?= $currTab == 'abs' ? 'active' : '' ?> flex-column flex-fill" style="min-height: 0"  id="absence-tab-pane" role="tabpanel" aria-labelledby="absence-tab" tabindex="0">
+    <div class="tab-pane fade show <?= $currTab == 'abs' ? 'active d-flex' : '' ?> flex-column flex-fill" style="min-height: 0"  id="absence-tab-pane" role="tabpanel" aria-labelledby="absence-tab" tabindex="0">
         <?php
         $states = StateAbs::getAll();
         $currTabValue = 'abs';
