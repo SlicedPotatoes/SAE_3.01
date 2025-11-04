@@ -211,35 +211,39 @@ class Justification {
         $connection = Connection::getInstance();
         $justifications = array();
         $parameters = array();
+        $where = array();
 
         //Requête avec système de filtre
 
         $query = "SELECT DISTINCT idJustification, cause, currentState, startDate, endDate, sendDate, processedDate 
         FROM justification join absenceJustification using (idJustification)";
 
-        if($idStudent != null)
+        if ($idStudent !== null)
         {
-            $parameters['idStudent'] = $idStudent;
-            $query .= " WHERE idStudent = :idStudent";
+            $where[] = "idstudent = :studentId";
+            $parameters["studentId"] = $idStudent;
         }
-        if($filter->getDateStart() != null)
+        if ($filter->getDateStart() !== null)
         {
-            $query .= " and endDate >= :startDate";
+            $where[] = "endDate >= :startDate";
             $parameters["startDate"] = $filter->getDateStart();
         }
-        if($filter->getDateEnd() != null)
+        if ($filter->getDateEnd() !== null)
         {
-            $query .= " and startdate <= :endDate";
+            $where[] = "startdate <= :endDate";
             $parameters["endDate"] = $filter->getDateEnd();
         }
-        if($filter->getState() != null){
-            $query .= " and currentState = :currentState";
+        if ($filter->getState() !== null)
+        {
+            $where[] = "currentState = :currentState";
             $parameters["currentState"] = $filter->getState();
         }
+
         if (!empty($where))
         {
             $query .= " where " . implode(" and ", $where);
         }
+
         if($filter->getExamen())
         {
             $query .= " INTERSECT SELECT DISTINCT idJustification, cause, j.currentState, startDate, endDate, sendDate, processedDate
@@ -251,10 +255,12 @@ class Justification {
         $query .= " ORDER BY sendDate DESC";
 
         $row = $connection->prepare($query);
+
         foreach ($parameters as $key => $value)
         {
             $row->bindValue(':'.$key, $value);
         }
+
         $row->execute();
         $result = $row->fetchAll();
 

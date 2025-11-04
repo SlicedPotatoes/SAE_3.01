@@ -41,27 +41,33 @@ global $currTabValue, $states, $filter, $currPage;
                 >
             </div>
         </div>
+
+        <?php if($currPage != "justificationList") : ?>
         <!-- Select State -->
         <div class="row g-3 align-items-center">
             <div class="col-auto">
                 <label for="<?= $currTabValue ?>State" class="col-form-label">État:</label>
             </div>
-            <div class="col-auto">
-                <select
-                        class="form-select"
-                        id="<?= $currTabValue ?>State"
-                        name="<?= $currTabValue ?>State"
-                >
-                    <option value="" <?= $filter[$currTabValue]->getState() == null ? 'selected' : '' ?>>Tout</option>
-                    <?php
-                        // Liste des différents états
-                        foreach($states as $state) {
-                            echo "<option value='".$state->value."'". ($filter[$currTabValue]->getState() == $state->value ? 'selected' : '') .">".$state->label()."</option>";
-                        }
-                    ?>
-                </select>
-            </div>
+
+
+                <div class="col-auto">
+                    <select
+                            class="form-select"
+                            id="<?= $currTabValue ?>State"
+                            name="<?= $currTabValue ?>State"
+                    >
+                        <option value="" <?= $filter[$currTabValue]->getState() == null ? 'selected' : '' ?>>Tout</option>
+                        <?php
+                            // Liste des différents états
+                            foreach($states as $state) {
+                                echo "<option value='".$state->value."'". ($filter[$currTabValue]->getState() == $state->value ? 'selected' : '') .">".$state->label()."</option>";
+                            }
+                        ?>
+                    </select>
+                </div>
         </div>
+        <?php endif; ?>
+
         <!-- Input Exam, type checkbox -->
         <div class="row g-3 align-items-center">
             <div class="col-auto">
