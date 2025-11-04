@@ -11,6 +11,8 @@ use Uphf\GestionAbsence\Model\Filter\FilterJustification;
 use DateTime;
 use Uphf\GestionAbsence\Model\Absence\CourseType;
 use Uphf\GestionAbsence\Model\Absence\Resource;
+use Uphf\GestionAbsence\Model\Account\AccountType;
+use Uphf\GestionAbsence\Model\Account\Teacher;
 
 /**
  * Classe Justification, basé sur la base de données.
@@ -29,9 +31,9 @@ class Justification
     private string|null $refusalReason;
     private array $files;
     private array $absences;
-    private Student $student;
+    private Student|null $student;
 
-    public function __construct($idJustification, $cause, $currentState, $startDate, $endDate, $sendDate, $processedDate, $refusalReason = null)
+    public function __construct($idJustification, $cause, $currentState, $startDate, $endDate, $sendDate, $processedDate, $refusalReason = null, Student|null $student = null)
     {
         $this->idJustification = $idJustification;
         $this->cause = $cause;
@@ -41,6 +43,7 @@ class Justification
         $this->sendDate = $sendDate;
         $this->processedDate = $processedDate;
         $this->refusalReason = $refusalReason;
+        $this->student = $student;
 
         $this->files = [];
         $this->absences = [];
@@ -253,10 +256,10 @@ class Justification
 
         //Requête avec système de filtre
 
-        $query = "SELECT DISTINCT idJustification, cause, currentState, startDate, endDate, sendDate, processedDate, idaccount, lastname, firstname, email, accounttype, studentnumber 
+        $query = "SELECT DISTINCT idJustification, cause, currentState, startDate, endDate, sendDate, processedDate, studentID, lastname, firstname, email, accountType, studentNumber
         FROM justification join absenceJustification using (idJustification)
-        join student on idstudent = idaccount
-        join account on USING (idaccount)";
+        join studentAccount on studentid = idstudent
+        ";
 
          // Filtre par étudiant si fourni
 
@@ -309,7 +312,17 @@ class Justification
                 DateTime::createFromFormat("Y-m-d H:i:s", $justification["enddate"]),
                 DateTime::createFromFormat("Y-m-d H:i:s.u", $justification["senddate"]),
                 isset($justification["processeddate"]) ? DateTime::createFromFormat("Y-m-d H:i:s.u",
-                    $justification["processeddate"]) : null
+                    $justification["processeddate"]) : null,
+                null,
+                new Student(
+                    $justification["studentid"],
+                    $justification["lastname"],
+                    $justification["firstname"],
+                    $justification["email"],
+                    AccountType::from($justification["accounttype"]),
+                    $justification["studentnumber"],
+                    null
+                )
             );
         }
         return $justifications;
