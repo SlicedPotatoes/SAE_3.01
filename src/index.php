@@ -80,7 +80,7 @@ if ($currPage === null)
         <?php
         // Si l'utilisateur est connecté, afficher le bouton d'option
         if(isset($_SESSION['role'])) {
-            require "./View/Composants/ButtonSettings.php";
+            require "./View/Composants/buttonSettings.php";
         }
         ?>
         <div class="container">

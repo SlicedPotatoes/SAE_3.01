@@ -15,8 +15,6 @@ use Uphf\GestionAbsence\Presentation\StudentPresentation;
 use Uphf\GestionAbsence\Presentation\AbsencePresentation;
 use Uphf\GestionAbsence\Presentation\JustificationPresentation;
 
-require_once __DIR__ . "/Composants/Headers/studentProfileHeader.php";
-
 // Récupérer l'onglet courant, pour pouvoir ouvrir la page sur le bon onglet
 $currTab = isset($_GET['currTab']) ? $_GET['currTab'] : 'proof';
 
@@ -43,6 +41,8 @@ $filter = [
 ];
 
 ?>
+
+<?php require __DIR__ . "/Composants/Headers/studentProfileHeader.php"; ?>
 
 <div class="card p-3 flex-fill d-flex flex-column" style="min-height: 0">
     <?php require __DIR__ . "/Composants/tabsStudentProfile.php"; ?>

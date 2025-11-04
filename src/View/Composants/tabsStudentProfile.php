@@ -14,10 +14,10 @@ global $currTab, $filter;
 <!-- Tab bar -->
 <ul class="nav nav-tabs" id="tab-dashboard-stu" role="tablist">
     <li class="nav-item" role="presentation">
-        <button class="nav-link <?= $currTab == 'proof' ? 'active' : '' ?>" id="proof-tab" data-bs-toggle="tab" data-bs-target="#proof-tab-pane" type="button" role="tab" aria-controls="proof-tab-pane" aria-selected="true">Justificatifs</button>
+        <button class="text-black nav-link <?= $currTab == 'proof' ? 'active' : '' ?>" id="proof-tab" data-bs-toggle="tab" data-bs-target="#proof-tab-pane" type="button" role="tab" aria-controls="proof-tab-pane" aria-selected="true">Justificatifs</button>
     </li>
     <li class="nav-item" role="presentation">
-        <button class="nav-link <?= $currTab == 'abs' ? 'active' : '' ?>" id="absence-tab" data-bs-toggle="tab" data-bs-target="#absence-tab-pane" type="button" role="tab" aria-controls="absence-tab-pane" aria-selected="false">Absences</button>
+        <button class="text-black nav-link <?= $currTab == 'abs' ? 'active' : '' ?>" id="absence-tab" data-bs-toggle="tab" data-bs-target="#absence-tab-pane" type="button" role="tab" aria-controls="absence-tab-pane" aria-selected="false">Absences</button>
     </li>
     <?php if (true): ?>
     <li class="ms-auto">

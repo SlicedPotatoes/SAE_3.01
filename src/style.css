@@ -1,31 +1,38 @@
+:root
+{
+    --color-uphf: #008CAD;
+    --color-uphf-hover: #00748F;
+    --color-uphf-active: #005F77;
+}
+
 html, body {
     height: 100vh;
 }
 
 .btn-uphf {
-    background: #008CAD;
+    background: var(--color-uphf);
     border: none;
     color: white !important;
 
     &:hover {
-        background: #00748F;
+        background: var(--color-uphf-hover);
     }
     &:active {
-        background: #005F77 !important;
+        background: var(--color-uphf-active) !important;
     }
 }
 
 .text-uphf {
-    color: #008CAD;
+    color: var(--color-uphf);
 }
 
 .icon-uphf {
-    fill: #008CAD;
+    fill: var(--color-uphf);
 }
 
 .header-line-brand-color {
     height: 3px;
-    background-color: #008CAD;
+    background-color: var(--color-uphf);
 }
 
 /* Animer l'affichage des alertes */
@@ -39,4 +46,15 @@ html, body {
 }
 .alert.show {
     opacity: 1;
+}
+
+.form-check-input:checked[type="checkbox"]
+{
+    border-color: var(--color-uphf);
+    background-color: var(--color-uphf);
+}
+
+.dropdown-item:active
+{
+    background-color: var(--color-uphf-active);
 }

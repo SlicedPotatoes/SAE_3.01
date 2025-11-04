@@ -13,7 +13,9 @@ require_once __DIR__ . "/Modal/modalLogOut.html";
             <i class="bi bi-gear"></i>
         </button>
         <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="mdp.php">Modifier le mot de passe</a></li>
+            <li>
+                <a class="dropdown-item" href="mdp.php">Modifier le mot de passe</a>
+            </li>
             <li>
                 <button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#logoutModal">
                     Déconnexion
