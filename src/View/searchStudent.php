@@ -20,7 +20,7 @@ $students = StudentPresentation::getAllStudents($filter);
     <!-- Barre de recherche -->
     <nav class="navbar navbar-light search-bar">
         <form class="d-flex w-100" method="GET" action="index.php">
-            <input type="hidden" name="currPage" value="searchpage"/>
+            <input type="hidden" name="currPage" value="searchStudent"/>
 
             <!-- rendre l'input flexible pour céder de la place au select compact -->
             <input class="form-control me-2" style="flex:1 1 auto; min-width:0;" type="search" placeholder="Rechercher un étudiant" name="studentSearchValue" aria-label="Rechercher un étudiant" value="<?= $filter->getSearch() ?? '' ?>">
