@@ -9,12 +9,22 @@ $absences = $justification->getAbsences();
 $files = $justification->getFiles();
 $currentState = $justification->getCurrentState();
 $accountType = $_SESSION['account']->getAccountType();
+$isEducationalManager = $accountType === AccountType::EducationalManager;
+
+$h2 = "Jusificatif";
+
+if ($isEducationalManager)
+{
+    $h2 .= " de " . $justification->getStudent()->getFirstName() . " " . $justification->getStudent()->getLastName() . ", ";
+}
+$h2 .= "du " . $justification->getSendDate()->format('d/m/Y')
+
 ?>
 
 <div class="card d-flex flex-column gap-3 mt-4 p-3">
     <div>
         <div class="d-flex justify-content-between align-items-center">
-            <h2 class="mb-1">Justificatif du : <?= $justification->getSendDate()->format('d/m/Y') ?></h2>
+            <h2 class="mb-1"><?=$h2?></h2>
             <span class="badge rounded-pill text-bg-<?= $currentState->colorBadge() ?> fs-6 px-3 py-2">
                 <?= $currentState->label() ?>
             </span>
@@ -36,7 +46,7 @@ $accountType = $_SESSION['account']->getAccountType();
                     </div>
 
                     <?php if ($currentState === StateJustif::NotProcessed): ?>
-                        <?php if ($accountType === AccountType::EducationalManager): ?>
+                        <?php if ($isEducationalManager): ?>
                             <div class="form-check form-switch">
                                 <input type="hidden"
                                        form="validateJustificationForm"
@@ -95,7 +105,7 @@ $accountType = $_SESSION['account']->getAccountType();
             <p class="mb-0"><?= htmlspecialchars($justification->getRefusalReason()) ?></p>
         <?php endif; ?>
 
-        <?php if ($accountType === AccountType::EducationalManager && $currentState === StateJustif::NotProcessed): ?>
+        <?php if ($isEducationalManager && $currentState === StateJustif::NotProcessed): ?>
             <form id="validateJustificationForm" action="./Presentation/validateJustification.php" method="post" class="mt-4">
                 <input type="hidden" name="idJustification" value="<?= $justification->getIdJustification() ?>">
                 <label for="JustificationRejectionReason" class="form-label h4 mb-2">Raison du Refus</label>
@@ -105,9 +115,9 @@ $accountType = $_SESSION['account']->getAccountType();
                     <button type="submit" id="JustificationRPValidation" class="btn btn-uphf">Envoyer</button>
                 </div>
             </form>
-        <?php elseif ($currentState === StateJustif::Processed): ?>
+        <?php elseif ($accountType === AccountType::Student): ?>
             <div class="mt-4">
-                <a href="index.php?currPage=dashboard" class="btn btn-secondary">Retour</a>
+                <a href="index.php" class="btn btn-secondary">Retour</a>
             </div>
         <?php endif; ?>
     </div>

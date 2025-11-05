@@ -376,7 +376,10 @@ class Justification
     {
         $connection = Connection::getInstance();
 
-        $query = "SELECT * from justification where idJustification = :idJustification";
+        $query = "SELECT idJustification, cause, currentState, startDate, endDate, sendDate, processedDate, studentID, 
+        lastname, firstname, email, accountType, studentNumber
+        FROM justification join absenceJustification using (idJustification)
+        join studentAccount on studentid = idstudent where idJustification = :idJustification";
         $row = $connection->prepare($query);
         $row->bindParam('idJustification', $idJustification);
         $row->execute();
@@ -390,7 +393,16 @@ class Justification
             DateTime::createFromFormat('Y-m-d H:i:s', $result['enddate']),
             DateTime::createFromFormat('Y-m-d H:i:s.u', $result['senddate']),
             isset($result['processeddate']) ? DateTime::createFromFormat('Y-m-d H:i:s.u', $result['processeddate']) : null,
-            $result['refusalreason'] ?? null
+            $result['refusalreason'] ?? null,
+            new Student(
+                $result["studentid"],
+                $result["lastname"],
+                $result["firstname"],
+                $result["email"],
+                AccountType::from($result["accounttype"]),
+                $result["studentnumber"],
+                null
+            )
         );
     }
 
