@@ -3,17 +3,23 @@ namespace Uphf\GestionAbsence\Model\Justification;
 
 use Uphf\GestionAbsence\Model\Absence\Absence;
 use Uphf\GestionAbsence\Model\Absence\StateAbs;
+use Uphf\GestionAbsence\Model\Account\Student;
 use Uphf\GestionAbsence\Model\Connection;
 use Uphf\GestionAbsence\Model\Filter\FilterAbsence;
 use Uphf\GestionAbsence\Model\Filter\FilterJustification;
 use DateTime;
 use Uphf\GestionAbsence\Model\Absence\CourseType;
 use Uphf\GestionAbsence\Model\Absence\Resource;
+use Uphf\GestionAbsence\Model\Account\AccountType;
+use Uphf\GestionAbsence\Model\Account\Teacher;
 
 /**
  * Classe Justification, basé sur la base de données.
  */
-class Justification {
+class Justification
+{
+
+    // Attributs de base de la classe
     private int $idJustification;
     private string $cause;
     private StateJustif $currentState;
@@ -24,8 +30,9 @@ class Justification {
     private string|null $refusalReason;
     private array $files;
     private array $absences;
+    private Student|null $student;
 
-    public function __construct($idJustification, $cause, $currentState, $startDate, $endDate, $sendDate, $processedDate, $refusalReason = null)
+    public function __construct($idJustification, $cause, $currentState, $startDate, $endDate, $sendDate, $processedDate, $refusalReason = null, Student|null $student = null)
     {
         $this->idJustification = $idJustification;
         $this->cause = $cause;
@@ -35,20 +42,58 @@ class Justification {
         $this->sendDate = $sendDate;
         $this->processedDate = $processedDate;
         $this->refusalReason = $refusalReason;
+        $this->student = $student;
 
         $this->files = [];
         $this->absences = [];
     }
 
     // Getter de base
-    public function getIdJustification(): int { return $this->idJustification; }
-    public function getCause(): string { return $this->cause; }
-    public function getCurrentState(): StateJustif { return $this->currentState; }
-    public function getStartDate(): DateTime { return $this->startDate; }
-    public function getEndDate(): DateTime { return $this->endDate; }
-    public function getSendDate(): DateTime { return $this->sendDate; }
-    public function getProcessedDate(): DateTime|null { return $this->processedDate; }
-    public function getRefusalReason(): ?string { return $this->refusalReason; }
+    public function getIdJustification(): int
+    {
+        return $this->idJustification;
+    }
+
+    public function getStudent(): ?Student
+    {
+        return $this->student;
+    }
+
+    public function getCause(): string
+    {
+        return $this->cause;
+    }
+
+    public function getCurrentState(): StateJustif
+    {
+        return $this->currentState;
+    }
+
+    public function getStartDate(): DateTime
+    {
+        return $this->startDate;
+    }
+
+    public function getEndDate(): DateTime
+    {
+        return $this->endDate;
+    }
+
+    public function getSendDate(): DateTime
+    {
+        return $this->sendDate;
+    }
+
+    public function getProcessedDate(): DateTime|null
+    {
+        return $this->processedDate;
+    }
+
+    public function getRefusalReason(): ?string
+    {
+        return $this->refusalReason;
+    }
+
     /**
      * Récupérer les fichiers liés à un justificatif
      *
@@ -56,7 +101,8 @@ class Justification {
      *
      * @return File[]
      */
-    public function getFiles(): array {
+    public function getFiles(): array
+    {
         if (count($this->files) == 0) {
             $connection = Connection::getInstance();
             $query = $connection->prepare("SELECT * FROM file WHERE idjustification = :idJustification");
@@ -82,24 +128,25 @@ class Justification {
      *
      * @return Absence[]
      */
-    public function getAbsences(): array {
-        if(count($this->absences) == 0) {
+    public function getAbsences(): array
+    {
+        if (count($this->absences) == 0) {
             $connection = Connection::getInstance();
             $query = $connection->prepare("SELECT * FROM absenceJustification join absence using(idStudent,time)
             join resource using (idResource) left join account on idteacher = idaccount where idJustification = :idJustification");
             $query->bindParam(":idJustification", $this->idJustification);
             $query->execute();
             $absences = $query->fetchAll();
-            foreach($absences as $absence) {
-                    $this->absences[] = new Absence($absence["idstudent"],
+            foreach ($absences as $absence) {
+                $this->absences[] = new Absence($absence["idstudent"],
                     DateTime::createFromFormat("Y-m-d H:i:s", $absence["time"]),
                     $absence["duration"],
                     $absence["examen"],
                     $absence["allowedjustification"],
-                    isset($absence['idteacher']) ? new Teacher($absence["idteacher"], $absence["lastname"], $absence["firstname"], $absence["email"]) : null ,
+                    isset($absence['idteacher']) ? new Teacher($absence["idteacher"], $absence["lastname"], $absence["firstname"], $absence["email"]) : null,
                     StateAbs::from($absence['currentstate']),
                     CourseType::from($absence['coursetype']),
-                    new Resource($absence["idresource"],$absence["label"]),
+                    new Resource($absence["idresource"], $absence["label"]),
                     (isset($absence['dateresit']) ? DateTime::createFromFormat("Y-m-d H:i:s", $absence['dateresit']) : null));
             }
         }
@@ -152,9 +199,8 @@ class Justification {
         $idJustification = $row->fetchColumn();
 
         //Liaison des absences avec justifications
-        foreach ($absences as $absence)
-        {
-            if(!$absence->getAllowedJustification()) {
+        foreach ($absences as $absence) {
+            if (!$absence->getAllowedJustification()) {
                 continue;
             }
 
@@ -173,15 +219,14 @@ class Justification {
             $countAbs++;
         }
 
-        if($countAbs == 0) {
+        if ($countAbs == 0) {
             // TODO: Annuler les changements
             return false;
         }
 
 
         //Insertion des fichiers et liaison à un idJustification
-        foreach ($files as $file)
-        {
+        foreach ($files as $file) {
             $query = "INSERT INTO file(filename,idJustification) VALUES(:filename, :justification)";
             $row = $connection->prepare($query);
             $row->bindParam('filename', $file);
@@ -205,43 +250,45 @@ class Justification {
      * @param FilterJustification $filter
      * @return Justification[]
      */
-    public static function selectJustification(null | int $idStudent, FilterJustification $filter): array
+    public static function selectJustification(null|int $idStudent, FilterJustification $filter): array
     {
         //Récupération de la connexion et déclaration de variable
         $connection = Connection::getInstance();
         $justifications = array();
         $parameters = array();
+        $where = array();
 
         //Requête avec système de filtre
 
-        $query = "SELECT DISTINCT idJustification, cause, currentState, startDate, endDate, sendDate, processedDate 
-        FROM justification join absenceJustification using (idJustification)";
+        $query = "SELECT DISTINCT idJustification, cause, currentState, startDate, endDate, sendDate, processedDate, studentID, lastname, firstname, email, accountType, studentNumber
+        FROM justification join absenceJustification using (idJustification)
+        join studentAccount on studentid = idstudent
+        ";
 
-        if($idStudent != null)
-        {
-            $parameters['idStudent'] = $idStudent;
-            $query .= " WHERE idStudent = :idStudent";
+         // Filtre par étudiant si fourni
+
+        if ($idStudent !== null) {
+            $where[] = "idstudent = :studentId";
+            $parameters["studentId"] = $idStudent;
         }
-        if($filter->getDateStart() != null)
-        {
-            $query .= " and endDate >= :startDate";
+        if ($filter->getDateStart() !== null) {
+            $where[] = "endDate >= :startDate";
             $parameters["startDate"] = $filter->getDateStart();
         }
-        if($filter->getDateEnd() != null)
-        {
-            $query .= " and startdate <= :endDate";
+        if ($filter->getDateEnd() !== null) {
+            $where[] = "startdate <= :endDate";
             $parameters["endDate"] = $filter->getDateEnd();
         }
-        if($filter->getState() != null){
-            $query .= " and currentState = :currentState";
+        if ($filter->getState() !== null) {
+            $where[] = "currentState = :currentState";
             $parameters["currentState"] = $filter->getState();
         }
-        if (!empty($where))
-        {
+
+        if (!empty($where)) {
             $query .= " where " . implode(" and ", $where);
         }
-        if($filter->getExamen())
-        {
+
+        if ($filter->getExamen()) {
             $query .= " INTERSECT SELECT DISTINCT idJustification, cause, j.currentState, startDate, endDate, sendDate, processedDate
             FROM absence a join absenceJustification using (idStudent,time)
             join justification j using(idJustification)
@@ -251,16 +298,16 @@ class Justification {
         $query .= " ORDER BY sendDate DESC";
 
         $row = $connection->prepare($query);
-        foreach ($parameters as $key => $value)
-        {
-            $row->bindValue(':'.$key, $value);
+
+        foreach ($parameters as $key => $value) {
+            $row->bindValue(':' . $key, $value);
         }
+
         $row->execute();
         $result = $row->fetchAll();
 
         //Mise en objet du résultat et retour du résultat
-        foreach ($result as $justification)
-        {
+        foreach ($result as $justification) {
             $justifications[] = new Justification(
                 $justification["idjustification"],
                 $justification["cause"],
@@ -269,7 +316,17 @@ class Justification {
                 DateTime::createFromFormat("Y-m-d H:i:s", $justification["enddate"]),
                 DateTime::createFromFormat("Y-m-d H:i:s.u", $justification["senddate"]),
                 isset($justification["processeddate"]) ? DateTime::createFromFormat("Y-m-d H:i:s.u",
-                $justification["processeddate"]) : null
+                    $justification["processeddate"]) : null,
+                null,
+                new Student(
+                    $justification["studentid"],
+                    $justification["lastname"],
+                    $justification["firstname"],
+                    $justification["email"],
+                    AccountType::from($justification["accounttype"]),
+                    $justification["studentnumber"],
+                    null
+                )
             );
         }
         return $justifications;
@@ -293,11 +350,10 @@ class Justification {
         $row->bindParam('idJustification', $this->idJustification);
 
         //Changement selon l'état du justificatif
-        if($this->currentState == StateJustif::NotProcessed) {
+        if ($this->currentState == StateJustif::NotProcessed) {
             $this->currentState = StateJustif::Processed;
             $value = StateJustif::Processed->value;
-        }
-        else {
+        } else {
             $this->currentState = StateJustif::NotProcessed;
             $value = StateJustif::NotProcessed->value;
         }
@@ -312,12 +368,13 @@ class Justification {
      * @param $idJustification
      * @return Justification
      */
-    public static function getJustificationById($idJustification): Justification {
+    public static function getJustificationById($idJustification): Justification
+    {
         $connection = Connection::getInstance();
 
         $query = "SELECT * from justification where idJustification = :idJustification";
         $row = $connection->prepare($query);
-        $row -> bindParam('idJustification', $idJustification);
+        $row->bindParam('idJustification', $idJustification);
         $row->execute();
         $result = $row->fetch();
 
@@ -339,14 +396,13 @@ class Justification {
      * @param $reason
      * @return void
      */
-    public function setRefusalReason($reason) : void{
+    public function setRefusalReason($reason): void
+    {
         $connection = Connection::getInstance();
         $query = "UPDATE justification SET refusalreason = :reason WHERE idJustification = :idJustification";
         $row = $connection->prepare($query);
         $row->execute([':reason' => $reason, ':idJustification' => $this->idJustification]);
         $this->refusalReason = $reason;
     }
-
-
 
 }

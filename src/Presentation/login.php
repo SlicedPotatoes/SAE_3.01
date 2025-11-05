@@ -33,7 +33,8 @@ if(isset($_POST['id'])) {
     $_SESSION['role'] = $account[$_POST['id']]->getAccountType();
     $_SESSION['account'] = $account[$_POST['id']];
 
-    if($_SESSION['role'] == AccountType::Student) {
+    if($_SESSION['role'] == AccountType::Student)
+    {
         $_SESSION['account'] = Student::getStudentByIdAccount($_POST['id']);
     }
 }

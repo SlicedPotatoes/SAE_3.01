@@ -316,4 +316,22 @@ ADD COLUMN refusalreason TEXT;
    ALTER TABLE justification DROP COLUMN refusalreason;
  */
 
+--changeset Louis:5 labels:addView context:ajout d'une vue pour avoir toutes les informations d'un étudiant
+
+CREATE VIEW StudentAccount AS
+SELECT a.idaccount      as StudentID,
+       a.lastname       as LastName,
+       a.firstname      as FirstName,
+       a.email          as Email,
+       a.accounttype    as AccountType,
+       s.studentnumber  as StudentNumber,
+       g.idgroupstudent as GroupID,
+       g.label          as GroupLabel
+FROM Account a
+         JOIN Student s ON a.idaccount = s.idaccount
+         JOIN groupstudent g ON s.idgroupstudent = g.idgroupstudent;
+
+/* liquibase rollback
+   DROP VIEW StudentAccount;
+*/
 

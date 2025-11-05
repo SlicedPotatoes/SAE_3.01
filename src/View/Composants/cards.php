@@ -4,7 +4,10 @@
  */
 
 use Uphf\GestionAbsence\Presentation\StudentPresentation;
-// Récupération de l'étudiant
+
+/**
+ * TODO : A refaire c'est vraiment pas foufou
+ */
 $studentAccount = StudentPresentation::getStudentAccountDashboard();
 
 // Récupération des valeurs à afficher
@@ -58,6 +61,9 @@ $PenalizingAbsence = $studentAccount->getPenalizingAbsence();
     <div class="col">
         <div class="card shadow-sm  border-warning text-center h-100 card-compact">
             <div class="card-body">
+                <div style="position: absolute; right: 5px; top: 0;">
+                    <?php echo '<i class="bi bi-question-circle-fill text-uphf opacity-75" data-bs-toggle="tooltip" data-bs-title="Comprends les absences refusés et les absences non-justifiées"></i>'; ?>
+                </div>
                 <div class="card-title small mb-1">Absences pénalisantes</div>
                 <div class="fs-4 text-warning mb-0">
                     <?= $PenalizingAbsence ?>
@@ -73,6 +79,9 @@ $PenalizingAbsence = $studentAccount->getPenalizingAbsence();
         <?php if ($malus > 0): ?>
             <div class="card shadow-sm border-danger text-center h-100 card-compact">
                 <div class="card-body">
+                    <div style="position: absolute; right: 5px; top: 0;">
+                        <?php echo '<i class="bi bi-question-circle-fill text-uphf" data-bs-toggle="tooltip" data-bs-title="Le malus est égale au nombre de demi-journées d\'absences pénalisantes"></i>'; ?>
+                    </div>
                     <div class="card-title small mb-1">Malus</div>
                     <div class="fs-4 text-danger mb-0">-<?= $malus ?>&nbsp;</div>
 <!--                Si l'étudiant a des absences en attente alors le malus pourrait être réduit ou même retiré
@@ -91,6 +100,9 @@ $PenalizingAbsence = $studentAccount->getPenalizingAbsence();
         <?php else: ?>
             <div class="card shadow-sm border-success text-center h-100 card-compact">
                 <div class="card-body">
+                    <div style="position: absolute; right: 5px; top: 0;">
+                        <?php echo '<i class="bi bi-question-circle-fill text-uphf" data-bs-toggle="tooltip" data-bs-title="Le malus est égale au nombre de demi-journées d\'absences pénalisantes"></i>'; ?>
+                    </div>
                     <div class="card-title small mb-1">Malus</div>
                     <div class="fs-4 text-success mb-0">Pas de malus</div>
                 </div>
