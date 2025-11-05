@@ -424,6 +424,7 @@ class Student extends Account {
             $where[] = "idGroupStudent = :idGroupStudent";
             $parameters['idGroupStudent'] = $filter->getGroupStudent();
         }
+
         if($filter->getSearch() != null) {
             $connection->exec("SET pg_trgm.similarity_threshold = 0.2");
 

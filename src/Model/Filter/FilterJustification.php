@@ -10,12 +10,14 @@ class FilterJustification {
     private null | string $dateEnd;
     private null | string $state;
     private bool $examen;
+    private bool $asc;
 
-    public function __construct($dateStart, $dateEnd, $state, $examen) {
+    public function __construct($dateStart, $dateEnd, $state, $examen, $asc = false) {
         $this->dateStart = $dateStart;
         $this->dateEnd = $dateEnd;
         $this->state = $state;
         $this->examen = $examen;
+        $this->asc = $asc;
     }
 
     // Getter basic
@@ -23,4 +25,5 @@ class FilterJustification {
     public function getDateEnd(): null | string { return $this->dateEnd; }
     public function getState(): null | string { return $this->state; }
     public function getExamen(): bool { return $this->examen; }
+    public function getAsc(): bool { return $this->asc; }
 }

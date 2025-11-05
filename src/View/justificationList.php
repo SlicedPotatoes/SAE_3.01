@@ -15,7 +15,8 @@ $filter =
             isset($_GET['proofToDoDateStart']) && $_GET['proofToDoDateStart'] != '' ? $_GET['proofToDoDateStart'] : null,
             isset($_GET['proofToDoDateEnd']) && $_GET['proofToDoDateEnd'] != '' ? $_GET['proofToDoDateEnd'] : null,
             StateJustif::NotProcessed->value,
-            isset($_GET['proofToDoExam']) && $_GET['proofToDoExam'] == 'on'
+            isset($_GET['proofToDoExam']) && $_GET['proofToDoExam'] == 'on',
+            true
         ),
         'proofDone' => new FilterJustification(
             isset($_GET['proofDoneDateStart']) && $_GET['proofDoneDateStart'] != '' ? $_GET['proofDoneDateStart'] : null,

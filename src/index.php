@@ -81,6 +81,11 @@ if ($currPage === null)
         // Si l'utilisateur est connecté, afficher le bouton d'option
         if(isset($_SESSION['role'])) {
             require "./View/Composants/buttonSettings.php";
+
+            if ($_SESSION['role'] === AccountType::EducationalManager)
+            {
+                require "./View/Composants/burgerMenu.php";
+            }
         }
         ?>
         <div class="container">

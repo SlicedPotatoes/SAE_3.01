@@ -3,6 +3,8 @@
  * Frontend du bouton parametre
  */
 
+use Uphf\GestionAbsence\Model\Account\AccountType;
+
 require_once __DIR__ . "/Modal/modalLogOut.html";
 ?>
 
