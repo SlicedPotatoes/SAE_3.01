@@ -10,7 +10,7 @@ global $index, $abs;
 <div class="accordion-item border-bottom">
     <!-- Information générale de l'absence -->
     <div class="accordion-header">
-        <button class="accordion-button collapsed d-flex align-items-center gap-3 p-3"
+        <button class="accordion-button collapsed d-flex align-items-center gap-3 p-3 ps-4"
                 type="button"
                 data-bs-toggle="collapse"
                 data-bs-target="#flush-collapse-abs-<?= $index ?>"

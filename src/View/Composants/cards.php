@@ -80,7 +80,7 @@ $PenalizingAbsence = $studentAccount->getPenalizingAbsence();
             <div class="card shadow-sm border-danger text-center h-100 card-compact">
                 <div class="card-body">
                     <div style="position: absolute; right: 5px; top: 0;">
-                        <?php echo '<i class="bi bi-question-circle-fill text-uphf" data-bs-toggle="tooltip" data-bs-title="Le malus est égale au nombre de demi-journées d\'absences pénalisantes"></i>'; ?>
+                        <?php echo '<i class="bi bi-question-circle-fill text-uphf opacity-75" data-bs-toggle="tooltip" data-bs-title="Le malus est égale au nombre de demi-journées d\'absences pénalisantes"></i>'; ?>
                     </div>
                     <div class="card-title small mb-1">Malus</div>
                     <div class="fs-4 text-danger mb-0">-<?= $malus ?>&nbsp;</div>
@@ -101,7 +101,7 @@ $PenalizingAbsence = $studentAccount->getPenalizingAbsence();
             <div class="card shadow-sm border-success text-center h-100 card-compact">
                 <div class="card-body">
                     <div style="position: absolute; right: 5px; top: 0;">
-                        <?php echo '<i class="bi bi-question-circle-fill text-uphf" data-bs-toggle="tooltip" data-bs-title="Le malus est égale au nombre de demi-journées d\'absences pénalisantes"></i>'; ?>
+                        <?php echo '<i class="bi bi-question-circle-fill text-uphf opacity-75" data-bs-toggle="tooltip" data-bs-title="Le malus est égale au nombre de demi-journées d\'absences pénalisantes"></i>'; ?>
                     </div>
                     <div class="card-title small mb-1">Malus</div>
                     <div class="fs-4 text-success mb-0">Pas de malus</div>

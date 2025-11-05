@@ -7,7 +7,7 @@ use Uphf\GestionAbsence\Model\Account\AccountType;
 
 global $justification;
 ?>
-<div class="d-flex align-items-center gap-3 p-3 border-bottom">
+<div class="d-flex align-items-center gap-3 p-4 pb-3 pt-3 border-bottom">
     <div class="d-flex flex-column">
         <div>Date de début: <?= $justification->getStartDate()->format('d/m/Y') ?></div>
         <div>Date de fin: <?= $justification->getEndDate()->format('d/m/Y') ?></div>
