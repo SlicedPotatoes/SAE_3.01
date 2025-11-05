@@ -27,13 +27,14 @@ $accountType = $_SESSION['account']->getAccountType();
     <!-- Bloc Absences (une seule fois, conditions internes selon le profil) -->
     <div>
         <h4>Absences</h4>
-        <div class="border-top">
+        <div class="border-top flex-fill overflow-y-auto" style="max-height: 200px;">
             <?php foreach ($absences as $absence): ?>
                 <div class="d-flex align-items-center justify-content-between border-bottom py-2">
                     <div class="flex-grow-1 me-3">
                         <div>Date: <?= $absence->getTime()->format('d/m/Y H:i') ?></div>
                         <div>Durée: <?= $absence->getDuration() ?></div>
                     </div>
+
                     <?php if ($currentState === StateJustif::NotProcessed): ?>
                         <?php if ($accountType === AccountType::EducationalManager): ?>
                             <div class="form-check form-switch">
@@ -55,6 +56,7 @@ $accountType = $_SESSION['account']->getAccountType();
                                     <?= $absence->getCurrentState()->label() ?>
                                 </span>
                             </div>
+
                         <?php endif; ?>
                     <?php endif; ?>
                 </div>
