@@ -8,7 +8,7 @@ use Uphf\GestionAbsence\Presentation\StudentPresentation;
 /**
  * TODO : A refaire c'est vraiment pas foufou
  */
-$studentAccount = StudentPresentation::getStudentAccountDashboard();
+$studentAccount = StudentPresentation::getStudentAccount();
 
 // Récupération des valeurs à afficher
 $absenceTotal = $studentAccount->getAbsTotal();

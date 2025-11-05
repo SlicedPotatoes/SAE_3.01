@@ -335,3 +335,58 @@ FROM Account a
    DROP VIEW StudentAccount;
 */
 
+--changeset Kevin:6 labels:systeme de recherche performant context:searchStudent
+
+-- Ajout de l'extension unaccent, elle ajoute la fonction unaccent(string).
+-- Cette fonction permet de remplacer les caractères accentués d'une chaine passée en paramètre par leurs correspondances non accentués
+CREATE EXTENSION IF NOT EXISTS unaccent;
+
+-- Ajout de l'extension pg_trgm, cette extension ajoute l'opérateur %
+-- Celui-ci evalue la condition "la similarité entre la chaine de gauche et de droite est supérieur à threshold"
+CREATE EXTENSION IF NOT EXISTS pg_trgm;
+
+-- Création de deux champs dans Account pour stocker la version "normaliser" pour nom et prénom
+-- Le fais de les stockés évite de les recalculer à chaque fois.
+ALTER TABLE Account ADD COLUMN search_firstname text;
+ALTER TABLE Account ADD COLUMN search_lastname text;
+
+-- Mettre à jour les champs search_firstname et search_lastname pour les comptes existants
+UPDATE Account
+SET search_lastname = unaccent(lower(lastName)),
+    search_firstname = unaccent(lower(firstName));
+
+-- Ajout d'une trigger function pour le trigger de mise à jour d'un Account
+-- Génère la valeur des champs search_lastname et search_firstname
+CREATE OR REPLACE FUNCTION updateAccountBeforeInsert() RETURNS TRIGGER AS $$
+BEGIN
+    NEW.search_lastname := unaccent(lower(NEW.lastName));
+    NEW.search_firstname := unaccent(lower(NEW.firstname));
+    RETURN NEW;
+END
+$$ LANGUAGE plpgsql;
+
+-- Ajout d'un trigger exécutant la fonction updateAccountBeforeInsert() pour chaque
+-- INSERT ou UPDATE sur la table Account
+CREATE OR REPLACE TRIGGER updateAccountBeforeInsert
+BEFORE INSERT OR UPDATE ON Account
+FOR EACH ROW EXECUTE FUNCTION updateAccountBeforeInsert();
+
+-- Création des index pour optimiser la recherche, pour faire cours les index sont des structures de données utilisées en back de postgres
+-- Ils permettent à postgres de ne pas vérifier les valeurs de chaque ligne pour trouver la correspondance par exemple dans le cas d'une restriction.
+-- GIN est un type d'index ajouté par pg_trgm, il optimise la recherche de similarité
+CREATE INDEX idx_account_search_lastname_trgm ON Account USING GIN (search_lastname gin_trgm_ops);
+CREATE INDEX idx_account_search_firstname_trgm ON Account USING GIN (search_firstname gin_trgm_ops);
+
+/* liquibase rollback
+ DROP INDEX idx_account_search_firstname_trgm;
+ DROP INDEX idx_account_search_lastname_trgm;
+
+ DROP TRIGGER IF EXISTS updateAccountBeforeInsert ON Account;
+ DROP FUNCTION IF EXISTS updateAccountBeforeInsert();
+
+ ALTER TABLE Account DROP COLUMN search_lastname;
+ ALTER TABLE Account DROP COLUMN search_firstname;
+
+ DROP EXTENSION IF EXISTS unaccent;
+ DROP EXTENSION IF EXISTS pg_trgm;
+ */

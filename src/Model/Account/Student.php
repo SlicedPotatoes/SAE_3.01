@@ -352,7 +352,7 @@ class Student extends Account {
      * @param $id
      * @return Student | null
      */
-    public static function getStudentByIdAccount($id): Student | null {
+    public static function getStudentByIdAccount(int $id): Student | null {
         $connection = Connection::getInstance();
 
         $query = "SELECT * FROM Account 
@@ -363,22 +363,36 @@ class Student extends Account {
         $req->execute(array($id));
 
         $res = $req->fetch();
-        if(count($res) != 0) {
-        return new Student(
-            $res['idaccount'],
-            $res['lastname'],
-            $res['firstname'],
-            $res['email'],
-            AccountType::from($res['accounttype']),
-            $res['studentnumber'],
-            new GroupStudent($res['idgroupstudent'], $res['label'])
 
-        );}else{return null;}
+        if($res)
+        {
+            return new Student(
+                $res['idaccount'],
+                $res['lastname'],
+                $res['firstname'],
+                $res['email'],
+                AccountType::from($res['accounttype']),
+                $res['studentnumber'],
+                new GroupStudent($res['idgroupstudent'], $res['label'])
+
+            );
+        }
+        else
+        {
+            return null;
+        }
     }
 
     /**
      * Récupérer depuis la BDD les étudiants correspondant au filtre
-     * Trier par ordre croissant des noms / prénoms
+     *
+     * S'il n'y a pas de filtre de recherche, alors le trie est par ordre croissant des noms / prénoms
+     * Sinon, le trie est effectué par pertinence de la chaine de recherche.
+     *
+     * La recherche s'effectue par token, et récupère les étudiants qui match avec
+     * l'ensemble des tokens. Un token est un "mot" dans la phrase de recherche.
+     *
+     * Il y a match entre le token est l'étudiant si le token a une similarité de 0.2 avec le nom ou le prénom normalisé.
      *
      * @param FilterStudent $filter
      * @return Student[]
@@ -386,12 +400,25 @@ class Student extends Account {
     public static function getAllStudents(FilterStudent $filter): array {
         $connection = Connection::getInstance();
 
-        $query = "SELECT Account.*, Student.*, GroupStudent.label AS GroupStudent FROM Account
-                  JOIN Student USING(idAccount)
-                  JOIN GroupStudent USING(idGroupStudent)";
-
         $parameters = array(); // valeurs à binder sur la requête préparée
         $where = array(); // conditions SQL
+
+        $column = "Account.*, Student.*, GroupStudent.label AS GroupStudent";
+
+        // S'il y a une valeur de recherche, on ajoute la valeur qui représente la pertinence du résultat.
+        if($filter->getSearch() != null) {
+            $column .= ", greatest (
+                similarity(search_lastname, unaccent(lower(:search))),
+                similarity(search_firstname, unaccent(lower(:search))),
+                similarity(search_lastname || ' ' || search_firstname, unaccent(lower(:search)))
+            ) AS sim";
+
+            $parameters["search"] = $filter->getSearch();
+        }
+
+        $query = "SELECT $column FROM Account
+                  JOIN Student USING(idAccount)
+                  JOIN GroupStudent USING(idGroupStudent)";
 
         if($filter->getGroupStudent() != null) {
             $where[] = "idGroupStudent = :idGroupStudent";
@@ -399,16 +426,43 @@ class Student extends Account {
         }
 
         if($filter->getSearch() != null) {
-            $where[] = "lastname ILIKE :search OR firstname ILIKE :search";
-            $parameters['search'] = '%'.$filter->getSearch().'%';
+            $connection->exec("SET pg_trgm.similarity_threshold = 0.2");
+
+            $tokens = explode(' ', $filter->getSearch());
+
+            $i = 0;
+            foreach($tokens as $token) {
+                if($token == '') { continue; } // Alléger la requête dans le cas de multiple espace consécutif
+
+                // Si le token a une longeur de plus de 4, utilisation de l'opérateur de similarité '%'
+                if(mb_strlen($token) > 4) {
+                    $where[] = "(search_lastname % unaccent(lower(:token$i)) OR search_firstname % unaccent(lower(:token$i)))";
+                }
+                // Sinon, utilisation de LIKE
+                else {
+                    $where[] = "(
+                        search_lastname LIKE unaccent(lower(:token$i)) || '%' OR
+                        search_firstname LIKE unaccent(lower(:token$i)) || '%' OR
+                        search_lastname % unaccent(lower(:token$i)) OR
+                        search_firstname % unaccent(lower(:token$i))
+                    )";
+                }
+
+                $parameters["token".$i++] = $token;
+            }
         }
 
         // Construction finale de la requête
         if (!empty($where)) {
-            $query .= " where " . implode(" and ", $where);
+            $query .= " WHERE " . implode(" AND ", $where);
         }
 
-        $query .= " ORDER BY lastname, firstname";
+        if($filter->getSearch() != null) {
+            $query .= " ORDER BY sim DESC";
+        }
+        else {
+            $query .= " ORDER BY lastname, firstname";
+        }
 
         // Préparation + binding des paramètres
         $req = $connection->prepare($query);
@@ -416,7 +470,6 @@ class Student extends Account {
             $req->bindValue(':'.$key, $value);
         }
         $req->execute();
-
         $res = $req->fetchAll();
 
         $students = [];

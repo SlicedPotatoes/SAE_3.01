@@ -18,27 +18,30 @@ class StudentPresentation
      *
      * @return Student
      */
-    public static function getStudentAccountDashboard() : Student
+    public static function getStudentAccount() : Student
     {
         if ($_SESSION["role"] == AccountType::Student)
         {
             return $_SESSION["account"];
         }
-        // TODO: Faire que le else vérifie que le compte est RP
+        else if ($_SESSION["role"] == AccountType::EducationalManager)
+        {
+            if (isset($_GET['studentId']) && is_numeric($_GET['studentId']))
+            {
+                $studentID = Student::getStudentByIdAccount($_GET['studentId']);
+                if ($studentID !== null)
+                {
+                    return $studentID;
+                }
+            }
+            header("location: index.php?currPage=404");
+            exit();
+        }
         else
         {
-            if (isset($_GET['studentAccount']))
-            {
-                return Student::getStudentByIdAccount($_GET['studentAccount']);
-            }
-            else
-            {
-                header("location: index.php?currPage=404");
-                exit();
-            }
+            // TODO: Rediriger vers une page 403 et pas 404
+            header("location: index.php?currPage=404");
         }
-
-        // TODO: Rediriger vers une page 403
     }
 
     /**

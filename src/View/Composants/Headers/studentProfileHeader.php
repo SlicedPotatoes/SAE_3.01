@@ -6,10 +6,9 @@
 use Uphf\GestionAbsence\Presentation\StudentPresentation;
 use Uphf\GestionAbsence\Model\Account\AccountType;
 global $role;
-
 // Récupération des données
 
-$studentAccount = StudentPresentation::getStudentAccountDashboard();
+$studentAccount = StudentPresentation::getStudentAccount();
 
 $lastName = $studentAccount->getLastName();
 $firstName = $studentAccount->getFirstName();
@@ -20,7 +19,7 @@ if ($_SESSION["role"] == AccountType::Student)
 }
 else
 {
-    $message = "<p class='h3'>Profile de <span class='text-uphf fw-bold'> $firstName $lastName</span>.</p>";
+    $message = "<p class='h3'>Profile de <span class='text-uphf fw-bold'> $firstName $lastName</span></p>";
 }
 
 ?>

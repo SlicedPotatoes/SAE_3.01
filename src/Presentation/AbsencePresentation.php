@@ -16,7 +16,7 @@ class AbsencePresentation
      */
     public static function getAbsences(FilterAbsence $filter): array
     {
-        return Absence::getAbsencesStudentFiltered(StudentPresentation::getStudentAccountDashboard()->getIdAccount(), $filter);
+        return Absence::getAbsencesStudentFiltered(StudentPresentation::getStudentAccount()->getIdAccount(), $filter);
     }
 
 
