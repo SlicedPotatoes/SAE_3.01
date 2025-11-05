@@ -29,7 +29,8 @@ $filter = [
             isset($_GET['proofDateStart']) && $_GET['proofDateStart'] != '' ? $_GET['proofDateStart'] : null,
             isset($_GET['proofDateEnd']) && $_GET['proofDateEnd'] != '' ? $_GET['proofDateEnd'] : null,
             isset($_GET['proofState']) && $_GET['proofState'] != '' ? $_GET['proofState'] : null,
-            isset($_GET['proofExam']) && $_GET['proofExam'] == 'on'
+            isset($_GET['proofExam']) && $_GET['proofExam'] == 'on',
+            true
     ),
     'abs' => new FilterAbsence(
             isset($_GET['absDateStart']) && $_GET['absDateStart'] != '' ? $_GET['absDateStart'] : null,

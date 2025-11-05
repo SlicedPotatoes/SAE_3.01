@@ -295,7 +295,11 @@ class Justification
             where examen = true";
         }
 
-        $query .= " ORDER BY sendDate DESC";
+        if ($filter->getAsc()) {
+            $query .= " ORDER BY sendDate ASC";
+        } else {
+            $query .= " ORDER BY sendDate DESC";
+        }
 
         $row = $connection->prepare($query);
 
