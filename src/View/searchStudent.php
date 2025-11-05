@@ -13,10 +13,11 @@ $filter = new FilterStudent(
 
 $listGroupes = StudentPresentation::getAllGroupsStudent();
 $students = StudentPresentation::getAllStudents($filter);
-
 ?>
 
-<div class="card p-3 flex-fill d-flex flex-column mt-3" style="min-height: 0">
+<?php require __DIR__ . "/Composants/Headers/searchStudentHeader.php"; ?>
+
+<div class="card p-3 flex-fill d-flex flex-column" style="min-height: 0">
     <!-- Barre de recherche -->
     <nav class="navbar navbar-light search-bar">
         <form class="d-flex w-100" method="GET" action="index.php">
