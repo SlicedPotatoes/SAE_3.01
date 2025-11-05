@@ -463,8 +463,6 @@ class Student extends Account {
             $query .= " ORDER BY lastname, firstname";
         }
 
-        echo $query.'<br>';
-
         // Préparation + binding des paramètres
         $req = $connection->prepare($query);
         foreach ($parameters as $key => $value) {
