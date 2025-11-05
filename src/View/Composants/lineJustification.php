@@ -13,10 +13,11 @@ global $justification;
         <div>Date de fin: <?= $justification->getEndDate()->format('d/m/Y') ?></div>
     </div>
 
-<!--    --><?php //if($_SESSION["role"] === AccountType::EducationalManager) : ?>
-<!--    <div class="d-flex flex-column">-->
-<!--        <div>--><?php //= $justification-> ?><!--</div>-->
-<!--    </div>-->
+    <?php if($_SESSION["role"] === AccountType::EducationalManager) : ?>
+    <div class="d-flex flex-column">
+        <div><?= $justification->getStudent()->getFirstName() ?> <?= $justification->getStudent()->getLastName() ?></div>
+    </div>
+    <?php endif; ?>
 
     <div class="d-flex align-items-center gap-3 flex-grow-1">
         <span class='badge rounded-pill text-bg-<?= $justification->getCurrentState()->colorBadge() ?>'><?= $justification->getCurrentState()->label() ?></span>

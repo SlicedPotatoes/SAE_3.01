@@ -29,7 +29,8 @@ global $currTab, $filter;
             <?php
             $listJustifications = JustificationPresentation::getAllJustifications($filter['proofToDo']);
 
-            foreach($listJustifications as $justification) {
+            foreach($listJustifications as $justification)
+            {
                 require __DIR__ . "/lineJustification.php";
             }
             ?>

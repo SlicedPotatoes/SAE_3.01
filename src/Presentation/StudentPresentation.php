@@ -12,6 +12,10 @@ class StudentPresentation
 {
     /**
      * Récupération un etudiant, en fonction du contexte dans lequel il est demandé
+     *
+     * - Si l'utilisateur connecté est un étudiant : est retourné son compte sauvegardé en $_SESSION
+     * - Si l'utilisateur connecté est un responsable pédagogique : est retourné le compte étudiant qui est sauvegardé en $_GET
+     *
      * @return Student
      */
     public static function getStudentAccountDashboard() : Student

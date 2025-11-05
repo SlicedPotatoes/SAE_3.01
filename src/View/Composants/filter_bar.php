@@ -20,12 +20,13 @@ global $currTabValue, $states, $filter, $currPage;
                 <input
                         type="date"
                         id="<?= $currTabValue ?>DateStart"
+                        value="<?= $filter[$currTabValue]->getDateStart() ?>"
                         class="form-control"
                         name="<?= $currTabValue ?>DateStart"
-                        value="<?= $filter[$currTabValue]->getDateStart() ?>"
                 >
             </div>
         </div>
+
         <!-- Input DateEnd, type date -->
         <div class="row g-3 align-items-center">
             <div class="col-auto">
@@ -68,8 +69,25 @@ global $currTabValue, $states, $filter, $currPage;
         </div>
         <?php endif; ?>
 
+        <!-- Input Locked, type date, afficher seulement pour les absences -->
+        <?php if($currTabValue == 'abs'): ?>
+            <div class="row g-3 align-items-center">
+                <div class="col-auto">
+                    <input
+                            class="form-check-input"
+                            type="checkbox" id="<?= $currTabValue ?>Locked"
+                            name="<?= $currTabValue ?>Locked"
+                            <?= $filter[$currTabValue]->getLocked() ? 'checked' : '' ?>
+                    >
+                </div>
+                <div class="col-auto">
+                    <label for="<?= $currTabValue ?>Locked" class="form-check-label">Verrouillé</label>
+                </div>
+            </div>
+        <?php endif; ?>
+
         <!-- Input Exam, type checkbox -->
-        <div class="row g-3 align-items-center">
+        <div class="row g-3 align-items-center flex-grow-1">
             <div class="col-auto">
                 <input
                         class="form-check-input"
@@ -82,23 +100,6 @@ global $currTabValue, $states, $filter, $currPage;
                 <label for="<?= $currTabValue ?>Exam" class="form-check-label">Examen</label>
             </div>
         </div>
-        <!-- Input Locked, type date, afficher seulement pour les absences -->
-        <?php if($currTabValue == 'abs'): ?>
-        <div class="row g-3 align-items-center">
-            <div class="col-auto">
-                <input
-                        class="form-check-input"
-                        type="checkbox" id="<?= $currTabValue ?>Locked"
-                        name="<?= $currTabValue ?>Locked"
-                        <?= $filter[$currTabValue]->getLocked() ? 'checked' : '' ?>
-                >
-            </div>
-            <div class="col-auto">
-                <label for="<?= $currTabValue ?>Locked" class="form-check-label">Verrouillé</label>
-            </div>
-        </div>
-        <?php endif; ?>
-
-        <button class="btn btn-uphf" type="submit">Appliquer les filtres</button>
+        <button class="btn btn-uphf ml-auto" type="submit">Appliquer les filtres</button>
     </div>
 </form>

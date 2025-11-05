@@ -1,5 +1,4 @@
 <?php
-
 namespace Uphf\GestionAbsence\Model\Justification;
 
 use Uphf\GestionAbsence\Model\Absence\Absence;
@@ -53,6 +52,11 @@ class Justification
     public function getIdJustification(): int
     {
         return $this->idJustification;
+    }
+
+    public function getStudent(): ?Student
+    {
+        return $this->student;
     }
 
     public function getCause(): string
