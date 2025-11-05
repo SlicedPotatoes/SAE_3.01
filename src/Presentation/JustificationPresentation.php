@@ -17,7 +17,7 @@ class JustificationPresentation
      */
     public static function getJustifications(FilterJustification $filter): array
     {
-        return Justification::selectJustification(StudentPresentation::getStudentAccountDashboard()->getIdAccount(), $filter);
+        return Justification::selectJustification(StudentPresentation::getStudentAccount()->getIdAccount(), $filter);
     }
     public static function getAllJustifications(FilterJustification $filter): array
     {
