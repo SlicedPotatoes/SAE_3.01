@@ -350,9 +350,9 @@ class Student extends Account {
      * Récupérer dans la BDD un étudiant par son ID
      *
      * @param $id
-     * @return Student
+     * @return Student | null
      */
-    public static function getStudentByIdAccount($id): Student {
+    public static function getStudentByIdAccount($id): Student | null {
         $connection = Connection::getInstance();
 
         $query = "SELECT * FROM Account 
@@ -363,7 +363,7 @@ class Student extends Account {
         $req->execute(array($id));
 
         $res = $req->fetch();
-
+        if(count($res) != 0) {
         return new Student(
             $res['idaccount'],
             $res['lastname'],
@@ -372,7 +372,8 @@ class Student extends Account {
             AccountType::from($res['accounttype']),
             $res['studentnumber'],
             new GroupStudent($res['idgroupstudent'], $res['label'])
-        );
+
+        );}else{return null;}
     }
 
     /**
