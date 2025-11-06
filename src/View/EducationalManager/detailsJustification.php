@@ -11,7 +11,7 @@ $currentState = $justification->getCurrentState();
 $accountType = $_SESSION['account']->getAccountType();
 $isEducationalManager = $accountType === AccountType::EducationalManager;
 
-$h2 = "Jusificatif";
+$h2 = "Jusificatif ";
 
 if ($isEducationalManager)
 {
@@ -39,21 +39,26 @@ $h2 .= "du " . $justification->getSendDate()->format('d/m/Y')
         <h4>Absences</h4>
         <div class="border-top flex-fill overflow-y-auto" style="max-height: 200px;">
             <?php foreach ($absences as $absence): ?>
-                <div class="d-flex align-items-center justify-content-between border-bottom py-2">
-                    <div class="flex-grow-1 me-3">
+                <div class="d-flex align-items-center border-bottom py-2">
+                    <div class="me-3">
                         <div>Date: <?= $absence->getTime()->format('d/m/Y H:i') ?></div>
                         <div>Durée: <?= $absence->getDuration() ?></div>
                     </div>
 
+                    <?php if($absence->getExamen()): ?>
+                        <span class='badge rounded-pill text-bg-warning ms-3'>Examen</span>
+                    <?php endif; ?>
+
                     <?php if ($currentState === StateJustif::NotProcessed): ?>
                         <?php if ($isEducationalManager): ?>
-                            <div class="form-check form-switch">
+                            <div class="form-check flex-fill form-switch">
                                 <input type="hidden"
                                        form="validateJustificationForm"
                                        name="absences[<?= $absence->getIdAccount() ?>_<?= $absence->getTime()->format('Y-m-d H:i:s') ?>]"
                                        value="validated"
                                        class="absence-state">
-                                <button type="button" class="btn btn-success absence-btn">Validé</button>
+                                <button type="button" class="btn btn-success absence-btn float-end me-3">Validé</button>
+
                             </div>
                         <?php else: ?>
                             <div class="form-check form-switch">
