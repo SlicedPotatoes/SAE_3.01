@@ -46,7 +46,7 @@ class Absence {
 
     public function getStudent(): Student {
         if(gettype($this->student) == 'integer') {
-            // TODO Requete pour récupérer le student
+            $this->student = Student::getStudentByIdAccount($this->student);
         }
 
         return $this->student;

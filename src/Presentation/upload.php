@@ -28,7 +28,6 @@ use Uphf\GestionAbsence\Model\mail\Mailer;
 require_once __DIR__ . "/../../vendor/autoload.php";
 
 require_once __DIR__ . "/../Presentation/globalVariable.php";
-require_once __DIR__ . "/../Model/mail/mailAccRecpJusti.php";
 
 global $PROD, $LIMIT_FILE_SIZE_UPLOAD, $ALLOWED_MIME_TYPE, $ALLOWED_EXTENSIONS_FILE;
 
