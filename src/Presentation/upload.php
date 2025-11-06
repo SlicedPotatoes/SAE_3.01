@@ -19,12 +19,13 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-require_once __DIR__ . "/../../vendor/autoload.php";
-
 use Uphf\GestionAbsence\Model\Account\Account;
 use Uphf\GestionAbsence\Model\Account\Student;
 use Uphf\GestionAbsence\Model\Justification\Justification;
 use Uphf\GestionAbsence\Model\Account\AccountType;
+use Uphf\GestionAbsence\Model\mail\Mailer;
+
+require_once __DIR__ . "/../../vendor/autoload.php";
 
 require_once __DIR__ . "/../Presentation/globalVariable.php";
 require_once __DIR__ . "/../Model/mail/mailAccRecpJusti.php";
@@ -42,14 +43,14 @@ $uploadDir = dirname(__DIR__) . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR
 
 if (!is_dir($uploadDir)) {
     if (!mkdir($uploadDir, 0777, true)) {
-        $errorMessage = "HTTP 500 Internal Server Error";
+        $errorMessage = "Erreur 500 - Erreur interne";
         if (!$PROD) { $errorMessage .= ": Le dossier d'upload n'existe pas et n'a pas pu être créé: $uploadDir"; }
         header('Location: ../index.php?errorMessage[]='.urlencode($errorMessage));
         exit;
     }
 }
 if (!is_writable($uploadDir)) {
-    $errorMessage = "HTTP 500 Internal Server Error";
+    $errorMessage = "Erreur 500 - Erreur interne";
     if (!$PROD) { $errorMessage .= ": Le dossier n'est pas accessible en écriture: $uploadDir"; }
     header('Location: ../index.php?errorMessage[]='.urlencode($errorMessage));
     exit;
@@ -59,7 +60,7 @@ if (!is_writable($uploadDir)) {
 if (!is_dir($uploadDir)) {
     // Création automatique du dossier d'upload (normalement utile qu'en phase de dev)
     if (!mkdir($uploadDir, 0777, true)) {
-        $errorMessage = "HTTP 500 Internal Server Error";
+        $errorMessage = "Erreur 500 - Erreur interne";
         if (!$PROD) { $errorMessage = $errorMessage.": Le dossier d'upload n'existe pas et n'a pas pu être créé: $uploadDir"; }
         header('Location: ../index.php?errorMessage[]='.urlencode($errorMessage));
         exit;
@@ -67,7 +68,7 @@ if (!is_dir($uploadDir)) {
 }
 // Le dossier d'upload n'est pas accessible en écriture
 if (!is_writable($uploadDir)) {
-    $errorMessage = "HTTP 500 Internal Server Error";
+    $errorMessage = "Erreur 500 - Erreur interne";
     if (!$PROD) { $errorMessage = $errorMessage.": Le dossier n'est pas accessible en écriture: $uploadDir"; }
     header('Location: ../index.php?errorMessage[]='.urlencode($errorMessage));
     exit;
@@ -80,14 +81,14 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 if (!isset($_FILES['files']) || !isset($_POST['startDate']) || !isset($_POST['endDate']) || !isset($_POST['absenceReason'])) {
-    $errorMessage = "HTTP 400 Bad Request";
+    $errorMessage = "Erreur 400 - Requête invalide";
     if (!$PROD) { $errorMessage = $errorMessage.": Un des champs obligatoires n'a pas été envoyé"; }
     header('Location: ../index.php?errorMessage[]='.urlencode($errorMessage));
     exit;
 }
 
 if(!isset($_SESSION['role']) || $_SESSION['role'] != AccountType::Student) {
-    $errorMessage = "HTTP 400 Bad Request";
+    $errorMessage = "Erreur 400 - Requête invalide";
     if (!$PROD) { $errorMessage = $errorMessage.": Un compte étudiant est nécessaire"; }
     header('Location: ../index.php?errorMessage[]='.urlencode($errorMessage));
     exit;
@@ -101,7 +102,7 @@ $files = $_FILES['files'];
 
 // Vérifier que la dateDeDebut est inférieur ou égale à la dateDeFin
 if(DateTime::createFromFormat("Y-m-d", $startDate) > DateTime::createFromFormat("Y-m-d", $endDate)) {
-    $errorMessage = "HTTP 400 Bad Request: La date de début doit être inférieur ou égal a la date de fin";
+    $errorMessage = "Erreur 400 - Requête invalide: La date de début doit être inférieur ou égal a la date de fin";
     header('Location: ../index.php?errorMessage[]='.urlencode($errorMessage));
     exit;
 }
@@ -207,12 +208,13 @@ for($i = 0; $i < count($files['name']); $i++) {
 // Ajout dans la BDD
 if(!Justification::insertJustification($_SESSION['account']->getIdAccount(), $absenceReason, $startDate, $endDate, $filesNameForDB)) {
     // TODO: Supprimer les fichiers qui ont été upload
-    $errorMessage = "HTTP 400 Bad Request: Pas d'absence sur la période sélectionnée";
+    $errorMessage = "Erreur 400 - Requête invalide: Pas d'absence sur la période sélectionnée";
     header('Location: ../index.php?errorMessage[]='.urlencode($errorMessage));
     exit;
 }
 
-mailAccRecpJusti(
+Mailer::sendAccRecpJustification
+(
     $_SESSION['account']->getLastName(),
     $_SESSION['account']->getFirstName(),
     $_SESSION['account']->getEmail(),
