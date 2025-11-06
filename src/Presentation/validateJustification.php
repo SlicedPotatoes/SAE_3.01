@@ -9,13 +9,17 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
+require_once "../Presentation/globalVariable.php";
+require_once "../../vendor/autoload.php";
+
+use Uphf\GestionAbsence\Model\Account\AccountType;
+use Uphf\GestionAbsence\Model\Account\Account;
+use Uphf\GestionAbsence\Model\Connection;
+use Uphf\GestionAbsence\Model\Justification\Justification;
+use Uphf\GestionAbsence\Model\Justification\StateJustif;
+
 session_start();
 
-require_once "../Presentation/globalVariable.php";
-require_once "../Model/connection.php";
-require_once "../Model/Justification/Justification.php";
-require_once "../Model/Absence/Absence.php";
-require_once "../Model/Account/AccountType.php";
 
 global $PROD;
 
@@ -55,7 +59,7 @@ try {
     if ($justification->getCurrentState() !== StateJustif::NotProcessed) {
         $errorMessage = "HTTP 400 Bad Request";
         if (!$PROD) { $errorMessage = $errorMessage.": Le justificatif a déjà été traité"; }
-        header('Location: ../index.php?currPage=dashboard&errorMessage[]='.urlencode($errorMessage));
+        header('Location: ../index.php?errorMessage[]='.urlencode($errorMessage));
         exit;
     }
     
@@ -74,6 +78,7 @@ try {
         
         // Mettre à jour l'état de l'absence
         $query = "UPDATE absence SET currentState = :state WHERE idStudent = :idStudent AND time = :time";
+        $connection = Connection::getInstance();
         $stmt = $connection->prepare($query);
         $stmt->execute([
             ':state' => $stateValue,
@@ -92,7 +97,7 @@ try {
     
     // Redirection avec message de succès
     $successMessage = "Justificatif traité avec succès";
-    header('Location: ../index.php?currPage=dashboard&successMessage[]='.urlencode($successMessage));
+    header('Location: ../index.php?successMessage[]='.urlencode($successMessage));
     exit;
     
 } catch (Exception $e) {
@@ -102,6 +107,6 @@ try {
         $errorMessage = $errorMessage.": ".$e->getMessage();
         error_log("Erreur lors de la validation du justificatif : " . $e->getMessage());
     }
-    header('Location: ../index.php?currPage=dashboard&errorMessage[]='.urlencode($errorMessage));
+    header('Location: ../index.php?errorMessage[]='.urlencode($errorMessage));
     exit;
 }
