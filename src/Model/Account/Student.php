@@ -347,6 +347,52 @@ class Student extends Account {
     }
 
     /**
+     * Récupérer le nombre de demi-journée d'absences "Pénalisante"
+     *
+     * Cela inclut toutes les absences avec l'état suivant:
+     * - Pending
+     * - NotJustified
+     * - Refused
+     *
+     * @return int
+     */
+    public function getHalfdayPenalizingAbsence(): int
+    {
+        $connection = Connection::getInstance();
+
+        $sql = "
+        WITH view_morning_absences AS (
+            SELECT a.idStudent, CAST(a.time AS date) AS day
+            FROM absence a
+            WHERE CAST(a.time AS time) < TIME '12:30'
+              AND currentState IN ('Refused', 'NotJustified', 'Pending')
+            GROUP BY a.idStudent, day
+        ),
+        view_afternoon_absences AS (
+            SELECT a.idStudent, CAST(a.time AS date) AS day
+            FROM absence a
+            WHERE CAST(a.time AS time) >= TIME '12:30'
+              AND currentState IN ('Refused', 'NotJustified', 'Pending')
+            GROUP BY a.idStudent, day
+        ),
+        view_halfdays_absence AS (
+            SELECT idStudent, day FROM view_morning_absences
+            UNION ALL
+            SELECT idStudent, day FROM view_afternoon_absences
+        )
+        SELECT COUNT(*)
+        FROM view_halfdays_absence
+        WHERE idStudent = :idStudent;
+    ";
+
+        $query = $connection->prepare($sql);
+        $query->bindValue(':idStudent', $this->idAccount, PDO::PARAM_INT);
+        $query->execute();
+
+        return (int)$query->fetchColumn();
+    }
+
+    /**
      * Récupérer dans la BDD un étudiant par son ID
      *
      * @param $id

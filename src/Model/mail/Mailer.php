@@ -5,8 +5,22 @@ use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
+/**
+ * Classe permettant d'envoyer des mails avec différentes méthodes pour différents context
+ */
+
 class Mailer
 {
+    /**
+     * Permet d'envoyer un mail à un étudiant lorsqu'il justifie d'une absence
+     *
+     * @param $lastname
+     * @param $firstname
+     * @param $email
+     * @param $dateDebut
+     * @param $dateFin
+     * @return void
+     */
     static public function sendAccRecpJustification($lastname, $firstname, $email, $dateDebut, $dateFin)
     {
         $subject = 'Accusé de réception de votre demande de justificatif d\'absence';
@@ -21,6 +35,40 @@ class Mailer
         self::sendMail($firstname, $lastname, $email, $body, $subject);
     }
 
+    /**
+     * Permet d'envoyer un mail à un étudiant lorsque l'un de ses justificatifs à été traité par le responsable pédagogique
+     *
+     * @param $lastname
+     * @param $firstname
+     * @param $email
+     * @param $dateDebut
+     * @param $dateFin
+     * @return void
+     */
+    static public function sendProcessedJustification($lastname, $firstname, $email, $dateDebut, $dateFin)
+    {
+        $subject = 'Traitement de votre justificatif d\'absence';
+        $dateJour = date('d/m/Y');
+        $body = "Bonjour " . $firstname . " " . $lastname . ",<br><br>
+    Votre demande de justification d'absence du " . $dateDebut . " au " . $dateFin . " a bien été traité par le responsable pédagogique le " . $dateJour . ".<br>
+    Nous vous invitons à consulter la décision du responsable pédagogique dans votre espace personnel.<br><br>
+    Cordialement,<br>
+    Le service des absences.";
+
+        self::sendMail($firstname, $lastname, $email, $body, $subject);
+    }
+
+    /**
+     *
+     * Permet d'envoyer un mail à un étudiant lorsqu'il a une absence durant un examen qui est validé
+     * Et d'envoyer un mail au professeur responsable de la ressource qu'un étudiant absent durant un examen a validé une absence et doit repasser l'examen
+     *
+     * @param $dateExam
+     * @param $student
+     * @param $teacher
+     * @param $ressource
+     * @return void
+     */
     static public function sendAlertExam($dateExam, $student, $teacher, $ressource)
     {
         $lastnameTeacher = $teacher->getLastName();
@@ -36,7 +84,7 @@ class Mailer
         $dateJour = date('d/m/Y');
 
         $bodyTeacher = "Bonjour " . $firstnameTeacher . " " . $lastnameTeacher . ",<br><br>
-    L'étudiant " . $firstnameStudent . " " . $lastnameStudent . " a justifié son absence pour l'examen qui à eu lieu le " . $dateExam . " pour la ressource $ressource.<br><br>
+    L'étudiant " . $firstnameStudent . " " . $lastnameStudent . " a justifié son absence pour l'examen qui à eu lieu le " . $dateExam . " pour la ressource " . $ressource . ".<br><br>
     Cordialement,<br>
     Le service des absences.";
 
@@ -50,6 +98,16 @@ class Mailer
         self::sendMail($emailTeacher, $lastnameTeacher, $emailTeacher, $bodyTeacher, $subjectTeacher);
     }
 
+    /**
+     * Fonction utilisé pour envoyer le mail en utlisant l'api PHPMailer
+     *
+     * @param $firstname
+     * @param $lastname
+     * @param $email
+     * @param $body
+     * @param $subject
+     * @return void
+     */
     static private function sendMail($firstname, $lastname, $email, $body, $subject)
     {
         $mailer = new PHPMailer(true);
