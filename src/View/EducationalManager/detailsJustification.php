@@ -123,11 +123,27 @@ require_once __DIR__ . "/../../View/Composants/Modal/filePreviewModal.php";
                     <li class="p-2">Aucun fichier justificatif.</li>
                 <?php endif; ?>
                 <?php foreach ($files as $file): ?>
+
+                    <?php
+                    $fname   = $file->getFileName();
+                    $viewUrl = "../upload/" . rawurlencode($fname);
+                    ?>
+
                     <div class="border-bottom p-2 border-0 border-bottom d-flex justify-content-between align-items-center pe-2">
-                        <span title="<?= htmlspecialchars($file->getFileName()) ?>" class="text-truncate"><?= htmlspecialchars($file->getFileName()) ?></span>
+                        <span title="<?= htmlspecialchars($fname) ?>" class="text-truncate"><?= htmlspecialchars($fname) ?></span>
+
                         <div class="btn-group btn-group-sm">
-                            <button class="btn btn-outline-danger bi bi-eye me-1" title="Voir" type="button"></button>
-                            <a class="btn btn-outline-primary bi bi-download" title="Télécharger" href="" download></a>
+                            <!-- Bouton pour ouvrir la modale -->
+                            <button
+                                    class="btn btn-outline-danger bi bi-eye me-1"
+                                    title="Voir"
+                                    type="button"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#fileModal"
+                                    data-bs-file="<?= $viewUrl ?>"
+                            ></button>
+                            <!-- Télécharger -->
+                            <a class="btn btn-outline-primary bi bi-download" title="Télécharger" href="<?= $viewUrl ?>"></a>
                         </div>
                     </div>
                 <?php endforeach; ?>

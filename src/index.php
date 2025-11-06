@@ -88,7 +88,7 @@ if ($currPage === null)
             }
         }
         ?>
-        <div class="container">
+        <div class="container mt-3">
             <?php
             // Gestion des messages de "notification"
             $typeNotifications = [
