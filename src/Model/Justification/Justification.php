@@ -377,7 +377,7 @@ class Justification
         $connection = Connection::getInstance();
 
         $query = "SELECT idJustification, cause, currentState, startDate, endDate, sendDate, processedDate, studentID, 
-        lastname, firstname, email, accountType, studentNumber
+        lastname, firstname, email, accountType, studentNumber, refusalReason
         FROM justification join absenceJustification using (idJustification)
         join studentAccount on studentid = idstudent where idJustification = :idJustification";
         $row = $connection->prepare($query);

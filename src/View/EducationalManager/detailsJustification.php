@@ -157,6 +157,8 @@ $h2 .= "du " . $justification->getSendDate()->format('d/m/Y')
             <div class="mt-4">
                 <a href="index.php" class="btn btn-secondary">Retour</a>
             </div>
+        <?php elseif ($accountType === AccountType::EducationalManager): ?>
+            <a href="index.php" class="btn btn-secondary">Retour</a>
         <?php endif; ?>
     </div>
 </div>
