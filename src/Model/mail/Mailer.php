@@ -21,11 +21,11 @@ class Mailer
      * @param string $lastname
      * @param string $firstname
      * @param string $email
-     * @param DateTime $dateDebut
-     * @param DateTime $dateFin
+     * @param string $dateDebut
+     * @param string $dateFin
      * @return void
      */
-    static public function sendAccRecpJustification(string $lastname, string $firstname, string $email, DateTime $dateDebut, DateTime $dateFin): void
+    static public function sendAccRecpJustification(string $lastname, string $firstname, string $email, string $dateDebut, string $dateFin): void
     {
         $subject = 'Accusé de réception de votre demande de justificatif d\'absence';
         $dateJour = date('d/m/Y');
