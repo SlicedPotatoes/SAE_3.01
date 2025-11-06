@@ -68,6 +68,33 @@ $h2 .= "du " . $justification->getSendDate()->format('d/m/Y')
                             </div>
 
                         <?php endif; ?>
+                    <?php else: ?>
+                        <?php if ($isEducationalManager): ?>
+
+                        <div class="form-check form-switch">
+                            <input type="hidden"
+                                   form="validateJustificationForm"
+                                   name="absences[<?= $absence->getIdAccount() ?>_<?= $absence->getTime()->format('Y-m-d H:i:s') ?>]"
+                                   value="validated"
+                                   class="absence-state">
+                            <span class="badge rounded-pill text-bg-<?= $absence->getCurrentState()->colorBadge() ?>">
+                                    <?= $absence->getCurrentState()->label() ?>
+                                </span>
+
+                        </div>
+                        <?php else: ?>
+                            <div class="form-check form-switch">
+                                <input type="hidden"
+                                       form="validateJustificationForm"
+                                       name="absences[<?= $absence->getIdAccount() ?>_<?= $absence->getTime()->format('Y-m-d H:i:s') ?>]"
+                                       value="validated"
+                                       class="absence-state">
+                                <span class="badge rounded-pill text-bg-<?= $absence->getCurrentState()->colorBadge() ?>">
+                                    <?= $absence->getCurrentState()->label() ?>
+                                </span>
+                            </div>
+
+                        <?php endif; ?>
                     <?php endif; ?>
                 </div>
             <?php endforeach; ?>
@@ -98,11 +125,22 @@ $h2 .= "du " . $justification->getSendDate()->format('d/m/Y')
 
     <!-- Bloc Motif du refus & Actions : toujours en dessous -->
     <div class="mt-4">
-        <h4 class="mb-2"><i class="bi bi-exclamation-triangle-fill me-2"></i>Motif du refus :</h4>
-        <?php if ($justification->getRefusalReason() === null): ?>
-            <p class="mb-0">Aucun motif de refus n'a été communiqué pour cette justification.</p>
+        <?php if ($accountType === AccountType::EducationalManager && $currentState === StateJustif::NotProcessed ): ?>
+        <?php elseif ($accountType === AccountType::EducationalManager && $currentState === StateJustif::Processed ): ?>
+            <h4 class="mb-2"><i class="bi bi-exclamation-triangle-fill me-2"></i>Motif du refus :</h4>
+            <?php if ($justification->getRefusalReason() === null): ?>
+                <p class="mb-0">Aucun motif de refus n'a été communiqué pour cette justification.</p>
+            <?php else: ?>
+                <p class="mb-0"><?= htmlspecialchars($justification->getRefusalReason()) ?></p>
+            <?php endif; ?>
+
         <?php else: ?>
-            <p class="mb-0"><?= htmlspecialchars($justification->getRefusalReason()) ?></p>
+            <h4 class="mb-2"><i class="bi bi-exclamation-triangle-fill me-2"></i>Motif du refus :</h4>
+            <?php if ($justification->getRefusalReason() === null): ?>
+                <p class="mb-0">Aucun motif de refus n'a été communiqué pour cette justification.</p>
+            <?php else: ?>
+                <p class="mb-0"><?= htmlspecialchars($justification->getRefusalReason()) ?></p>
+            <?php endif; ?>
         <?php endif; ?>
 
         <?php if ($isEducationalManager && $currentState === StateJustif::NotProcessed): ?>
@@ -119,6 +157,8 @@ $h2 .= "du " . $justification->getSendDate()->format('d/m/Y')
             <div class="mt-4">
                 <a href="index.php" class="btn btn-secondary">Retour</a>
             </div>
+        <?php elseif ($accountType === AccountType::EducationalManager): ?>
+            <a href="index.php" class="btn btn-secondary">Retour</a>
         <?php endif; ?>
     </div>
 </div>

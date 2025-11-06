@@ -5,7 +5,7 @@ $account = $_SESSION["account"];
 $lastName = $account->getLastName();
 $firstName = $account->getFirstName();
 
-$message = "<p class='h3'>Vous pouvez rechercher ici <span class='text-uphf fw-bold'>étudiant</span> !</p>";
+$message = "<p class='h3'>Vous pouvez rechercher ici un <span class='text-uphf fw-bold'>étudiant</span> !</p>";
 
 ?>
 
