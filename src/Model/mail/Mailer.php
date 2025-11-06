@@ -112,7 +112,7 @@ class Mailer
      * @param string $subject
      * @return void
      */
-    static private function sendMail(string $firstname, string $lastname, string $email, string $body, string $subject)
+    static private function sendMail(string $firstname, string $lastname, string $email, string $body, string $subject): void
     {
         $mailer = new PHPMailer(true);
         try
