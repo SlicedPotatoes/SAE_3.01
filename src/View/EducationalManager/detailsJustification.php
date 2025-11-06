@@ -12,13 +12,15 @@ $currentState = $justification->getCurrentState();
 $accountType = $_SESSION['account']->getAccountType();
 $isEducationalManager = $accountType === AccountType::EducationalManager;
 
-$h2 = "Jusificatif ";
+$h2 = "Jusificatif";
 
 if ($isEducationalManager)
 {
     $h2 .= " de " . $justification->getStudent()->getFirstName() . " " . $justification->getStudent()->getLastName() . ", ";
 }
-$h2 .= "du " . $justification->getSendDate()->format('d/m/Y')
+$h2 .= " du " . $justification->getSendDate()->format('d/m/Y');
+
+require_once __DIR__ . "/../../View/Composants/Modal/filePreviewModal.php";
 
 ?>
 
@@ -298,6 +300,4 @@ $h2 .= "du " . $justification->getSendDate()->format('d/m/Y')
             formProcessJustification.submit();
         });
     }
-
-
 </script>

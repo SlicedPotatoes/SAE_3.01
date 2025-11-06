@@ -25,7 +25,7 @@ global $PROD;
 
 // Vérifier que la requête est bien POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    $errorMessage = "HTTP 405 Method Not Allowed";
+    $errorMessage = "Erreur 403 - Accès refusé";
     if (!$PROD) { $errorMessage = $errorMessage.": Seulement les requêtes POST sont autorisées"; }
     header('Location: ../index.php?errorMessage[]='.urlencode($errorMessage));
     exit;
@@ -33,8 +33,8 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 // Vérifier que les champs requis sont présents
 if (!isset($_POST['idJustification'])) {
-    $errorMessage = "HTTP 400 Bad Request";
-    if (!$PROD) { $errorMessage = $errorMessage.": L'ID du justificatif est requis"; }
+    $errorMessage = "Erreur 400 - Requête invalide";
+    if (!$PROD) { $errorMessage = $errorMessage.": La demande est incorrecte. Vérifiez les champs et réessayer."; }
     header('Location: ../index.php?errorMessage[]='.urlencode($errorMessage));
     exit;
 }
@@ -50,15 +50,15 @@ try {
     
     // Vérifier que le justificatif existe et est en attente de traitement
     if (!$justification) {
-        $errorMessage = "HTTP 404 Not Found";
-        if (!$PROD) { $errorMessage = $errorMessage.": Le justificatif n'existe pas"; }
+        $errorMessage = "Erreur 404 - Introuvable";
+        if (!$PROD) { $errorMessage = $errorMessage.": Impossible de trouver la ressource demandée."; }
         header('Location: ../index.php?errorMessage[]='.urlencode($errorMessage));
         exit;
     }
 
     if ($justification->getCurrentState() !== StateJustif::NotProcessed) {
-        $errorMessage = "HTTP 400 Bad Request";
-        if (!$PROD) { $errorMessage = $errorMessage.": Le justificatif a déjà été traité"; }
+        $errorMessage = "Erreur 400 - Requête invalide";
+        if (!$PROD) { $errorMessage = $errorMessage.": La demande est incorrecte. Le justificatif a déjà été traité"; }
         header('Location: ../index.php?errorMessage[]='.urlencode($errorMessage));
         exit;
     }
@@ -101,7 +101,7 @@ try {
     
 } catch (Exception $e) {
     // En cas d'erreur
-    $errorMessage = "HTTP 500 Internal Server Error";
+    $errorMessage = "Erreur 500 - Erreur interne";
     if (!$PROD) { 
         $errorMessage = $errorMessage.": ".$e->getMessage();
         error_log("Erreur lors de la validation du justificatif : " . $e->getMessage());
