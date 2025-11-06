@@ -68,6 +68,30 @@ $h2 .= "du " . $justification->getSendDate()->format('d/m/Y')
                             </div>
 
                         <?php endif; ?>
+                    <?php else: ?>
+                        <?php if ($isEducationalManager): ?>
+
+                        <div class="form-check form-switch">
+                            <input type="hidden"
+                                   form="validateJustificationForm"
+                                   name="absences[<?= $absence->getIdAccount() ?>_<?= $absence->getTime()->format('Y-m-d H:i:s') ?>]"
+                                   value="validated"
+                                   class="absence-state">
+
+                        </div>
+                        <?php else: ?>
+                            <div class="form-check form-switch">
+                                <input type="hidden"
+                                       form="validateJustificationForm"
+                                       name="absences[<?= $absence->getIdAccount() ?>_<?= $absence->getTime()->format('Y-m-d H:i:s') ?>]"
+                                       value="validated"
+                                       class="absence-state">
+                                <span class="badge rounded-pill text-bg-<?= $absence->getCurrentState()->colorBadge() ?>">
+                                    <?= $absence->getCurrentState()->label() ?>
+                                </span>
+                            </div>
+
+                        <?php endif; ?>
                     <?php endif; ?>
                 </div>
             <?php endforeach; ?>
