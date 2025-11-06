@@ -110,15 +110,18 @@ $h2 .= "du " . $justification->getSendDate()->format('d/m/Y')
         <div class="col-md-6">
             <h4>Justificatifs :</h4>
             <ul class="list-group">
-                <?php foreach ($files as $file): ?>
-                    <li class="list-group-item d-flex justify-content-between align-items-center pe-2">
-                        <span title="<?= htmlspecialchars($file->getFileName()) ?>" class="text-truncate"><?= htmlspecialchars($file->getFileName()) ?></span>
-                        <div class="btn-group btn-group-sm">
-                            <button class="btn btn-outline-danger bi bi-eye me-1" title="Voir" type="button"></button>
-                            <a class="btn btn-outline-primary bi bi-download" title="Télécharger" href="" download></a>
-                        </div>
-                    </li>
-                <?php endforeach; ?>
+                <?php if (empty($files)): ?>
+                    <li class="list-group-item pe-2">Aucun fichier justificatif.</li>
+                <?php endif; ?>
+                    <?php foreach ($files as $file): ?>
+                        <li class="list-group-item d-flex justify-content-between align-items-center pe-2">
+                            <span title="<?= htmlspecialchars($file->getFileName()) ?>" class="text-truncate"><?= htmlspecialchars($file->getFileName()) ?></span>
+                            <div class="btn-group btn-group-sm">
+                                <button class="btn btn-outline-danger bi bi-eye me-1" title="Voir" type="button"></button>
+                                <a class="btn btn-outline-primary bi bi-download" title="Télécharger" href="" download></a>
+                            </div>
+                        </li>
+                    <?php endforeach; ?>
             </ul>
         </div>
     </div>
@@ -158,7 +161,9 @@ $h2 .= "du " . $justification->getSendDate()->format('d/m/Y')
                 <a href="index.php" class="btn btn-secondary">Retour</a>
             </div>
         <?php elseif ($accountType === AccountType::EducationalManager): ?>
-            <a href="index.php" class="btn btn-secondary">Retour</a>
+            <div class="mt-4">
+                <a href="index.php" class="btn btn-secondary">Retour</a>
+            </div>
         <?php endif; ?>
     </div>
 </div>
