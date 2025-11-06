@@ -1,24 +1,29 @@
 <?php
 require_once __DIR__ . "/Connection.php";
-/*
-Ce fichier permet la recherche et la récupération des justificatifs d'absence pour les étudiants.
-Il vérifie la validité des paramètres fournis, sécurise l'accès aux fichiers (formats acceptés : jpeg, jpg, png, pdf),
-et gère l'envoi du fichier demandé avec les bons en-têtes HTTP.
-*/
+
+/**
+ * Ce fichier permet la recherche et la récupération des justificatifs d'absence pour les étudiants.
+ * Il vérifie la validité des paramètres fournis, sécurise l'accès aux fichiers (formats acceptés : jpeg, jpg, png, pdf),
+ * et gère l'envoi du fichier demandé avec les bons en-têtes HTTP.
+ */
 
 
 
 ini_set('display_errors', 0);
 error_reporting(0);
 
-// Déterminer le dossier selon l'OS
+/**
+ * Déterminer le dossier selon l'OS
+ */
 if (stripos(PHP_OS_FAMILY, 'Windows') !== false) {
     $baseDir = __DIR__ . DIRECTORY_SEPARATOR . 'merguez' . DIRECTORY_SEPARATOR;
 } else {
     $baseDir = '/merguez/';
 }
 
-// Vérifier que le dossier d'upload existe
+/**
+ * Vérifier que le dossier d'upload existe
+ */
 if (!is_dir($baseDir)) {
     http_response_code(500);
     header('Content-Type: text/plain; charset=UTF-8');

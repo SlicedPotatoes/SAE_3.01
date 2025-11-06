@@ -6,7 +6,8 @@
 use Uphf\GestionAbsence\Presentation\StudentPresentation;
 
 /**
- * TODO : A refaire c'est vraiment pas foufou
+ * Récupération d'un compte étudiant en fonction du contexte
+ * Pour plus d'information aller voir la methode de la classe StudentPresentation
  */
 $studentAccount = StudentPresentation::getStudentAccount();
 
@@ -19,6 +20,7 @@ $absenceRefused = $studentAccount->getAbsRefused();
 $malus = $studentAccount->getMalusPoints();
 $malusWithoutPending = $studentAccount->getMalusPointsWithoutPending();
 $PenalizingAbsence = $studentAccount->getPenalizingAbsence();
+$halfdayPenalizingAbsence = $studentAccount->getHalfdayPenalizingAbsence();
 ?>
 
 <!-- Card du dashboard avec informations sur l'assiduité -->
@@ -67,6 +69,12 @@ $PenalizingAbsence = $studentAccount->getPenalizingAbsence();
                 <div class="fs-4 text-warning mb-0">
                     <?= $PenalizingAbsence ?>
                 </div>
+                <?php if ($halfdayPenalizingAbsence > 0) : ?>
+                    <div class="text-muted small">
+                        Demi-journées d’absence pénalisantes :
+                        <?= $halfdayPenalizingAbsence ?>
+                    </div>
+            <?php endif; ?>
             </div>
         </div>
     </div>

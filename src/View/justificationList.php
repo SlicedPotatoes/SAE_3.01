@@ -9,6 +9,10 @@ use Uphf\GestionAbsence\Model\Justification\StateJustif;
 // Récupérer l'onglet courant, pour pouvoir ouvrir la page sur le bon onglet
 $currTab = isset($_GET['currTab']) ? $_GET['currTab'] : 'proofToDo';
 
+
+/**
+ * Gestion des filtres des justificatifs de manière indépendante pour la page des justificatifs du RP
+ */
 $filter =
     [
         'proofToDo' => new FilterJustification(
