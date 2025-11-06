@@ -62,38 +62,37 @@ try {
         header('Location: ../index.php?errorMessage[]='.urlencode($errorMessage));
         exit;
     }
-    
-    // Traiter chaque absence
-    $hasRefused = false;
-    foreach ($absences as $key => $state) {
+
+    foreach ($absences as $key => $values) {
         // Format de la clé: "idStudent_time"
         list($idStudent, $time) = explode('_', $key, 2);
-        
-        // Convertir le state en valeur de l'enum
-        $stateValue = ucfirst($state); // 'validated' -> 'Validated', 'refused' -> 'Refused'
-        
-        if ($stateValue === 'Refused') {
-            $hasRefused = true;
+
+        //$allowedJustification = !($values['state'] == 'Validated') && !($values['lock'] == 'true');
+        $allowedJustification = $values['state'] == 'Validated' ? 'false' : ($values['lock'] == 'true' ? 'false' : 'true');
+
+        if($values['state'] == 'Validated') {
+            $values['lock'] = true;
         }
-        
+
         // Mettre à jour l'état de l'absence
-        $query = "UPDATE absence SET currentState = :state WHERE idStudent = :idStudent AND time = :time";
+        $query = "UPDATE absence SET currentState = :state, allowedJustification = :lock  WHERE idStudent = :idStudent AND time = :time";
         $connection = Connection::getInstance();
         $stmt = $connection->prepare($query);
         $stmt->execute([
-            ':state' => $stateValue,
+            ':state' => $values['state'],
             ':idStudent' => $idStudent,
-            ':time' => $time
+            ':time' => $time,
+            ':lock' => $allowedJustification
         ]);
     }
     
     // Si des absences ont été refusées, enregistrer le motif de refus
-    if ($hasRefused && !empty($rejectionReason)) {
+    if (!empty($rejectionReason)) {
         $justification->setRefusalReason($rejectionReason);
     }
     
     // Changer l'état du justificatif vers "Traité"
-    $justification->changeStateJustification();
+    $justification->processJustification();
     
     // Redirection avec message de succès
     $successMessage = "Justificatif traité avec succès";

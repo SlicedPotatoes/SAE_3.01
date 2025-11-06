@@ -341,32 +341,27 @@ class Justification
     }
 
     /**
-     * Changer l'état du justificatif, met à jour la BDD
+     * Passé l'état d'un justificatif a traité si celui-ci n'a jamais été traité.
      *
      * @return void
      */
-    function changeStateJustification(): void
+    function processJustification(): void
     {
+        // Si le justificatif est déjà traité, on ne fait rien
+        if($this->currentState == StateJustif::Processed) {
+            return;
+        }
         //Connexion à la base de données
         $connection = Connection::getInstance();
 
         //Requête SQL pour changer la valur dans la base de données
         $query = "update justification
-        set currentState = :currentState
+        set currentState = 'Processed',
+            processedDate = now()
         where idJustification = :idJustification";
         $row = $connection->prepare($query);
         $row->bindParam('idJustification', $this->idJustification);
 
-        //Changement selon l'état du justificatif
-        if ($this->currentState == StateJustif::NotProcessed) {
-            $this->currentState = StateJustif::Processed;
-            $value = StateJustif::Processed->value;
-        } else {
-            $this->currentState = StateJustif::NotProcessed;
-            $value = StateJustif::NotProcessed->value;
-        }
-
-        $row->bindParam('currentState', $value);
         $row->execute();
     }
 
