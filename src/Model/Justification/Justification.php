@@ -260,9 +260,11 @@ class Justification
 
         //Requête avec système de filtre
 
-        $query = "SELECT DISTINCT idJustification, cause, currentState, startDate, endDate, sendDate, processedDate, studentID, lastname, firstname, email, accountType, studentNumber
-        FROM justification join absenceJustification using (idJustification)
-        join studentAccount on studentid = idstudent
+        $query = "SELECT DISTINCT j.idJustification, j.cause, j.currentState, j.startDate, j.endDate, j.sendDate, j.processedDate, s.studentID, s.lastname, s.firstname, s.email, s.accountType, s.studentNumber
+        FROM justification j
+        JOIN absenceJustification aj USING (idJustification)
+        JOIN absence a USING (idStudent,time)
+        JOIN studentAccount s ON s.studentid = a.idstudent
         ";
 
          // Filtre par étudiant si fourni
@@ -280,7 +282,7 @@ class Justification
             $parameters["endDate"] = $filter->getDateEnd();
         }
         if ($filter->getState() !== null) {
-            $where[] = "currentState = :currentState";
+            $where[] = "j.currentState = :currentState";
             $parameters["currentState"] = $filter->getState();
         }
 
@@ -289,9 +291,11 @@ class Justification
         }
 
         if ($filter->getExamen()) {
-            $query .= " INTERSECT SELECT DISTINCT idJustification, cause, j.currentState, startDate, endDate, sendDate, processedDate
-            FROM absence a join absenceJustification using (idStudent,time)
-            join justification j using(idJustification)
+            $query .= " INTERSECT SELECT DISTINCT j.idJustification, j.cause, j.currentState, j.startDate, j.endDate, j.sendDate, j.processedDate, s.studentID, s.lastname, s.firstname, s.email, s.accountType, s.studentNumber
+        FROM justification j
+        JOIN absenceJustification aj USING (idJustification)
+        JOIN absence a USING (idStudent,time)
+        JOIN studentAccount s ON s.studentid = a.idstudent
             where examen = true";
         }
 
