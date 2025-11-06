@@ -133,7 +133,7 @@ class Justification
         if (count($this->absences) == 0) {
             $connection = Connection::getInstance();
             $query = $connection->prepare("SELECT * FROM absenceJustification join absence using(idStudent,time)
-            join resource using (idResource) left join account on idteacher = idaccount where idJustification = :idJustification");
+            join resource using (idResource) left join account on idteacher = idaccount where idJustification = :idJustification ORDER BY time ASC");
             $query->bindParam(":idJustification", $this->idJustification);
             $query->execute();
             $absences = $query->fetchAll();
