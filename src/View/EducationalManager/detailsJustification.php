@@ -143,7 +143,7 @@ require_once __DIR__ . "/../../View/Composants/Modal/filePreviewModal.php";
                                     data-bs-file="<?= $viewUrl ?>"
                             ></button>
                             <!-- Télécharger -->
-                            <a class="btn btn-outline-primary bi bi-download" title="Télécharger" href="<?= $viewUrl ?>"></a>
+                            <a class="btn btn-outline-primary bi bi-download" title="Télécharger" href="<?= $viewUrl ?>" download></a>
                         </div>
                     </div>
                 <?php endforeach; ?>
@@ -314,6 +314,12 @@ require_once __DIR__ . "/../../View/Composants/Modal/filePreviewModal.php";
             }
 
             formProcessJustification.submit();
+        });
+    }
+
+    if(commentInput) {
+        commentInput.addEventListener('change', () => {
+            commentInput.setCustomValidity('');
         });
     }
 </script>
