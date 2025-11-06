@@ -441,8 +441,8 @@ class Student extends Account {
                 // Sinon, utilisation de LIKE
                 else {
                     $where[] = "(
-                        search_lastname LIKE unaccent(lower(:token$i)) || '%' OR
-                        search_firstname LIKE unaccent(lower(:token$i)) || '%' OR
+                        search_lastname LIKE '%' || unaccent(lower(:token$i)) || '%' OR
+                        search_firstname LIKE '%' || unaccent(lower(:token$i)) || '%' OR
                         search_lastname % unaccent(lower(:token$i)) OR
                         search_firstname % unaccent(lower(:token$i))
                     )";
