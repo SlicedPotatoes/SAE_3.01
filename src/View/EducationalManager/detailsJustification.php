@@ -77,6 +77,9 @@ $h2 .= "du " . $justification->getSendDate()->format('d/m/Y')
                                    name="absences[<?= $absence->getIdAccount() ?>_<?= $absence->getTime()->format('Y-m-d H:i:s') ?>]"
                                    value="validated"
                                    class="absence-state">
+                            <span class="badge rounded-pill text-bg-<?= $absence->getCurrentState()->colorBadge() ?>">
+                                    <?= $absence->getCurrentState()->label() ?>
+                                </span>
 
                         </div>
                         <?php else: ?>
@@ -122,11 +125,22 @@ $h2 .= "du " . $justification->getSendDate()->format('d/m/Y')
 
     <!-- Bloc Motif du refus & Actions : toujours en dessous -->
     <div class="mt-4">
-        <h4 class="mb-2"><i class="bi bi-exclamation-triangle-fill me-2"></i>Motif du refus :</h4>
-        <?php if ($justification->getRefusalReason() === null): ?>
-            <p class="mb-0">Aucun motif de refus n'a été communiqué pour cette justification.</p>
+        <?php if ($accountType === AccountType::EducationalManager && $currentState === StateJustif::NotProcessed ): ?>
+        <?php elseif ($accountType === AccountType::EducationalManager && $currentState === StateJustif::Processed ): ?>
+            <h4 class="mb-2"><i class="bi bi-exclamation-triangle-fill me-2"></i>Motif du refus :</h4>
+            <?php if ($justification->getRefusalReason() === null): ?>
+                <p class="mb-0">Aucun motif de refus n'a été communiqué pour cette justification.</p>
+            <?php else: ?>
+                <p class="mb-0"><?= htmlspecialchars($justification->getRefusalReason()) ?></p>
+            <?php endif; ?>
+
         <?php else: ?>
-            <p class="mb-0"><?= htmlspecialchars($justification->getRefusalReason()) ?></p>
+            <h4 class="mb-2"><i class="bi bi-exclamation-triangle-fill me-2"></i>Motif du refus :</h4>
+            <?php if ($justification->getRefusalReason() === null): ?>
+                <p class="mb-0">Aucun motif de refus n'a été communiqué pour cette justification.</p>
+            <?php else: ?>
+                <p class="mb-0"><?= htmlspecialchars($justification->getRefusalReason()) ?></p>
+            <?php endif; ?>
         <?php endif; ?>
 
         <?php if ($isEducationalManager && $currentState === StateJustif::NotProcessed): ?>
