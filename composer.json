@@ -11,5 +11,7 @@
             "email": "167211948+Steenkiste@users.noreply.github.com"
         }
     ],
-    "require": {}
+    "require": {
+        "phpmailer/phpmailer": "^7.0"
+    }
 }

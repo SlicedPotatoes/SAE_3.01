@@ -1,8 +1,10 @@
 <?php
-/*
-Ce fichier gère la validation des justificatifs par le responsable pédagogique.
-Il permet de valider ou refuser les absences liées à un justificatif, d'enregistrer le motif de refus si nécessaire,
-et de changer l'état du justificatif vers "Traité".
+/**
+ *  Ce fichier gère la validation des justificatifs par le responsable pédagogique.
+ *  Il permet de valider ou refuser les absences liées à un justificatif, d'enregistrer le motif de refus si nécessaire,
+ *  et de changer l'état du justificatif vers "Traité".
+ *
+ *  TODO: Transaction SQL
 */
 
 ini_set('display_errors', 1);
@@ -17,6 +19,7 @@ use Uphf\GestionAbsence\Model\Account\Account;
 use Uphf\GestionAbsence\Model\Connection;
 use Uphf\GestionAbsence\Model\Justification\Justification;
 use Uphf\GestionAbsence\Model\Justification\StateJustif;
+use Uphf\GestionAbsence\Model\mail\Mailer;
 
 session_start();
 
@@ -42,11 +45,13 @@ if (!isset($_POST['idJustification'])) {
 // Récupération des données du formulaire
 $idJustification = $_POST['idJustification'];
 $rejectionReason = trim($_POST['rejectionReason'] ?? '');
-$absences = $_POST['absences'] ?? [];
+$absencesDataPost = $_POST['absences'] ?? [];
 
 try {
     // Récupérer le justificatif
     $justification = Justification::getJustificationById($idJustification);
+    $absences = $justification->getAbsences();
+    $absencesExems = [];
     
     // Vérifier que le justificatif existe et est en attente de traitement
     if (!$justification) {
@@ -63,15 +68,16 @@ try {
         exit;
     }
 
-    foreach ($absences as $key => $values) {
-        // Format de la clé: "idStudent_time"
-        list($idStudent, $time) = explode('_', $key, 2);
+    foreach ($absences as $absence) {
+        // Construction de la clé et récupération des valeurs envoyé en POST pour cette absence
+        $key = $absence->getIdAccount() . '_' . $absence->getTime()->format('Y-m-d H:i:s');
+        $values = $absencesDataPost[$key];
 
-        //$allowedJustification = !($values['state'] == 'Validated') && !($values['lock'] == 'true');
         $allowedJustification = $values['state'] == 'Validated' ? 'false' : ($values['lock'] == 'true' ? 'false' : 'true');
 
-        if($values['state'] == 'Validated') {
-            $values['lock'] = true;
+        // Remplir une liste avec les absences justifié lors d'examen
+        if($values['state'] == 'Validated' && $absence->getExamen()){
+            $absencesExems[] = $absence;
         }
 
         // Mettre à jour l'état de l'absence
@@ -80,19 +86,34 @@ try {
         $stmt = $connection->prepare($query);
         $stmt->execute([
             ':state' => $values['state'],
-            ':idStudent' => $idStudent,
-            ':time' => $time,
+            ':idStudent' => $absence->getIdAccount(),
+            ':time' => $absence->getTime()->format('Y-m-d H:i:s'),
             ':lock' => $allowedJustification
         ]);
     }
-    
-    // Si des absences ont été refusées, enregistrer le motif de refus
-    if (!empty($rejectionReason)) {
-        $justification->setRefusalReason($rejectionReason);
-    }
-    
-    // Changer l'état du justificatif vers "Traité"
+
+    // Mettre à jour le justificatif
+    $justification->setRefusalReason($rejectionReason);
     $justification->processJustification();
+
+    foreach ($absencesExems as $absExem) {
+        Mailer::sendAlertExam(
+            $absExem->getTime(),
+            $absExem->getStudent(),
+            $absExem->getTeacher(),
+            $absExem->getResource()
+        );
+    }
+
+    $student = $absences[0]->getStudent();
+
+    Mailer::sendProcessedJustification(
+        $student->getLastName(),
+        $student->getFirstName(),
+        $student->getEmail(),
+        $justification->getStartDate(),
+        $justification->getEndDate()
+    );
     
     // Redirection avec message de succès
     $successMessage = "Justificatif traité avec succès";
