@@ -11,13 +11,15 @@ $currentState = $justification->getCurrentState();
 $accountType = $_SESSION['account']->getAccountType();
 $isEducationalManager = $accountType === AccountType::EducationalManager;
 
-$h2 = "Jusificatif ";
+$h2 = "Justification ";
 
 if ($isEducationalManager)
 {
     $h2 .= " de " . $justification->getStudent()->getFirstName() . " " . $justification->getStudent()->getLastName() . ", ";
 }
-$h2 .= "du " . $justification->getSendDate()->format('d/m/Y')
+$h2 .= " du " . $justification->getSendDate()->format('d/m/Y');
+
+require_once __DIR__ . "/../../View/Composants/Modal/filePreviewModal.php";
 
 ?>
 
@@ -118,15 +120,34 @@ $h2 .= "du " . $justification->getSendDate()->format('d/m/Y')
                 <?php if (empty($files)): ?>
                     <li class="list-group-item pe-2">Aucun fichier justificatif.</li>
                 <?php endif; ?>
-                    <?php foreach ($files as $file): ?>
-                        <li class="list-group-item d-flex justify-content-between align-items-center pe-2">
-                            <span title="<?= htmlspecialchars($file->getFileName()) ?>" class="text-truncate"><?= htmlspecialchars($file->getFileName()) ?></span>
-                            <div class="btn-group btn-group-sm">
-                                <button class="btn btn-outline-danger bi bi-eye me-1" title="Voir" type="button"></button>
-                                <a class="btn btn-outline-primary bi bi-download" title="Télécharger" href="" download></a>
-                            </div>
-                        </li>
-                    <?php endforeach; ?>
+
+                <?php foreach ($files as $file): ?>
+                    <?php
+                    $fname   = $file->getFileName();
+                    /**
+                     * Dossier statique "upload/" à la racine du projet, ce système ouvre donc simplement le fichier en local
+                    */
+                    $viewUrl = "upload/" . rawurlencode($fname);
+                    ?>
+                    <li class="list-group-item d-flex justify-content-between align-items-center pe-2">
+                        <span title="<?= $fname ?>" class="text-truncate"><?= $fname ?></span>
+
+                        <div class="btn-group btn-group-sm">
+                            <!-- Bouton pour ouvrir la modale -->
+                            <button type="button"
+                                    class="btn btn-outline-danger bi bi-eye me-1"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#fileModal"
+                                    data-bs-file="<?= 'upload/' . $file->getFileName() ?>">
+                            </button>
+
+                            <!-- Télécharger -->
+                            <a class="btn btn-outline-primary bi bi-download"
+                               href="<?= 'upload/' . $file->getFileName() ?>"
+                               download></a>
+                        </div>
+                    </li>
+                <?php endforeach; ?>
             </ul>
         </div>
     </div>

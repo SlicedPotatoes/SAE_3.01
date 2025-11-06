@@ -32,9 +32,8 @@ $PenalizingAbsence = $studentAccount->getPenalizingAbsence();
                 <div class="fs-4 text-primary mb-0">
                     <?= $absenceTotal ?>
                 </div>
-
 <!--                Affichage des demi-journées d'absences si elles sont différentes des absences-->
-                <?php if ($absenceTotal ==! $halfdayTotal): ?>
+                <?php if ($absenceTotal > 0): ?>
                     <div class="text-muted small">
                         Demi-journées d’absence totales :
                         <?= $halfdayTotal ?>
