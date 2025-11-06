@@ -54,7 +54,7 @@ class Mailer
         $subject = 'Traitement de votre justificatif d\'absence';
         $dateJour = date('d/m/Y');
         $body = "Bonjour " . $firstname . " " . $lastname . ",<br><br>
-    Votre demande de justification d'absence du " . $dateDebut . " au " . $dateFin . " a bien été traité par le responsable pédagogique le " . $dateJour . ".<br>
+    Votre demande de justification d'absence du " . $dateDebut->format('d/m/Y') . " au " . $dateFin->format('d/m/Y') . " a bien été traité par le responsable pédagogique le " . $dateJour . ".<br>
     Nous vous invitons à consulter la décision du responsable pédagogique dans votre espace personnel.<br><br>
     Cordialement,<br>
     Le service des absences.";
@@ -99,7 +99,7 @@ class Mailer
     Le service des absences.";
 
         self::sendMail($firstnameStudent, $lastnameStudent, $emailStudent, $bodyStudent, $subjectStudent);
-        self::sendMail($emailTeacher, $lastnameTeacher, $emailTeacher, $bodyTeacher, $subjectTeacher);
+        self::sendMail($firstnameTeacher, $lastnameTeacher, $emailTeacher, $bodyTeacher, $subjectTeacher);
     }
 
     /**
@@ -112,7 +112,7 @@ class Mailer
      * @param string $subject
      * @return void
      */
-    static private function sendMail(string $firstname, string $lastname, string $email, string $body, string $subject): void
+    static private function sendMail(string $firstname, string $lastname, string $email, string $body, string $subject)
     {
         $mailer = new PHPMailer(true);
         try
