@@ -37,15 +37,24 @@ var_dump($_FILES);*/
 
 session_start();
 
-// Sélection du dossier d'upload selon l'OS (dev Windows, prod Linux)
-if (stripos(PHP_OS_FAMILY, 'Windows') !== false) {
-    // Dev local: dossier "upload" dans le projet
-    $uploadDir = 'C:\upload\\';
+// Dossier d'upload local au projet
+$uploadDir = dirname(__DIR__) . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . 'upload' . DIRECTORY_SEPARATOR;
+
+if (!is_dir($uploadDir)) {
+    if (!mkdir($uploadDir, 0777, true)) {
+        $errorMessage = "HTTP 500 Internal Server Error";
+        if (!$PROD) { $errorMessage .= ": Le dossier d'upload n'existe pas et n'a pas pu être créé: $uploadDir"; }
+        header('Location: ../index.php?errorMessage[]='.urlencode($errorMessage));
+        exit;
+    }
 }
-else {
-    // Prod Linux : dossier racine
-    $uploadDir = '/var/www/upload/';
+if (!is_writable($uploadDir)) {
+    $errorMessage = "HTTP 500 Internal Server Error";
+    if (!$PROD) { $errorMessage .= ": Le dossier n'est pas accessible en écriture: $uploadDir"; }
+    header('Location: ../index.php?errorMessage[]='.urlencode($errorMessage));
+    exit;
 }
+
 
 if (!is_dir($uploadDir)) {
     // Création automatique du dossier d'upload (normalement utile qu'en phase de dev)
