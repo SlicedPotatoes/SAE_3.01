@@ -1,30 +1,23 @@
 <?php
 /**
- * Header du dashboard / profil étudiant
+ * Header profil étudiant
  */
 
-use Uphf\GestionAbsence\Presentation\StudentPresentation;
-use Uphf\GestionAbsence\Model\Account\AccountType;
-global $role;
-// Récupération des données
+global $dataView;
 
-$studentAccount = StudentPresentation::getStudentAccount();
+use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
 
-$lastName = $studentAccount->getLastName();
-$firstName = $studentAccount->getFirstName();
+$fullName = $dataView->firstName . " " . $dataView->lastName;
 
-if ($_SESSION["role"] == AccountType::Student)
-{
-    $message = "<p class='h3'>Bonjour <span class='text-uphf fw-bold'> $firstName $lastName</span> !</p>";
+if ($dataView->roleUser === AccountType::Student) {
+    $message = "<p class='h3'>Bonjour <span class='text-uphf fw-bold'>$fullName</span> !</p>";
 }
-else
-{
-    $message = "<p class='h3'>Profile de <span class='text-uphf fw-bold'> $firstName $lastName</span></p>";
+else {
+    $message = "<p class='h3'>Profile de <span class='text-uphf fw-bold'>$fullName</span></p>";
 }
 
 ?>
 
-<!-- En tête saluant l'étudiant -->
 <div class="mt-3 accordion" id="accordionCard">
     <div class="accordion-item border-0 bg-transparent">
         <h2 class="accordion-header">

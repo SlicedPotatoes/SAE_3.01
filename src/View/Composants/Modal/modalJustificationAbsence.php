@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Contient le code html et javascript de la modale permettant à un étudiant de justifier une absence.
  *
@@ -7,7 +8,7 @@
  * Le script gère l'affichage, la sélection et la suppression des fichiers avant l'envoi du formulaire.
  */
 
-global $ALLOWED_EXTENSIONS_FILE;
+use Uphf\GestionAbsence\Model\GlobalVariable;
 ?>
 <div class="modal fade" id="justifyModal" tabindex="-1" aria-labelledby="justifyModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-scrollable modal-dialog-centered">
@@ -15,7 +16,7 @@ global $ALLOWED_EXTENSIONS_FILE;
             <!-- Button Close -->
             <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Fermer"></button>
 
-            <form id="addJustificationForm" action="./Presentation/upload.php" method="post" enctype="multipart/form-data">
+            <form id="addJustificationForm" method="post" enctype="multipart/form-data">
                 <div class="modal-header">
                     <!-- Date de début et de fin -->
                     <div>
@@ -45,7 +46,7 @@ global $ALLOWED_EXTENSIONS_FILE;
                             <!-- Upload un fichier -->
                             <div class="justification-files-choice mb-2 pe-3">
                                 <label class="form-label h5 mb-2">Justificatif <span class="text-muted fs-6">(pdf, png, jpg)</span></label>
-                                <input type="file" class="form-control" multiple id="justificationFileInput" accept="<?= '.'.implode(', .', $ALLOWED_EXTENSIONS_FILE) ?>">
+                                <input type="file" class="form-control" multiple id="justificationFileInput" accept="<?= '.'.implode(', .', GlobalVariable::ALLOWED_EXTENSIONS_FILE()) ?>">
                             </div>
                             <!-- Liste des fichiers upload -->
                             <ul id="justificationFileList" class="list-group mb-2 overflow-auto" style="max-height: 200px"></ul>
@@ -55,6 +56,7 @@ global $ALLOWED_EXTENSIONS_FILE;
                 <div class="modal-footer d-flex">
                     <span class="text-muted me-auto">Vos déclarations doivent être exactes : toute fausse information peut entraîner des conséquences. </span>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                    <input type="hidden" form="addJustificationForm" name="action" value="createJustification">
                     <button type="submit" id="justificationSubmitForm" form="addJustificationForm" class="btn btn-uphf me-2">Envoyer</button>
                 </div>
             </form>
@@ -63,95 +65,9 @@ global $ALLOWED_EXTENSIONS_FILE;
     </div>
 </div>
 
-<script>
-    let filesJustification = [];
-    const formJustification = document.getElementById('addJustificationForm');
-    const dataTransferJustification = new DataTransfer();
-    const hiddenFilesJustification = document.createElement('input');
-    hiddenFilesJustification.type = 'file';
-    hiddenFilesJustification.name = 'files[]';
-    hiddenFilesJustification.style.display = 'none';
-    formJustification.appendChild(hiddenFilesJustification);
+<!-- Étudiant : Button ouvrir modal "justifier absence" -->
+<button type="button" class="btn btn-primary btn-uphf nav-link rounded-bottom-0" data-bs-toggle="modal" data-bs-target="#justifyModal">
+    Justifier une absence
+</button>
 
-    // Event trigger quand un ou plusieurs fichiers sont sélectionné avec l'input type file
-    document.getElementById('justificationFileInput').addEventListener('change', function (e) {
-        // Liste des types MIME autorisés
-        const allowedTypes = [
-            'application/pdf',
-            'image/png',
-            'image/jpeg'
-        ];
-        // On parcourt tous les fichiers sélectionnés
-        for (const file of e.target.files) {
-            // Si le type du fichier est autorisé, on l'ajoute au tableau files, et update l'affichage
-            if (allowedTypes.includes(file.type)) {
-                filesJustification.push(file);
-                dataTransferJustification.items.add(file);
-                hiddenFilesJustification.files = dataTransferJustification.files;
-                updateFileList(file);
-            } else {
-                // Sinon, on affiche une alerte et on ignore le fichier
-                alert('Fichier non autorisé : ' + file.name + '\nSeuls les PDF, PNG, JPG et JPEG sont acceptés.');
-            }
-        }
-        // On vide l'input pour permettre de re-sélectionner des fichiers
-        e.target.value = "";
-    });
-
-    // Fonction qui met à jour l'affichage des fichiers
-    function updateFileList(f) {
-        // On récupère l'élément HTML qui contiendra la liste
-        const list = document.getElementById('justificationFileList');
-
-        // On crée un élément <li> pour afficher le fichier
-        const li = document.createElement('li');
-        li.className = "list-group-item d-flex justify-content-between align-items-center pe-2";
-
-        // On crée un span pour afficher le nom du fichier
-        const nameSpan = document.createElement('span');
-        nameSpan.className = "text-truncate";
-        nameSpan.setAttribute("title", f.name);
-
-        nameSpan.textContent = f.name;
-        li.appendChild(nameSpan);
-
-        // On crée un groupe de boutons pour chaque fichier
-        const btnGroup = document.createElement('div');
-        btnGroup.className = "btn-group btn-group-sm";
-
-        // Bouton Télécharger : permet de télécharger le fichier ajouté
-        const url = URL.createObjectURL(f);
-        const downloadBtn = document.createElement('a');
-        downloadBtn.className = "btn btn-outline-primary bi bi-download me-1";
-        downloadBtn.title = "Télécharger";
-        // On crée un lien temporaire pour le téléchargement
-        downloadBtn.href = url;
-        downloadBtn.download = f.name;
-        btnGroup.appendChild(downloadBtn);
-
-        // Bouton Supprimer : retire le fichier de la liste
-        const deleteBtn = document.createElement('button');
-        deleteBtn.className = "btn btn-outline-danger bi bi-trash";
-        deleteBtn.title = "Supprimer";
-        deleteBtn.type = 'button';
-        // Lorsqu'on clique sur supprimer, on enlève le fichier du tableau et on met à jour la liste
-        deleteBtn.onclick = () => {
-            const index = filesJustification.indexOf(f);
-
-            if(index !== -1) {
-                filesJustification.splice(index, 1);
-                dataTransferJustification.items.remove(index);
-                hiddenFilesJustification.files = dataTransferJustification.files;
-            }
-
-            li.remove();
-            URL.revokeObjectURL(url);
-        };
-        btnGroup.appendChild(deleteBtn);
-
-        // On ajoute le groupe de boutons à la ligne
-        li.appendChild(btnGroup);
-        // On ajoute la ligne à la liste
-        list.appendChild(li);
-    }
-</script>
+<script src="/script/modalJustificationAbsence.js"></script>

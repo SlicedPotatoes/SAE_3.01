@@ -3,8 +3,6 @@
  * Front d'une ligne d'absence dans le dashboard
  */
 
-use Uphf\GestionAbsence\Model\Absence\StateAbs;
-
 global $index, $abs;
 ?>
 <div class="accordion-item border-bottom">
@@ -18,16 +16,16 @@ global $index, $abs;
                 aria-controls="flush-collapse-abs-<?= $index ?>"
         >
             <div class="d-flex flex-column">
-                <div>Date: <?= $abs->getTime()->format('d/m/Y H:i') ?></div>
-                <div>Durée: <?= $abs->getDuration() ?></div>
+                <div>Date: <?= $abs->date ?></div>
+                <div>Durée: <?= $abs->duration ?></div>
             </div>
             <div class="d-flex align-items-center gap-3 flex-grow-1">
-                <span class='badge rounded-pill text-bg-<?= $abs->getCurrentState()->colorBadge() ?>'><?= $abs->getCurrentState()->label() ?></span>
+                <span class='badge rounded-pill text-bg-<?= $abs->state->colorBadge() ?>'><?= $abs->state->label() ?></span>
                 <?php
-                if($abs->getExamen()) {
+                if($abs->examen) {
                     echo "<span class='badge rounded-pill text-bg-warning'>Examen</span>";
                 }
-                if(!$abs->getAllowedJustification() && ($abs->getCurrentState() == StateAbs::Refused || $abs->getCurrentState() == StateAbs::NotJustified)) {
+                if($abs->lock) {
                     echo '<i style="font-size: 30px" class="bi bi-file-lock2" data-bs-toggle="tooltip" data-bs-title="Le responsable pédagogique n\'autorise pas la justification de cette absence"></i>';
                 }
                 ?>
@@ -38,14 +36,14 @@ global $index, $abs;
     <div id="flush-collapse-abs-<?= $index ?>" class="accordion-collapse collapse" data-bs-parent="#absFlush">
         <div class="accordion-body p-3">
             <!-- mettre les infos grâce à Absence-->
-            <?php if($abs->getTeacher() != null): ?>
-                <p><strong>Professeur :</strong> <?= htmlspecialchars($abs->getTeacher()->getFirstname() . ' ' . $abs->getTeacher()->getLastname()) ?></p>
+            <?php if($abs->haveTeacher != null): ?>
+                <p><strong>Professeur :</strong> <?= htmlspecialchars($abs->fullnameTeacher) ?></p>
             <?php endif; ?>
 
-            <p><strong>Matière :</strong> <?= htmlspecialchars($abs->getCourseType()->value ?? $abs->getCourseType()->name) ?> <?= htmlspecialchars( $abs->getResource()->getlabel()) ?></p>
+            <p><strong>Matière :</strong> <?= htmlspecialchars($abs->courseType . " " . $abs->resource) ?></p>
 
-            <?php if($abs->getExamen()): ?>
-                <p><strong>Rattrapage :</strong> <?= $abs->getDateResit() ? $abs->getDateResit()->format('d/m/Y H:i') : 'Pas de date fixée' ?></p>
+            <?php if($abs->examen): ?>
+                <p><strong>Rattrapage :</strong> <?= $abs->dateResit ?></p>
             <?php endif; ?>
         </div>
     </div>

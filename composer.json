@@ -9,9 +9,23 @@
         {
             "name": "Dimitri van Steenkiste",
             "email": "167211948+Steenkiste@users.noreply.github.com"
+        },
+        {
+            "name": "Kevin M",
+            "email": "53843746+SlicedPotatoes@users.noreply.github.com"
         }
     ],
     "require": {
-        "phpmailer/phpmailer": "^7.0"
+        "phpmailer/phpmailer": "^7.0",
+        "twbs/bootstrap": "^5.3",
+        "twbs/bootstrap-icons": "^1.13"
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "php copy_bootstrap.php"
+        ],
+        "post-update-cmd": [
+            "php copy_bootstrap.php"
+        ]
     }
 }
