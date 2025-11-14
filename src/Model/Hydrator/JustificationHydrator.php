@@ -31,7 +31,7 @@ class JustificationHydrator {
             DateTime::createFromFormat("Y-m-d H:i:s", $raw['startdate']),
             DateTime::createFromFormat("Y-m-d H:i:s", $raw['enddate']),
             DateTime::createFromFormat("Y-m-d H:i:s.u", $raw['senddate']),
-            isset($raw['precesseddate']) ? DateTime::createFromFormat("Y-m-d H:i:s.u", $raw['processeddate']) : null,
+            isset($raw['processeddate']) ? DateTime::createFromFormat("Y-m-d H:i:s.u", $raw['processeddate']) : null,
             $raw['refusalreason'] ?? null,
             AccountHydrator::unserializeStudent($raw)
         );
