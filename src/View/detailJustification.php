@@ -159,7 +159,6 @@ require_once __DIR__ . "/../View/Composants/Modal/filePreviewModal.php";
         <?php if($currentState === StateJustif::NotProcessed): ?>
             <?php if ($isEducationalManager): ?>
                 <form class="flex-fill d-flex flex-column" style="min-height: 0" id="validateJustificationForm" method="post">
-                    <input type="hidden" name="idJustification" value="<?= $justification->idJustification ?>">
                     <textarea name="rejectionReason" id="JustificationRejectionReason" class="form-control flex-fill" style="max-height: 100%"></textarea>
                 </form>
             <?php endif; ?>

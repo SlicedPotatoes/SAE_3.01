@@ -37,7 +37,7 @@ class TableSelector {
      * - la première valeur est la valeur que l'on souhaite pour la colonne \$columns[\$i]
      * - la seconde est le type de la valeur, PDO::PARAM_X
      *
-     * IMPORTANT: Ne jamais passer de données fournies par l'utilisateur à \$table
+     * IMPORTANT: Ne jamais passer de données fournies par l'utilisateur à \$table ou à \$columns
      *
      * @param string $table
      * @param array $columns

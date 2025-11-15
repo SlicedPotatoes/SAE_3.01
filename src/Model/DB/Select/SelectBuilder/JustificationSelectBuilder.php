@@ -107,6 +107,8 @@ class JustificationSelectBuilder {
     /**
      * Permet de définir les colonnes et l'ordre pour la clause ORDER BY de la requête
      *
+     * IMPORTANT: Ne jamais passer de données fournies par l'utilisateur à \$columns
+     *
      * @param array $columns
      * @param SortOrder $order
      * @return $this
