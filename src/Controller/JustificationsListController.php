@@ -7,7 +7,7 @@ use Uphf\GestionAbsence\Model\DB\Select\SelectBuilder\JustificationSelectBuilder
 use Uphf\GestionAbsence\Model\DB\Select\SelectBuilder\SortOrder;
 use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
 use Uphf\GestionAbsence\Model\Entity\Justification\StateJustif;
-use Uphf\GestionAbsence\Model\CheckValidity;
+use Uphf\GestionAbsence\Model\Validation\FilterJustificationValidator;
 use Uphf\GestionAbsence\ViewModel\JustificationListViewModel;
 
 /**
@@ -35,30 +35,20 @@ class JustificationsListController {
             return ControllerData::get403();
         }
 
-        $currTab = 'proofToDo'; // CurrTab par défaut
-
         // Builder pour récupérer les justificatifs
         $justificationToDoBuilder = new JustificationSelectBuilder()->state(StateJustif::NotProcessed);
         $justificationDoneBuilder = new JustificationSelectBuilder()->state(StateJustif::Processed);
 
-        $filter = []; // Filtre appliqué a la currTab
+        // Récupération des filtres
+        $filters = new FilterJustificationValidator()->getData() ?? [];
+        $currTab = $_POST['currTab'] ?? 'proofToDo';
 
-        // Gestion des filtres pour la currTab, vérifier s'ils sont envoyé via POST, que les valeurs sont correctes et les appliqués au builder
-        if($_SERVER['REQUEST_METHOD'] == "POST") {
-            if(isset($_POST['currTab']) && $_POST['currTab'] == 'proofDone') { $currTab = 'proofDone'; }
-            $builderCurrTab = $currTab == 'proofToDo' ? $justificationToDoBuilder : $justificationDoneBuilder;
-
-            if(CheckValidity::isValidDate("POST", "dateStart", "Y-m-d")) {
-                $builderCurrTab->dateStart($_POST['dateStart']);
-                $filter['dateStart'] = $_POST['dateStart'];
-            }
-            if(CheckValidity::isValidDate("POST", "dateEnd", "Y-m-d")) {
-                $builderCurrTab->dateEnd($_POST["dateEnd"]);
-                $filter['dateEnd'] = $_POST['dateEnd'];
-            }
-            if(isset($_POST["examen"]) && $_POST["examen"] === "on") {
-                $builderCurrTab->examen();
-                $filter['examen'] = true;
+        // Application des filtres
+        $whiteListMethod = ['dateStart', 'dateEnd', 'examen'];
+        $builderCurrTab = $currTab == 'proofToDo' ? $justificationToDoBuilder : $justificationDoneBuilder;
+        foreach($filters as $filter => $value) {
+            if(isset($value) && in_array($filter, $whiteListMethod)) {
+                call_user_func([$builderCurrTab, $filter], $value);
             }
         }
 
@@ -76,7 +66,7 @@ class JustificationsListController {
                 AuthManager::getRole(),
                 $justificationsToDo,
                 $justificationsDone,
-                $filter,
+                $filters,
                 AuthManager::getAccount()->getFirstName() . " " . AuthManager::getAccount()->getLastName()
             )
         );

@@ -13,6 +13,7 @@ use Uphf\GestionAbsence\Model\Entity\Justification\Justification;
 use Uphf\GestionAbsence\Model\Mailer;
 use Uphf\GestionAbsence\Model\Notification\Notification;
 use Uphf\GestionAbsence\Model\Notification\NotificationType;
+use Uphf\GestionAbsence\Model\Validation\ProcessJustificationValidator;
 use Uphf\GestionAbsence\ViewModel\DetailJustificationViewModel;
 use BadMethodCallException;
 
@@ -89,8 +90,18 @@ class DetailJustificationController {
      */
     private static function processJustification(Justification $justification, array $absences): void {
         // Récupération des données POST
-        $comment = trim($_POST['rejectionReason'] ?? '', '');
-        $absencesDataPost = $_POST['absences'] ?? []; // Données récupérer en post, des absences
+        $validator = new ProcessJustificationValidator();
+
+        if(!$validator->checkAllGood()) {
+            Notification::addNotification(NotificationType::Error, "Impossible de traiter votre demande, veuillez contacter l'administrateur");
+            return;
+        }
+
+        $data = $validator->getData();
+
+        // Données récupérer en post apres application des filtres
+        $comment = $data['rejectionReason'];
+        $absencesDataPost = $data['absences'];
 
         // Liste des absences lors d'examen pour le justificatif
         $absencesExemens = [];
@@ -113,25 +124,32 @@ class DetailJustificationController {
         foreach($absences as $abs) {
             // Construction de la clé et récupération des valeurs envoyée en POST pour cette absence
             $key = $abs->getIdAccount() . "_" . $abs->getTime()->format('Y-m-d H:i:s');
+
+            // Cas ou l'absence n'a pas été fournis en POST, ne devrait jamais arriver dans une utilisation normale de l'application
+            if(!array_key_exists($key, $absencesDataPost)) {
+                Connection::rollback();
+                Notification::addNotification(NotificationType::Error, "Impossible de traiter votre demande, veuillez contacter l'administrateur");
+                return;
+            }
+
+            // Récupération du traitement à effectuer sur cette absence
             $values = $absencesDataPost[$key];
 
-            $allowedJustification = $values['state'] == 'Validated' ? 'false' : ($values['lock'] == 'true' ? 'false' : 'true');
-
             // Remplir une liste avec les absences justifiée lors d'examen
-            if($values['state'] == 'Validated' && $abs->getExamen()){
+            if($values['state'] == StateAbs::Validated && $abs->getExamen()){
                 $absencesExemens[] = $abs;
             }
 
             // Si l'absence est refusé et que le commentaire du RP est vide
             // On annule le traitement du justificatif (Le RP doit préciser un motif de refus dans le cas ou au moins une abs est refusé).
-            if($values['state'] == 'Refused' && $comment === '') {
+            if($values['state'] == StateAbs::Refused && $comment === '') {
                 Notification::addNotification(NotificationType::Error, "Vous n'avez pas fournis de motif de refus !");
                 Connection::rollback();
                 return;
             }
 
-            // On charge l'absence dans l'updater
-            $absencesUpdater->loadAbsence($abs)->state(StateAbs::from($values['state']))->allowedJustification($allowedJustification);
+            // On charge l'absence dans l'updater et on effectue son traitement
+            $absencesUpdater->loadAbsence($abs)->state($values['state'])->allowedJustification(!$values['lock']);
         }
 
         $absencesUpdater->execute();

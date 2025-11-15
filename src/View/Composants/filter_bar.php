@@ -62,7 +62,7 @@ global $tabName, $states, $filter, $dataView;
                         <?php
                         // Liste des différents états
                         foreach($states as $state) {
-                            echo "<option value='".$state->value."'". (isset($filter['state']) && $filter['state'] == $state->value ? 'selected' : '') .">".$state->label()."</option>";
+                            echo "<option value='".$state->value."'". (isset($filter['state']) && $filter['state'] == $state ? 'selected' : '') .">".$state->label()."</option>";
                         }
                         ?>
                     </select>

@@ -6,7 +6,7 @@ use Uphf\GestionAbsence\Model\AuthManager;
 use Uphf\GestionAbsence\Model\DB\Select\SelectBuilder\StudentSelectBuilder;
 use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
 use Uphf\GestionAbsence\Model\Entity\Account\GroupStudent;
-use Uphf\GestionAbsence\Model\CheckValidity;
+use Uphf\GestionAbsence\Model\Validation\SearchStudentValidator;
 use Uphf\GestionAbsence\ViewModel\SearchStudentViewModel;
 
 /**
@@ -37,26 +37,18 @@ class SearchStudentController {
         // Builder pour récupérer les étudiants
         $builderStudents = new StudentSelectBuilder();
 
-        $filter = []; // Filtre appliqué a la currTab
+        $validator = new SearchStudentValidator();
+        $filters = $validator->getData();
 
-        // Gestion des filtres, vérifier s'ils sont envoyé via POST, que les valeurs sont correctes et les appliqués au builder
-        if($_SERVER['REQUEST_METHOD'] == "POST") {
-            if(CheckValidity::haveValue("POST", "search")) {
-                $filter['search'] = $_POST['search'];
-                $builderStudents->searchBar($_POST['search']);
-            }
-            else {
-                $builderStudents->allStudent();
-            }
-
-            if(CheckValidity::isValidInt("POST", "groupStudent")) {
-                $filter['idGroup'] = $_POST['groupStudent'];
-                $builderStudents->groupStudent((int)$_POST['groupStudent']);
-            }
+        // Gestions des filtres
+        if(isset($filters['search'])) {
+            $builderStudents->searchBar($filters['search']);
         }
-        // Initialiser le builder sans filtre
         else {
             $builderStudents->allStudent();
+        }
+        if(isset($filters['groupStudent'])) {
+            $builderStudents->groupStudent($filters['groupStudent']);
         }
 
         $students = $builderStudents->execute();
@@ -67,7 +59,7 @@ class SearchStudentController {
             new SearchStudentViewModel(
                 $students,
                 GroupStudent::getAllGroupsStudent(),
-                $filter
+                $filters
             )
         );
     }

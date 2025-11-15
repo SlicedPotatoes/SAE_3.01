@@ -17,11 +17,11 @@ global $dataView;
             <!-- select plus compact : small + largeur auto limité -->
             <select class="form-select form-select-sm me-2 w-auto" name="groupStudent"
                     style="flex:0 0 auto; width:auto; min-width:120px; max-width:200px;" aria-label="groupStudent">
-                <option value="" <?= !isset($dataView->filter['idGroup']) ? 'selected' : '' ?>>Groupe</option>
+                <option value="" <?= !isset($dataView->filter['groupStudent']) ? 'selected' : '' ?>>Groupe</option>
                 <?php foreach ($dataView->listGroup as $groupOption): ?>
                     <option
                             value="<?= $groupOption['idGroup'] ?>"
-                            <?= isset($dataView->filter['idGroup']) && $dataView->filter['idGroup'] == $groupOption['idGroup'] ? 'selected' : '' ?>
+                            <?= isset($dataView->filter['groupStudent']) && $dataView->filter['groupStudent'] == $groupOption['idGroup'] ? 'selected' : '' ?>
                     ><?= $groupOption['label'] ?></option>
                 <?php endforeach; ?>
             </select>

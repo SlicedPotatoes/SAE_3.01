@@ -11,15 +11,15 @@ use Uphf\GestionAbsence\Model\DB\Select\SelectBuilder\AbsenceSelectBuilder;
 use Uphf\GestionAbsence\Model\DB\Select\SelectBuilder\JustificationSelectBuilder;
 use Uphf\GestionAbsence\Model\DB\Select\SelectBuilder\SortOrder;
 use Uphf\GestionAbsence\Model\DB\Select\StudentSelector;
-use Uphf\GestionAbsence\Model\Entity\Absence\StateAbs;
 use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
 use Uphf\GestionAbsence\Model\Entity\Account\Student;
-use Uphf\GestionAbsence\Model\Entity\Justification\StateJustif;
 use Uphf\GestionAbsence\Model\FileUpload;
 use Uphf\GestionAbsence\Model\Mailer;
 use Uphf\GestionAbsence\Model\Notification\Notification;
 use Uphf\GestionAbsence\Model\Notification\NotificationType;
-use Uphf\GestionAbsence\Model\CheckValidity;
+use Uphf\GestionAbsence\Model\Validation\CreateJustificationValidator;
+use Uphf\GestionAbsence\Model\Validation\FilterAbsenceValidator;
+use Uphf\GestionAbsence\Model\Validation\FilterJustificationValidator;
 use Uphf\GestionAbsence\ViewModel\StudentProfileViewModel;
 
 /**
@@ -88,33 +88,26 @@ class StudentProfileController {
     private static function studentCreateJustification(Student $student): void {
         // L'utilisateur tente de créer un justificatif
         if($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST['action']) && $_POST['action'] == 'createJustification') {
-            // Vérifier si tous les champs obligatoires ont été fournis avec un format valide
-            if(!CheckValidity::isValidDate("POST", "startDate", "Y-m-d")) {
-                Notification::addNotification(NotificationType::Error, "Créer Justification: La date de début a un format invalide.");
-                return;
-            }
-            if(!CheckValidity::isValidDate("POST", "endDate", "Y-m-d")) {
-                Notification::addNotification(NotificationType::Error, "Créer Justification: La date de fin a un format invalide.");
-                return;
-            }
-            if(!CheckValidity::haveValue("POST", "absenceReason")) {
-                Notification::addNotification(NotificationType::Error, "Créer Justification: Veuillez fournir une raison.");
-                return;
-            }
-            if(DateTime::createFromFormat("Y-m-d", $_POST['startDate']) > DateTime::createFromFormat("Y-m-d", $_POST['endDate'])) {
-                Notification::addNotification(NotificationType::Error, "Créer Justification: La date de début doit être inférieur ou égal a la date de fin");
+            $validator = new CreateJustificationValidator();
+            $errors = $validator->checkAllGood();
+
+            if(!empty($errors)) {
+                foreach($errors as $e) {
+                    Notification::addNotification(NotificationType::Error, $e);
+                }
                 return;
             }
 
+            $data = $validator->getData();
             $files = FileUpload::upload('files');
 
             try {
                 // Créer le justificatif dans la BDD
                 JustificationInsertor::insert(
                     $student->getIdAccount(),
-                    $_POST['absenceReason'],
-                    $_POST['startDate'],
-                    $_POST['endDate'],
+                    $data['absenceReason'],
+                    $data['startDate'],
+                    $data['endDate'],
                     $files
                 );
 
@@ -123,8 +116,8 @@ class StudentProfileController {
                     $student->getLastName(),
                     $student->getFirstName(),
                     $student->getEmail(),
-                    DateTime::createFromFormat("Y-m-d", $_POST['startDate'])->format("d/m/Y"),
-                    DateTime::createFromFormat("Y-m-d", $_POST['endDate'])->format("d/m/Y")
+                    DateTime::createFromFormat("Y-m-d", $data['startDate'])->format("d/m/Y"),
+                    DateTime::createFromFormat("Y-m-d", $data['endDate'])->format("d/m/Y")
                 );
 
                 Notification::addNotification(NotificationType::Success, "Justificatif envoyé avec succès");
@@ -154,42 +147,22 @@ class StudentProfileController {
      * @return ControllerData
      */
     private static function showHelper(Student $student): ControllerData {
-        $currTab = 'proof'; // CurrTab par défaut
-
         // Builder pour récupérer les justificatifs et absences
         $justificationSelectBuilder = new JustificationSelectBuilder()->idStudent($student->getIdAccount());
         $absenceSelectBuilder = new AbsenceSelectBuilder()->idStudent($student->getIdAccount());
 
-        $filter = []; // Filtre appliqué a la currTab
+        $currTab = $_POST['currTab'] ?? 'proof';
+        $filters = ($currTab == 'proof' ?
+            new FilterJustificationValidator()->getData() :
+            new FilterAbsenceValidator()->getData()
+        );
 
-        // Gestion des filtres pour la currTab, vérifier s'ils sont envoyé via POST, que les valeurs sont correctes et les appliqués au builder
-        if($_SERVER['REQUEST_METHOD'] == "POST") {
-            if(isset($_POST['currTab']) && $_POST['currTab'] == 'abs') { $currTab = 'abs'; }
-            $builderCurrTab = $currTab == 'proof' ? $justificationSelectBuilder : $absenceSelectBuilder;
-
-            if(CheckValidity::isValidDate("POST", "dateStart", "Y-m-d")) {
-                $builderCurrTab->dateStart($_POST['dateStart']);
-                $filter['dateStart'] = $_POST['dateStart'];
-            }
-            if(CheckValidity::isValidDate("POST", "dateEnd", "Y-m-d")) {
-                $builderCurrTab->dateEnd($_POST["dateEnd"]);
-                $filter['dateEnd'] = $_POST['dateEnd'];
-            }
-            if($currTab === "abs" && CheckValidity::isValidStateAbsence("POST", "state")) {
-                $builderCurrTab->state(StateAbs::from($_POST["state"]));
-                $filter['state'] = $_POST['state'];
-            }
-            if($currTab === "proof" && CheckValidity::isValidStateJustification("POST", "state")) {
-                $builderCurrTab->state(StateJustif::from($_POST["state"]));
-                $filter['state'] = $_POST['state'];
-            }
-            if(isset($_POST["examen"]) && $_POST["examen"] === "on") {
-                $builderCurrTab->examen(true);
-                $filter['examen'] = true;
-            }
-            if($currTab === "abs" && isset($_POST["lock"]) && $_POST["lock"] === "on") {
-                $builderCurrTab->lock(true);
-                $filter['lock'] = true;
+        // Application des filtres
+        $whiteListMethod = array_merge(['dateStart', 'dateEnd', 'state', 'examen'], $currTab == 'abs' ? ['lock'] : []);
+        $builderCurrTab = $currTab == 'proof' ? $justificationSelectBuilder : $absenceSelectBuilder;
+        foreach($filters as $filter => $value) {
+            if(isset($value) && in_array($filter, $whiteListMethod)) {
+                call_user_func([$builderCurrTab, $filter], $value);
             }
         }
 
@@ -214,7 +187,7 @@ class StudentProfileController {
                 $student->getPenalizingAbsence(),
                 $student->getHalfdayPenalizingAbsence(),
                 $currTab,
-                $filter,
+                $filters,
                 AuthManager::getRole(),
             )
         );
