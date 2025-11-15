@@ -33,7 +33,7 @@ require_once __DIR__ . "/Composants/Headers/studentProfileHeader.php";
             <?php
             $states = StateJustif::getAll();
             $tabName = 'proof';
-            $filter = $dataView->currTab === $tabName ? $dataView->filter : [];
+            $filter = $dataView->currTab === $tabName ? $dataView->filterVM->filter : [];
             require __DIR__ . "/Composants/filter_bar.php";
             ?>
 
@@ -59,7 +59,7 @@ require_once __DIR__ . "/Composants/Headers/studentProfileHeader.php";
             <?php
             $states = StateAbs::getAll();
             $tabName = 'abs';
-            $filter = $dataView->currTab == $tabName ? $dataView->filter : [];
+            $filter = $dataView->currTab == $tabName ? $dataView->filterVM->filter : [];
             require __DIR__ . "/Composants/filter_bar.php";
             ?>
 

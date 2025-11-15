@@ -21,7 +21,7 @@ readonly class StudentProfileViewModel extends BaseViewModel{
     public int $penalizingAbsence;
     public int $halfdayPenalizingAbsence;
     public string $currTab;
-    public array $filter;
+    public FilterViewModel $filterVM;
     public AccountType $roleUser;
     public function __construct(
         Student $student,
@@ -42,7 +42,7 @@ readonly class StudentProfileViewModel extends BaseViewModel{
         $this->firstName = $student->getFirstName();
 
         $this->absences = array_map(fn($abs) => new OneAbsenceViewModel($abs), $absences);
-        $this->justifications = array_map(fn($j) => new OneJustificationViewModel($j, $roleUser, $student), $justifications);
+        $this->justifications = array_map(fn($j) => new OneJustificationViewModel($j, $roleUser), $justifications);
 
         $this->absenceTotal = $absenceTotal;
         $this->halfdayTotal = $halfdayTotal;
@@ -53,7 +53,7 @@ readonly class StudentProfileViewModel extends BaseViewModel{
         $this->halfdayPenalizingAbsence = $halfdayPenalizingAbsence;
 
         $this->currTab = $currTab;
-        $this->filter = $filter;
+        $this->filterVM = new FilterViewModel($filter, true);
         $this->roleUser = $roleUser;
     }
 }

@@ -28,7 +28,7 @@ $states = StateJustif::getAll();
         <div class="tab-pane fade show <?= $dataView->currTab == 'proofToDo' ? 'active d-flex' : '' ?> flex-column flex-fill" style="min-height: 0" id="proofToDo-tab-pane" role="tabpanel" aria-labelledby="proofToDo-tab" tabindex="0">
             <?php
             $tabName = "proofToDo";
-            $filter = $dataView->currTab === $tabName ? $dataView->filter : [];
+            $filter = $dataView->currTab === $tabName ? $dataView->filterVM->filter : [];
             require __DIR__ . "/Composants/filter_bar.php";
             ?>
 
@@ -53,7 +53,8 @@ $states = StateJustif::getAll();
         <div class="tab-pane fade show <?= $dataView->currTab == 'proofDone' ? 'active d-flex' : '' ?> flex-column flex-fill" style="min-height: 0" id="proofDone-tab-pane" role="tabpanel" aria-labelledby="proofDone-tab" tabindex="0">
             <?php
             $tabName = 'proofDone';
-            $filter = $dataView->currTab == $tabName ? $dataView->filter : [];
+            $filter = $dataView->currTab == $tabName ? $dataView->filterVM->filter : [];
+
             require __DIR__ . "/Composants/filter_bar.php";
             ?>
 

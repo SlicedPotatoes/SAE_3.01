@@ -12,7 +12,7 @@ readonly class JustificationListViewModel extends BaseViewModel {
     public AccountType $roleUser;
     public array $justificationsToDo;
     public array $justificationsDone;
-    public array $filter;
+    public FilterViewModel $filterVM;
     public string $fullname;
 
     public function __construct(
@@ -28,7 +28,7 @@ readonly class JustificationListViewModel extends BaseViewModel {
         $this->roleUser = $roleUser;
         $this->justificationsToDo = array_map(fn($j) => new OneJustificationViewModel($j, $roleUser, $j->getStudent()), $justificationsToDo);
         $this->justificationsDone = array_map(fn($j) => new OneJustificationViewModel($j, $roleUser, $j->getStudent()), $justificationsDone);
-        $this->filter = $filter;
+        $this->filterVM = new FilterViewModel($filter, false);
         $this->fullname = $fullname;
     }
 }

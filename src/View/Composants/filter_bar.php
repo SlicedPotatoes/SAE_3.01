@@ -45,7 +45,7 @@ global $tabName, $states, $filter, $dataView;
             </div>
         </div>
 
-        <?php if($dataView->roleUser !== AccountType::EducationalManager) : ?>
+        <?php if($dataView->filterVM->showState) : ?>
             <!-- Select State -->
             <div class="row g-3 align-items-center">
                 <div class="col-auto">
