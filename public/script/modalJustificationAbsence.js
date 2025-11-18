@@ -1,0 +1,96 @@
+/**
+ * Script utilisé par la modal JustificationAbsence
+ *
+ * Elle permet de gérer la liste dynamiquement pour afficher l'ensemble des fichiers sélectionné par l'étudiant
+ */
+
+let filesJustification = [];
+const formJustification = document.getElementById('addJustificationForm');
+const dataTransferJustification = new DataTransfer();
+const hiddenFilesJustification = document.createElement('input');
+hiddenFilesJustification.type = 'file';
+hiddenFilesJustification.name = 'files[]';
+hiddenFilesJustification.style.display = 'none';
+formJustification.appendChild(hiddenFilesJustification);
+
+// Event trigger quand un ou plusieurs fichiers sont sélectionné avec l'input type file
+document.getElementById('justificationFileInput').addEventListener('change', function (e) {
+    // Liste des types MIME autorisés
+    const allowedTypes = [
+        'application/pdf',
+        'image/png',
+        'image/jpeg'
+    ];
+    // On parcourt tous les fichiers sélectionnés
+    for (const file of e.target.files) {
+        // Si le type du fichier est autorisé, on l'ajoute au tableau files, et update l'affichage
+        if (allowedTypes.includes(file.type)) {
+            filesJustification.push(file);
+            dataTransferJustification.items.add(file);
+            hiddenFilesJustification.files = dataTransferJustification.files;
+            updateFileList(file);
+        } else {
+            // Sinon, on affiche une alerte et on ignore le fichier
+            alert('Fichier non autorisé : ' + file.name + '\nSeuls les PDF, PNG, JPG et JPEG sont acceptés.');
+        }
+    }
+    // On vide l'input pour permettre de re-sélectionner des fichiers
+    e.target.value = "";
+});
+
+// Fonction qui met à jour l'affichage des fichiers
+function updateFileList(f) {
+    // On récupère l'élément HTML qui contiendra la liste
+    const list = document.getElementById('justificationFileList');
+
+    // On crée un élément <li> pour afficher le fichier
+    const li = document.createElement('li');
+    li.className = "list-group-item d-flex justify-content-between align-items-center pe-2";
+
+    // On crée un span pour afficher le nom du fichier
+    const nameSpan = document.createElement('span');
+    nameSpan.className = "text-truncate";
+    nameSpan.setAttribute("title", f.name);
+
+    nameSpan.textContent = f.name;
+    li.appendChild(nameSpan);
+
+    // On crée un groupe de boutons pour chaque fichier
+    const btnGroup = document.createElement('div');
+    btnGroup.className = "btn-group btn-group-sm";
+
+    // Bouton Télécharger : permet de télécharger le fichier ajouté
+    const url = URL.createObjectURL(f);
+    const downloadBtn = document.createElement('a');
+    downloadBtn.className = "btn btn-outline-primary bi bi-download me-1";
+    downloadBtn.title = "Télécharger";
+    // On crée un lien temporaire pour le téléchargement
+    downloadBtn.href = url;
+    downloadBtn.download = f.name;
+    btnGroup.appendChild(downloadBtn);
+
+    // Bouton Supprimer : retire le fichier de la liste
+    const deleteBtn = document.createElement('button');
+    deleteBtn.className = "btn btn-outline-danger bi bi-trash";
+    deleteBtn.title = "Supprimer";
+    deleteBtn.type = 'button';
+    // Lorsqu'on clique sur supprimer, on enlève le fichier du tableau et on met à jour la liste
+    deleteBtn.onclick = () => {
+        const index = filesJustification.indexOf(f);
+
+        if(index !== -1) {
+            filesJustification.splice(index, 1);
+            dataTransferJustification.items.remove(index);
+            hiddenFilesJustification.files = dataTransferJustification.files;
+        }
+
+        li.remove();
+        URL.revokeObjectURL(url);
+    };
+    btnGroup.appendChild(deleteBtn);
+
+    // On ajoute le groupe de boutons à la ligne
+    li.appendChild(btnGroup);
+    // On ajoute la ligne à la liste
+    list.appendChild(li);
+}

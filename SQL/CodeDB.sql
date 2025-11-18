@@ -390,3 +390,44 @@ CREATE INDEX idx_account_search_firstname_trgm ON Account USING GIN (search_firs
  DROP EXTENSION IF EXISTS unaccent;
  DROP EXTENSION IF EXISTS pg_trgm;
  */
+
+--changeset Kevin:7 labels:Mise à jour de la view StudentAccount et changement de nom de colonnes context:MàJ View => utilisé par BuilderStudent, MàJ Colonne => Coherence pour les hydrators
+
+DROP VIEW StudentAccount;
+
+ALTER TABLE GroupStudent RENAME COLUMN idGroupStudent TO groupId;
+ALTER TABLE groupStudent RENAME COLUMN label TO groupLabel;
+
+CREATE VIEW StudentAccount AS
+SELECT a.idaccount as studentid,
+       a.lastname,
+       a.firstname,
+       a.email,
+       a.accounttype,
+       a.search_firstname,
+       a.search_lastname,
+       s.studentnumber,
+       g.*
+FROM Account a
+         JOIN Student s ON a.idaccount = s.idaccount
+         JOIN groupstudent g ON s.idgroupstudent = g.groupId;
+
+/* liquibase rollback
+    DROP VIEW StudentAccount;
+
+    ALTER TABLE GroupStudent RENAME COLUMN groupId TO idGroupStudent;
+    ALTER TABLE groupStudent RENAME COLUMN groupLabel TO label;
+
+    CREATE VIEW StudentAccount AS
+    SELECT a.idaccount      as StudentID,
+           a.lastname       as LastName,
+           a.firstname      as FirstName,
+           a.email          as Email,
+           a.accounttype    as AccountType,
+           s.studentnumber  as StudentNumber,
+           g.idgroupstudent as GroupID,
+           g.label          as GroupLabel
+    FROM Account a
+             JOIN Student s ON a.idaccount = s.idaccount
+             JOIN groupstudent g ON s.idgroupstudent = g.idgroupstudent;
+ */

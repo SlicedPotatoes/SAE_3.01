@@ -3,14 +3,8 @@
  * Front de la page de connexion
  */
 
-// Rediriger vers le dashboard, si l'utilisateur est connecté
-global $role;
-if($role != null) {
-    header("Location: index.php?currPage=dashboard");
-}
-
-use Uphf\GestionAbsence\Model\Account\Account;
-use Uphf\GestionAbsence\Model\Account\AccountType;
+use Uphf\GestionAbsence\Model\Entity\Account\Account;
+use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
 ?>
 
 <div class="d-flex gap-2">
@@ -31,7 +25,7 @@ use Uphf\GestionAbsence\Model\Account\AccountType;
             $color = "btn-secondary";
         }
 
-        echo "<form action='./Presentation/login.php' method='POST'>";
+        echo "<form method='POST'>";
         echo "<input type='hidden' name='id' value='".$user->getIdAccount()."'>";
         echo "<button class='btn $color' type='submit'>".$user->getFirstName()." ".$user->getLastName()."</button>";
         echo "</form>";

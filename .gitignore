@@ -4,3 +4,11 @@ SQL/*
 !SQL/UML BASE DE DONNEES.mdj
 
 /vendor/
+/upload/
+/public/script/bootstrap.bundle.min.js
+/public/style/bootstrap-icons.min.css
+/public/style/bootstrap.min.css
+/public/style/fonts
+/.idea/
+
+.env
