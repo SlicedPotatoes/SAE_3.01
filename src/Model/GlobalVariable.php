@@ -7,7 +7,6 @@ namespace Uphf\GestionAbsence\Model;
  * les rendant ainsi facilement accéssible pour les modifiers / en ajouter
  */
 class GlobalVariable {
-    private static bool $PROD = false;
     private static int $LIMIT_FILE_SIZE_UPLOAD = 5 * 1024 * 1024;
     private static array $ALLOWED_MIME_TYPE = ["image/jpeg", "image/png", "application/pdf"];
     private static array $ALLOWED_EXTENSIONS_FILE = ["jpg", "jpeg", "png", "pdf"];
@@ -17,7 +16,7 @@ class GlobalVariable {
      * @return bool
      */
     public static function PROD(): bool {
-        return self::$PROD;
+        return $_ENV['PROD'] === "true";
     }
 
     /**

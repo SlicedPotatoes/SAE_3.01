@@ -8,6 +8,7 @@
 
 require_once __DIR__ . "/../vendor/autoload.php";
 
+use Dotenv\Dotenv;
 use Uphf\GestionAbsence\Model\AuthManager;
 use Uphf\GestionAbsence\Model\DB\Select\JustificationSelector;
 use Uphf\GestionAbsence\Model\DB\Select\TableSelector;
@@ -16,6 +17,9 @@ use Uphf\GestionAbsence\Model\GlobalVariable;
 use Uphf\GestionAbsence\Model\Hydrator\JustificationHydrator;
 
 AuthManager::init();
+
+$dotenv = Dotenv::createImmutable(dirname(__DIR__));
+$dotenv->load();
 
 if(!GlobalVariable::PROD()) {
     ini_set('display_errors', 1);

@@ -3,6 +3,7 @@
 namespace Uphf\GestionAbsence\Model\DB;
 
 use PDO;
+use Uphf\GestionAbsence\Model\GlobalVariable;
 
 /**
  * Singleton de connexion
@@ -10,24 +11,7 @@ use PDO;
  */
 class Connection
 {
-    private static array $testSettings = [
-        "host" => "localhost",
-        "port" => "5432",
-        "user" => "postgres",
-        "pass" => "12345",
-        "dbname" => "postgres",
-    ];
-
-    private static array $prodSettings = [
-        "host" => "tommytech.net",
-        "port" => "5432",
-        "user" => "kevin",
-        "pass" => "patate360",
-        "dbname" => "postgres",
-    ];
-
     private static PDO | null $instance = null;
-    private static bool $test = false;
 
     /**
      * Récupérer l'instance de la connexion PDO
@@ -37,24 +21,19 @@ class Connection
     {
         if (self::$instance == null)
         {
-            if (self::$test)
+            $suffix = "PROD";
+            if (!GlobalVariable::PROD() && filter_var($_ENV['DB_TEST'], FILTER_VALIDATE_BOOL))
             {
-                $host   = self::$testSettings["host"];
-                $port   = self::$testSettings["port"];
-                $user   = self::$testSettings["user"];
-                $pass   = self::$testSettings["pass"];
-                $dbname = self::$testSettings["dbname"];
-
+                $suffix = "TEST";
                 echo "BDD Test";
             }
-            else
-            {
-                $host   = self::$prodSettings["host"];
-                $port   = self::$prodSettings["port"];
-                $user   = self::$prodSettings["user"];
-                $pass   = self::$prodSettings["pass"];
-                $dbname = self::$prodSettings["dbname"];
-            }
+
+            $host   = $_ENV["DB_HOST_$suffix"];
+            $port   = $_ENV["DB_PORT_$suffix"];
+            $user   = $_ENV["DB_USER_$suffix"];
+            $pass   = $_ENV["DB_PASS_$suffix"];
+            $dbname = $_ENV["DB_NAME_$suffix"];
+
             self::$instance = new PDO("pgsql:host=$host; dbname=$dbname; port=$port", $user, $pass);
         }
         return self::$instance;

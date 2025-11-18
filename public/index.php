@@ -7,12 +7,16 @@
 
 require_once __DIR__ . "/../vendor/autoload.php";
 
+use Dotenv\Dotenv;
 use Uphf\GestionAbsence\Model\AuthManager;
 use Uphf\GestionAbsence\Model\DB\Connection;
 use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
 use Uphf\GestionAbsence\Model\GlobalVariable;
 use Uphf\GestionAbsence\Model\Notification\Notification;
 use Uphf\GestionAbsence\Router;
+
+$dotenv = Dotenv::createImmutable(dirname(__DIR__));
+$dotenv->load();
 
 if(!GlobalVariable::PROD()) {
     ini_set('display_errors', 1);
