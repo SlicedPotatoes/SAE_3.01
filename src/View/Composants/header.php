@@ -1,21 +1,15 @@
 <?php
 /**
- * Header profil étudiant
+ * Header utiliser pour tout le site afin d'avoir une cohérence graphique
  */
+
+use Uphf\GestionAbsence\ViewModel\HeaderViewModel;
 
 global $dataView;
 
-use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
+$headerViewModel = $dataView->headerVM;
 
-$fullName = $dataView->firstName . " " . $dataView->lastName;
-
-if ($dataView->roleUser === AccountType::Student) {
-    $message = "<p class='h3'>Bonjour <span class='text-uphf fw-bold'>$fullName</span> !</p>";
-}
-else {
-    $message = "<p class='h3'>Profile de <span class='text-uphf fw-bold'>$fullName</span></p>";
-}
-
+$message = "<p class='h3'>$headerViewModel->firstPartMessage <span class='text-uphf fw-bold'>$headerViewModel->secondPartMessage</span> $headerViewModel->thirdPartMessage";
 ?>
 
 <div class="mt-3 accordion" id="accordionCard">
@@ -27,10 +21,12 @@ else {
             <div class="header-line-brand-color"></div>
         </h2>
 
+        <?php if ($dataView->headerVM->showCards): ?>
         <div id="showCard" class="accordion-collapse collapse show" data-bs-parent="#accordionCard">
             <div class="accordion-body p-0 mt-3">
-                <?php require __DIR__ . "/../cards.php"; ?>
+                <?php require __DIR__ . "/cards.php"; ?>
             </div>
         </div>
+        <?php endif; ?>
     </div>
 </div>
