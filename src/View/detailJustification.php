@@ -66,6 +66,15 @@ require_once __DIR__ . "/../View/Composants/Modal/filePreviewModal.php";
                         <div>Durée: <?= $absence->duration ?></div>
                     </div>
 
+                    <div class="me-3 h-100">
+                        <div>Cour: <?= $absence->resource ?></div>
+                        <?php if($absence->haveTeacher): ?>
+                            <div>Enseignant : <?= $absence->fullnameTeacher ?><</div>
+                        <?php else: ?>
+                            <div>&nbsp;</div>
+                        <?php endif; ?>
+                    </div>
+
                     <!-- Tag examen -->
                     <?php if($absence->examen): ?>
                         <span class='badge rounded-pill text-bg-warning ms-3 me-2'>Examen</span>
