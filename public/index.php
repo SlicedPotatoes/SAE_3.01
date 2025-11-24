@@ -37,6 +37,7 @@ $router->addRoute("/JustificationList", "JustificationsListController@show");
 $router->addRoute("/SearchStudent", "SearchStudentController@show");
 $router->addRoute("/DetailJustification/{id:int}", "DetailJustificationController@show");
 $router->addRoute("/ShowFile/{}", "FileController@show");
+$router->addRoute("/changePassword", "ChangePasswordController@show");
 
 $path = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
 
