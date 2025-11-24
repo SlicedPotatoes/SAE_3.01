@@ -151,27 +151,62 @@ require_once __DIR__ . "/../View/Composants/Modal/filePreviewModal.php";
         </div>
     </div>
 
-    <!-- Bloc Motif du refus -->
-    <div class="flex-fill d-flex flex-column" style="flex: 1 1 20%; min-height: 0">
-        <?php if( !($currentState === StateJustif::NotProcessed && !$isEducationalManager) ): ?>
-            <label for="JustificationRejectionReason" class="h4 mb-2">Commentaire :</label>
-        <?php endif; ?>
-        <?php if($currentState === StateJustif::NotProcessed): ?>
-            <?php if ($isEducationalManager): ?>
+    <!-- Commentaire & Commentaires prédéfinis côte à côte -->
+    <div class="row" style="flex: 1 1 20%; min-height: 0">
+
+        <!-- Colonne Commentaire -->
+        <div class="col-md-6 d-flex flex-column h-100" style="min-height: 0">
+            <?php if (!($currentState === StateJustif::NotProcessed && !$isEducationalManager)): ?>
+                <label for="JustificationRejectionReason" class="h4 mb-2">Commentaire :</label>
+            <?php endif; ?>
+
+            <?php if ($currentState === StateJustif::NotProcessed && $isEducationalManager): ?>
                 <form class="flex-fill d-flex flex-column" style="min-height: 0" id="validateJustificationForm" method="post">
-                    <textarea name="rejectionReason" id="JustificationRejectionReason" class="form-control flex-fill" style="max-height: 100%"></textarea>
+                <textarea name="rejectionReason" id="JustificationRejectionReason"
+                          class="form-control flex-fill"
+                          style="max-height: 100%; min-height: 0;"></textarea>
                 </form>
-            <?php endif; ?>
-        <?php else: ?>
-            <?php if ($justification->commentEM === null || $justification->commentEM === ''): ?>
-                <p>Aucun motif de refus n'a été communiqué pour cette justification.</p>
             <?php else: ?>
-                <div class="border rounded p-2 overflow-y-auto flex-fill">
-                    <?= htmlspecialchars($justification->commentEM) ?>
-                </div>
+                <?php if (empty($justification->commentEM)): ?>
+                    <p>Aucun commentaire n'a été communiqué pour cette justification.</p>
+                <?php else: ?>
+                    <div class="border rounded p-2 overflow-y-auto flex-fill">
+                        <?= htmlspecialchars($justification->commentEM) ?>
+                    </div>
+                <?php endif; ?>
             <?php endif; ?>
+        </div>
+
+        <!-- Colonne Commentaires prédéfinis -->
+        <?php if ($currentState === StateJustif::NotProcessed && $isEducationalManager): ?>
+            <div class="col-md-6 d-flex flex-column h-100" style="min-height: 0">
+                <label class="h4 mb-2">Commentaires prédéfinis :</label>
+
+                <div class="dropdown flex-fill">
+                    <button class="btn btn-secondary dropdown-toggle w-100" type="button" id="dropdownPredefinedComments" data-bs-toggle="dropdown" aria-expanded="false">
+                        Sélectionner un commentaire
+                    </button>
+
+                    <ul class="dropdown-menu w-100" aria-labelledby="dropdownPredefinedComments">
+                        <?php foreach ($predefinedComments as $comment): ?>
+                            <li>
+                                <a class="dropdown-item predefined-comment" href="#"
+                                   data-value="<?= htmlspecialchars($comment['label']) ?>">
+                                    <?= htmlspecialchars($comment['label']) ?>
+                                </a>
+                            </li>
+                        <?php endforeach; ?>
+
+                        <?php if (empty($predefinedComments)): ?>
+                            <li><span class="dropdown-item disabled">Aucun commentaire disponible</span></li>
+                        <?php endif; ?>
+                    </ul>
+                </div>
+            </div>
         <?php endif; ?>
     </div>
+
+
 
     <!-- Button d'action -->
     <div class="d-flex justify-content-between">
