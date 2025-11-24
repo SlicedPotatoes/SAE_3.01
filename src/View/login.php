@@ -7,9 +7,9 @@ use Uphf\GestionAbsence\Model\Entity\Account\Account;
 use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
 ?>
 
-<div class="d-flex gap-2">
+<!--<div class="d-flex gap-2">-->
     <?php
-
+/**
     // Temporaire, compte hardcodé
     $datas = Account::getAllAccount();
 
@@ -30,8 +30,28 @@ use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
         echo "<button class='btn $color' type='submit'>".$user->getFirstName()." ".$user->getLastName()."</button>";
         echo "</form>";
     }
-
+*/
     ?>
+<!--</div>-->
 
+<div class="border p-4 rounded shadow-sm w-50 mx-auto my-auto"  ">
+    <form name="login" method="post" >
+        <div class="mb-3">
+            <label for="id" class="form-label">Identifiant</label>
+            <input type="text" class="form-control" id="id" name="id" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="password" class="form-label">Mot de passe</label>
+            <input type="password" class="form-control" id="password" name="password" required>
+        </div>
+
+        <div class="mb-2">
+            <button class="btn btn-link float-start" type="button">Mot de passe oublié </button>
+        </div>
+
+       <button type="submit" class="btn btn-primary float-end" >Se connecter</button>
+
+    </form>
 </div>
 
