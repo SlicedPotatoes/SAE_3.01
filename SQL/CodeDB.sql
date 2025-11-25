@@ -435,15 +435,16 @@ FROM Account a
 --changeset Yann:8 labels:addComments context:ajout de la table commentaire
 
 -- Ajout de la colonne Commentary dans la table justification
-CREATE TABLE Comments(
-    idComment serial primary key,
-    textComment text not null
+CREATE TABLE comments (
+    idComment SERIAL PRIMARY KEY,
+    textComment TEXT NOT NULL
 );
 
 ALTER TABLE justification
-add column idComments text references comments(idComment);
+ADD COLUMN idComments INT REFERENCES comments(idComment);
+
 
 /* liquibase rollback
    ALTER TABLE justification DROP COLUMN idComments;
-   drop table Comments;
+   DROP TABLE comments;
  */

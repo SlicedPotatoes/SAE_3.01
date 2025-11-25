@@ -26,6 +26,8 @@ class Justification
     private array $absences;
     private Student|null $student;
 
+    private int $idComment;
+
     public function __construct(
         int $idJustification,
         string $cause,
@@ -33,9 +35,11 @@ class Justification
         DateTime $startDate,
         DateTime $endDate,
         DateTime $sendDate,
+        int $idComment,
         DateTime | null $processedDate,
         string | null $refusalReason = null,
-        Student | null $student = null
+        Student | null $student = null,
+
     ){
         $this->idJustification = $idJustification;
         $this->cause = $cause;
@@ -46,6 +50,7 @@ class Justification
         $this->processedDate = $processedDate;
         $this->refusalReason = $refusalReason;
         $this->student = $student;
+        $this->idComment = $idComment;
 
         $this->files = [];
         $this->absences = [];

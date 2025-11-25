@@ -197,7 +197,7 @@ require_once __DIR__ . "/../View/Composants/Modal/filePreviewModal.php";
                     </button>
 
                     <ul class="dropdown-menu w-100" aria-labelledby="dropdownPredefinedComments">
-                        <?php foreach ($predefinedComments as $comment): ?>
+                        <?php foreach ($comment as $comment): ?>
                             <li>
                                 <a class="dropdown-item predefined-comment" href="#"
                                    data-value="<?= htmlspecialchars($comment['label']) ?>">
