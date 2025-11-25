@@ -431,3 +431,13 @@ FROM Account a
              JOIN Student s ON a.idaccount = s.idaccount
              JOIN groupstudent g ON s.idgroupstudent = g.idgroupstudent;
  */
+
+--changeset Yann:8 labels:AbsenceDays context:ajout tracking du nombre d'absence consécutives
+
+-- Ajout de la colonne pour tracker les jours consécutifs d'absence
+ALTER TABLE Student
+    ADD COLUMN consecutiveAbsenceDays INT NOT NULL DEFAULT 0;
+
+/* liquibase rollback
+   ALTER TABLE Student DROP COLUMN consecutiveAbsenceDays;
+ */
