@@ -102,6 +102,26 @@ class Mailer
         self::sendMail($firstnameTeacher, $lastnameTeacher, $emailTeacher, $bodyTeacher, $subjectTeacher);
     }
 
+
+    /**
+     * Permet d'envoyer un mail de notification à un compte lorsque de la modification du mot de passe a été effectuée
+     *
+     * @param string $lastname
+     * @param string $firstname
+     * @param string $email
+     * @return void
+     */
+      static public function sendPasswordChangeNotification(string $lastname, string $firstname, string $email): void
+    {
+        $subject = 'Modification de votre mot de passe';
+        $body = "Bonjour " . $firstname . " " . $lastname . ",<br><br>
+                Votre mot de passe a été modifié avec succès.<br>
+                Si vous n'êtes pas à l'origine de cette modification, veuillez contacter le support technique.<br><br>
+                Cordialement,<br>
+                Le service des absences.";
+
+        self::sendMail($firstname, $lastname, $email, $body, $subject);
+    }
     /**
      * Fonction utilisé pour envoyer le mail en utlisant l'api PHPMailer
      *
