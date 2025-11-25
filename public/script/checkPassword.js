@@ -1,4 +1,4 @@
-// FILE: public/script/verifPrerequiMDP.js
+// FILE: public/script/checkPassword.js
 const formModifMDP = document.getElementById('formModifMDP');
 const inputNewMDP = document.getElementById('inputNewMDP');
 const inputConfirmMDP = document.getElementById('inputConfirmMDP');
@@ -26,9 +26,12 @@ function setState(el, ok) {
     if (!el) return;
     el.classList.toggle('text-success', ok);
     el.classList.toggle('text-danger', !ok);
+    el.classList.toggle('fw-bold', !ok);
 }
 
 function validateAll() {
+    alertModifMDP.classList.add("d-none");
+
     const newMDP = inputNewMDP.value || '';
     const confirmMDP = inputConfirmMDP.value || '';
 
@@ -56,8 +59,6 @@ function validateAll() {
 // Mise à jour en direct
 inputNewMDP.addEventListener('input', () => {
     validateAll();
-    alertModifMDP.classList.add('d-none');
-    alertModifMDP.textContent = '';
 });
 inputConfirmMDP.addEventListener('input', () => {
     validateAll();
@@ -65,15 +66,13 @@ inputConfirmMDP.addEventListener('input', () => {
 
 // Validation finale à la soumission
 formModifMDP.addEventListener('submit', (e) => {
-    alertModifMDP.classList.add('d-none');
-    alertModifMDP.textContent = '';
-
     const res = validateAll();
     const allOk = res.okLength && res.okUpper && res.okLower && res.okDigit && res.okSpecial && res.okNoSpace && res.okMatch;
 
     if (!allOk) {
         e.preventDefault();
-        alertModifMDP.textContent = 'Le mot de passe ne respecte pas tous les pré-requis.';
-        alertModifMDP.classList.remove('d-none');
+        alertModifMDP.classList.remove("d-none");
     }
 });
+
+validateAll();
