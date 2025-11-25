@@ -153,6 +153,30 @@ class Mailer
 
 
     /**
+     * Permet d'envoyer un mail à un nouvel utilisateur avec son mot de passe temporaire
+     *
+     * @param string $lastname
+     * @param string $firstname
+     * @param string $email
+     * @param string $temporaryPassword
+     * @return void
+     */
+
+    static public function sendNewAccount(string $lastname, string $firstname, string $email, string $temporaryPassword): void
+    {
+        $subject = 'Création de votre compte sur le portail de gestion des absences';
+        $body = "Bonjour " . $firstname . " " . $lastname . ",<br><br>
+                Votre compte sur le portail de gestion des absences a été créé avec succès.<br>
+                Pour vous connecter, veuillez utiliser votre adresse e-mail UPHF : " . $email . "<br>
+                Mot de passe temporaire : " . $temporaryPassword . "<br><br>
+                Veuillez vous connecter et changer votre mot de passe dès que possible.<br><br>
+                Cordialement,<br>
+                Le service des absences.";
+
+        self::sendMail($firstname, $lastname, $email, $body, $subject);
+    }
+
+    /**
      * Fonction utilisé pour envoyer le mail en utlisant l'api PHPMailer
      *
      * @param string $firstname
