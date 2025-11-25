@@ -4,6 +4,8 @@ namespace Uphf\GestionAbsence\Model\DB\Select;
 
 use PDO;
 use Uphf\GestionAbsence\Model\DB\Connection;
+use Uphf\GestionAbsence\Model\Entity\Account\Account;
+use Uphf\GestionAbsence\Model\Hydrator\AccountHydrator;
 
 class AccountSelector {
     public static function getPasswordHashedById(int $idAccount): string | null {
@@ -18,6 +20,27 @@ class AccountSelector {
 
         if($res) {
             return $res['password'];
+        }
+
+        return null;
+    }
+
+    public static function getAccountFromToken(string $token): Account | null {
+        $pdo = Connection::getInstance();
+
+        $query = "SELECT * 
+                  FROM TokenPassword 
+                  JOIN Account USING(idAccount)
+                  WHERE token = :token AND expire >= NOW()";
+
+        $sql = $pdo->prepare($query);
+        $sql->bindValue(":token", $token, PDO::PARAM_STR);
+        $sql->execute();
+
+        $res = $sql->fetch(PDO::FETCH_ASSOC);
+
+        if($res) {
+            return AccountHydrator::unserializeAccount($res);
         }
 
         return null;

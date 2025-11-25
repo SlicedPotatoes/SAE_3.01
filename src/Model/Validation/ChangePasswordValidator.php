@@ -5,7 +5,7 @@ namespace Uphf\GestionAbsence\Model\Validation;
 use DateTime;
 
 /**
- * Classe de validation des inputs envoyée en POST pour la création d'un justificatif par l'étudiant
+ * Classe de validation des inputs envoyée en POST pour le changement d'un mot de passe
  */
 class ChangePasswordValidator {
     private array | null $input;
@@ -36,12 +36,43 @@ class ChangePasswordValidator {
     /**
      * Renvoie une liste d'erreur
      *
-     * - Check si les champs inputNewMDP et inputConfirmMDP sont présents
+     * - Check si les champs lastPassword, inputNewMDP et inputConfirmMDP sont présents
      * - Vérifie si inputNewMDP et inputConfirmMDP sont egaux
      *
      * @return array
      */
     public function checkAllGood(): array {
+        // Ne devrais pas arriver avec une utilisation normale de l'application
+        if(!isset($this->input)) {
+            return ["Changement de mot de passe: Impossible de traiter votre demande, veuillez contacter l'administrateur"];
+        }
+
+        $errors = [];
+
+        if(!isset($this->input['lastPassword'])) {
+            $errors[] = "Changement de mot de passe: Veuillez fournis votre mot de passe actuel";
+        }
+
+        if(!isset($this->input['newPassword']) || !isset($this->input['confirmPassword'])) {
+            $errors[] = "Changement de mot de passe: Votre nouveau de mot de passe n'est pas au bon format.";
+        }
+
+        if(empty($errors) && $this->input['newPassword'] != $this->input['confirmPassword']) {
+            return ['Changement de mot de passe: Les deux mots de passe sont différents'];
+        }
+
+        return $errors;
+    }
+
+    /**
+     * Renvoie une liste d'erreur
+     *
+     * - Check si les champs inputNewMDP et inputConfirmMDP sont présents
+     * - Vérifie si inputNewMDP et inputConfirmMDP sont egaux
+     *
+     * @return array
+     */
+    public function checkAllGoodToken(): array {
         // Ne devrais pas arriver avec une utilisation normale de l'application
         if(!isset($this->input)) {
             return ["Changement de mot de passe: Impossible de traiter votre demande, veuillez contacter l'administrateur"];

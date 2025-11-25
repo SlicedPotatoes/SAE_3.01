@@ -435,8 +435,9 @@ FROM Account a
 --changeset Kevin:8 labels:add table tokenPassword context:Fonctionnalité mot de passe oublié
 CREATE TABLE tokenPassword (
     idToken SERIAL PRIMARY KEY,
-    token TEXT NOT NULL,
-    expire TIMESTAMP DEFAULT now() + '1 hour'
+    token TEXT UNIQUE NOT NULL,
+    expire TIMESTAMP DEFAULT now() + '1 hour',
+    idAccount INT NOT NULL REFERENCES Account
 );
 
 -- rollback DROP TABLE tokenPassword;

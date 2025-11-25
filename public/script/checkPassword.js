@@ -1,9 +1,12 @@
-// FILE: public/script/checkPassword.js
+/**
+ * Script pour la gestion dynamique des prérequis pour le changement de mot de passe
+ */
+
+// Récupération des éléments dans le DOM
 const formModifMDP = document.getElementById('formModifMDP');
 const inputNewMDP = document.getElementById('inputNewMDP');
 const inputConfirmMDP = document.getElementById('inputConfirmMDP');
 const alertModifMDP = document.getElementById('alertModifMDP');
-
 const items = {
     length: document.getElementById('req-length'),
     uppercase: document.getElementById('req-uppercase'),
@@ -14,6 +17,7 @@ const items = {
     match: document.getElementById('req-match')
 };
 
+// Regex pattern pour les différents critère
 const patterns = {
     uppercase: /[A-Z]/,
     lowercase: /[a-z]/,
@@ -22,6 +26,7 @@ const patterns = {
     nospace: /^\S*$/
 };
 
+// Changer l'affichage pour un critère
 function setState(el, ok) {
     if (!el) return;
     el.classList.toggle('text-success', ok);
@@ -29,6 +34,7 @@ function setState(el, ok) {
     el.classList.toggle('fw-bold', !ok);
 }
 
+// Vérifier les critères, renvoie un tableau de bool pour chaque critère
 function validateAll() {
     alertModifMDP.classList.add("d-none");
 
