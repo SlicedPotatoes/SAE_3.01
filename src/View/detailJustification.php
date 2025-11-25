@@ -197,7 +197,7 @@ require_once __DIR__ . "/../View/Composants/Modal/filePreviewModal.php";
                     </button>
 
                     <ul class="dropdown-menu w-100" aria-labelledby="dropdownPredefinedComments">
-                        <?php foreach ($comment as $comment): ?>
+                        <?php foreach ($dataView->comments as $comment): ?>
                             <li>
                                 <a class="dropdown-item predefined-comment" href="#"
                                    data-value="<?= htmlspecialchars($comment['label']) ?>">
@@ -206,7 +206,7 @@ require_once __DIR__ . "/../View/Composants/Modal/filePreviewModal.php";
                             </li>
                         <?php endforeach; ?>
 
-                        <?php if (empty($predefinedComments)): ?>
+                        <?php if (empty($dataView->comments)): ?>
                             <li><span class="dropdown-item disabled">Aucun commentaire disponible</span></li>
                         <?php endif; ?>
                     </ul>

@@ -4,6 +4,7 @@ namespace Uphf\GestionAbsence\Controller;
 
 use Uphf\GestionAbsence\Model\AuthManager;
 use Uphf\GestionAbsence\Model\DB\Connection;
+use Uphf\GestionAbsence\Model\DB\Select\CommentSelector;
 use Uphf\GestionAbsence\Model\DB\Select\JustificationSelector;
 use Uphf\GestionAbsence\Model\DB\Update\processJustificatif;
 use Uphf\GestionAbsence\Model\DB\Update\UpdateBuilder\AbsenceUpdateBuilder;
@@ -64,6 +65,9 @@ class DetailJustificationController {
         $absences = $justification->getAbsences();
         $files = $justification->getFiles();
 
+        // Récupérer tous les commentaires prédéfinis
+        $comments = CommentSelector::getAllComments();
+
         // Si l'utilisateur est le RP, et que la requête est de type POST => Traitement du justificatif par le RP
         if(AuthManager::isRole(AccountType::EducationalManager) && $_SERVER['REQUEST_METHOD'] === "POST") {
             self::processJustification($justification, $absences);
@@ -77,6 +81,7 @@ class DetailJustificationController {
                 $absences,
                 $files,
                 AuthManager::getRole(),
+                $comments
             )
         );
     }

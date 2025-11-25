@@ -102,6 +102,11 @@ class Justification
         return $this->refusalReason;
     }
 
+    public function getIdComment(): int
+    {
+        return $this->idComment;
+    }
+
     /**
      * Récupérer les fichiers liés à un justificatif
      *
