@@ -2,23 +2,57 @@
 
 namespace Uphf\GestionAbsence\Model;
 
+/**
+ * Classe permettant de lire les fichiers .csv t les traduires en array
+ */
+
 class ReaderCSV
 {
-    public static function readCSV(string $filename)
+
+    /**
+     * @param  string  $filename
+     * @param  string  $deliminator
+     * @param  string  $enclosure
+     * @param  string  $escape
+     *
+     * @return array
+     */
+    public static function readCSV(
+      string $filename,
+      string $deliminator = ';',
+      string $enclosure = '"',
+      string $escape = '\\'
+    ) : array
     {
         $csvFile = fopen($filename, "r");
 
-        $headers = fgetcsv($csvFile);
+        /**
+         * Le headers permets d'assimilé les noms des collones comme des clefs pour les arrays
+         */
+        $headers = fgetcsv($csvFile, 0, $deliminator, $enclosure, $escape);
+        if ($headers === false)
+        {
+            fclose($csvFile);
+            return [];
+        }
+
         $data = [];
 
-        while (($row = fgetcsv($csvFile)) !== false) {
+        while (($row = fgetcsv($csvFile, 0, $deliminator, $enclosure, $escape)) !== false)
+        {
+            /**
+             * Si la ligne est vide
+             */
+            if ($row === [null] || $row === [])
+            {
+                continue;
+            }
+
             $data[] = array_combine($headers, $row);
         }
 
         fclose($csvFile);
 
-        print_r($data);
+        return $data;
     }
 }
-
-// TODO

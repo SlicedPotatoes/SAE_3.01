@@ -37,8 +37,7 @@ $router->addRoute("/JustificationList", "JustificationsListController@show");
 $router->addRoute("/SearchStudent", "SearchStudentController@show");
 $router->addRoute("/DetailJustification/{id}", "DetailJustificationController@show");
 $router->addRoute("/ShowFile/{}", "FileController@show");
-// TODO
-$router->addRoute("/importVT", "ImportVTController@show");
+$router->addRoute("/ImportVT", "ImportVTController@show");
 
 $path = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
 
