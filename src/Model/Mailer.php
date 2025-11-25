@@ -165,4 +165,38 @@ class Mailer
             error_log("L'envoi du message a échoué: {$mailer->ErrorInfo}");
         }
     }
+    /**
+     * Permet d'envoyer un mail au Responsable Pédagogique lorsqu'un étudiant a été absent plus d'une semaine de manière consécutive
+     *
+     * @param string $rpLastname Nom du Responsable Pédagogique
+     * @param string $rpFirstname Prénom du Responsable Pédagogique
+     * @param string $rpEmail Email du Responsable Pédagogique
+     * @param string $studentLastname Nom de l'étudiant
+     * @param string $studentFirstname Prénom de l'étudiant
+     * @param int $studentNumber Numéro étudiant
+     * @param int $consecutiveDays Nombre de jours consécutifs d'absence
+     * @return void
+     */
+    static public function sendLongAbsenceAlert(
+        string $rpLastname,
+        string $rpFirstname,
+        string $rpEmail,
+        string $studentLastname,
+        string $studentFirstname,
+        int $studentNumber,
+        int $consecutiveDays
+    ): void
+    {
+        $subject = 'Alerte : Absence prolongée d\'un étudiant';
+        $dateJour = date('d/m/Y');
+
+        $body = "Bonjour " . $rpFirstname . " " . $rpLastname . ",<br><br>
+    Nous vous informons que l'étudiant " . $studentFirstname . " " . $studentLastname . " (n°" . $studentNumber . ") 
+    est absent depuis " . $consecutiveDays . " jours consécutifs.<br><br>
+    Nous vous invitons donc à prendre contact avec cet étudiant afin de vous assurer de sa situation.<br><br>
+    Vous pouvez consulter le détail de ses absences dans votre espace personnel.<br><br>
+    Cordialement,<br>
+    Le service des absences.";
+        self::sendMail($rpFirstname, $rpLastname, $rpEmail, $body, $subject);
+    }
 }
