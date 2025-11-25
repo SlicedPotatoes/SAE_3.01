@@ -9,6 +9,7 @@ readonly class SearchStudentViewModel extends BaseViewModel {
     public array $students;
     public array $listGroup;
     public array $filter;
+    public HeaderViewModel $headerVM;
 
     public function __construct(array $students, array $listGroup, array $filter) {
         $this->students = array_map(fn($student) => new OneStudentViewModel($student), $students);
@@ -20,5 +21,6 @@ readonly class SearchStudentViewModel extends BaseViewModel {
             $listGroup
         );
         $this->filter = $filter;
+        $this->headerVM = new HeaderViewModel(false, "Vous pouvez rechercher ici un", "étudiant", "!");
     }
 }

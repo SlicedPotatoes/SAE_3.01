@@ -8,7 +8,7 @@ use Uphf\GestionAbsence\Model\Entity\Absence\StateAbs;
 
 global $dataView;
 
-require_once __DIR__ . "/Composants/Headers/studentProfileHeader.php";
+require_once __DIR__ . "/Composants/header.php";
 ?>
 
 <div class="card p-3 flex-fill d-flex flex-column" style="min-height: 0">

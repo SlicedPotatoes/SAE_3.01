@@ -7,7 +7,7 @@ use Uphf\GestionAbsence\Model\Entity\Justification\StateJustif;
 
 global $dataView;
 
-require_once __DIR__ . "/Composants/Headers/justificationListHeader.php";
+require_once __DIR__ . "/Composants/header.php";
 
 $states = StateJustif::getAll();
 ?>
