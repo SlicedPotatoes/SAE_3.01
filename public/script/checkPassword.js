@@ -18,7 +18,7 @@ const patterns = {
     uppercase: /[A-Z]/,
     lowercase: /[a-z]/,
     digit: /[0-9]/,
-    special: /[!@#$%^&*(),.?":{}|<>\[\]\/\-+_=;`~]/,
+    special: /[^0-9A-Za-zÀ-ÖØ-öø-ÿ]/,
     nospace: /^\S*$/
 };
 

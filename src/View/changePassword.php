@@ -22,7 +22,7 @@
         <!-- Formulaire pour changer de mdp -->
         <form id="formModifMDP" name="ChangerMotDePasse" method="post" >
             <div class="mb-3">
-                <label for="lastPassword" class="form-label">Ancien mot de passe :</label>
+                <label for="lastPassword" class="form-label">Ancien mot de passe</label>
                 <input type="password" class="form-control" id="lastPassword" name="lastPassword" required>
             </div>
 
@@ -32,7 +32,7 @@
             </div>
 
             <div class="mb-3">
-                <label for="inputConfirmMDP" class="form-label">Confirmer le mot de passe</label>
+                <label for="inputConfirmMDP" class="form-label">Confirmer le nouveau mot de passe</label>
                 <input type="password" class="form-control" id="inputConfirmMDP" name="confirmPassword" required>
             </div>
 
