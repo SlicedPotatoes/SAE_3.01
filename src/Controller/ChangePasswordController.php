@@ -131,8 +131,8 @@ class ChangePasswordController{
         }
 
         return new ControllerData(
-            "",
-            "",
+            "/View/PasswordLost.php",
+            "Mot de passe oublié",
             new BaseViewModel()
         );
     }

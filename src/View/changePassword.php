@@ -3,7 +3,7 @@
 <?php require_once __DIR__ . "/Composants/header.php"; ?>
 
 <div class="d-flex w-100 my-auto">
-    <div class="border p-3 rounded-start w-50 ms-auto">
+    <div class="border p-3 rounded-start w-50 ms-auto bg-white">
         <div>
             <h5>Pré-requis pour le mot de passe :</h5>
             <!-- Prérequis dynamique (couleur en fonction de si valide ou non) -->
@@ -26,13 +26,13 @@
                 <?php if(!$dataView->haveToken): ?>
                     <div class="mb-3">
                         <label for="lastPassword" class="form-label">Ancien mot de passe</label>
-                        <input type="password" class="form-control" id="lastPassword" name="lastPassword" required>
+                        <input type="password" class="form-control border-upfd" id="lastPassword" name="lastPassword" required >
                     </div>
                 <?php endif; ?>
 
                 <div class="mb-3">
                     <label for="inputNewMDP" class="form-label">Nouveau mot de passe</label>
-                    <input type="password" class="form-control" id="inputNewMDP" name="newPassword" required>
+                    <input type="password" class="form-control border-info" id="inputNewMDP" name="newPassword" required>
                 </div>
 
                 <div class="mb-3">

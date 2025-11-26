@@ -73,3 +73,7 @@ html, body {
     background-repeat: no-repeat;
     background-position-y: bottom;
 }
+
+.border-upfd {
+    border: 1px solid var(--color-uphf);
+}
