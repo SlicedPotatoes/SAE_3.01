@@ -14,7 +14,7 @@ class HolidayUpdater
                 SET HolidayName = :name,
                     startDate = :start,
                     endDate = :end
-                WHERE holidaysid = :id';
+                WHERE holidayid = :id';
         $stmt = $pdo->prepare($sql);
         $stmt->bindValue(':name', $name, PDO::PARAM_STR);
         $stmt->bindValue(':start', $startDate ?: null, PDO::PARAM_STR);

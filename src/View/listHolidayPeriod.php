@@ -1,6 +1,4 @@
 <?php
-// FILE: src/View/listHolidayPeriod.php
-// Protection contre la variable $dataView non définie
 $periods = [];
 if (isset($dataView) && isset($dataView->periods)) {
     $periods = $dataView->periods;

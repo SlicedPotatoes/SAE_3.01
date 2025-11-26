@@ -38,49 +38,72 @@
 </div>
 
 <script type="text/javascript">
-    // Écoute globale : utilise le bouton "Modifier" dans listHolidayPeriod.php
-    // Le bouton dans listHolidayPeriod.php doit ressembler à :
-    // <button class="btn btn-sm btn-primary btn-edit-holiday" data-id="<?= $row['id'] ?>" data-start="<?= $row['startDate'] ?>" data-end="<?= $row['endDate'] ?>" data-name="<?= htmlspecialchars($row['periodName'], ENT_QUOTES) ?>">Modifier</button>
-
-    document.addEventListener('click', function (e) {
-        const btn = e.target.closest('.btn-edit-holiday');
-        if (!btn) return;
-
-        // Récupère les data-*
-        const id = btn.dataset.id || '';
-        const start = btn.dataset.start || '';
-        const end = btn.dataset.end || '';
-        const name = btn.dataset.name || '';
-
-        // Remplit la modal
-        const startEl = document.getElementById('startDate');
-        const endEl = document.getElementById('endDate');
-        const nameEl = document.getElementById('periodName');
-        const form = document.getElementById('formAddHolidayPeriod');
-
-        if (startEl) startEl.value = start;
-        if (endEl) endEl.value = end;
-        if (nameEl) nameEl.value = name;
-
-        // Met à jour hidden inputs
-        const idInput = form.querySelector('input[name="id"]');
-        const actionInput = form.querySelector('input[name="action"]');
-        if (idInput) idInput.value = id;
-        if (actionInput) actionInput.value = 'update';
-
-        // Change titre et texte du bouton
-        const modalTitle = document.getElementById('modalAddHolidayPeriodLabel');
-        const modalSmallTitle = document.getElementById('modalSmallTitle');
-        const submitBtn = document.getElementById('submitHolidayBtn');
-        if (modalTitle) modalTitle.textContent = 'Modifier une période de congé';
-        if (modalSmallTitle) modalSmallTitle.textContent = 'Modifier une période de congé';
-        if (submitBtn) submitBtn.textContent = 'Enregistrer';
-
-        // Ouvre la modal (Bootstrap 5)
+    /*
+      Utilise l'événement Bootstrap `show.bs.modal` pour récupérer le bouton déclencheur
+      (event.relatedTarget) et remplir / adapter la modal en mode "modifier" ou "ajouter".
+    */
+    (function () {
         const modalEl = document.getElementById('modalAddHolidayPeriod');
-        if (modalEl) {
-            const modal = new bootstrap.Modal(modalEl);
-            modal.show();
-        }
-    });
+        if (!modalEl) return;
+
+        modalEl.addEventListener('show.bs.modal', function (ev) {
+            const trigger = ev.relatedTarget; // le bouton ayant déclenché l'ouverture
+            const form = modalEl.querySelector('#formAddHolidayPeriod');
+            const startEl = form.querySelector('#startDate');
+            const endEl = form.querySelector('#endDate');
+            const nameEl = form.querySelector('#periodName');
+            const idInput = form.querySelector('input[name="id"]');
+            const actionInput = form.querySelector('input[name="action"]');
+            const submitBtn = form.querySelector('#submitHolidayBtn');
+            const titleEl = modalEl.querySelector('#modalAddHolidayPeriodLabel');
+
+            // Helper: convertit dd/mm/YYYY ou YYYY-MM-DD en YYYY-MM-DD
+            function toIsoDate(v) {
+                if (!v) return '';
+                v = v.trim();
+                if (/^\d{4}-\d{2}-\d{2}$/.test(v)) return v;
+                const m = v.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/);
+                if (m) {
+                    const d = m[1].padStart(2, '0');
+                    const mo = m[2].padStart(2, '0');
+                    return `${m[3]}-${mo}-${d}`;
+                }
+                const date = new Date(v);
+                if (!isNaN(date.getTime())) {
+                    const y = date.getFullYear();
+                    const mo = String(date.getMonth() + 1).padStart(2, '0');
+                    const d = String(date.getDate()).padStart(2, '0');
+                    return `${y}-${mo}-${d}`;
+                }
+                return '';
+            }
+
+            if (trigger && trigger.dataset && trigger.dataset.id) {
+                // Mode "modifier"
+                const id = trigger.dataset.id || '';
+                const rawStart = trigger.dataset.start || '';
+                const rawEnd = trigger.dataset.end || '';
+                const name = trigger.dataset.name || '';
+
+                if (idInput) idInput.value = id;
+                if (actionInput) actionInput.value = 'update';
+                if (startEl) startEl.value = toIsoDate(rawStart);
+                if (endEl) endEl.value = toIsoDate(rawEnd);
+                if (nameEl) nameEl.value = name;
+
+                if (titleEl) titleEl.textContent = 'Modifier une période de congé';
+                if (submitBtn) submitBtn.textContent = 'Enregistrer';
+            } else {
+                // Mode "ajouter" (réinitialise le formulaire)
+                if (idInput) idInput.value = '';
+                if (actionInput) actionInput.value = 'insert';
+                if (startEl) startEl.value = '';
+                if (endEl) endEl.value = '';
+                if (nameEl) nameEl.value = '';
+
+                if (titleEl) titleEl.textContent = 'Ajouter une période de congé';
+                if (submitBtn) submitBtn.textContent = 'Ajouter';
+            }
+        });
+    })();
 </script>
