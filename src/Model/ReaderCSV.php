@@ -10,6 +10,10 @@ class ReaderCSV
 {
 
     /**
+     * Méthode générique permettant de lire n'importe qu'elle fichier csv
+     *
+     * @warning !!! ATTENTION : Il est capable de lire certain format d'image, merci d'utiliser isCSV avant d'autres opérations !!!
+     *
      * @param  string  $filename
      * @param  string  $deliminator
      * @param  string  $enclosure
@@ -56,11 +60,14 @@ class ReaderCSV
         return $data;
     }
 
+    /**
+     * Méthode permettant de vérifier que le fichier est un fichier csv
+     *
+     * @param $filename
+     * @return bool
+     */
     public static function isCSV($filename) : bool
     {
-        /**
-         * Vérifie que le fichier est un fichier csv
-         */
         $allowed = array('csv', 'CSV');
         $ext = pathinfo($filename, PATHINFO_EXTENSION);
         if (in_array($ext, $allowed))
@@ -68,5 +75,26 @@ class ReaderCSV
             return true;
         }
         return false;
+    }
+
+    /**
+     * Méthode permettant de vérifier que les colones des données correspondent bien à un format souhaité
+     *
+     * @param $data
+     * @param $columns
+     * @return bool
+     */
+    public static function haveCollum($data, $columns) : bool
+    {
+        if (!(count($data[0]) === count($columns))) { return false; }
+
+        for ($i = 1; $i < count($columns); $i++)
+        {
+            if (!array_key_exists($columns[$i], $data[0]))
+            {
+                return false;
+            }
+        }
+        return true;
     }
 }
