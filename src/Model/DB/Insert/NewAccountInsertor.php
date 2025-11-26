@@ -65,9 +65,7 @@ class NewAccountInsertor
             }
 
             // Génération du mot de passe aléatoire et hashage
-
-
-            $password = ValidationHelper::generateRandomPassword();
+            $password = self::generatePassword();
             $hashPassword = password_hash($password, PASSWORD_DEFAULT);
 
             $values[] = "(:lastname" . $index . ", :firstname" . $index . ", :email" . $index . ", :password" . $index . ", :accountType" . $index . ")";
@@ -209,6 +207,40 @@ class NewAccountInsertor
                 $sqlInsert->bindValue($param, $value, \PDO::PARAM_STR);
             }
             $sqlInsert->execute();
+        }
+    }
+
+    public static function generatePassword()
+    {
+        $password = "";
+        $length = 16;
+
+        $upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        $lower = "abcdefghijklmnopqrstuvwxyz";
+        $digits = "0123456789";
+        $special = "!@#$%^&*()-_=+[]{}|;:,.<>?";
+        $allChars = $upper . $lower . $digits . $special;
+
+        // Le mot de passe doit contenir au moins une majuscule, une minuscule, un chiffre et un caractère spécial
+        $password .= $upper[random_int(0, strlen($upper) - 1)];
+        $password .= $lower[random_int(0, strlen($lower) - 1)];
+        $password .= $digits[random_int(0, strlen($digits) - 1)];
+        $password .= $special[random_int(0, strlen($special) - 1)];
+
+        // on complète le mot de passe avec des caractères aléatoires
+        for ($i = 4; $i < $length; $i++) {
+            $password .= $allChars[random_int(0, strlen($allChars) - 1)];
+        }
+
+        // on mélange les caractères du mot de passe pour éviter un ordre prévisible
+        $password = str_shuffle($password);
+
+        //on vérifie que le mot de passe respecte les critères
+        if (ValidationHelper::validatePassword($password) == $password) {
+            return $password;
+        } else {
+            // si le mot de passe ne respecte pas les critères, on génère un nouveau mot de passe
+            return self::generatePassword();
         }
     }
 }
