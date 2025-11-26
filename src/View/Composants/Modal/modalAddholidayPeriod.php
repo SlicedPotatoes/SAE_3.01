@@ -9,7 +9,6 @@
             </div>
             <div class="modal-body">
                 <div>
-                    <h5>Ajouter une période de congé</h5>
                     <form id="formAddHolidayPeriod" method="POST">
                         <div class="row">
                             <div class="col-md-6 mb-3">
@@ -24,17 +23,64 @@
 
                         <div class="mb-3">
                             <label for="periodName" class="form-label">Nom de la période</label>
-                            <textarea class="form-control" id="periodName" name="periodName" rows="3" required></textarea>
+                            <input type="text" class="form-control" id="periodName" name="periodName" rows="3" required></input>
                         </div>
 
                         <input type="hidden" name="action" value="insert">
+                        <input type="hidden" name="id" value="">
 
-                        <button type="submit" class="btn btn-uphf">Ajouter</button>
+                        <button type="submit" class="btn btn-uphf" id="submitHolidayBtn">Ajouter</button>
                     </form>
                 </div>
-
             </div>
         </div>
     </div>
 </div>
 
+<script type="text/javascript">
+    // Écoute globale : utilise le bouton "Modifier" dans listHolidayPeriod.php
+    // Le bouton dans listHolidayPeriod.php doit ressembler à :
+    // <button class="btn btn-sm btn-primary btn-edit-holiday" data-id="<?= $row['id'] ?>" data-start="<?= $row['startDate'] ?>" data-end="<?= $row['endDate'] ?>" data-name="<?= htmlspecialchars($row['periodName'], ENT_QUOTES) ?>">Modifier</button>
+
+    document.addEventListener('click', function (e) {
+        const btn = e.target.closest('.btn-edit-holiday');
+        if (!btn) return;
+
+        // Récupère les data-*
+        const id = btn.dataset.id || '';
+        const start = btn.dataset.start || '';
+        const end = btn.dataset.end || '';
+        const name = btn.dataset.name || '';
+
+        // Remplit la modal
+        const startEl = document.getElementById('startDate');
+        const endEl = document.getElementById('endDate');
+        const nameEl = document.getElementById('periodName');
+        const form = document.getElementById('formAddHolidayPeriod');
+
+        if (startEl) startEl.value = start;
+        if (endEl) endEl.value = end;
+        if (nameEl) nameEl.value = name;
+
+        // Met à jour hidden inputs
+        const idInput = form.querySelector('input[name="id"]');
+        const actionInput = form.querySelector('input[name="action"]');
+        if (idInput) idInput.value = id;
+        if (actionInput) actionInput.value = 'update';
+
+        // Change titre et texte du bouton
+        const modalTitle = document.getElementById('modalAddHolidayPeriodLabel');
+        const modalSmallTitle = document.getElementById('modalSmallTitle');
+        const submitBtn = document.getElementById('submitHolidayBtn');
+        if (modalTitle) modalTitle.textContent = 'Modifier une période de congé';
+        if (modalSmallTitle) modalSmallTitle.textContent = 'Modifier une période de congé';
+        if (submitBtn) submitBtn.textContent = 'Enregistrer';
+
+        // Ouvre la modal (Bootstrap 5)
+        const modalEl = document.getElementById('modalAddHolidayPeriod');
+        if (modalEl) {
+            const modal = new bootstrap.Modal(modalEl);
+            modal.show();
+        }
+    });
+</script>

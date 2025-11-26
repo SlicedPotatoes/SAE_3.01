@@ -2,11 +2,12 @@
 // FILE: src/Controller/HolidayContoller.php
 namespace Uphf\GestionAbsence\Controller;
 
+use Uphf\GestionAbsence\Model\DB\Update\HolidayUpdater;
 use Uphf\GestionAbsence\Model\AuthManager;
 use Uphf\GestionAbsence\Model\DB\Insert\HolidaysInsertor;
 use Uphf\GestionAbsence\Model\DB\Select\HolidaySelector;
+
 use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
-use Uphf\GestionAbsence\ViewModel\BaseViewModel;
 use Uphf\GestionAbsence\ViewModel\HolidayPeriodViewModel;
 
 class HolidayContoller
@@ -34,6 +35,17 @@ class HolidayContoller
         }
 
         $periods = HolidaySelector::getHolidays();
+
+        if($_SERVER['REQUEST_METHOD'] == 'POST') {
+            if(isset($_POST['action']) && $_POST['action'] == 'delete') {
+                $id = $_POST["id"];
+
+                HolidayUpdater::delete($id);
+            }
+        }
+
+
+
 
 
         return new ControllerData(
