@@ -3,10 +3,12 @@
 namespace Uphf\GestionAbsence\Controller;
 
 use Uphf\GestionAbsence\Model\AuthManager;
+use Uphf\GestionAbsence\Model\DB\Insert\AbsenceInsertor;
 use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
 use Uphf\GestionAbsence\Model\Notification\Notification;
 use Uphf\GestionAbsence\Model\Notification\NotificationType;
 use Uphf\GestionAbsence\Model\ReaderCSV;
+use Uphf\GestionAbsence\Model\Validation\ImportAbsenceValidator;
 use Uphf\GestionAbsence\ViewModel\ImportVTViewModel;
 
 /**
@@ -52,7 +54,13 @@ class ImportVTController
         'Identifiant national');
 
     /**
-     * @return \Uphf\GestionAbsence\Controller\ControllerData
+     * Si l'utilisateur n'est pas connecté => Rediriger vers login
+     *
+     * Si l'utilisateur n'est pas RP ou secrétaire => 403
+     *
+     * Si requête POST => Traitement de l'import
+     *
+     * @return ControllerData
      */
     public static function show(): ControllerData
     {
@@ -74,7 +82,7 @@ class ImportVTController
         }
 
         /**
-         * Si il y a eu une méthode POST, cela signifie que l'utilisateur à importer un fichier et la valider
+         * Si il y a eu une méthode POST, cela signifie que l'utilisateur à importer un fichier
          */
         if ($_SERVER['REQUEST_METHOD'] === 'POST')
         {
@@ -91,18 +99,55 @@ class ImportVTController
             {
                 $tempPath = $_FILES['vt_file']['tmp_name'];
                 $data = ReaderCSV::readCSV($tempPath);
+                /**
+                 * Check des columns pour un import d'absence
+                 */
                 if (ReaderCSV::haveCollum($data, ImportVTController::$absenceColumns))
                 {
+                    $validator = new ImportAbsenceValidator($data);
+                    $nbAbsBeforeValidator = count($data);
 
-                    // TODO : Faire la requête SQL pour insertion d'absences depuis une classe dans Model/DB
+                    $data = $validator->getData();
 
-                    Notification::addNotification(
-                        NotificationType::Success,
-                        'Le fichier a été importé avec succès.');
+                    /**
+                     * Si apres validation du format de données, le fichier est vide
+                     */
+                    if(count($data) === 0) {
+                        Notification::addNotification(NotificationType::Error, "Aucune données valide dans le fichier.");
+                    }
+                    /**
+                     * Apres validation des données, il reste des lignes
+                     */
+                    else {
+                        $corruptLine = $nbAbsBeforeValidator - count($data);
+                        // Notification précisant que des lignes n'ont pas le format valide
+                        // Ne cancel pas l'import pour autant, juste ignore les lignes en question
+                        if($corruptLine != 0) {
+                            Notification::addNotification(NotificationType::Warning, "$corruptLine lignes ont des données invalides, seules les lignes valides seront traitées");
+                        }
+
+                        [$nbAbs, $nbAbsWithoutDuplication] = AbsenceInsertor::addAbsences($data);
+
+                        // Notification différente en cas de doublons
+                        if($nbAbs != $nbAbsWithoutDuplication) {
+                            Notification::addNotification(
+                                NotificationType::Warning,
+                                "$nbAbsWithoutDuplication sur $nbAbs Absences importé avec succès. (Cause doublon)"
+                            );
+                        }
+                        else {
+                            Notification::addNotification(
+                                NotificationType::Success,
+                                'Le fichier a été importé avec succès.'
+                            );
+                        }
+                    }
                 }
+                /**
+                 * Check les columns pour un import d'étudiant
+                 */
                 else if (ReaderCSV::haveCollum($data, ImportVTController::$studentColumns))
                 {
-
                     // TODO : Faire la requête SQL pour insertion d'étudiant depuis une classe dans Model/DB
 
                     Notification::addNotification(
