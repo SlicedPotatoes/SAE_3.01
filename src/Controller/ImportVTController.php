@@ -49,8 +49,7 @@ class ImportVTController
         'Diplômes',
         'Public',
         'Email',
-        'Identifiant',
-        'national');
+        'Identifiant national');
 
     /**
      * @return \Uphf\GestionAbsence\Controller\ControllerData
@@ -62,7 +61,7 @@ class ImportVTController
          */
         if (!AuthManager::isLogin())
         {
-            header("Location: /");
+            header(('Location: /'));
             exit();
         }
 
@@ -82,15 +81,15 @@ class ImportVTController
             /**
              * Si le fichier n'est pas au format .csv ou si il y a eu une erreur de lecture
              */
-            if (!isset($_FILES["vt_file"]) || $_FILES["vt_file"]["error"] !== UPLOAD_ERR_OK || !ReaderCSV::isCSV($_FILES["vt_file"]['name']))
+            if (!isset($_FILES['vt_file']) || $_FILES['vt_file']['error'] !== UPLOAD_ERR_OK || !ReaderCSV::isCSV($_FILES['vt_file']['name']))
             {
                 Notification::addNotification(
                     NotificationType::Error,
-                    "Aucun fichier CSV valide fourni."
+                    'Aucun fichier CSV valide fourni.'
                 );
             } else
             {
-                $tempPath = $_FILES["vt_file"]["tmp_name"];
+                $tempPath = $_FILES['vt_file']['tmp_name'];
                 $data = ReaderCSV::readCSV($tempPath);
                 if (ReaderCSV::haveCollum($data, ImportVTController::$absenceColumns))
                 {
@@ -99,22 +98,22 @@ class ImportVTController
 
                     Notification::addNotification(
                         NotificationType::Success,
-                        "Le fichier a été importé avec succès.");
+                        'Le fichier a été importé avec succès.');
                 }
-                if (ReaderCSV::haveCollum($data, ImportVTController::$studentColumns))
+                else if (ReaderCSV::haveCollum($data, ImportVTController::$studentColumns))
                 {
 
                     // TODO : Faire la requête SQL pour insertion d'étudiant depuis une classe dans Model/DB
 
                     Notification::addNotification(
                         NotificationType::Success,
-                        "Le fichier a été importé avec succès.");
+                        'Le fichier a été importé avec succès.');
                 }
                 else
                 {
                     Notification::addNotification(
                         NotificationType::Error,
-                        "Le fichier csv ne correspond pas au critère."
+                        'Le fichier csv ne correspond pas au critère.'
                     );
                 }
             }
@@ -122,7 +121,7 @@ class ImportVTController
 
         return new ControllerData(
             '/View/importVT.php',
-            "Importation de VT",
+            'Importation de VT',
             new importVTViewModel());
     }
 }
