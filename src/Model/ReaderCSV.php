@@ -55,4 +55,17 @@ class ReaderCSV
 
         return $data;
     }
+
+    public static function isCSV($filename) : bool
+    {
+        /**
+         * Vérifie que le fichier est un fichier csv
+         */
+        $ext = pathinfo($filename, PATHINFO_EXTENSION);
+        if ($ext === 'CSV')
+        {
+            return true;
+        }
+        return false;
+    }
 }

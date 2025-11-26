@@ -45,7 +45,7 @@ class ImportVTController
             /**
              * Si le fichier n'est pas au format .csv ou si il y a eu une erreur de lecture
              */
-            if (!isset($_FILES["vt_file"]) || $_FILES["vt_file"]["error"] !== UPLOAD_ERR_OK)
+            if (!isset($_FILES["vt_file"]) || $_FILES["vt_file"]["error"] !== UPLOAD_ERR_OK || !ReaderCSV::isCSV($_FILES["vt_file"]['name']))
             {
                 Notification::addNotification(
                   NotificationType::Error,
