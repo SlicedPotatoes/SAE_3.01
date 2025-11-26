@@ -6,6 +6,8 @@ use Uphf\GestionAbsence\Model\AuthManager;
 use Uphf\GestionAbsence\Model\DB\Delete\TokenDelete;
 use Uphf\GestionAbsence\Model\DB\Select\AccountSelector;
 use Uphf\GestionAbsence\Model\DB\Update\PasswordUpdate;
+use Uphf\GestionAbsence\Model\Entity\Account\Account;
+use Uphf\GestionAbsence\Model\Mailer;
 use Uphf\GestionAbsence\Model\Notification\Notification;
 use Uphf\GestionAbsence\Model\Notification\NotificationType;
 use Uphf\GestionAbsence\Model\Validation\ChangePasswordValidator;
@@ -47,12 +49,12 @@ class ChangePasswordController{
             else {
                 $datas = $validator->getData();
 
-                $idAccount = AuthManager::getAccount()->getIdAccount();
-                $currHash = AccountSelector::getPasswordHashedById($idAccount);
+                $account = AuthManager::getAccount();
+                $currHash = AccountSelector::getPasswordHashedById($account->getIdAccount());
 
                 // On vérifie si l'utilisateur a bien fourni son mot de passe actuel.
                 if(password_verify($datas['lastPassword'], $currHash)) {
-                    self::changePassword($idAccount, $datas['newPassword']);
+                    self::changePassword($account, $datas['newPassword']);
                 }
                 else {
                     Notification::addNotification(NotificationType::Error, "Changement de mot de passe: L'ancien mot de passe ne correspond pas");
@@ -104,7 +106,7 @@ class ChangePasswordController{
             // Les champs sont valides.
             else {
                 $datas = $validator->getData();
-                self::changePassword($account->getIdAccount(), $datas['newPassword']);
+                self::changePassword($account, $datas['newPassword']);
                 TokenDelete::deleteToken($token);
             }
         }
@@ -137,16 +139,23 @@ class ChangePasswordController{
 
     /**
      * Hash le password et fait appel a la methode de changement de mot de passe dans la bdd
+     * Envoie le mail de confirmation
      *
-     * @param $idAccount
-     * @param $newPassword
+     * @param Account $account
+     * @param string $newPassword
      * @return void
      */
-    private static function changePassword($idAccount, $newPassword): void {
+    private static function changePassword(Account $account, string $newPassword): void {
         $passwordHash = password_hash($newPassword, PASSWORD_DEFAULT);
-        PasswordUpdate::updatePassword($idAccount, $passwordHash);
+        PasswordUpdate::updatePassword($account->getIdAccount(), $passwordHash);
 
         Notification::addNotification(NotificationType::Success, "Votre mot de passe a bien été changé !");
+
+        Mailer::sendPasswordChangeNotification(
+            $account->getLastName(),
+            $account->getLastName(),
+            $account->getEmail()
+        );
     }
 }
 
