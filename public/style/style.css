@@ -77,3 +77,7 @@ html, body {
 .border-upfd {
     border: 1px solid var(--color-uphf);
 }
+
+.justify-text {
+  text-align: justify;
+}
