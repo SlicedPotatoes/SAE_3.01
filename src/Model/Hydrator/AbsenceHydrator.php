@@ -13,13 +13,33 @@ use DateTime;
  */
 class AbsenceHydrator {
     public static function unserializeAbsence(array $raw): Absence {
+        $studentRaw = [
+            'studentid' => $raw['studentid'],
+            'lastname' => $raw['studentlastname'],
+            'firstname' => $raw['studentfirstname'],
+            'email' => $raw['studentemail'],
+            'accounttype' => $raw['studentaccounttype'],
+            'studentnumber' => $raw['studentnumber'],
+            'groupid' => $raw['groupid'],
+            'grouplabel' => $raw['grouplabel']
+        ];
+
+        $teacherRaw = [];
+        if(isset($raw['teacherid'])) {
+            $teacherRaw['idaccount'] = $raw['teacherid'];
+            $teacherRaw['lastname'] = $raw['teacherlastname'];
+            $teacherRaw['firstname'] = $raw['teacherfirstname'];
+            $teacherRaw['email'] = $raw['teacheremail'];
+            $teacherRaw['accounttype'] = $raw['teacheraccounttype'];
+        }
+
         return new Absence(
-            AccountHydrator::unserializeStudent($raw),
+            AccountHydrator::unserializeStudent($studentRaw),
             DateTime::createFromFormat("Y-m-d H:i:s", $raw['time']),
             $raw['duration'],
             $raw['examen'],
             $raw['allowedjustification'],
-            isset($raw['idteacher']) ? AccountHydrator::unserializeTeacher($raw) : null,
+            isset($raw['idteacher']) ? AccountHydrator::unserializeTeacher($teacherRaw) : null,
             StateAbs::from($raw['currentstate']),
             CourseType::from($raw['coursetype']),
             new Resource(
