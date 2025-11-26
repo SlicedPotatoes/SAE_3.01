@@ -61,8 +61,9 @@ class ReaderCSV
         /**
          * Vérifie que le fichier est un fichier csv
          */
+        $allowed = array('csv', 'CSV');
         $ext = pathinfo($filename, PATHINFO_EXTENSION);
-        if ($ext === 'CSV')
+        if (in_array($ext, $allowed))
         {
             return true;
         }
