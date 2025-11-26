@@ -1,5 +1,5 @@
-<div class="d-flex align-items-stretch justify-content-center mx-auto my-auto" style="max-width:900px; gap:1rem;">
-    <div class="card border p-4 rounded" style="flex:1 1 540px; max-width:540px;">
+<div class="d-flex justify-content-center mx-auto my-auto overflow-hidden" style="max-width:900px;">
+    <div class="card border p-3 rounded-start-4 rounded-end-0" style="flex:1 1 540px; max-width:540px;">
         <div class="card-body">
             <h5 class="card-title text-center mb-2">Récupération de mot de passe</h5>
             <p class="text-muted text-center mb-4">Entrez votre adresse mail HPUF pour recevoir un lien de réinitialisation.</p>
@@ -17,5 +17,5 @@
             </form>
         </div>
     </div>
-    <div class="rounded-end card-uphf d-none d-md-flex align-items-center justify-content-center" style="width: 30%; min-width:220px;"></div>
+    <div class="rounded-end-4 card-uphf d-none d-md-flex align-items-start justify-content-start" style="width: 30%; min-width:220px;"></div>
 </div>
