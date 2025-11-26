@@ -16,7 +16,7 @@ use Uphf\GestionAbsence\ViewModel\ImportVTViewModel;
  */
 class ImportVTController
 {
-    private static $absenceColumns = array(
+    private static array $absenceColumns = array(
         'Nom',
         'Prénom',
         'Prénom 2',
@@ -42,7 +42,7 @@ class ImportVTController
         'Profs',
         'Contrôle');
 
-    private static $studentColumns = array(
+    private static array $studentColumns = array(
         'Nom',
         'Prénom',
         'Prénom 2',
