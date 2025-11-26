@@ -210,6 +210,233 @@ class NewAccountInsertor
         }
     }
 
+
+    /**
+     * Insère un nouveau compte de type Educational Manager dans la table `Account` avec les champs suivants :
+     * - `lastname` : nom de famille (string)
+     * - `firstname` : prénom (string)
+     * - `email` : adresse email (string)
+     * - `password` : mot de passe hashé (string) (généré aléatoirement)
+     * - `accountType` : type de compte (int) (AccountType::EducationalManager)
+     * <br/><br/>
+     *
+     * Ensuite, elle appelle la méthode insertTeacher pour insérer les informations spécifiques au gestionnaire éducatif dans la table `Teacher` avec le champ suivant :
+     * - `idAccount` : identifiant du compte (int) récupéré après l'insertion dans la table `Account`
+     * <br/><br/>
+     *
+     * Ensuite, elle envoie un email à l'adresse fournie avec le mot de passe temporaire.
+     *
+     * @param string $lastname nom de famille
+     * @param string $firstname prénom
+     * @param string $email adresse email
+     * @return void
+     */
+    public static function insertEducationalManagerAccount(string $lastname, string $firstname, string $email): void
+    {
+        // Récupère la connexion
+        $conn = Connection::getInstance();
+
+        // Génération du mot de passe aléatoire et hashage
+        $password = self::generatePassword();
+        $hashPassword = password_hash($password, PASSWORD_DEFAULT);
+
+        // Prépare la requête d'insertion
+        $query = "INSERT INTO Account (lastname, firstname, email, password, accountType) 
+                  VALUES (:lastname, :firstname, :email, :password, :accountType)
+                  RETURNING idAccount;";
+
+        $sql = $conn->prepare($query);
+
+        // Lie les valeurs aux paramètres
+        $sql->bindValue(":lastname", $lastname, \PDO::PARAM_STR);
+        $sql->bindValue(":firstname", $firstname, \PDO::PARAM_STR);
+        $sql->bindValue(":email", $email, \PDO::PARAM_STR);
+        $sql->bindValue(":password", $hashPassword, \PDO::PARAM_STR);
+        $sql->bindValue(":accountType", AccountType::EducationalManager, \PDO::PARAM_INT);
+
+        $sql->execute();
+
+        $insertedAccounts = $sql->fetchAll(\PDO::FETCH_ASSOC);
+        self::insertTeacher($insertedAccounts);
+
+        // Envoi du mail avec le mot de passe temporaire
+        Mailer::sendNewAccountEmail(
+            $lastname,
+            $firstname,
+            $email,
+            $password
+        );
+    }
+
+
+    /**
+     * Insère un ou plusieurs nouveaux comptes de type Enseignant dans la table `Account` avec les champs suivants :
+     * - `lastname` : nom de famille (string)
+     * - `firstname` : prénom (string)
+     * - `email` : adresse email (string)
+     * - `password` : mot de passe hashé (string) (généré aléatoirement)
+     * - `accountType` : type de compte (int) (AccountType::Teacher)
+     * <br/><br/>
+     *
+     * Ensuite, elle appelle la méthode insertTeacher pour insérer les informations spécifiques à l'enseignant dans la table `Teacher` avec le champ suivant :
+     * - `idAccount` : identifiant du compte (int) récupéré après l'insertion dans la table `Account`
+     * <br/><br/>
+     *
+     * Ensuite, elle envoie un email à chaque adresse fournie avec le mot de passe temporaire.
+     *
+     * @param array $teachers tableau d'éléments ['lastname' => ..., 'firstname' => ..., 'email' => ...]
+     * @return void
+     */
+    public static function insertTeacherAccount(array $teachers): void
+    {
+        // Récupère la connexion
+        $conn = Connection::getInstance();
+        $conn->beginTransaction();
+
+        // Prépare le début de la requête d'insertion afin de concaténer plusieurs valeurs à insérer et éviter plusieurs appels à la base de données
+        $query = "INSERT INTO Account (lastname, firstname, email, password, accountType) VALUES ";
+        $values = [];
+        $params = [];
+
+        foreach ($teachers as $index => $teacher) {
+            // Génération du mot de passe aléatoire et hashage
+            $password = self::generatePassword();
+            $hashPassword = password_hash($password, PASSWORD_DEFAULT);
+
+            $values[] = "(:lastname" . $index . ", :firstname" . $index . ", :email" . $index . ", :password" . $index . ", :accountType" . $index . ")";
+            $params[":lastname" . $index] = $teacher['lastname'];
+            $params[":firstname" . $index] = $teacher['firstname'];
+            $params[":email" . $index] = $teacher['email'];
+            $params[":password" . $index] = $hashPassword;
+            $params[":accountType" . $index] = AccountType::Teacher;
+
+            // Envoi du mail avec le mot de passe temporaire
+            Mailer::sendNewAccountEmail(
+                $teacher['lastname'],
+                $teacher['firstname'],
+                $teacher['email'],
+                $password
+            );
+        }
+        $query .= implode(", ", $values);
+
+        // On récupère l'identifiant du compte fraîchement créé
+        $query .= " RETURNING idAccount;";
+
+        $sql = $conn->prepare($query);
+        // Lie les valeurs aux paramètres
+        foreach ($params as $param => $value) {
+            $sql->bindValue($param, $value, \PDO::PARAM_STR);
+        }
+
+        $sql->execute();
+        $conn->commit();
+
+        $insertedAccounts = $sql->fetchAll(\PDO::FETCH_ASSOC);
+        self::insertTeacher($insertedAccounts);
+
+    }
+
+
+    /**
+     * Cette méthode sera lancée par une autre méthode pour faire le lien entre le compte fraîchement créé son rôle d'enseignant.
+     * Insère un ou plusieurs `idAccount` dans la table `Teacher`.
+     * - `idAccount` : identifiant du compte (int)
+     * @param array $insertedAccounts tableau d'éléments ['idAccount' => ...] des comptes fraîchement créés
+     * @return void
+     */
+    public static function insertTeacher(array $insertedAccounts): void
+    {
+        $conn = Connection::getInstance();
+        $conn->beginTransaction();
+
+        // Prépare la requête d'insertion
+        $query = "INSERT INTO Teacher (idAccount) VALUES ";
+        $values = [];
+        $params = [];
+
+        $i = 0;
+        foreach ($insertedAccounts as $account) {
+            $values[] = "(:idAccount{$i})";
+            $params[":idAccount{$i}"] = $account['idAccount'];
+            $i++;
+        }
+
+        if (empty($values)) {
+            $conn->commit();
+            return;
+        }
+
+        $query .= implode(", ", $values) . ";";
+        $sql = $conn->prepare($query);
+
+        foreach ($params as $param => $value) {
+            $sql->bindValue($param, $value, \PDO::PARAM_STR);
+        }
+
+        $sql->execute();
+        $conn->commit();
+    }
+
+
+    /**
+     * Insère un nouveau compte de type Secrétaire dans la table `Account` avec les champs suivants :
+     * - `lastname` : nom de famille (string)
+     * - `firstname` : prénom (string)
+     * - `email` : adresse email (string)
+     * - `password` : mot de passe hashé (string) (généré aléatoirement)
+     * - `accountType` : type de compte (int) (AccountType::Secretary)
+     * <br/><br/>
+     * Ensuite, elle envoie un email à l'adresse fournie avec le mot de passe temporaire.
+     *
+     * @param string $lastname
+     * @param string $firstname
+     * @param string $email
+     * @return void
+     */
+    public static function insertSecretaryAccount(string $lastname, string $firstname, string $email): void
+    {
+        // Récupère la connexion
+        $conn = Connection::getInstance();
+
+        // Génération du mot de passe aléatoire et hashage
+        $password = self::generatePassword();
+        $hashPassword = password_hash($password, PASSWORD_DEFAULT);
+
+        // Prépare la requête d'insertion
+        $query = "INSERT INTO Account (lastname, firstname, email, password, accountType) 
+                  VALUES (:lastname, :firstname, :email, :password, :accountType);";
+
+        $sql = $conn->prepare($query);
+
+        // Lie les valeurs aux paramètres
+        $sql->bindValue(":lastname", $lastname, \PDO::PARAM_STR);
+        $sql->bindValue(":firstname", $firstname, \PDO::PARAM_STR);
+        $sql->bindValue(":email", $email, \PDO::PARAM_STR);
+        $sql->bindValue(":password", $hashPassword, \PDO::PARAM_STR);
+        $sql->bindValue(":accountType", AccountType::Secretary, \PDO::PARAM_INT);
+
+        $sql->execute();
+
+        // Envoi du mail avec le mot de passe temporaire
+        Mailer::sendNewAccountEmail(
+            $lastname,
+            $firstname,
+            $email,
+            $password
+        );
+    }
+
+
+    /**
+     * Génère un mot de passe aléatoire de 16 caractères respectant les critères suivants :
+     * - Contient au moins une majuscule
+     * - Contient au moins une minuscule
+     * - Contient au moins un chiffre
+     * - Contient au moins un caractère spécial
+     *
+     * @return string Le mot de passe généré
+     */
     public static function generatePassword()
     {
         $password = "";
