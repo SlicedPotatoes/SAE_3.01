@@ -73,4 +73,51 @@ class ValidationHelper {
 
         return $date->format($format);
     }
+
+    /**
+     * Prend une chaine de caractères représentant un mot de passe
+     *
+     * Renvoie null si le mot de passe ne respecte pas les critères de sécurité
+     *
+     * Un mot de passe est valide si:
+     * - Contient entre 12 et 30 caractères
+     * - Contient au moins une majuscule
+     * - Contient au moins une minuscule
+     * - Contient au moins un chiffre
+     * - Contient au moins un caractère spécial
+     * - Ne contient pas d'espaces
+     *
+     * @param $val
+     * @return string|null
+     */
+    public static function validatePassword($val): string | null {
+        // Vérifier le nombre de caractères
+        if(strlen($val) < 12 || strlen($val) > 30) { return null; }
+
+        // Présence d'une majuscule
+        if(preg_match("/[A-Z]/", $val) === 0) { return null; }
+
+        // Présence d'une minuscule
+        if(preg_match("/[a-z]/", $val) === 0) { return null; }
+
+        // Présence d'un chiffre
+        if(preg_match("/[0-9]/", $val) === 0) { return null; }
+
+        // Check la présence d'un espace
+        if(preg_match("/\s/", $val) !== 0) { return null; }
+
+        // Check la présence d'un caractère spécial
+        if(preg_match("/[^0-9A-Za-zÀ-ÖØ-öø-ÿ]/", $val) === 0) { return null; }
+
+        return $val;
+    }
 }
+/*
+echo "<pre> 1 - " . ValidationHelper::validatePassword("") . "</pre>";
+echo "<pre> 2 - " . ValidationHelper::validatePassword("aaaaaaaaaaaa") . "</pre>";
+echo "<pre> 3 - " . ValidationHelper::validatePassword("AAAAAAAAAAAA") . "</pre>";
+echo "<pre> 4 - " . ValidationHelper::validatePassword("Aaaaaaaaaaaa") . "</pre>";
+echo "<pre> 5 - " . ValidationHelper::validatePassword("Aaaaaaaaaa0 ") . "</pre>";
+echo "<pre> 6 - " . ValidationHelper::validatePassword("Aaaaaaaaaa00") . "</pre>";
+echo "<pre> 7 - " . ValidationHelper::validatePassword("Aaaaa1aa@aaa") . "</pre>";
+*/

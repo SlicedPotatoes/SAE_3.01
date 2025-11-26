@@ -23,6 +23,7 @@ readonly class StudentProfileViewModel extends BaseViewModel{
     public string $currTab;
     public FilterViewModel $filterVM;
     public AccountType $roleUser;
+    public HeaderViewModel $headerVM;
     public function __construct(
         Student $student,
         array $absences,
@@ -55,5 +56,9 @@ readonly class StudentProfileViewModel extends BaseViewModel{
         $this->currTab = $currTab;
         $this->filterVM = new FilterViewModel($filter, true);
         $this->roleUser = $roleUser;
+
+        if ($roleUser == AccountType::Student) $this->headerVM = new HeaderViewModel(true, "Bonjour", $this->firstName . " " . $this->lastName, "!");
+        else $this->headerVM = new HeaderViewModel(true, "Profile de", $this->firstName . " " . $this->lastName, "");
+
     }
 }

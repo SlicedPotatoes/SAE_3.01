@@ -14,6 +14,7 @@ readonly class JustificationListViewModel extends BaseViewModel {
     public array $justificationsDone;
     public FilterViewModel $filterVM;
     public string $fullname;
+    public HeaderViewModel $headerVM;
 
     public function __construct(
         string $currTab,
@@ -30,5 +31,6 @@ readonly class JustificationListViewModel extends BaseViewModel {
         $this->justificationsDone = array_map(fn($j) => new OneJustificationViewModel($j, $roleUser, $j->getStudent()), $justificationsDone);
         $this->filterVM = new FilterViewModel($filter, false);
         $this->fullname = $fullname;
+        $this->headerVM = new HeaderViewModel(false, "Bonjour", $fullname, "!");
     }
 }

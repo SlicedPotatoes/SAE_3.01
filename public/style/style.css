@@ -26,6 +26,10 @@ html, body {
     color: var(--color-uphf);
 }
 
+.bg-uphf {
+    background: var(--color-uphf);
+}
+
 .icon-uphf {
     fill: var(--color-uphf);
 }
@@ -61,4 +65,15 @@ html, body {
 
 .offcanvas.offcanvas-start {
     width: 300px !important;
+}
+
+.card-uphf {
+    background-color: var(--color-uphf);
+    background-image: url(/img/uphf-logo-symbol-bg.svg);
+    background-repeat: no-repeat;
+    background-position-y: bottom;
+}
+
+.border-upfd {
+    border: 1px solid var(--color-uphf);
 }

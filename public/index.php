@@ -32,12 +32,13 @@ $router->addRoute("/", "HomeController@home");
 $router->addRoute("/login", "AuthentificationController@login");
 $router->addRoute("/logout", "AuthentificationController@logout");
 $router->addRoute("/StudentProfile", "StudentProfileController@show");
-$router->addRoute("/StudentProfile/{id}", "StudentProfileController@show");
+$router->addRoute("/StudentProfile/{id:int}", "StudentProfileController@show");
 $router->addRoute("/JustificationList", "JustificationsListController@show");
 $router->addRoute("/SearchStudent", "SearchStudentController@show");
-$router->addRoute("/DetailJustification/{id}", "DetailJustificationController@show");
-$router->addRoute("/ShowFile/{}", "FileController@show");
-
+$router->addRoute("/DetailJustification/{id:int}", "DetailJustificationController@show");
+$router->addRoute("/ChangePassword", "ChangePasswordController@changeWhenLogin");
+$router->addRoute("/ChangePassword/{token}", "ChangePasswordController@changeWithToken");
+$router->addRoute("/PasswordLost", "ChangePasswordController@passwordLost");
 $path = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
 
 //echo $path;
