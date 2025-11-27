@@ -15,7 +15,7 @@ class TimeSlotAbsence
     private int $countStudentsAbsencesJustified;
     private Teacher $teacher;
     private CourseType $courseType;
-    private string $groupe;
+    private string $group;
     private Resource $resource;
     private array|null $studentAbsencesList;
 
@@ -30,7 +30,7 @@ class TimeSlotAbsence
      * @param string $group
      * @param Resource $resource
      */
-    public function __construct(DateTime $time, bool $examen, string $duration, int $countStudentsAbsences, int $countStudentsAbsencesJustified, Teacher $teacher, CourseType $courseType, string $groupe, Resource $resource)
+    public function __construct(DateTime $time, bool $examen, string $duration, int $countStudentsAbsences, int $countStudentsAbsencesJustified, Teacher $teacher, CourseType $courseType, string $group, Resource $resource)
     {
         $this->time = $time;
         $this->examen = $examen;
@@ -39,7 +39,7 @@ class TimeSlotAbsence
         $this->countStudentsAbsencesJustified = $countStudentsAbsencesJustified;
         $this->teacher = $teacher;
         $this->courseType = $courseType;
-        $this->groupe = $groupe;
+        $this->group = $group;
         $this->resource = $resource;
     }
 
@@ -78,9 +78,9 @@ class TimeSlotAbsence
         return $this->courseType;
     }
 
-    public function getGroupe(): string
+    public function getGroup(): string
     {
-        return $this->groupe;
+        return $this->group;
     }
 
     public function getResource(): Resource
