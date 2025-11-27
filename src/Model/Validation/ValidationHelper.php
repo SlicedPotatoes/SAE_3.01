@@ -73,4 +73,26 @@ class ValidationHelper {
 
         return $date->format($format);
     }
+
+    /**
+     * Prend une chaine de caractère
+     *
+     * Renvoie la chaine si celle-ci respecte le \$format G:i pour un dateTime
+     *
+     * Sinon null
+     *
+     * @param $val
+     * @return string|null
+     */
+    public static function valideHours($val): string | null {
+        if(!str_contains($val, 'H')) { return null; }
+
+        [$h, $m] = explode("H", $val);
+
+        if(self::validateDate("$h:$m", "G:i") !== null) {
+            return $val;
+        }
+
+        return null;
+    }
 }
