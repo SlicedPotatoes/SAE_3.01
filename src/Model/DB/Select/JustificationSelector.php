@@ -70,10 +70,25 @@ class JustificationSelector {
     public static function getAbsences(int $idJustification): array {
         $conn = Connection::getInstance();
 
-        $query = "SELECT * 
+        $query = "SELECT
+                    s.studentid,
+                    s.lastname AS studentLastName,
+                    s.firstname AS studentFirstName,
+                    s.email AS studentEmail,
+                    s.accounttype AS studentAccountType,
+                    s.studentnumber,
+                    s.groupid,
+                    s.grouplabel,
+                    a.*,
+                    r.*,
+                    t.idaccount AS teacherid,
+                    t.lastname AS teacherLastName,
+                    t.firstname AS teacherFirstName,
+                    t.email AS teacherEmail,
+                    t.accounttype AS teacherAccountType 
                   FROM AbsenceJustification
                   JOIN Absence a USING(idStudent, time)
-                  JOIN Resource USING(idResource)
+                  JOIN Resource r USING(idResource)
                   LEFT JOIN Account t ON a.idTeacher = t.idAccount
                   JOIN StudentAccount s ON a.idStudent = s.studentid
                   WHERE idJustification = :idJustification
