@@ -3,7 +3,7 @@
  * Header utiliser pour tout le site afin d'avoir une cohérence graphique
  */
 
-use Uphf\GestionAbsence\ViewModel\HeaderViewModel;
+use Uphf\GestionAbsence\Model\CookieManager;
 
 global $dataView;
 
@@ -19,7 +19,7 @@ $tag = $showCards ? 'button' : 'div';
     <div class="accordion-item border-0 bg-transparent">
         <h2 class="accordion-header">
             <<?= $tag ?>
-            class="accordion-button bg-transparent shadow-none p-0"
+            class="accordion-button bg-transparent shadow-none p-0 <?= $showCards && !CookieManager::getCardOpen() ? 'collapsed' : '' ?> "
             <?php if ($showCards): ?>
                 type="button"
                 data-bs-toggle="collapse"
@@ -34,7 +34,7 @@ $tag = $showCards ? 'button' : 'div';
         </h2>
 
         <?php if ($showCards): ?>
-            <div id="showCard" class="accordion-collapse collapse show" data-bs-parent="#accordionCard">
+            <div id="showCard" class="accordion-collapse collapse <?= CookieManager::getCardOpen() ? 'show' : '' ?>" data-bs-parent="#accordionCard">
                 <div class="accordion-body p-0 mt-3">
                     <?php require __DIR__ . "/cards.php"; ?>
                 </div>
@@ -42,3 +42,4 @@ $tag = $showCards ? 'button' : 'div';
         <?php endif; ?>
     </div>
 </div>
+<script src="/script/headerCard.js"></script>
