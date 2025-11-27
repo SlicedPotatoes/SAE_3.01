@@ -14,7 +14,6 @@ use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
 use Uphf\GestionAbsence\Model\GlobalVariable;
 use Uphf\GestionAbsence\Model\Notification\Notification;
 use Uphf\GestionAbsence\Router;
-
 $dotenv = Dotenv::createImmutable(dirname(__DIR__));
 $dotenv->load();
 
@@ -37,7 +36,7 @@ $router->addRoute("/JustificationList", "JustificationsListController@show");
 $router->addRoute("/SearchStudent", "SearchStudentController@show");
 $router->addRoute("/DetailJustification/{id}", "DetailJustificationController@show");
 $router->addRoute("/ShowFile/{}", "FileController@show");
-$router->addRoute("/TeacherHome", "TeacherHomeController@show");
+$router->addRoute("/teacherHome", "TeacherHomeController@show");
 
 $path = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
 
@@ -88,7 +87,9 @@ if(AuthManager::isLogin()) {
 <!-- Contenue de la page -->
 <div class="container d-flex flex-column gap-3 flex-fill" style="min-height: 0">
     <?php
-    require_once $srcFolder . $dataRoute->view;
+    //require_once $srcFolder . $dataRoute->view;
+    $viewPath = is_string($dataRoute->view) ? ltrim($dataRoute->view, "/\\") : '';
+    require_once $srcFolder . '/' . str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $viewPath);
     ?>
 </div>
 
