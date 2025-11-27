@@ -21,6 +21,7 @@
         <ul class="navbar-nav flex-grow-1 gap-2">
             <li class="nav-item"><a class="nav-link btn btn-uphf" href="/JustificationList">Justificatifs</a></li>
             <li class="nav-item"><a class="nav-link btn btn-uphf" href="/SearchStudent">Rechercher un étudiant</a></li>
+            <li class="nav-item"><a class="nav-link btn btn-uphf" href="/PredefinedComments">Commentaires prédéfinis</a></li>
             <li class="nav-item"><a class="nav-link btn btn-uphf" href="/ImportVT">Importer depuis VT</a></li>
         </ul>
     </div>

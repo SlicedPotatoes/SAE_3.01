@@ -432,6 +432,17 @@ FROM Account a
              JOIN groupstudent g ON s.idgroupstudent = g.idgroupstudent;
  */
 
+--changeset Yann:8 labels:addComments context:ajout de la table commentaire
+
+-- Ajout de la table comments
+CREATE TABLE comments (
+    idComment SERIAL PRIMARY KEY,
+    textComment TEXT NOT NULL
+);
+
+/* liquibase rollback
+   DROP TABLE comments;
+ */
 --changeset Kevin:8 labels:add table tokenPassword context:Fonctionnalité mot de passe oublié
 CREATE TABLE tokenPassword (
     idToken SERIAL PRIMARY KEY,
