@@ -21,6 +21,32 @@ class CommentValidator
                ]
             ]
         );
-    }
 
+    }
+    public function checkAllGood(): array
+    {
+        if (!isset($this->input)) {
+            return ["Impossible de traiter votre demande, veuillez contacter l'administrateur"];
+        }
+
+        if (!isset($this->input['action']) || !in_array($this->input['action'], ['add', 'edit', 'delete'])) {
+            return ["Action invalide ou manquante"];
+        }
+
+        $action = $this->input['action'];
+
+        $errors = [];
+
+        if (in_array($action, [ 'edit', 'add'])) {
+            $errors = array_merge($errors, ValidationHelper::validateRequired($this->input,
+                ['textComment'],
+                ["Le commentaire est manquant"]
+            ));
+        }
+        return $errors;
+    }
+    public function getData(): ?array
+    {
+        return $this->input;
+    }
 }
