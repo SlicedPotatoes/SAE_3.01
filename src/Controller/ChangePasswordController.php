@@ -136,8 +136,6 @@ class ChangePasswordController{
 
             $account = AccountSelector::getAccountByEmail($mail);
 
-            var_export($account);
-
             if(isset($account)) {
                 $bytes = random_bytes(64);
                 $token = urlencode(strtr(base64_encode($bytes), '+/', '-_'));
