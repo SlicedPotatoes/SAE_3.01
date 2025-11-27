@@ -27,10 +27,14 @@ class PredefinedCommentController {
             "/View/predefinedComments",
             "Liste des commentaires prédéfinis",
             new PredefinedCommentViewModel(
-                $comments,
                 AuthManager::getRole(),
+                $comments,
+
             )
         );
+
+    }
+    private static function handleAction(): void {
 
     }
 }
