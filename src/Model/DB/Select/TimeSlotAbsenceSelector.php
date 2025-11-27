@@ -6,8 +6,10 @@ use PDO;
 use Uphf\GestionAbsence\Model\DB\Connection;
 use Uphf\GestionAbsence\Model\Entity\Absence\StateAbs;
 use Uphf\GestionAbsence\Model\Entity\Absence\TimeSlotAbsence;
+use Uphf\GestionAbsence\Model\Hydrator\AbsenceHydrator;
 use Uphf\GestionAbsence\Model\Hydrator\AccountHydrator;
 use Uphf\GestionAbsence\Model\Hydrator\TimeSlotAbsenceHydrator;
+
 /**
  * Classe static permet de récupérer de créneau de cours ou il y a au moins une absence
  **/
@@ -46,7 +48,7 @@ class TimeSlotAbsenceSelector
             $querry .= ' having ' . implode(' and ', $having);
         }
 
-        $querry .= ' order by time, idressource desc';
+        $querry .= ' order by time, idresource desc';
 
         $sql = $conn->prepare($querry);
 
@@ -118,7 +120,7 @@ class TimeSlotAbsenceSelector
         }
 
         $sqlStr .= ' GROUP BY idresource, time, groupe';
-        $sqlStr .= ' order by time, idressource desc';
+        $sqlStr .= ' order by time, idresource desc';
 
         $sql = $conn->prepare($sqlStr);
 
@@ -143,20 +145,20 @@ class TimeSlotAbsenceSelector
 
         $querry = 'select distinct idstudent as studentid, lastname, firstname, email, studentnumber,accounttype,grouplabel, groupid 
                    from account join absence on idstudent = idaccount join student on absence.idstudent = student.idaccount
-                   join groupstudent on groupid = idgroupstudent where idresource = :idRessource and time = :time';
+                   join groupstudent on groupid = idgroupstudent where idresource = :idresource and time = :time';
 
         if ($stateAbs !== null) {
             $querry .= ' and currentstate = :stateAbs';
         }
 
         $sql = $conn->prepare($querry);
-        $idRessource = $timeSlotAbsence->getResource()->getIdResource();
-        $sql->bindParam(':idRessource', $idRessource, PDO::PARAM_INT);
+        $idresource = $timeSlotAbsence->getResource()->getIdResource();
+        $sql->bindParam(':idresource', $idresource, PDO::PARAM_INT);
         $time = $timeSlotAbsence->getTime()->format('Y-m-d H:i:s');
-        $sql->bindParam(':time',$time , PDO::PARAM_STR);
+        $sql->bindParam(':time', $time, PDO::PARAM_STR);
         $curStateAbs = $stateAbs->value;
         if ($stateAbs !== null) {
-            $sql->bindParam(':stateAbs',$curStateAbs , PDO::PARAM_STR);
+            $sql->bindParam(':stateAbs', $curStateAbs, PDO::PARAM_STR);
         }
         $sql->execute();
         $results = $sql->fetchAll();
@@ -165,5 +167,39 @@ class TimeSlotAbsenceSelector
             $studentList[] = AccountHydrator::unserializeStudent($result);
         }
         return $studentList;
+    }
+
+    public static function getAbsenceListByTimeSlotAbsence(TimeSlotAbsence $timeSlotAbsence)
+    {
+        $conn = Connection::getInstance();
+
+        $query = 'SELECT idresource,idstudent as studentid,label,time,duration,examen,allowedjustification,currentstate,
+                coursetype,studentnumber,lastname,firstname,email,accounttype,groupid,grouplabel
+              from absence join student on idstudent = student.idaccount
+                join resource using(idresource) join account using (idaccount)
+                                   join groupstudent on groupid = idgroupstudent
+              WHERE time = :time
+                AND idresource = :idresource
+                AND idteacher = :idTeacher';
+
+        $sql = $conn->prepare($query);
+
+        $time = $timeSlotAbsence->getTime()->format('Y-m-d H:i:s');
+        $sql->bindValue(':time', $time, PDO::PARAM_STR);
+
+        $idresource = $timeSlotAbsence->getResource()->getIdResource();
+        $sql->bindValue(':idresource', $idresource, PDO::PARAM_INT);
+
+        $idTeacher = $timeSlotAbsence->getTeacher()->getIdAccount();
+        $sql->bindValue(':idTeacher', $idTeacher, PDO::PARAM_INT);
+
+        $sql->execute();
+
+        $results = $sql->fetchAll();
+        $absenceList = [];
+        foreach ($results as $result) {
+            $absenceList[] = AbsenceHydrator::unserializeAbsence($result);
+        }
+        return $absenceList;
     }
 }
