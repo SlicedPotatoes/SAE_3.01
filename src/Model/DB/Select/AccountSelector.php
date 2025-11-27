@@ -45,4 +45,25 @@ class AccountSelector {
 
         return null;
     }
+
+    public static function getAccountByEmail(string $email): Account | null
+    {
+        $pdo = Connection::getInstance();
+
+        $query = "SELECT * 
+                  FROM Account 
+                  WHERE email = :email";
+
+        $sql = $pdo->prepare($query);
+        $sql->bindValue(":email", $email, PDO::PARAM_STR);
+        $sql->execute();
+
+        $res = $sql->fetch(PDO::FETCH_ASSOC);
+
+        if($res) {
+            return AccountHydrator::unserializeAccount($res);
+        }
+
+        return null;
+    }
 }

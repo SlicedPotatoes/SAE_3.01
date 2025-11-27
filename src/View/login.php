@@ -7,7 +7,7 @@ use Uphf\GestionAbsence\Model\Entity\Account\Account;
 use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
 ?>
 
-<div class='container w-50 p-5 pb-5 mb-0'>
+<div class='container p-5 pb-5 mb-0' style="width: 30rem;">
   <img src="/img/Logo-UPHF.png" class="img-fluid" alt="...">
 </div>
 
@@ -16,10 +16,10 @@ use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
   <div class="border p-4 rounded-start w-50 ms-auto bg-white">
       <h4 class="text-center mb-4 ">Identification</h4>
 
-      <form name="login" method="post" >
+      <form name="login" method="post">
         <div class="mb-3">
-          <label class="mb-0" for="id" class="form-label" id="idLabel">Identifiant :</label>
-          <input type="text" class="form-control opacity-75" id="id" name="id" placeholder="" required>
+          <label class="mb-0" for="email" class="form-label" id="emailLabel">E-mail :</label>
+          <input type="text" class="form-control opacity-75" id="email" name="email" placeholder="" required>
         </div>
 
         <div class="mb-3">
