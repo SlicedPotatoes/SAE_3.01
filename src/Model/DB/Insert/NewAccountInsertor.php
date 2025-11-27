@@ -3,8 +3,11 @@
 namespace Uphf\GestionAbsence\Model\DB\Insert;
 
 use Uphf\GestionAbsence\Model\DB\Connection;
+use Uphf\GestionAbsence\Model\DB\Select\GroupStudentSelector;
 use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
 use Uphf\GestionAbsence\Model\Validation\ValidationHelper;
+use Uphf\GestionAbsence\Model\Mailer;
+use PDO;
 
 /**
  * Cette classe permet l'insertion de nouveau compte dans la BDD.
@@ -44,10 +47,10 @@ class NewAccountInsertor
         $queryCheck .= implode(", ", $placeholders) . ");";
         $sqlCheck = $conn->prepare($queryCheck);
         foreach ($students as $index => $student) {
-            $sqlCheck->bindValue(":email" . $index, $student['email'], \PDO::PARAM_STR);
+            $sqlCheck->bindValue(":email" . $index, $student['Email'], PDO::PARAM_STR);
         }
         $sqlCheck->execute();
-        $results = $sqlCheck->fetchAll(\PDO::FETCH_COLUMN);
+        $results = $sqlCheck->fetchAll(PDO::FETCH_COLUMN);
         $existingEmails = array_flip($results); // Utilisation d'array_flip pour une recherche plus rapide
 
         // S'assure que les groupes étudiants existent dans la base de données
@@ -60,7 +63,7 @@ class NewAccountInsertor
         $params = [];
         foreach ($students as $index => $student) {
             // Si l'email de l'étudiant est déjà présent en base de données, on l'ignore pour éviter les doublons
-            if (isset($existingEmails[$student['email']])) {
+            if (isset($existingEmails[$student['Email']])) {
                 continue;
             }
 
@@ -69,38 +72,43 @@ class NewAccountInsertor
             $hashPassword = password_hash($password, PASSWORD_DEFAULT);
 
             $values[] = "(:lastname" . $index . ", :firstname" . $index . ", :email" . $index . ", :password" . $index . ", :accountType" . $index . ")";
-            $params[":lastname" . $index] = $student['lastname'];
-            $params[":firstname" . $index] = $student['firstname'];
-            $params[":email" . $index] = $student['email'];
+            $params[":lastname" . $index] = $student['Nom'];
+            $params[":firstname" . $index] = $student['Prénom'];
+            $params[":email" . $index] = $student['Email'];
             $params[":password" . $index] = $hashPassword;
-            $params[":accountType" . $index] = AccountType::Student;
+            $params[":accountType" . $index] = AccountType::Student->value;
 
             // Envoi du mail avec le mot de passe temporaire
-            Mailer::sendNewAccountEmail(
-                $student['lastname'],
-                $student['firstname'],
-                $student['email'],
+            Mailer::sendNewAccount(
+                $student['Nom'],
+                $student['Prénom'],
+                $student['Email'],
                 $password
             );
         }
+
         if (empty($values)) {
             // Aucun nouvel étudiant à insérer
             $conn->commit();
             return;
         }
+
         $query .= implode(", ", $values)
-            . " RETURNING idAccount, email;"; // Récupère les identifiants des comptes fraîchement créés pour les utiliser dans la table Student
+            . " RETURNING idaccount, email;"; // Récupère les identifiants des comptes fraîchement créés pour les utiliser dans la table Student
         $sql = $conn->prepare($query);
 
         // Lie les valeurs aux paramètres
         foreach ($params as $param => $value) {
-            $sql->bindValue($param, $value, \PDO::PARAM_STR);
+            $sql->bindValue($param, $value, PDO::PARAM_STR);
         }
         $sql->execute();
 
         // Récupère l'identifiant du compte fraîchement créé
-        $insertedAccounts = $sql->fetchAll(\PDO::FETCH_ASSOC);
+        $insertedAccounts = $sql->fetchAll(PDO::FETCH_ASSOC);
         $conn->commit();
+
+        echo $insertedAccounts[0]["idaccount"] . "\n";
+        self::insertStudent($insertedAccounts, $students);
     }
 
 
@@ -123,31 +131,41 @@ class NewAccountInsertor
         // Construire un index des étudiants originaux par email pour lookup O(1)
         $studentsByEmail = [];
         foreach ($originalStudents as $s) {
-            if (isset($s['email'])) {
-                $studentsByEmail[$s['email']] = $s;
+            if (!empty($s['Email'])) {
+                $studentsByEmail[strtolower($s['Email'])] = $s;
             }
         }
 
         // Prépare la requête d'insertion
-        $query = "INSERT INTO Student (idAccount, studentNumber, idGroupStudent) VALUES ";
+        $query = "INSERT INTO Student (idaccount, studentnumber, idgroupstudent) VALUES ";
         $values = [];
         $params = [];
 
         $i = 0;
         foreach ($insertedAccounts as $account) {
-            $email = $account['email'] ?? null;
-            if ($email === null || !isset($studentsByEmail[$email])) {
+            $email = $account['email'] ?? $account['Email'] ?? null;
+            if ($email === null)
+            {
                 continue; // pas d'information étudiante correspondante
             }
+
+            $email = strtolower($email);
+            if (!isset($studentsByEmail[$email]))
+            {
+                /**
+                 * Si il n'y a pas de compte qui ont ce mail
+                 */
+                continue;
+            }
+
             $student = $studentsByEmail[$email];
 
             $values[] = "(:idAccount{$i}, :studentNumber{$i}, :idGroupStudent{$i})";
-            $params[":idAccount{$i}"] = $account['idAccount'];
-            $params[":studentNumber{$i}"] = $student['studentNumber'] ?? null;
-            $params[":idGroupStudent{$i}"] = $student['idGroupStudent'] ?? null;
+            $params[":idAccount{$i}"] = $account['idaccount'] ?? $account['idAccount'] ?? null;
+            $params[":studentNumber{$i}"] = $student['Identifiant'];
+            $params[":idGroupStudent{$i}"] = GroupStudentSelector::getGroupStudentByLabel($student['Diplômes'])->getIdGroupStudent();
             $i++;
         }
-
         if (empty($values)) {
             $conn->commit();
             return;
@@ -157,7 +175,7 @@ class NewAccountInsertor
         $sql = $conn->prepare($query);
 
         foreach ($params as $param => $value) {
-            $sql->bindValue($param, $value, \PDO::PARAM_STR);
+            $sql->bindValue($param, $value, PDO::PARAM_STR);
         }
 
         $sql->execute();
@@ -178,12 +196,12 @@ class NewAccountInsertor
 
         // Récupérer les groupes étudiants existants
         $existingGroups = [];
-        $queryCheck = "SELECT groupID, groupLabel FROM GroupStudent;";
+        $queryCheck = "SELECT groupID, groupLabel FROM GroupStudent";
         $sqlCheck = $conn->prepare($queryCheck);
         $sqlCheck->execute();
-        $results = $sqlCheck->fetchAll(\PDO::FETCH_ASSOC);
+        $results = $sqlCheck->fetchAll(PDO::FETCH_ASSOC);
         foreach ($results as $row) {
-            $existingGroups[$row['groupLabel']] = $row['groupID'];
+            $existingGroups[$row['grouplabel']] = $row['groupid'];
         }
 
         // On vérifie chaque étudiant pour voir si son groupe existe, sinon on l'ajoute
@@ -192,7 +210,7 @@ class NewAccountInsertor
         $params = [];
 
         foreach ($students as $student) {
-            $groupLabel = $student['groupLabel'];
+            $groupLabel = $student['Diplômes'];
             if (!isset($existingGroups[$groupLabel])) {
                 // Insérer le nouveau groupe étudiant
                 $values[] = "(:groupLabel" . count($params) . ")";
@@ -204,7 +222,7 @@ class NewAccountInsertor
             $sqlInsert = $conn->prepare($queryInsert);
             // Lie les valeurs aux paramètres
             foreach ($params as $param => $value) {
-                $sqlInsert->bindValue($param, $value, \PDO::PARAM_STR);
+                $sqlInsert->bindValue($param, $value, PDO::PARAM_STR);
             }
             $sqlInsert->execute();
         }
@@ -248,15 +266,15 @@ class NewAccountInsertor
         $sql = $conn->prepare($query);
 
         // Lie les valeurs aux paramètres
-        $sql->bindValue(":lastname", $lastname, \PDO::PARAM_STR);
-        $sql->bindValue(":firstname", $firstname, \PDO::PARAM_STR);
-        $sql->bindValue(":email", $email, \PDO::PARAM_STR);
-        $sql->bindValue(":password", $hashPassword, \PDO::PARAM_STR);
-        $sql->bindValue(":accountType", AccountType::EducationalManager, \PDO::PARAM_INT);
+        $sql->bindValue(":lastname", $lastname, PDO::PARAM_STR);
+        $sql->bindValue(":firstname", $firstname, PDO::PARAM_STR);
+        $sql->bindValue(":email", $email, PDO::PARAM_STR);
+        $sql->bindValue(":password", $hashPassword, PDO::PARAM_STR);
+        $sql->bindValue(":accountType", AccountType::EducationalManager, PDO::PARAM_INT);
 
         $sql->execute();
 
-        $insertedAccounts = $sql->fetchAll(\PDO::FETCH_ASSOC);
+        $insertedAccounts = $sql->fetchAll(PDO::FETCH_ASSOC);
         self::insertTeacher($insertedAccounts);
 
         // Envoi du mail avec le mot de passe temporaire
@@ -326,13 +344,13 @@ class NewAccountInsertor
         $sql = $conn->prepare($query);
         // Lie les valeurs aux paramètres
         foreach ($params as $param => $value) {
-            $sql->bindValue($param, $value, \PDO::PARAM_STR);
+            $sql->bindValue($param, $value, PDO::PARAM_STR);
         }
 
         $sql->execute();
         $conn->commit();
 
-        $insertedAccounts = $sql->fetchAll(\PDO::FETCH_ASSOC);
+        $insertedAccounts = $sql->fetchAll(PDO::FETCH_ASSOC);
         self::insertTeacher($insertedAccounts);
 
     }
@@ -371,7 +389,7 @@ class NewAccountInsertor
         $sql = $conn->prepare($query);
 
         foreach ($params as $param => $value) {
-            $sql->bindValue($param, $value, \PDO::PARAM_STR);
+            $sql->bindValue($param, $value, PDO::PARAM_STR);
         }
 
         $sql->execute();
@@ -410,11 +428,11 @@ class NewAccountInsertor
         $sql = $conn->prepare($query);
 
         // Lie les valeurs aux paramètres
-        $sql->bindValue(":lastname", $lastname, \PDO::PARAM_STR);
-        $sql->bindValue(":firstname", $firstname, \PDO::PARAM_STR);
-        $sql->bindValue(":email", $email, \PDO::PARAM_STR);
-        $sql->bindValue(":password", $hashPassword, \PDO::PARAM_STR);
-        $sql->bindValue(":accountType", AccountType::Secretary, \PDO::PARAM_INT);
+        $sql->bindValue(":lastname", $lastname, PDO::PARAM_STR);
+        $sql->bindValue(":firstname", $firstname, PDO::PARAM_STR);
+        $sql->bindValue(":email", $email, PDO::PARAM_STR);
+        $sql->bindValue(":password", $hashPassword, PDO::PARAM_STR);
+        $sql->bindValue(":accountType", AccountType::Secretary, PDO::PARAM_INT);
 
         $sql->execute();
 

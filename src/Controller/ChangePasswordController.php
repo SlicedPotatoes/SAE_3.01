@@ -179,7 +179,7 @@ class ChangePasswordController{
 
         Mailer::sendPasswordChangeNotification(
             $account->getLastName(),
-            $account->getLastName(),
+            $account->getFirstName(),
             $account->getEmail()
         );
     }
