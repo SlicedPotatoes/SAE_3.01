@@ -14,12 +14,7 @@ global $dataView;
     <ul class="nav nav-tabs mb-3">
         <li class="nav-item">
             <button class="nav-link active" id="tab-non-prevue">
-                Date non prévue
-            </button>
-        </li>
-        <li class="nav-item">
-            <button class="nav-link" id="tab-prevue">
-                Date prévue
+                Absences
             </button>
         </li>
     </ul>
@@ -38,12 +33,39 @@ global $dataView;
     ?>
     <!-- Cartes cours -->
     <div class="border">
-        <div class="card-body ">
-            <p class="mb-1"><strong>Cours :</strong> XXX</p>
-            <p class="mb-1"><strong>Professeur :</strong> XXX</p>
-            <p class="mb-0"><strong>Nombre d'absences justifiées :</strong> XX</p>
+        <div class="card-body d-flex justify-content-between align-items-center mb-3 m-3" >
+            <div class="ms-3">
+                <p class="mb-1"><strong>Créneau :</strong> DD/MM/YYYY, hh : mm</p>
+                <p class="mb-1"><strong>Nombre d'absences:</strong> XXX</p>
+            </div>
+            <div class="ms-5">
+                <p class="mb-1"><strong>Cour :</strong> XXX</p>
+                <p class="mb-0"><strong>Groupe :</strong> XX</p>
+            </div>
+            <button class="btn-uphf border rounded-3 ms-auto me-5">
+                Voir détaille
+            </button>
         </div>
     </div>
+
+    <div class="border">
+        <div class="card-body d-flex justify-content-between align-items-center mb-3 m-3">
+            <div class="ms-3">
+                <p class="mb-1"><strong>Créneau :</strong> DD/MM/YYYY, hh : mm</p>
+                <p class="mb-1"><strong>Nombre d'absences:</strong> XXX</p>
+            </div>
+            <div class="ms-5">
+                <p class="mb-1"><strong>Cour :</strong> XXX</p>
+                <p class="mb-0"><strong>Groupe :</strong> XX</p>
+            </div>
+            <button class="btn-uphf border rounded-3 ms-auto me-5">
+                Voir détaille
+            </button>
+        </div>
+    </div
+
+
+
 
     <!-- Dupliquer la carte ci‑dessus pour chaque cours -->
 
