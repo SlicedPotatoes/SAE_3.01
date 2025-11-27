@@ -434,17 +434,21 @@ FROM Account a
 
 --changeset Yann:8 labels:addComments context:ajout de la table commentaire
 
--- Ajout de la colonne Commentary dans la table justification
+-- Ajout de la table comments
 CREATE TABLE comments (
     idComment SERIAL PRIMARY KEY,
     textComment TEXT NOT NULL
 );
 
-ALTER TABLE justification
-ADD COLUMN idComments INT REFERENCES comments(idComment);
-
-
 /* liquibase rollback
-   ALTER TABLE justification DROP COLUMN idComments;
    DROP TABLE comments;
  */
+--changeset Kevin:8 labels:add table tokenPassword context:Fonctionnalité mot de passe oublié
+CREATE TABLE tokenPassword (
+    idToken SERIAL PRIMARY KEY,
+    token TEXT UNIQUE NOT NULL,
+    expire TIMESTAMP DEFAULT now() + '1 hour',
+    idAccount INT NOT NULL REFERENCES Account
+);
+
+-- rollback DROP TABLE tokenPassword;

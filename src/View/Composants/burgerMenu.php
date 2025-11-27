@@ -1,4 +1,8 @@
-<!-- Simple burger menu pour le RP et peut-être pour d'autre utilisateur plus tard -->
+<?php
+/**
+*Simple burger menu pour le RP et peut-être pour d'autre utilisateur plus tard
+*/
+?>
 <div class="position-absolute top-0 start-0 m-3">
     <button class="btn btn-light p-2 pt-0 pb-0" type="button"
             data-bs-toggle="offcanvas"
@@ -18,6 +22,7 @@
             <li class="nav-item"><a class="nav-link btn btn-uphf" href="/JustificationList">Justificatifs</a></li>
             <li class="nav-item"><a class="nav-link btn btn-uphf" href="/SearchStudent">Rechercher un étudiant</a></li>
             <li class="nav-item"><a class="nav-link btn btn-uphf" href="/PredefinedComments">Commentaires prédéfinis</a></li>
+            <li class="nav-item"><a class="nav-link btn btn-uphf" href="/ImportVT">Importer depuis VT</a></li>
         </ul>
     </div>
 </div>

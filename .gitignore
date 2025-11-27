@@ -10,5 +10,6 @@ SQL/*
 /public/style/bootstrap.min.css
 /public/style/fonts
 /.idea/
+/composer.lock
 
 .env

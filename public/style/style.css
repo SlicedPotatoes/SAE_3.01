@@ -3,6 +3,8 @@
     --color-uphf: #008CAD;
     --color-uphf-hover: #00748F;
     --color-uphf-active: #005F77;
+    --color-uphf-disabled: rgba(0, 140, 173, 0.85);
+    --color-uphf-bg: rgb(214, 242, 250);
 }
 
 html, body {
@@ -20,10 +22,25 @@ html, body {
     &:active {
         background: var(--color-uphf-active) !important;
     }
+    &:disabled {
+      background: var(--color-uphf-disabled) !important;
+    }
+}
+
+.border-uphf {
+  border: 2px solid var(--color-uphf);
+}
+
+.bg-uphf {
+  background: var(--color-uphf-bg) !important;
 }
 
 .text-uphf {
     color: var(--color-uphf);
+}
+
+.bg-uphf {
+    background: var(--color-uphf);
 }
 
 .icon-uphf {
@@ -61,4 +78,19 @@ html, body {
 
 .offcanvas.offcanvas-start {
     width: 300px !important;
+}
+
+.card-uphf {
+    background-color: var(--color-uphf);
+    background-image: url(/img/uphf-logo-symbol-bg.svg);
+    background-repeat: no-repeat;
+    background-position-y: bottom;
+}
+
+.border-upfd {
+    border: 1px solid var(--color-uphf);
+}
+
+.justify-text {
+  text-align: justify;
 }

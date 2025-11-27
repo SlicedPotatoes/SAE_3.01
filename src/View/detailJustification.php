@@ -2,6 +2,7 @@
 
 global $dataView;
 
+use Uphf\GestionAbsence\Model\CookieManager;
 use Uphf\GestionAbsence\Model\Entity\Absence\StateAbs;
 use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
 use Uphf\GestionAbsence\Model\Entity\Justification\StateJustif;
@@ -219,7 +220,7 @@ require_once __DIR__ . "/../View/Composants/Modal/filePreviewModal.php";
 
     <!-- Button d'action -->
     <div class="d-flex justify-content-between">
-        <a href="/" class="btn btn-secondary">Retour</a>
+        <a href="<?= CookieManager::getLastPath() ?>" class="btn btn-secondary">Retour</a>
         <?php if ($isEducationalManager && $currentState === StateJustif::NotProcessed ): ?>
             <button type="submit" form="validateJustificationForm" id="JustificationRPValidation" class="btn btn-uphf">Envoyer</button>
         <?php endif; ?>
