@@ -148,8 +148,24 @@ class AbsenceSelectBuilder {
     public function execute(bool $debug = false): array {
         $conn = Connection::getInstance();
 
-        $query = "SELECT * FROM Absence a
-                  JOIN Resource USING(idResource)
+        $query = "SELECT 
+                    s.studentid,
+                    s.lastname AS studentLastName,
+                    s.firstname AS studentFirstName,
+                    s.email AS studentEmail,
+                    s.accounttype AS studentAccountType,
+                    s.studentnumber,
+                    s.groupid,
+                    s.grouplabel,
+                    a.*,
+                    r.*,
+                    t.idaccount AS teacherid,
+                    t.lastname AS teacherLastName,
+                    t.firstname AS teacherFirstName,
+                    t.email AS teacherEmail,
+                    t.accounttype AS teacherAccountType
+                  FROM Absence a
+                  JOIN Resource r USING(idResource)
                   LEFT JOIN Account t ON a.idTeacher = t.idAccount
                   JOIN StudentAccount s ON a.idStudent = s.studentid";
 
