@@ -431,3 +431,10 @@ FROM Account a
              JOIN Student s ON a.idaccount = s.idaccount
              JOIN groupstudent g ON s.idgroupstudent = g.idgroupstudent;
  */
+
+--changeset Isaac:8 labels:Rajout de la colonne groupe dans absence context:
+alter table absence add column groupe text not null
+
+/* liquibase rollback
+alter table absence drop column groupe
+*/
