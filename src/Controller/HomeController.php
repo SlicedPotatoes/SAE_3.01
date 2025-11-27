@@ -32,7 +32,7 @@ class HomeController {
                     header("Location: /JustificationList");
                     exit();
                 case AccountType::Teacher:
-                    header("Location: /TeacherHome");
+                    header("Location: /teacherHome");
                     exit();
                 default:
                     Notification::addNotification(NotificationType::Error, "Ce type de compte n'est pas encore fonctionnel");
