@@ -435,9 +435,19 @@ FROM Account a
 --changeset Yann:8 labels:AbsenceDays context:ajout tracking du nombre d'absence consécutives
 
 -- Ajout de la colonne pour tracker les jours consécutifs d'absence
-ALTER TABLE Student
-    ADD COLUMN consecutiveAbsenceDays INT NOT NULL DEFAULT 0;
+ALTER TABLE Student ADD COLUMN consecutiveAbsenceDays INT NOT NULL DEFAULT 0;
+ALTER TABLE Student ADD COLUMN lastComeback TIMESTAMP NOT NULL DEFAULT now();
+
+CREATE TABLE offPeriod (
+    id SERIAL PRIMARY KEY,
+    startDate TIMESTAMP NOT NULL,
+    endDate TIMESTAMP NOT NULL,
+    label TEXT NOT NULL
+);
 
 /* liquibase rollback
    ALTER TABLE Student DROP COLUMN consecutiveAbsenceDays;
+   ALTER TABLE Student DROP COLUMN lastComeback;
+
+   DROP TABLE offPeriod;
  */
