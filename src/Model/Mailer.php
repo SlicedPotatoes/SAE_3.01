@@ -102,6 +102,56 @@ class Mailer
         self::sendMail($firstnameTeacher, $lastnameTeacher, $emailTeacher, $bodyTeacher, $subjectTeacher);
     }
 
+
+    /**
+     * Permet d'envoyer un mail de notification à un compte lorsque de la modification du mot de passe a été effectuée
+     *
+     * @param string $lastname
+     * @param string $firstname
+     * @param string $email
+     * @return void
+     */
+      static public function sendPasswordChangeNotification(string $lastname, string $firstname, string $email): void
+    {
+        $subject = 'Modification de votre mot de passe';
+        $body = "Bonjour " . $firstname . " " . $lastname . ",<br><br>
+                Votre mot de passe a été modifié avec succès.<br>
+                Si vous n'êtes pas à l'origine de cette modification, veuillez contacter le support technique.<br><br>
+                Cordialement,<br>
+                Le service des absences.";
+
+        self::sendMail($firstname, $lastname, $email, $body, $subject);
+    }
+
+    /**
+     * Permet d'envoyer un mail lors d'un mot de passe oublié, afin de faire une modification de mot de passe
+     *
+     * @param  string  $lastname
+     * @param  string  $firstname
+     * @param  string  $email
+     * @param  string  $token
+     *
+     * @return void
+     */
+    static public function sendPasswordChanger(string $lastname, string $firstname, string $email, string $token): void
+    {
+        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? "https://" : "http://";
+        $domain = $_SERVER['HTTP_HOST'];
+        $url = $protocol . $domain . "/ChangePassword/" . $token ;
+        $subject = 'Mot de passe oublier';
+        $body = "Bonjour " . $firstname . " " . $lastname . ",<br><br>
+                Vous avez demandé la réinitialisation de votre mot de passe.<br>
+                Pour définir un nouveau mot de passe, cliquez sur le lien suivant : <br>
+                " . $url . "<br><br>
+                Pour des raisons de sécurité, ce lien est valable pendant une durée limitée. <br>
+                Si vous n'êtes pas à l'origine de cette modification, vous pouvez ignorer ce message.<br><br>
+                Cordialement,<br>
+                Le service des absences.";
+
+        self::sendMail($firstname, $lastname, $email, $body, $subject);
+    }
+
+
     /**
      * Fonction utilisé pour envoyer le mail en utlisant l'api PHPMailer
      *
