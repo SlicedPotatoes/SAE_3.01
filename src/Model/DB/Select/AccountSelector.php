@@ -52,7 +52,7 @@ class AccountSelector {
 
         $query = "SELECT * 
                   FROM Account 
-                  WHERE email = :email";
+                  WHERE LOWER(email) = LOWER(:email)";
 
         $sql = $pdo->prepare($query);
         $sql->bindValue(":email", $email, PDO::PARAM_STR);

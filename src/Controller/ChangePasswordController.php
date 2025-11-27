@@ -4,6 +4,7 @@ namespace Uphf\GestionAbsence\Controller;
 
 use Uphf\GestionAbsence\Model\AuthManager;
 use Uphf\GestionAbsence\Model\DB\Delete\TokenDelete;
+use Uphf\GestionAbsence\Model\DB\Insert\TokenInsertor;
 use Uphf\GestionAbsence\Model\DB\Select\AccountSelector;
 use Uphf\GestionAbsence\Model\DB\Update\PasswordUpdate;
 use Uphf\GestionAbsence\Model\Entity\Account\Account;
@@ -128,6 +129,31 @@ class ChangePasswordController{
         if(AuthManager::isLogin()) {
             Notification::addNotification(NotificationType::Error, "Cette page est accéssible seulement si vous n'êtes pas connecté");
             return ControllerData::get403();
+        }
+
+        if($_SERVER['REQUEST_METHOD'] === "POST") {
+            $mail = $_POST['email'];
+
+            $account = AccountSelector::getAccountByEmail($mail);
+
+            if(isset($account)) {
+                $bytes = random_bytes(64);
+                $token = urlencode(strtr(base64_encode($bytes), '+/', '-_'));
+
+                TokenInsertor::insertToken($account->getIdAccount(), $token);
+
+                Mailer::sendPasswordChanger(
+                    $account->getLastName(),
+                    $account->getFirstName(),
+                    $account->getEmail(),
+                    $token
+                );
+            }
+
+            Notification::addNotification(
+                NotificationType::Success,
+                "Si un compte correspondant à cette adresse existe, un email de réinitialisation vient de vous être envoyés."
+            );
         }
 
         return new ControllerData(

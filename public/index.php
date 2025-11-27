@@ -9,6 +9,7 @@ require_once __DIR__ . "/../vendor/autoload.php";
 
 use Dotenv\Dotenv;
 use Uphf\GestionAbsence\Model\AuthManager;
+use Uphf\GestionAbsence\Model\CookieManager;
 use Uphf\GestionAbsence\Model\DB\Connection;
 use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
 use Uphf\GestionAbsence\Model\GlobalVariable;
@@ -25,6 +26,7 @@ if(!GlobalVariable::PROD()) {
 }
 
 AuthManager::init();
+CookieManager::init();
 
 // Création des routes
 $router = new Router();
@@ -39,6 +41,8 @@ $router->addRoute("/DetailJustification/{id:int}", "DetailJustificationControlle
 $router->addRoute("/ChangePassword", "ChangePasswordController@changeWhenLogin");
 $router->addRoute("/ChangePassword/{token}", "ChangePasswordController@changeWithToken");
 $router->addRoute("/PasswordLost", "ChangePasswordController@passwordLost");
+$router->addRoute("/ImportVT", "ImportVTController@show");
+
 $path = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
 
 //echo $path;
@@ -46,6 +50,10 @@ $path = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
 $dataRoute = $router->launch($path);
 $dataView = $dataRoute->data;
 $srcFolder = __DIR__ . '/../src';
+
+if($dataRoute->view != '/View/error.php') {
+    CookieManager::setLastPath($path);
+}
 
 Connection::close();
 ?>
