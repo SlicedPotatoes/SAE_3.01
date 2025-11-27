@@ -30,7 +30,7 @@ class JustificationInsertor {
         $conn->beginTransaction();
 
         // Récupérer les absences justifiables sur le période sélectionné.
-        $absences = new AbsenceSelectBuilder()->idStudent($idStudent)->dateStart($startDate)->dateEnd($endDate)->lock(false)->execute();
+        $absences = (new AbsenceSelectBuilder())->idStudent($idStudent)->dateStart($startDate)->dateEnd($endDate)->lock(false)->execute();
 
         // S'il n'y a pas d'absence justifiable sur le période sélectionné, levé une exception
         if(count($absences) == 0) {
