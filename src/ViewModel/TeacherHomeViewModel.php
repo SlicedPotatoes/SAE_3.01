@@ -10,14 +10,14 @@ readonly class TeacherHomeViewModel extends BaseViewModel
 {
     public array $periods;
     public string $fullname;
-    public string $currTab;
+    public array $filters;
 
     public HeaderViewModel $headerVM;
 
-    public function __construct(array $periods, string $currTab, string $fullname)
+    public function __construct(array $periods, array $filters, string $fullname)
     {
         $this->periods = $periods;
-        $this->currTab = $currTab;
+        $this->filters = $filters;
         $this->fullname = $fullname;
         $this->headerVM = new HeaderViewModel(false, "Bonjour", $fullname, "!");
     }

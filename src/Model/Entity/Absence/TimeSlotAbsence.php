@@ -30,7 +30,16 @@ class TimeSlotAbsence
      * @param string $group
      * @param Resource $resource
      */
-    public function __construct(DateTime $time, bool $examen, string $duration, int $countStudentsAbsences, int $countStudentsAbsencesJustified, Teacher $teacher, CourseType $courseType, string $group, Resource $resource)
+    public function __construct(
+      DateTime $time,
+      bool $examen,
+      string $duration,
+      int $countStudentsAbsences,
+      int $countStudentsAbsencesJustified,
+      Teacher $teacher,
+      CourseType $courseType,
+      string | null $group,
+      Resource $resource)
     {
         $this->time = $time;
         $this->examen = $examen;
@@ -39,7 +48,7 @@ class TimeSlotAbsence
         $this->countStudentsAbsencesJustified = $countStudentsAbsencesJustified;
         $this->teacher = $teacher;
         $this->courseType = $courseType;
-        $this->group = $group;
+        $this->group = $group ? $group : "";
         $this->resource = $resource;
     }
 

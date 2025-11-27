@@ -2,6 +2,8 @@
 /** Front-end pour le tableau de bord professeur */
 global $dataView;
 
+$filter = $dataView->filters;
+
 require_once __DIR__ . "/Composants/header.php";
 ?>
 
@@ -14,24 +16,20 @@ require_once __DIR__ . "/Composants/header.php";
     </li>
   </ul>
 
-  <!-- Contenu de la page -->
   <div class="tab-content bg-white border-bottom border-start border-end rounded-bottom pt-3 flex-fill d-flex flex-column" style="min-height: 0" id="tab-dashboard-stuContent">
     <div class="tab-pane fade show active d-flex flex-column flex-fill" style="min-height: 0" id="abs-tab-pane" role="tabpanel" aria-labelledby="abs-tab" tabindex="0">
+      <!-- Bar de filtres -->
       <?php
-      $tabName = 'abs';
-//      $filter = $dataView->filterVM->filter;
-//      require __DIR__ . "/Composants/filter_bar.php";
+      require __DIR__ . "/Composants/teacherFilterBar.php";
       ?>
 
-      <div class="h-100 overflow-y-auto" id="justificationFlush">
-        <?php
-        $listPeriod = $dataView->periods;
-
-        foreach($listPeriod as $period) {
+      <!-- Affiche la liste des crénaux selectionner avec les filtres -->
+          <?php
+        foreach($dataView->periods as $period) {
           require __DIR__ . "/Composants/lineClassPeriod.php";
         }
         ?>
-        <?php if (count($listPeriod) == 0): ?>
+        <?php if (count($dataView->periods) == 0): ?>
           <div class="d-flex flex-column align-items-center justify-content-center h-100">
             <p class='fs-1 text-body-secondary p-3'>Il n'y a pas eu d'absences lors de vos cours</p>
           </div>

@@ -3,6 +3,7 @@
 namespace Uphf\GestionAbsence\Controller;
 
 use Uphf\GestionAbsence\Model\AuthManager;
+use Uphf\GestionAbsence\Model\DB\Select\TimeSlotAbsenceSelector;
 use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
 use Uphf\GestionAbsence\ViewModel\BaseViewModel;
 use Uphf\GestionAbsence\ViewModel\TeacherHomeViewModel;
@@ -21,47 +22,42 @@ class TeacherHomeController {
             return ControllerData::get403();
         }
 
-        // TODO: remplacer par récupération réelle depuis les modèles / AuthManager
-        $courses = [];     // ex: CourseManager::getCoursesByTeacher(...)
+        if ($_SERVER['REQUEST_METHOD'] === 'POST')
+        {
+            $examFilter      = isset($_POST['examFilter']);
+            $dateStartFilter = $_POST['dateStartFilter'] ?? null;
+            $dateEndFilter   = $_POST['dateEndFilter'] ?? null;
 
-        /** Placeholder pour l'array de period */
-        $periods = [
-          (object) [
-            'idPeriod'       => 1,
-            'date'           => '15/01/2025',
-            'time'           => '08h00',
-            'absencesCount'  => 2,
-            'course'         => 'Programmation orientée objet',
-            'group'          => 'BUT2 INFO A1',
-            'isExam'         => false,
-          ],
-          (object) [
-            'idPeriod'       => 2,
-            'date'           => '15/01/2025',
-            'time'           => '9h30',
-            'absencesCount'  => 1,
-            'course'         => 'Base de données avancées',
-            'group'          => 'BUT2 INFO A2',
-            'isExam'         => true,
-          ],
-          (object) [
-            'idPeriod'       => 3,
-            'date'           => '16/01/2025',
-            'time'           => '14h00',
-            'absencesCount'  => 5,
-            'course'         => 'Réseaux et systèmes',
-            'group'          => 'BUT2 INFO A1',
-            'isExam'         => false,
-          ],
-        ];
-        /** FIN du placeholder */
+            $dateStartFilter = ($dateStartFilter !== '') ? $dateStartFilter : null;
+            $dateEndFilter   = ($dateEndFilter !== '') ? $dateEndFilter : null;
+        }
+        else
+        {
+            $examFilter      = false;
+            $dateStartFilter = null;
+            $dateEndFilter   = null;
+        }
+
+        $filters = array(
+          'examFilter' => $examFilter,
+          'dateStartFilter' => $dateStartFilter,
+          'dateEndFilter' => $dateEndFilter,
+        );
+
+        $account = AuthManager::getAccount();
+        $periods = TimeSlotAbsenceSelector::selectTimeSlotAbsence(
+          $account->getIdAccount(),
+          $examFilter,
+          $dateStartFilter,
+          $dateEndFilter
+        );
 
         return new ControllerData(
             "View/teacherHome.php",
             "Tableau de bord Professeur",
             new TeacherHomeViewModel(
               $periods,
-              'absence',
+              $filters,
               AuthManager::getAccount()->getFirstName() . " " . AuthManager::getAccount()->getLastName()
             )
         );

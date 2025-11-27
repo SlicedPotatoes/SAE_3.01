@@ -45,7 +45,7 @@ class TimeSlotAbsenceSelector
             $querry .= ' having ' . implode(' and ', $having);
         }
 
-        $querry .= ' order by time,idresource,groupe';
+        $querry .= ' order by time desc';
 
         $sql = $conn->prepare($querry);
 
@@ -117,7 +117,7 @@ class TimeSlotAbsenceSelector
         }
 
         $sqlStr .= ' GROUP BY idresource, time, groupe';
-        $sqlStr .= ' ORDER BY time, idresource, groupe';
+        $sqlStr .= ' order by time desc';
 
         $sql = $conn->prepare($sqlStr);
 
