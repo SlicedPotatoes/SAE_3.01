@@ -21,8 +21,8 @@ class RoutineLoungAbsencesMail
 
         $query = "SELECT sa.lastname, sa.firstname, sa.studentnumber
           FROM studentaccount sa
-          JOIN student s ON s.idaccount = sa.studentid
-          WHERE s.consecutiveAbsenceDays = 5";
+          JOIN studentperiodabs spa ON sa.studentid = spa.idstudent
+          WHERE spa.consecutivedays = 5 AND spa.enddate IS NULL";
 
         $sql = $pdo->prepare($query);
         $sql->execute();

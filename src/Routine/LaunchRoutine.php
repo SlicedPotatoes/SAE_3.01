@@ -1,20 +1,16 @@
 <?php
+/**
+ * Script du lancement des routines
+ *
+ * Actuellement:
+ * - Détection de retour
+ * - Détection de longue absence
+ */
 
 use Dotenv\Dotenv;
 use Uphf\GestionAbsence\Model\DB\Connection;
 use Uphf\GestionAbsence\Routine\RoutineLoungAbsencesMail;
 use Uphf\GestionAbsence\Routine\RoutineStudentComback;
-
-require_once dirname(__DIR__) . "/vendor/autoload.php";
-
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
-$dotenv = Dotenv::createImmutable(dirname((__DIR__)));
-$dotenv->load();
-
-$today = new DateTime('now');
 
 /**
  * Prend une date, renvoie vrai si la date est en offperiod
@@ -50,9 +46,26 @@ function isOffPeriod($date): bool {
     return $res[0] === 1;
 }
 
+// Initialisation du script
+require_once dirname(__DIR__, 2) . "/vendor/autoload.php";
+
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+$dotenv = Dotenv::createImmutable(dirname(__DIR__, 2));
+$dotenv->load();
+
+// Récupération de la date du jour, et check si "congé"
+$today = new DateTime('now');
 if(isOffPeriod($today)) {
     exit();
 }
 
-RoutineStudentComback::executeRoutine($today);
+// Exécution des routines
+Connection::beginTransaction();
+
+RoutineStudentComback::executeRoutine(DateTime::createFromFormat("Y-m-d", "2025-11-28"));
 RoutineLoungAbsencesMail::executeRoutine();
+
+Connection::commit();
