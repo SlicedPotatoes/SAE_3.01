@@ -241,10 +241,6 @@ class RoutineStudentComback {
         foreach($students as $student) {
             if($student['days'] == 2) { continue; }
 
-            echo "<pre>";
-            var_export($student);
-            echo "</pre>";
-
             Mailer::sendReturnAlert(
                 $student['lastname'],
                 $student['firstname'],

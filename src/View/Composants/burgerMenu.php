@@ -40,12 +40,12 @@ $isTeacher = AuthManager::isRole(AccountType::Teacher);
 
           <!-- BURGER MENU DU SECRETARIAT -->
           <?php if ($isSecretary) : ?>
-          <li class="nav-item"><a class="nav-link btn btn-uphf" href="/JustificationList">Justificatifs</a></li>
-          <li class="nav-item"><a class="nav-link btn btn-uphf" href="/SearchStudent">Rechercher un étudiant</a></li>
+          <li class="nav-item"><a class="nav-link btn btn-uphf" href="/ImportVT">Importer depuis VT</a></li>
           <li class="nav-item"><a class="nav-link btn btn-uphf" href="/resitSession">Rattrapage</a> </li>
           <?php endif; ?>
 
-            <li class="nav-item"><a class="nav-link btn btn-uphf" href="/listOffPeriod">Ajouter des Vacances </a></li>
+          <li class="nav-item"><a class="nav-link btn btn-uphf" href="/listOffPeriod">Ajouter des Vacances </a></li>
+          <li class="nav-item"><a class="nav-link btn btn-uphf" href="/routine">Lancer la routine (seulement pour demo)</a></li>
         </ul>
     </div>
 </div>

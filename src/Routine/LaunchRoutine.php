@@ -65,7 +65,9 @@ if(isOffPeriod($today)) {
 // Exécution des routines
 Connection::beginTransaction();
 
-RoutineStudentComback::executeRoutine(DateTime::createFromFormat("Y-m-d", "2025-11-28"));
+RoutineStudentComback::executeRoutine($today);
 RoutineLoungAbsencesMail::executeRoutine();
 
 Connection::commit();
+
+echo "OK";

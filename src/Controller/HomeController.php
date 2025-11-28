@@ -34,6 +34,9 @@ class HomeController {
                 case AccountType::Teacher:
                     header("Location: /teacherHome");
                     exit();
+                case AccountType::Secretary:
+                    header("Location: /ImportVT");
+                    exit();
                 default:
                     Notification::addNotification(NotificationType::Error, "Ce type de compte n'est pas encore fonctionnel");
                     return ControllerData::get403();
