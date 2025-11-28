@@ -37,9 +37,8 @@ $router->addRoute("/SearchStudent", "SearchStudentController@show");
 $router->addRoute("/DetailJustification/{id}", "DetailJustificationController@show");
 $router->addRoute("/ShowFile/{}", "FileController@show");
 $router->addRoute("/teacherHome", "TeacherHomeController@show");
-$router->addRoute("/detailPeriod/{time}/{ressource}/{group}", "DetailPeriodController@show");
-$router->addRoute("/resitSessionList", "ResitSessionListController@show");
-$router->addRoute("/detailResitSession/{time}/{ressource}", "DetailResitSessionController@show");
+$router->addRoute("/detailPeriod/", "DetailPeriodController@show");
+$router->addRoute("/resitSession", "ResitSessionController@show");
 
 $path = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
 

@@ -4,22 +4,30 @@ namespace Uphf\GestionAbsence\Model\DB\Select;
 
 use PDO;
 use Uphf\GestionAbsence\Model\DB\Connection;
+use Uphf\GestionAbsence\Model\Entity\Absence\Resource;
 use Uphf\GestionAbsence\Model\Entity\Absence\StateAbs;
 use Uphf\GestionAbsence\Model\Entity\Absence\TimeSlotAbsence;
 use Uphf\GestionAbsence\Model\Hydrator\AbsenceHydrator;
 use Uphf\GestionAbsence\Model\Hydrator\AccountHydrator;
 use Uphf\GestionAbsence\Model\Hydrator\TimeSlotAbsenceHydrator;
+use DateTime;
 
 /**
- * Classe static permet de récupérer de créneau de cours ou il y a au moins une absence
+ * Classe static permet de récupérer de créneau de cours ou il y a au moins une
+ * absence
  **/
 class TimeSlotAbsenceSelector
 {
+
     /**
      * @param
      **/
-    public static function selectTimeSlotAbsence(int|null $idTeacher, bool|null $exam, string|null $dateStart, string|null $dateEnd): array
-    {
+    public static function selectTimeSlotAbsence(
+      int|null $idTeacher,
+      bool|null $exam,
+      string|null $dateStart,
+      string|null $dateEnd
+    ): array {
         $conn = Connection::getInstance();
 
         $querry = 'select time,idresource,examen,count(*) as countStudentsAbsences,idteacher as idaccount,duration,coursetype,label,lastname,firstname,email,accounttype,groupe
@@ -27,7 +35,7 @@ class TimeSlotAbsenceSelector
                 join account on absence.idteacher = account.idaccount
                 group by time,idresource,examen,idteacher,duration,coursetype,label,lastname,firstname,email,accounttype,groupe';
 
-        $having = array();
+        $having = [];
 
         if ($exam) {
             $having[] = 'examen';
@@ -45,7 +53,7 @@ class TimeSlotAbsenceSelector
         }
 
         if (count($having) > 0) {
-            $querry .= ' having ' . implode(' and ', $having);
+            $querry .= ' having '.implode(' and ', $having);
         }
 
         $querry .= ' order by time, idresource desc';
@@ -64,22 +72,45 @@ class TimeSlotAbsenceSelector
         $sql->execute();
 
         $results1 = $sql->fetchAll();
-        $results2 = TimeSlotAbsenceSelector::selectCountStudentAbsencesVaditated($idTeacher, $exam, $dateStart, $dateEnd);
-        $resultFinal = array();
+        $results2
+          = TimeSlotAbsenceSelector::selectCountStudentAbsencesVaditated(
+          $idTeacher,
+          $exam,
+          $dateStart,
+          $dateEnd
+        );
+        $resultFinal = [];
         $j = 0;
         for ($i = 0; $i < count($results1); $i++) {
-            if (count($results2) - $j !== 0 and $results1[$i]['time'] == $results2[$j]['time'] and $results1[$i]['idresource'] == $results2[$j]['idresource'] and $results1[$i]['groupe'] == $results2[$j]['groupe']) {
-                $resultFinal[] = TimeSlotAbsenceHydrator::unserializeTimeSlotAbsence($results1[$i], $results2[$j]);
+            if (count($results2) - $j !== 0 and $results1[$i]['time']
+              == $results2[$j]['time'] and $results1[$i]['idresource']
+              == $results2[$j]['idresource'] and $results1[$i]['groupe']
+              == $results2[$j]['groupe']
+            ) {
+                $resultFinal[]
+                  = TimeSlotAbsenceHydrator::unserializeTimeSlotAbsence(
+                  $results1[$i],
+                  $results2[$j]
+                );
                 $j++;
             } else {
-                $resultFinal[] = TimeSlotAbsenceHydrator::unserializeTimeSlotAbsence($results1[$i], null);
+                $resultFinal[]
+                  = TimeSlotAbsenceHydrator::unserializeTimeSlotAbsence(
+                  $results1[$i],
+                  null
+                );
             }
         }
+
         return $resultFinal;
     }
 
-    private static function selectCountStudentAbsencesVaditated(?int $idTeacher, ?bool $exam, ?string $dateStart, ?string $dateEnd): array
-    {
+    private static function selectCountStudentAbsencesVaditated(
+      ?int $idTeacher,
+      ?bool $exam,
+      ?string $dateStart,
+      ?string $dateEnd
+    ): array {
         $conn = Connection::getInstance();
 
         // Construire les clauses WHERE (conditions non agrégées)
@@ -103,11 +134,11 @@ class TimeSlotAbsenceSelector
         }
 
         // (optionnel) filtre par date si fourni
-        if (!empty($dateStart)) {
+        if ( ! empty($dateStart)) {
             $where[] = 'time >= :dateStart';
             $params[':dateStart'] = $dateStart;
         }
-        if (!empty($dateEnd)) {
+        if ( ! empty($dateEnd)) {
             $where[] = 'time <= :dateEnd';
             $params[':dateEnd'] = $dateEnd;
         }
@@ -116,7 +147,7 @@ class TimeSlotAbsenceSelector
                FROM absence';
 
         if (count($where) > 0) {
-            $sqlStr .= ' WHERE ' . implode(' AND ', $where);
+            $sqlStr .= ' WHERE '.implode(' AND ', $where);
         }
 
         $sqlStr .= ' GROUP BY idresource, time, groupe';
@@ -139,8 +170,10 @@ class TimeSlotAbsenceSelector
         return $sql->fetchAll();
     }
 
-    public static function getStudentListByTimeSlotAbsence(TimeSlotAbsence $timeSlotAbsence, StateAbs|null $stateAbs): array
-    {
+    public static function getStudentListByTimeSlotAbsence(
+      TimeSlotAbsence $timeSlotAbsence,
+      StateAbs|null $stateAbs
+    ): array {
         $conn = Connection::getInstance();
 
         $querry = 'select distinct idstudent as studentid, lastname, firstname, email, studentnumber,accounttype,grouplabel, groupid 
@@ -162,15 +195,17 @@ class TimeSlotAbsenceSelector
         }
         $sql->execute();
         $results = $sql->fetchAll();
-        $studentList = array();
+        $studentList = [];
         foreach ($results as $result) {
             $studentList[] = AccountHydrator::unserializeStudent($result);
         }
+
         return $studentList;
     }
 
-    public static function getAbsenceListByTimeSlotAbsence(TimeSlotAbsence $timeSlotAbsence)
-    {
+    public static function getAbsenceListByTimeSlotAbsence(
+      TimeSlotAbsence $timeSlotAbsence
+    ) {
         $conn = Connection::getInstance();
 
         $query = 'SELECT idresource,idstudent as studentid,label,time,duration,examen,allowedjustification,currentstate,
@@ -200,6 +235,57 @@ class TimeSlotAbsenceSelector
         foreach ($results as $result) {
             $absenceList[] = AbsenceHydrator::unserializeAbsence($result);
         }
+
         return $absenceList;
+    }
+
+    public static function getTimeSlot(
+      DateTime $date,
+      int $idResource,
+      int $idTeacher,
+      ?string $group = null
+    ): TimeSlotAbsence | null
+    {
+        $conn = Connection::getInstance();
+
+        $query = 'select time,idresource,examen,count(*) as countStudentsAbsences,idteacher as idaccount,duration,coursetype,label,lastname,firstname,email,accounttype,groupe
+                from absence join public.resource using(idresource)
+                join account on absence.idteacher = account.idaccount
+                group by time,idresource,examen,idteacher,duration,coursetype,label,lastname,firstname,email,accounttype,groupe';
+
+        $having = [];
+
+        $having[] = 'time = :date';
+        $having[] = 'idresource = :idResource';
+        $having[] = 'idteacher = :idTeacher';
+
+        if ($group !== null) {
+            $having[] = 'groupe = :group';
+        } else {
+            $having[] = "(groupe IS NULL OR groupe = '')";
+        }
+
+        $query .= ' having '.implode(' and ', $having);
+        $query .= ' order by time, idresource desc';
+
+        $sql = $conn->prepare($query);
+
+        $dateStr = $date->format('Y-m-d H:i:s');
+        $sql->bindValue(':date', $dateStr, PDO::PARAM_STR);
+        $sql->bindValue(':idResource', $idResource, PDO::PARAM_INT);
+        $sql->bindValue(':idTeacher', $idTeacher, PDO::PARAM_INT);
+
+        if ($group !== null) {
+            $sql->bindValue(':group', $group, PDO::PARAM_STR);
+        }
+
+        $sql->execute();
+
+        $row = $sql->fetch(PDO::FETCH_ASSOC);
+        if ($row === false) {
+            return null;
+        }
+
+        return TimeSlotAbsenceHydrator::unserializeTimeSlotAbsence($row, null);
     }
 }

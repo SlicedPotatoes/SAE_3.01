@@ -10,13 +10,14 @@ use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
  */
 
 readonly class ResitSessionListViewModel extends BaseViewModel {
-    public AccountType $roleUser;
-    public array $sessions;
-    public array $nbAbsencePerSession;
+    public array $periods;
+    public array $filters;
+    public HeaderViewModel $headerVM;
 
-
-    public function __construct(AccountType $roleUser, array $sessions, array $nbAbsencePerSession) {
-        $this->roleUser = $roleUser;
-        $this->nbAbsencePerSession = $nbAbsencePerSession;
+    public function __construct(array $periods, array $filters )
+    {
+        $this->periods = $periods;
+        $this->filters = $filters;
+        $this->headerVM = new HeaderViewModel(false,'Les', 'Rattrapages', '' );
     }
 }

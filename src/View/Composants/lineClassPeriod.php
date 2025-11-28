@@ -4,13 +4,26 @@
  * Front d'une ligne d'un créneau de cours sur le tableau de bord de l'enseignant
  */
 
+use Uphf\GestionAbsence\Model\AuthManager;
 use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
 
 global $period;
 
-$timeslug = $period->getTime()->format('Y-m-d-H-i');
-$ressourceSlug = $period->getResource()->getIdResource();
-$groupSlug = $period->getGroup();
+$timeSlug = $period->getTime()->format('Y-m-d-H-i');
+$resourceSlug = $period->getResource()->getIdResource();
+$teacherSlug  = $period->getTeacher()->getIdAccount();
+$isTeacher    = AuthManager::isRole(AccountType::Teacher);
+
+$groupValue = $period->getGroup();
+$groupSlug  = $groupValue !== '' ? $groupValue : 'nogroup';
+
+$url = sprintf(
+  '/detailPeriod?time=%s&resourceId=%s&teacher=%s&group=%s',
+  urlencode($timeSlug),
+  urlencode((string) $resourceSlug),
+  urlencode((string) $teacherSlug),
+  urlencode($groupSlug)
+);
 
 ?>
     <div class="d-flex align-items-center gap-3 p-4 pb-3 pt-3 border-bottom">
@@ -26,12 +39,12 @@ $groupSlug = $period->getGroup();
 
 
         <div class="d-flex align-items-center gap-3 flex-grow-1">
-            <?php if ($period->isExamen()) : ?>
+            <?php if ($period->isExamen() && $isTeacher) : ?>
             <span class='badge rounded-pill text-bg-warning'>Examen</span>
             <?php endif; ?>
         </div>
 
-        <a href="/detailPeriod/<?= $timeslug ?>/<?= $ressourceSlug ?>/<?= $groupSlug ?>" class="text-decoration-none">
+        <a href="<?= $url ?>" class="text-decoration-none">
             <button class="btn btn-uphf" type="button">
                 Voir le détail
             </button>
