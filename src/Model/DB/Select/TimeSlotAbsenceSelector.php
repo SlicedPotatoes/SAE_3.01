@@ -19,9 +19,7 @@ use DateTime;
 class TimeSlotAbsenceSelector
 {
 
-    /**
-     * @param
-     **/
+
     public static function selectTimeSlotAbsence(
       int|null $idTeacher,
       bool|null $exam,
@@ -208,14 +206,31 @@ class TimeSlotAbsenceSelector
     ) {
         $conn = Connection::getInstance();
 
-        $query = 'SELECT idresource,idstudent as studentid,label,time,duration,examen,allowedjustification,currentstate,
-                coursetype,studentnumber,lastname,firstname,email,accounttype,groupid,grouplabel
-              from absence join student on idstudent = student.idaccount
-                join resource using(idresource) join account using (idaccount)
-                                   join groupstudent on groupid = idgroupstudent
-              WHERE time = :time
-                AND idresource = :idresource
-                AND idteacher = :idTeacher';
+        $query = 'SELECT 
+                  s.studentid,
+                  s.lastname AS studentLastName,
+                  s.firstname AS studentFirstName,
+                  s.email AS studentEmail,
+                  s.accounttype AS studentAccountType,
+                  s.studentnumber,
+                  s.groupid,
+                  s.grouplabel,
+                  a.*,
+                  r.*,
+                  t.idaccount AS teacherid,
+                  t.lastname AS teacherLastName,
+                  t.firstname AS teacherFirstName,
+                  t.email AS teacherEmail,
+                  t.accounttype AS teacherAccountType
+                  
+                  from absence as a
+                  join studentaccount as s ON s.studentid = a.idstudent
+                  join resource r using(idresource)
+                  LEFT JOIN Account t ON a.idTeacher = t.idAccount
+                  
+                  WHERE time = :time
+                    AND idresource = :idresource
+                    AND idteacher = :idTeacher';
 
         $sql = $conn->prepare($query);
 
@@ -231,6 +246,7 @@ class TimeSlotAbsenceSelector
         $sql->execute();
 
         $results = $sql->fetchAll();
+
         $absenceList = [];
         foreach ($results as $result) {
             $absenceList[] = AbsenceHydrator::unserializeAbsence($result);

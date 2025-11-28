@@ -5,6 +5,9 @@ global $dataView;
 /**
  * View pour les détails d'un crénaux
  */
+
+use Uphf\GestionAbsence\Model\CookieManager;
+
 ?>
 
 <div class="card flex-fill d-flex flex-column gap-3 mt-4 p-3" style="min-height: 0">
@@ -61,6 +64,6 @@ global $dataView;
 
     <!-- Button de retour -->
     <div class="d-flex justify-content-between">
-        <a href="/" class="btn btn-secondary">Retour</a>
+        <a href="<?= CookieManager::getLastPath() ?>" class="btn btn-secondary">Retour</a>
     </div>
 </div>
