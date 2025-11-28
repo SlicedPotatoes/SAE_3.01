@@ -1,6 +1,7 @@
 <?php
 $periods = $dataView->periods;
 
+require_once __DIR__ . "/Composants/header.php";
 require_once __DIR__ . '/Composants/Modal/modalAddOffPeriod.php';
 ?>
 

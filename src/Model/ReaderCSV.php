@@ -52,6 +52,7 @@ class ReaderCSV
                 continue;
             }
 
+            if (count($row) !== count($headers)) continue;
             $data[] = array_combine($headers, $row);
         }
 

@@ -8,6 +8,7 @@ readonly class PredefinedCommentViewModel extends BaseViewModel{
 
     public array $comments;
     public AccountType $roleUser;
+    public HeaderViewModel $headerVM;
 
     public function __construct(
         AccountType $roleUser,
@@ -18,7 +19,6 @@ readonly class PredefinedCommentViewModel extends BaseViewModel{
             'idComment' => $comment->getIdComment(),
             'label' => $comment->getTextComment()
         ], $comments);
+        $this->headerVM = new HeaderViewModel(false,'Catalogue des', 'commentaires', 'prédéfinis' );
     }
-
-
 }

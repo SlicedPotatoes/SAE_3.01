@@ -12,8 +12,8 @@ readonly class ImportVTViewModel extends BaseViewModel
         $this->headerVM = new HeaderViewModel(
           false,
           "Importation des",
-          "absences",
-          "depuis VT",
+          "données VT",
+          "dans la base de donnée",
         );
     }
 

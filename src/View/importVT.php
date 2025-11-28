@@ -41,7 +41,8 @@ require_once __DIR__."/Composants/header.php";
         </div>
 
         <div class="btn-group btn-group-sm">
-          <button type="button" class="btn btn-outline-primary bi bi-download me-1 upload_download d-none" ></button>
+
+          <a href="#" class="btn btn-outline-primary bi bi-download me-1 upload_download d-none" download ></a>
           <button type="button" class="btn btn-outline-danger bi bi-trash upload_clear d-none"></button>
         </div>
 

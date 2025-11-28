@@ -18,6 +18,6 @@ readonly class ResitSessionListViewModel extends BaseViewModel {
     {
         $this->periods = $periods;
         $this->filters = $filters;
-        $this->headerVM = new HeaderViewModel(false,'Les', 'Rattrapages', '' );
+        $this->headerVM = new HeaderViewModel(false,'Liste des', 'examens', 'avec absences' );
     }
 }
