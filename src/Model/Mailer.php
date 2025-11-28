@@ -1,5 +1,4 @@
 <?php
-
 namespace Uphf\GestionAbsence\Model;
 
 use DateTime;
@@ -111,7 +110,7 @@ class Mailer
      * @param string $email
      * @return void
      */
-      static public function sendPasswordChangeNotification(string $lastname, string $firstname, string $email): void
+    static public function sendPasswordChangeNotification(string $lastname, string $firstname, string $email): void
     {
         $subject = 'Modification de votre mot de passe';
         $body = "Bonjour " . $firstname . " " . $lastname . ",<br><br>
@@ -225,6 +224,55 @@ Vous disposez de 48 heures pour justifier cette absence en soumettant un justifi
     }
 
 
+
+    /**
+     * Permet d'envoyer un mail à un étudiant lorsqu'il revient pour l'informer qu'il doit justifier son absence dans les 48h, puis un autre mail de rappel 24h avant la fin du délai.
+     * Le mail lui précise également s'il a été absent durant un examen et si un malus lui sera appliqué en cas de non justification de son absence.
+     *
+     * @param string $lastname
+     * @param string $firstname
+     * @param string $email
+     * @param DateTime $dateDebutAbsence
+     * @param DateTime $dateFinAbsence
+     * @param bool $isExam
+     * @param bool $isReminder
+     * @param float $nbMalus
+     * @param float $nbMalusPrevision
+     * @return void
+     */
+    static public function sendReturnAlert(string $lastname, string $firstname, string $email, DateTime $dateDebutAbsence, DateTime $dateFinAbsence, bool $isExam = false, bool $isReminder = false, float $nbMalus = 0, float $nbMalusPrevision = 0): void
+    {
+        $mail = "Bonjour " . $firstname . " " . $lastname . ",<br><br>";
+
+        if ($dateDebutAbsence->format('Y-m-d') === $dateFinAbsence->format('Y-m-d')) {
+            $datePhrase = "le " . $dateDebutAbsence->format('d/m/Y');
+        } else {
+            $datePhrase = "du " . $dateDebutAbsence->format('d/m/Y') . " au " . $dateFinAbsence->format('d/m/Y');
+        }
+
+        if ($isReminder) {
+            $subject = 'Rappel : Justification d\'absence à fournir sous 24h';
+            $mail .= "Ceci est un rappel que vous avez été absent " . $datePhrase . ".<br>
+Vous avez encore 24 heures pour justifier cette absence.<br><br>";
+        } else {
+            $subject = 'Justification d\'absence à fournir sous 48h';
+            $mail .= "Nous avons constaté que vous avez été absent " . $datePhrase . ".<br>
+Vous disposez de 48 heures pour justifier cette absence en soumettant un justificatif via votre espace personnel.<br><br>";
+        }
+        if ($isExam) {
+            $mail .= "Veuillez noter que durant cette période d'absence, un examen a eu lieu. Si vous ne justifiez pas cette absence, vous ne pourrez pas rattraper l'examen et la note attribuée d'office sera de 0.<br><br>";
+        }
+
+        if ($nbMalus > 0) {
+            $mail .= "De plus, en cas de justification de cette absence, votre malus passera à " . $nbMalusPrevision . " (actuellement " . $nbMalus . ").<br><br>";
+        }
+
+        $mail .= "Cordialement,<br>
+        Le service des absences.";
+
+        self::sendMail($firstname, $lastname, $email, $mail, $subject);
+    }
+
     /**
      * Fonction utilisé pour envoyer le mail en utlisant l'api PHPMailer
      *
@@ -264,5 +312,38 @@ Vous disposez de 48 heures pour justifier cette absence en soumettant un justifi
         } catch (Exception $e) {
             error_log("L'envoi du message a échoué: {$mailer->ErrorInfo}");
         }
+    }
+    /**
+     * Permet d'envoyer un mail au Responsable Pédagogique lorsqu'un étudiant a été absent plus d'une semaine de manière consécutive
+     *
+     * @param string $rpLastname Nom du Responsable Pédagogique
+     * @param string $rpFirstname Prénom du Responsable Pédagogique
+     * @param string $rpEmail Email du Responsable Pédagogique
+     * @param string $studentLastname Nom de l'étudiant
+     * @param string $studentFirstname Prénom de l'étudiant
+     * @param int $studentNumber Numéro étudiant
+     * @param int $consecutiveDays Nombre de jours consécutifs d'absence
+     * @return void
+     */
+    static public function sendLongAbsenceAlert(
+        string $rpLastname,
+        string $rpFirstname,
+        string $rpEmail,
+        string $studentLastname,
+        string $studentFirstname,
+        int $studentNumber,
+        int $consecutiveDays
+    ): void
+    {
+        $subject = 'Alerte : Absence prolongée d\'un étudiant';
+
+        $body = "Bonjour " . $rpFirstname . " " . $rpLastname . ",<br><br>
+    Nous vous informons que l'étudiant " . $studentFirstname . " " . $studentLastname . " (n°" . $studentNumber . ") 
+    est absent depuis " . $consecutiveDays . " jours consécutifs.<br><br>
+    Nous vous invitons donc à prendre contact avec cet étudiant afin de vous assurer de sa situation.<br><br>
+    Vous pouvez consulter le détail de ses absences dans votre espace personnel.<br><br>
+    Cordialement,<br>
+    Le service des absences.";
+        self::sendMail($rpFirstname, $rpLastname, $rpEmail, $body, $subject);
     }
 }

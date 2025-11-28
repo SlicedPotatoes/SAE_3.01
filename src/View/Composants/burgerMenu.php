@@ -45,6 +45,7 @@ $isTeacher = AuthManager::isRole(AccountType::Teacher);
           <li class="nav-item"><a class="nav-link btn btn-uphf" href="/resitSession">Rattrapage</a> </li>
           <?php endif; ?>
 
+            <li class="nav-item"><a class="nav-link btn btn-uphf" href="/listOffPeriod">Ajouter des Vacances </a></li>
         </ul>
     </div>
 </div>

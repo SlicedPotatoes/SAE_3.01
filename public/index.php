@@ -38,7 +38,6 @@ $router->addRoute("/StudentProfile/{id:int}", "StudentProfileController@show");
 $router->addRoute("/JustificationList", "JustificationsListController@show");
 $router->addRoute("/SearchStudent", "SearchStudentController@show");
 $router->addRoute("/DetailJustification/{id}", "DetailJustificationController@show");
-$router->addRoute("/ShowFile/{}", "FileController@show");
 $router->addRoute("/PredefinedComments", "PredefinedCommentController@show");
 $router->addRoute("/DetailJustification/{id:int}", "DetailJustificationController@show");
 $router->addRoute("/ChangePassword", "ChangePasswordController@changeWhenLogin");
@@ -48,6 +47,8 @@ $router->addRoute("/ImportVT", "ImportVTController@show");
 $router->addRoute("/teacherHome", "TeacherHomeController@show");
 $router->addRoute("/detailPeriod/", "DetailPeriodController@show");
 $router->addRoute("/resitSession", "ResitSessionController@show");
+$router->addRoute("/changePassword", "ChangePasswordController@show");
+$router->addRoute("/listOffPeriod", "OffPeriodController@show");
 
 $path = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
 

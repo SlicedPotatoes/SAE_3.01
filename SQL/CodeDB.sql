@@ -460,3 +460,27 @@ alter table absence add column groupe text
 /* liquibase rollback
 alter table absence drop column groupe
 */
+
+--changeset Yann:11 labels:AbsenceDays context:ajout tracking du nombre d'absence consécutives
+
+-- Ajout d'une table pour les périodes de "congé"
+CREATE TABLE offPeriod (
+    id SERIAL PRIMARY KEY,
+    startDate TIMESTAMP NOT NULL,
+    endDate TIMESTAMP NOT NULL,
+    label TEXT NOT NULL
+);
+
+-- Ajout d'une table pour la gestion des périodes d'absence des étudiants
+CREATE TABLE studentPeriodAbs (
+    idStudent INT REFERENCES student(idAccount),
+    startDate TIMESTAMP,
+    endDate TIMESTAMP,
+    consecutiveDays INT NOT NULL DEFAULT 0,
+    PRIMARY KEY (idStudent, startDate)
+);
+
+/* liquibase rollback
+   DROP TABLE offPeriod;
+   DROP TABLE studentPeriodAbs;
+ */

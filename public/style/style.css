@@ -94,3 +94,8 @@ html, body {
 .justify-text {
   text-align: justify;
 }
+
+.table-uphf{
+    --bs-table-bg : var(--color-uphf);
+    --bs-table-color : white;
+}
