@@ -432,7 +432,36 @@ FROM Account a
              JOIN groupstudent g ON s.idgroupstudent = g.idgroupstudent;
  */
 
---changeset Yann:8 labels:AbsenceDays context:ajout tracking du nombre d'absence consécutives
+--changeset Kevin:8 labels:add table tokenPassword context:Fonctionnalité mot de passe oublié
+CREATE TABLE tokenPassword (
+    idToken SERIAL PRIMARY KEY,
+    token TEXT UNIQUE NOT NULL,
+    expire TIMESTAMP DEFAULT now() + '1 hour',
+    idAccount INT NOT NULL REFERENCES Account
+);
+
+-- rollback DROP TABLE tokenPassword;
+
+--changeset Yann:9 labels:addComments context:ajout de la table commentaire
+
+-- Ajout de la table comments
+CREATE TABLE comments (
+    idComment SERIAL PRIMARY KEY,
+    textComment TEXT NOT NULL
+);
+
+/* liquibase rollback
+   DROP TABLE comments;
+ */
+
+--changeset Isaac:10 labels:Rajout de la colonne groupe dans absence context:
+alter table absence add column groupe text
+
+/* liquibase rollback
+alter table absence drop column groupe
+*/
+
+--changeset Yann:11 labels:AbsenceDays context:ajout tracking du nombre d'absence consécutives
 
 -- Ajout d'une table pour les périodes de "congé"
 CREATE TABLE offPeriod (

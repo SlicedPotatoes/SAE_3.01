@@ -92,10 +92,27 @@ class Router {
 
             // Si le token de pattern est un paramètre
             if(str_starts_with($patternToken, '{') && str_ends_with($patternToken, '}')) {
-                $paramName = substr($patternToken, 1, -1);
+                $paramName = null;
+                $paramType = null;
 
-                // Le token de path n'est pas un nombre, donc pas match
-                if(filter_var($pathToken, FILTER_VALIDATE_INT) === false) { return false; }
+                // Si un type est spécifié pour le paramètre
+                if(str_contains($patternToken, ':')) {
+                    $splitedToken = explode(':', $patternToken);
+
+                    $paramName = substr($splitedToken[0], 1);
+                    $paramType = substr($splitedToken[1], 0, -1);
+                }
+                else {
+                    $paramName = substr($patternToken, 1, -1);
+                }
+
+
+                // Le token a un type spécifier, on check si le paramètre correspond au type
+                if(isset($paramType)) {
+                    if($paramType === 'int' && filter_var($pathToken, FILTER_VALIDATE_INT) === false) {
+                        return false;
+                    }
+                }
 
                 $params[$paramName] = $pathToken;
             }

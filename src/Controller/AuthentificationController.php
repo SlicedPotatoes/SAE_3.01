@@ -3,9 +3,12 @@
 namespace Uphf\GestionAbsence\Controller;
 
 use Uphf\GestionAbsence\Model\AuthManager;
+use Uphf\GestionAbsence\Model\DB\Select\AccountSelector;
 use Uphf\GestionAbsence\Model\DB\Select\StudentSelector;
 use Uphf\GestionAbsence\Model\Entity\Account\Account;
 use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
+use Uphf\GestionAbsence\Model\Notification\Notification;
+use Uphf\GestionAbsence\Model\Notification\NotificationType;
 use Uphf\GestionAbsence\ViewModel\BaseViewModel;
 
 /**
@@ -30,24 +33,29 @@ class AuthentificationController {
             return HomeController::home();
         }
 
-        // Utilisateur tante de s'authentifier
-        if($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['id'])) {
-            $accounts = Account::getAllAccount();
+        if ($_SERVER["REQUEST_METHOD"] == "POST") {
+            $account = AccountSelector::getAccountByEmail($_POST["email"]);
+            if ($account ==! null && password_verify($_POST["password"], AccountSelector::getPasswordHashedById($account->getIdAccount())))
+            {
+                if($account->getAccountType() === AccountType::Student) {
+                    $account = StudentSelector::getStudentById($account->getIdAccount());
+                }
 
-            // Récupérer le compte de l'utilisateur
-            $account = $accounts[$_POST['id']];
-            if($account->getAccountType() === AccountType::Student) {
-                $account = StudentSelector::getStudentById($_POST['id']);
+                // Connexion au niveau de la session
+                AuthManager::login(
+                    $account->getAccountType(),
+                    $account
+                );
+
+                header("Location: /");
+                exit();
             }
-
-            // Connexion au niveau de la session
-            AuthManager::login(
-                $account->getAccountType(),
-                $account
-            );
-
-            header("Location: /");
-            exit();
+            else
+            {
+                Notification::addNotification(
+                    NotificationType::Error,
+                "Email ou mot de passe incorrect");
+            }
         }
 
         // Utilisateur n'est pas connecté et ne tente pas de s'authentifier, on affiche la view d'authentification

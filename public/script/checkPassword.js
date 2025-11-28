@@ -1,9 +1,12 @@
-// FILE: public/script/verifPrerequiMDP.js
+/**
+ * Script pour la gestion dynamique des prérequis pour le changement de mot de passe
+ */
+
+// Récupération des éléments dans le DOM
 const formModifMDP = document.getElementById('formModifMDP');
 const inputNewMDP = document.getElementById('inputNewMDP');
 const inputConfirmMDP = document.getElementById('inputConfirmMDP');
 const alertModifMDP = document.getElementById('alertModifMDP');
-
 const items = {
     length: document.getElementById('req-length'),
     uppercase: document.getElementById('req-uppercase'),
@@ -14,21 +17,27 @@ const items = {
     match: document.getElementById('req-match')
 };
 
+// Regex pattern pour les différents critère
 const patterns = {
     uppercase: /[A-Z]/,
     lowercase: /[a-z]/,
     digit: /[0-9]/,
-    special: /[!@#$%^&*(),.?":{}|<>\[\]\/\-+_=;`~]/,
+    special: /[^0-9A-Za-zÀ-ÖØ-öø-ÿ]/,
     nospace: /^\S*$/
 };
 
+// Changer l'affichage pour un critère
 function setState(el, ok) {
     if (!el) return;
     el.classList.toggle('text-success', ok);
     el.classList.toggle('text-danger', !ok);
+    el.classList.toggle('fw-bold', !ok);
 }
 
+// Vérifier les critères, renvoie un tableau de bool pour chaque critère
 function validateAll() {
+    alertModifMDP.classList.add("d-none");
+
     const newMDP = inputNewMDP.value || '';
     const confirmMDP = inputConfirmMDP.value || '';
 
@@ -56,8 +65,6 @@ function validateAll() {
 // Mise à jour en direct
 inputNewMDP.addEventListener('input', () => {
     validateAll();
-    alertModifMDP.classList.add('d-none');
-    alertModifMDP.textContent = '';
 });
 inputConfirmMDP.addEventListener('input', () => {
     validateAll();
@@ -65,15 +72,13 @@ inputConfirmMDP.addEventListener('input', () => {
 
 // Validation finale à la soumission
 formModifMDP.addEventListener('submit', (e) => {
-    alertModifMDP.classList.add('d-none');
-    alertModifMDP.textContent = '';
-
     const res = validateAll();
     const allOk = res.okLength && res.okUpper && res.okLower && res.okDigit && res.okSpecial && res.okNoSpace && res.okMatch;
 
     if (!allOk) {
         e.preventDefault();
-        alertModifMDP.textContent = 'Le mot de passe ne respecte pas tous les pré-requis.';
-        alertModifMDP.classList.remove('d-none');
+        alertModifMDP.classList.remove("d-none");
     }
 });
+
+validateAll();

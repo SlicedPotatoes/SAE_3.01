@@ -48,7 +48,6 @@ $states = StateJustif::getAll();
             </div>
         </div>
 
-
         <!-- Contenu de l'onglet "Justification Done" -->
         <div class="tab-pane fade show <?= $dataView->currTab == 'proofDone' ? 'active d-flex' : '' ?> flex-column flex-fill" style="min-height: 0" id="proofDone-tab-pane" role="tabpanel" aria-labelledby="proofDone-tab" tabindex="0">
             <?php

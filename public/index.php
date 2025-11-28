@@ -9,6 +9,7 @@ require_once __DIR__ . "/../vendor/autoload.php";
 
 use Dotenv\Dotenv;
 use Uphf\GestionAbsence\Model\AuthManager;
+use Uphf\GestionAbsence\Model\CookieManager;
 use Uphf\GestionAbsence\Model\DB\Connection;
 use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
 use Uphf\GestionAbsence\Model\GlobalVariable;
@@ -25,6 +26,7 @@ if(!GlobalVariable::PROD()) {
 }
 
 AuthManager::init();
+CookieManager::init();
 
 // Création des routes
 $router = new Router();
@@ -32,11 +34,19 @@ $router->addRoute("/", "HomeController@home");
 $router->addRoute("/login", "AuthentificationController@login");
 $router->addRoute("/logout", "AuthentificationController@logout");
 $router->addRoute("/StudentProfile", "StudentProfileController@show");
-$router->addRoute("/StudentProfile/{id}", "StudentProfileController@show");
+$router->addRoute("/StudentProfile/{id:int}", "StudentProfileController@show");
 $router->addRoute("/JustificationList", "JustificationsListController@show");
 $router->addRoute("/SearchStudent", "SearchStudentController@show");
 $router->addRoute("/DetailJustification/{id}", "DetailJustificationController@show");
-$router->addRoute("/ShowFile/{}", "FileController@show");
+$router->addRoute("/PredefinedComments", "PredefinedCommentController@show");
+$router->addRoute("/DetailJustification/{id:int}", "DetailJustificationController@show");
+$router->addRoute("/ChangePassword", "ChangePasswordController@changeWhenLogin");
+$router->addRoute("/ChangePassword/{token}", "ChangePasswordController@changeWithToken");
+$router->addRoute("/PasswordLost", "ChangePasswordController@passwordLost");
+$router->addRoute("/ImportVT", "ImportVTController@show");
+$router->addRoute("/teacherHome", "TeacherHomeController@show");
+$router->addRoute("/detailPeriod/", "DetailPeriodController@show");
+$router->addRoute("/resitSession", "ResitSessionController@show");
 $router->addRoute("/changePassword", "ChangePasswordController@show");
 $router->addRoute("/listOffPeriod", "OffPeriodController@show");
 
@@ -47,6 +57,10 @@ $path = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
 $dataRoute = $router->launch($path);
 $dataView = $dataRoute->data;
 $srcFolder = __DIR__ . '/../src';
+
+if($dataRoute->view != '/View/error.php') {
+    CookieManager::setLastPath($path);
+}
 
 Connection::close();
 ?>

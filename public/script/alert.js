@@ -16,6 +16,8 @@ for(let i = 0; i < alerts.length; i++) {
     const alert = alerts[i];
     const btnClose = alert.getElementsByClassName('btn-close')[0];
 
+    if(!btnClose) { continue; }
+
     if(i >= countAlertMaxShow) {
         // Ajoute l'alerte aux stack, si i est supérieur au nombre d'alerte que l'on veut afficher
         alertToDisplay.push(alert);

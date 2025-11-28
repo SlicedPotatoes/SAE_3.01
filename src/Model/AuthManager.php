@@ -7,7 +7,7 @@ use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
 use Uphf\GestionAbsence\Model\Entity\Account\Student;
 
 /**
- * Singleton permettant d'accéder facilement dans l'application aux différents éléments contenue dans $_SESSION
+ * Classe statique permettant d'accéder facilement dans l'application aux différents éléments contenue dans $_SESSION
  *
  * Gére la connexion et déconnexion dans $_SESSION
  */
@@ -17,7 +17,7 @@ class AuthManager {
     private static Account $account;
 
     /**
-     * Initialisation du singleton
+     * Initialisation
      *
      * @return void
      */
@@ -26,6 +26,11 @@ class AuthManager {
         self::loadFromSession();
     }
 
+    /**
+     * Charge les éléments depuis la session
+     *
+     * @return void
+     */
     private static function loadFromSession(): void {
         if(isset($_SESSION['role'])) {
             self::$isLogin = true;
