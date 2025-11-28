@@ -38,7 +38,7 @@ $router->addRoute("/SearchStudent", "SearchStudentController@show");
 $router->addRoute("/DetailJustification/{id}", "DetailJustificationController@show");
 $router->addRoute("/ShowFile/{}", "FileController@show");
 $router->addRoute("/changePassword", "ChangePasswordController@show");
-$router->addRoute("/listHolidayPeriod", "HolidayContoller@show");
+$router->addRoute("/listOffPeriod", "OffPeriodController@show");
 
 $path = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
 

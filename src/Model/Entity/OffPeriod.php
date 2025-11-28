@@ -2,11 +2,16 @@
 
 namespace Uphf\GestionAbsence\Model\Entity;
 
-class Holiday{
-    private $id;
-    private $periodName;
-    private $startDate;
-    private $endDate;
+use DateTime;
+
+/**
+ * Classe représentant une période de congé
+ */
+class OffPeriod{
+    private int $id;
+    private string $periodName;
+    private DateTime $startDate;
+    private DateTime $endDate;
 
     public function __construct($id, $periodName, $startDate, $endDate){
         $this->id = $id;
@@ -15,19 +20,19 @@ class Holiday{
         $this->endDate = $endDate;
     }
 
-    public function getId(){
+    public function getId(): int {
         return $this->id;
     }
 
-    public function getPeriodName(){
+    public function getPeriodName():string {
         return $this->periodName;
     }
 
-    public function getStartDate(){
+    public function getStartDate():DateTime {
         return $this->startDate;
     }
 
-    public function getEndDate(){
+    public function getEndDate():DateTime {
         return $this->endDate;
     }
 
