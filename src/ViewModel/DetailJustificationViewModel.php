@@ -14,12 +14,14 @@ readonly class DetailJustificationViewModel extends BaseViewModel {
     public array $files;
     public AccountType $roleUser;
     public OneStudentViewModel $student;
+    public array $comments;
 
     public function __construct(
         Justification $justification,
         array $absences,
         array $files,
         AccountType $roleUser,
+        array $comments = []
     ) {
         $this->justification = new OneJustificationViewModel($justification, $roleUser);
         $this->absences = array_map(fn($abs) => new OneAbsenceViewModel($abs), $absences);
@@ -30,5 +32,9 @@ readonly class DetailJustificationViewModel extends BaseViewModel {
         ], $files);
         $this->roleUser = $roleUser;
         $this->student = new OneStudentViewModel($justification->getStudent());
+        $this->comments = array_map(fn($comment) => [
+            'idComment' => $comment->getIdComment(),
+            'label' => $comment->getTextComment()
+        ], $comments);
     }
 }

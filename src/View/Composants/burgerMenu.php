@@ -1,11 +1,14 @@
 <?php
-
 use Uphf\GestionAbsence\Model\AuthManager;
 use \Uphf\GestionAbsence\Model\Entity\Account\AccountType;
 
 $isEducationalManager = AuthManager::isRole(AccountType::EducationalManager);
 $isSecretary = AuthManager::isRole(AccountType::Secretary);
 $isTeacher = AuthManager::isRole(AccountType::Teacher);
+
+/**
+ *Simple burger menu pour le RP et peut-être pour d'autre utilisateur plus tard
+ */
 ?>
 
 <!-- Simple burger menu pour le RP et peut-être pour d'autre utilisateur plus tard -->
@@ -30,6 +33,8 @@ $isTeacher = AuthManager::isRole(AccountType::Teacher);
           <?php if ($isEducationalManager) : ?>
             <li class="nav-item"><a class="nav-link btn btn-uphf" href="/JustificationList">Justificatifs</a></li>
             <li class="nav-item"><a class="nav-link btn btn-uphf" href="/SearchStudent">Rechercher un étudiant</a></li>
+            <li class="nav-item"><a class="nav-link btn btn-uphf" href="/PredefinedComments">Commentaires prédéfinis</a></li>
+            <li class="nav-item"><a class="nav-link btn btn-uphf" href="/ImportVT">Importer depuis VT</a></li>
             <li class="nav-item"><a class="nav-link btn btn-uphf" href="/resitSession">Rattrapage</a></li>
           <?php endif; ?>
 

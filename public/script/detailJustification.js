@@ -142,3 +142,23 @@ if(commentInput) {
         commentInput.setCustomValidity('');
     });
 }
+
+// Gestion des commentaires prédéfinis
+const predefinedComments = document.querySelectorAll('.predefined-comment');
+predefinedComments.forEach(commentLink => {
+    commentLink.addEventListener('click', (event) => {
+        event.preventDefault();
+
+        const commentText = commentLink.getAttribute('data-value');
+
+        if (commentInput) {
+            if (commentInput.value.trim() === '') {
+                commentInput.value = commentText;
+            } else {
+                commentInput.value += '\n' + commentText;
+            }
+
+            commentInput.setCustomValidity('');
+        }
+    });
+});
