@@ -31,7 +31,7 @@ require_once __DIR__ . "/Composants/header.php";
         ?>
         <?php if (count($dataView->periods) == 0): ?>
           <div class="d-flex flex-column align-items-center justify-content-center h-100">
-            <p class='fs-1 text-body-secondary p-3'>Il n'y a pas eu d'absences lors de vos cours</p>
+            <p class='fs-1 text-body-secondary p-3'>Aucune absence n'a été enregistrée lors de vos cours.</p>
           </div>
         <?php endif; ?>
       </div>

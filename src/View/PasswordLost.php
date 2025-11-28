@@ -11,7 +11,8 @@
                     <div id="emailHelp" class="form-text">Un e‑mail contenant les instructions vous sera envoyé.</div>
                 </div>
 
-                <div class="col-12 d-grid">
+                <div class="col-12 d-flex flex-row gap-2 justify-content-between">
+                    <a class="btn btn-secondary" href="/">Retour</a>
                     <button type="submit" class="btn btn-uphf">Envoyer</button>
                 </div>
             </form>

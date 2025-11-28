@@ -42,7 +42,11 @@ require_once __DIR__ . "/Composants/header.php";
                     <input type="password" class="form-control border-secondary" id="inputConfirmMDP" name="confirmPassword" required>
                 </div>
 
-                <button type="submit" class="btn btn-uphf float-end">Changer</button>
+                <div class="d-flex flex-row gap-2 justify-content-between">
+                    <a class="btn btn-secondary" href="/">Retour</a>
+                    <button type="submit" class="btn btn-uphf">Changer</button>
+                </div>
+
             </form>
         </div>
     </div>

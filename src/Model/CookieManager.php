@@ -8,6 +8,7 @@ namespace Uphf\GestionAbsence\Model;
 class CookieManager {
     private static bool $cardOpen;
     private static string $lastPath;
+    private static string $lastPath2;
 
     /**
      * Initialisation
@@ -17,9 +18,13 @@ class CookieManager {
     public static function init(): void {
         self::$cardOpen = ($_COOKIE['cardOpen'] ?? 'true') === 'true';
         self::$lastPath = $_COOKIE['lastPath'] ?? '/';
+        self::$lastPath2 = $_COOKIE['lastPath2'] ?? '/';
 
         if(!str_starts_with(self::$lastPath, '/')) {
             self::$lastPath = '/';
+        }
+        if(!str_starts_with(self::$lastPath2, '/')) {
+            self::$lastPath2 = '/';
         }
     }
 
@@ -50,7 +55,10 @@ class CookieManager {
      * @return void
      */
     public static function setLastPath($string): void {
-        self::setCookie('lastPath', $string);
+        if($string !== self::$lastPath) {
+            self::setCookie('lastPath2', self::$lastPath);
+            self::setCookie('lastPath', $string);
+        }
     }
 
     /**
@@ -59,6 +67,10 @@ class CookieManager {
      * @return string
      */
     public static function getLastPath(): string {
+        if(self::$lastPath == parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH)) {
+            return htmlspecialchars(self::$lastPath2, ENT_QUOTES);
+        }
+
         return htmlspecialchars(self::$lastPath, ENT_QUOTES);
     }
 

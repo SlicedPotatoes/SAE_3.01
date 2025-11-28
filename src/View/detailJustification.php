@@ -70,7 +70,7 @@ require_once __DIR__ . "/../View/Composants/Modal/filePreviewModal.php";
                     <div class="me-3 h-100">
                         <div>Cour: <?= $absence->resource ?></div>
                         <?php if($absence->haveTeacher): ?>
-                            <div>Enseignant : <?= $absence->fullnameTeacher ?><</div>
+                            <div>Enseignant : <?= $absence->fullnameTeacher ?></div>
                         <?php else: ?>
                             <div>&nbsp;</div>
                         <?php endif; ?>
