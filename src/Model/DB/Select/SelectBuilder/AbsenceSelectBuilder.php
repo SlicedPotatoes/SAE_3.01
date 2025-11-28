@@ -2,6 +2,7 @@
 
 namespace Uphf\GestionAbsence\Model\DB\Select\SelectBuilder;
 
+use Dotenv\Dotenv;
 use Uphf\GestionAbsence\Model\Hydrator\AbsenceHydrator;
 use Uphf\GestionAbsence\Model\DB\Connection;
 use Uphf\GestionAbsence\Model\Entity\Absence\Absence;
@@ -34,6 +35,15 @@ class AbsenceSelectBuilder {
 
         $this->where[] = "idstudent = :studentId";
         $this->parameters["studentId"] = [$idStudent, PDO::PARAM_INT];
+        return $this;
+    }
+
+    public function idTeacher(int $idTeacher): AbsenceSelectBuilder {
+        if(isset($this->flags['idTeacher'])) {throw new BadMethodCallException("Second appel de la méthode 'idTeacher()'.");}
+        $this->flags['idTeacher'] = true;
+
+        $this->where[] = "idteacher = :teacherId";
+        $this->parameters["teacherId"] = [$idTeacher, PDO::PARAM_INT];
         return $this;
     }
 
@@ -205,6 +215,8 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 require_once __DIR__ . "/../../../../../vendor/autoload.php";
+$dotenv = Dotenv::createImmutable(dirname(__DIR__,5));
+$dotenv->load();
 
 function showAbs($abs) {
     echo "<pre>Nb d'absence: " . count($abs) . "</pre>";
@@ -231,6 +243,7 @@ function showAbs($abs) {
 //$abs = new AbsenceSelectBuilder()->lock(false)->execute(true);
 //$abs = new AbsenceSelectBuilder()->lock(true)->execute(true);
 //$abs = new AbsenceSelectBuilder()->dateStart('2025-10-21')->dateEnd('2025-10-21')->execute(true);
+//$abs = new AbsenceSelectBuilder()->idTeacher('3')->execute();
 
 //$abs = new AbsenceSelectBuilder()->orderBy(['time', 'currentState'], SortOrder::DESC)->execute(true);
 
@@ -241,6 +254,7 @@ function showAbs($abs) {
 //$abs = new AbsenceSelectBuilder()->state(StateAbs::Pending)->state(StateAbs::NotJustified)->execute();
 //$abs = new AbsenceSelectBuilder()->examen(true)->examen(true)->execute();
 //$abs = new AbsenceSelectBuilder()->lock(true)->lock(true)->execute();
+//$abs = new AbsenceSelectBuilder()->idTeacher('3')->idTeacher('2')->execute();
 
 showAbs($abs);
 */

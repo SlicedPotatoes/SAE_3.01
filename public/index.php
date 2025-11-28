@@ -45,6 +45,9 @@ $router->addRoute("/ChangePassword", "ChangePasswordController@changeWhenLogin")
 $router->addRoute("/ChangePassword/{token}", "ChangePasswordController@changeWithToken");
 $router->addRoute("/PasswordLost", "ChangePasswordController@passwordLost");
 $router->addRoute("/ImportVT", "ImportVTController@show");
+$router->addRoute("/teacherHome", "TeacherHomeController@show");
+$router->addRoute("/detailPeriod/", "DetailPeriodController@show");
+$router->addRoute("/resitSession", "ResitSessionController@show");
 
 $path = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
 

@@ -432,7 +432,7 @@ FROM Account a
              JOIN groupstudent g ON s.idgroupstudent = g.idgroupstudent;
  */
 
---changeset Yann:8 labels:addComments context:ajout de la table commentaire
+--changeset Yann:9 labels:addComments context:ajout de la table commentaire
 
 -- Ajout de la table comments
 CREATE TABLE comments (
@@ -452,3 +452,11 @@ CREATE TABLE tokenPassword (
 );
 
 -- rollback DROP TABLE tokenPassword;
+
+
+--changeset Isaac:10 labels:Rajout de la colonne groupe dans absence context:
+alter table absence add column groupe text not null
+
+/* liquibase rollback
+alter table absence drop column groupe
+*/
