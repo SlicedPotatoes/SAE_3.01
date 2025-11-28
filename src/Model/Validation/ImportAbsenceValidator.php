@@ -60,6 +60,10 @@ class ImportAbsenceValidator {
                     "Absent/Présent" => [
                         "filter" => FILTER_DEFAULT
                     ],
+                    "Groupes" => [
+                      "filter" => FILTER_CALLBACK,
+                      "options" => [ValidationHelper::class, 'stringOrNull']
+                    ],
                     "Profs" => [
                         "filter" => FILTER_DEFAULT
                     ],

@@ -10,7 +10,7 @@ use Uphf\GestionAbsence\ViewModel\TeacherHomeViewModel;
 
 class ResitSessionController
 {
-    public static function show(): ControllerData
+    public static function show($params): ControllerData
     {
         // Vérification de la connection de l'utilisateur
         if (!AuthManager::isLogin()) {
@@ -52,7 +52,7 @@ class ResitSessionController
         );
 
         return new ControllerData(
-          "View/resitSessionList.php",
+          "/View/resitSessionList.php",
           "Rattrapage",
           new ResitSessionListViewModel(
             $periods,

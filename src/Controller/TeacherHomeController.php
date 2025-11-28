@@ -53,7 +53,7 @@ class TeacherHomeController {
         );
 
         return new ControllerData(
-            "View/teacherHome.php",
+            "/View/teacherHome.php",
             "Tableau de bord Professeur",
             new TeacherHomeViewModel(
               $periods,

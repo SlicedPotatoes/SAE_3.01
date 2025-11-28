@@ -40,6 +40,7 @@ class AbsenceInsertor {
             $duration = self::getInterval($abs['Durée']);
             $typeCourse = $abs['Type'];
             $ressourceLabel = $abs['Matière'];
+            $groupe = $abs['Groupes'];
             $prof = $abs['Profs'];
             $exam = $abs['Contrôle'] === "Oui";
 
@@ -49,7 +50,7 @@ class AbsenceInsertor {
             $params[":duration$i"] = [$duration, PDO::PARAM_STR];
             $params[":courseType$i"] = [$typeCourse->value, PDO::PARAM_STR];
             $params[":ressource$i"] = [$ressourceLabel, PDO::PARAM_STR];
-            $params[":groups$i"] = ["", PDO::PARAM_STR];
+            $params[":groups$i"] = [$groupe, PDO::PARAM_STR];
             $params[":prof$i"] = [$prof, PDO::PARAM_STR];
             $params[":exam$i"] = [$exam, PDO::PARAM_BOOL];
         }
@@ -65,7 +66,8 @@ class AbsenceInsertor {
                          'NotJustified',
                          v.courseType::coursetype,
                          r.idResource,
-                         null
+                         null,
+                         v.groupLabel
                   FROM
                   (
                       (
