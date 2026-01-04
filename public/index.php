@@ -50,6 +50,8 @@ $router->addRoute("/resitSession", "ResitSessionController@show");
 $router->addRoute("/changePassword", "ChangePasswordController@show");
 $router->addRoute("/listOffPeriod", "OffPeriodController@show");
 $router->addRoute("/routine", "Routine@launch");
+$router->addRoute("/statistique-general", "GeneralStatisticsController@show");
+$router->addRoute("/statistique-etudiant/{id:int}", "StudentStatisticsController@show");
 
 $path = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
 
