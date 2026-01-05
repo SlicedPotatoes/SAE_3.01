@@ -52,6 +52,7 @@ $router->addRoute("/listOffPeriod", "OffPeriodController@show");
 $router->addRoute("/routine", "Routine@launch");
 
 $router->addRoute("/userManual", "UserManualController@show");
+$router->addRoute("/rules", "RulesController@show");
 
 $path = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
 
@@ -118,7 +119,7 @@ if(AuthManager::isLogin()) {
         </div>
 
         <div class=" footer-row me-3">
-           <a href="/lien/vers/la/page/de/réglement">Règlement intérieur de l’établissement</a>
+           <a href="/rules">Règlement intérieur de l’établissement</a>
 
         </div>
 
