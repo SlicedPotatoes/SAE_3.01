@@ -50,7 +50,9 @@ $router->addRoute("/resitSession", "ResitSessionController@show");
 $router->addRoute("/changePassword", "ChangePasswordController@show");
 $router->addRoute("/listOffPeriod", "OffPeriodController@show");
 $router->addRoute("/routine", "Routine@launch");
+
 $router->addRoute("/userManual", "UserManualController@show");
+$router->addRoute("/rules", "RulesController@show");
 
 $path = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
 
@@ -116,14 +118,16 @@ if(AuthManager::isLogin()) {
                 © 2025 Université Polytechnique Hauts‑de‑France</p>
         </div>
 
+        <div class=" footer-row me-3">
+           <a href="/rules">Règlement intérieur de l’établissement</a>
+
+        </div>
+
         <div class="footer-row me-3">
-            <h4 class="h6">Documentation</h4>
-            <ul class="list-unstyled mb-0">
-                <li><button type="button" class="btn btn-uphf ml-auto mb-1" ><a href="/src/View/userManual.php" class="btn-link-inside">Manuel d’utilisation du site</a></button> </li>
-                <li><button type="button" class="btn btn-uphf ml-auto"><a href="/lien/vers/la/page/de/réglement" class="btn-link-inside ">Règlement intérieur de l’établissement</a></button> </li>
-            </ul>
+                <a href="/userManual">Manuel d’utilisation du site</a>
         </div>
     </div>
+
 </footer>
 
 
