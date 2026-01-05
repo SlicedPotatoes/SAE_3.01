@@ -40,7 +40,7 @@ $hide = CookieManager::getHideRuleModal();
                         </button>
 
                         <!-- Bouton pour aller vers la page de documentation -->
-                        <a href="/src/View/userManual.php" class="btn btn-uphf">
+                        <a href="/userManual" class="btn btn-uphf">
                             Consulter la documentation
                         </a>
                     </div>
