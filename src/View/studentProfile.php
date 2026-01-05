@@ -85,6 +85,6 @@ require_once __DIR__ . "/Composants/header.php";
     <script src="/script/tabBarHandler.js"></script>
 </div>
 
-<script>
-    document.addEventListener('DOMContentLoaded', ()=>{ const m = document.getElementById('modaleRule'); if (m) new bootstrap.Modal(m).show(); });
-</script>
+<?php
+require __DIR__ . "/Composants/Modal/modalRule.php";
+?>
