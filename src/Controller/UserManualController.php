@@ -3,8 +3,6 @@
 namespace Uphf\GestionAbsence\Controller;
 
 use Uphf\GestionAbsence\ViewModel\BaseViewModel;
-use Uphf\GestionAbsence\ViewModel\UserManualViewModel;
-
 class UserManualController
 {
     public static function show(): ControllerData

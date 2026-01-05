@@ -12,16 +12,12 @@
         display: block;
     }
 
-    /* pour éviter que le contenu passe sous la pagination fixe */
-    body {
-        padding-bottom: 70px; /* hauteur approximative de la barre de pagination */
-    }
 </style>
 
 <body>
 
 <section class="page" id="page1">
-    <div class="container my-5">
+    <div class="container my-5 " >
         <div class="card shadow-sm">
             <div class="card-body p-4">
                 <h1 class="card-title display-6 mb-3">Manuel d'utilisation</h1>
@@ -30,7 +26,7 @@
                 <div class="row align-items-center mt-3">
                     <div class="col-md-6 mb-3 mb-md-0">
                         <figure class="mb-0">
-                            <img src="/img/tutoEleveDashboard.png" alt="Tuto élève - Tableau de bord" class="img-fluid rounded shadow-sm w-100" style="max-width:600px; height:auto; object-fit:contain;">
+                            <img src="/img/tutoEleveDashboard.png" alt="Tuto élève - Tableau de bord" class="img-fluid rounded shadow-sm w-100" style="max-width:500px; height:auto; object-fit:contain;">
                             <figcaption class="small text-muted mt-2">Capture d'écran : votre tableau de bord.</figcaption>
                         </figure>
                     </div>
@@ -119,7 +115,7 @@
     </div>
 </section>
 
-<section class="page" id="page4">
+<section class="page mb-5" id="page4">
     <div class="container my-5">
         <div class="card shadow-sm">
             <div class="card-body p-4">
