@@ -1,13 +1,13 @@
 <?php
 
-namespace Uphf\GestionAbsence\Model;
+namespace Uphf\GestionAbsence\Model\Statistics;
 
 use JsonException;
 
 /**
  * Wrapper PHP pour ChartJS
  *
- * Version simplifier de https://github.com/bbsnly/chartjs-php (Celle ci avais un probleme)
+ * Version simplifier de https://github.com/bbsnly/chartjs-php (Celle ci avais un probleme sur la dernière version de PHP)
  */
 class Chart {
     private string $type;
@@ -50,13 +50,43 @@ class Chart {
             <script>
                 let ctx = document.getElementById("' . $elementId . '");
                 
+                let chartData = ' . $this->toJson() . ';
+                
+                // Si la key existe, "transforme" le string en fonction (pointer vers l\'adresse memoire de la fonction)
+                if(chartData.options?.plugins?.tooltip?.callbacks.label) {
+                    let fName = chartData.options.plugins.tooltip.callbacks.label;
+                    chartData.options.plugins.tooltip.callbacks.label = window[fName];
+                }
+                
                 if(!ctx) {
                     console.error("Canvas element not found: ' . $elementId . '");
                 }
                 else {
-                    new Chart(ctx, ' . $this->toJson() . ');
+                    new Chart(ctx, chartData);
                 }
                 
             </script>';
+    }
+
+    /**
+     * Renvoie les options pour un Pie Chart classique
+     *
+     * @return array
+     */
+    public static function getOptionsForPieChart(): array {
+        return [
+            "scales" => [
+                "y" => [
+                    "beginAtZero" => true
+                ]
+            ],
+            "plugins" => [
+                "tooltip" => [
+                    "callbacks" => [
+                        "label" => "tooltipWithTotalAndProportion"
+                    ]
+                ]
+            ]
+        ];
     }
 }
