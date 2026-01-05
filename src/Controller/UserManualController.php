@@ -3,15 +3,16 @@
 namespace Uphf\GestionAbsence\Controller;
 
 use Uphf\GestionAbsence\ViewModel\BaseViewModel;
+use Uphf\GestionAbsence\ViewModel\UserManualViewModel;
 
-class UserManualController{
-    public function show(): ControllerData
+class UserManualController
+{
+    public static function show(): ControllerData
     {
         return new ControllerData(
-            'View/userManual.php',
+            '/View/userManual.php',
             "Manuel d'utilisation",
-            new BaseViewModel()
+             new BaseViewModel()
         );
     }
-
 }
