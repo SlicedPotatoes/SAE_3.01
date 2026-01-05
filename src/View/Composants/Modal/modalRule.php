@@ -40,9 +40,9 @@ $hide = CookieManager::getHideRuleModal();
                         </button>
 
                         <!-- Bouton pour aller vers la page de documentation -->
-                        <a href="/userManual" class="btn btn-uphf">
+                        <button onclick="openBoth() " type="button" class="btn btn-primary">
                             Consulter la documentation
-                        </a>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -57,6 +57,12 @@ $hide = CookieManager::getHideRuleModal();
 </form>
 
 <script>
+
+    function openBoth() {
+        window.open('/rules', '_blank');
+        window.location.href = '/userManual';
+    }
+
 document.addEventListener('DOMContentLoaded', function(){
     const hideServer = <?php echo $hide ? 'true' : 'false'; ?>;
     const modalEl = document.getElementById('ruleModal');
