@@ -484,3 +484,10 @@ CREATE TABLE studentPeriodAbs (
    DROP TABLE offPeriod;
    DROP TABLE studentPeriodAbs;
  */
+
+--changeset Dimitri:12 labels:enumDS context:ajoute le DS
+ALTER TYPE courseType ADD VALUE IF NOT EXISTS 'DS';
+
+/* liquibase rollback
+alter table absence drop column 'DS'
+*/
