@@ -17,17 +17,22 @@ use Uphf\GestionAbsence\ViewModel\PredefinedCommentViewModel;
 class PredefinedCommentController {
 
     public static function show(): ControllerData{
+        // Vérifier que l'utilisateur est connecté
         if (!AuthManager::isLogin()) {
             header("location: /");
             exit();
         }
+
+        // Vérifier que l'utilisateur est RP
         if (!AuthManager::isRole(AccountType::EducationalManager)) {
             return ControllerData::get403();
         }
 
+        // Si requête POST, faire l'action
         if ($_SERVER['REQUEST_METHOD'] === "POST") {
             self::handleAction();
         }
+        // Récupérer tous les commentaires
         $comments = CommentSelector::getAllComments();
 
 
@@ -46,7 +51,7 @@ class PredefinedCommentController {
 
         $validator = new CommentValidator();
         $errors = $validator->checkAllGood();
-
+        // Si erreurs de validation, afficher et arrêter
         if (!empty($errors)) {
             foreach ($errors as $e) {
                 Notification::addNotification(NotificationType::Error, $e);
@@ -57,6 +62,7 @@ class PredefinedCommentController {
         $data = $validator->getData();
         $action = $data["action"];
 
+        // Fais l'action sur le commentaire prédéfinis
         switch($action) {
             case "add":
                 if(CommentInsertor::insert($data['textComment'])){
