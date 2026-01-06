@@ -134,12 +134,5 @@ require __DIR__ . "/Composants/header.php";
         </div>
 
     </div>
-
-
-
     <script src="/script/tabBarHandler.js"></script>
-    <script>
-
-
-    </script>
 </div>
