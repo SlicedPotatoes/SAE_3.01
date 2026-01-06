@@ -135,4 +135,5 @@ require __DIR__ . "/Composants/header.php";
 
     </div>
     <script src="/script/tabBarHandler.js"></script>
+    <script src="/script/draggableGraphics.js"></script>
 </div>
