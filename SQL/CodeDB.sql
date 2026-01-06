@@ -485,7 +485,7 @@ CREATE TABLE studentPeriodAbs (
    DROP TABLE studentPeriodAbs;
  */
 
---changeset12 labels:semester context:gestion des semestres
+--changeset15 labels:semester context:gestion des semestres
 
 -- Table pour les années universitaires
 CREATE TABLE academicYear (
