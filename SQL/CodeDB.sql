@@ -516,7 +516,7 @@ DROP FUNCTION IF EXISTS force_ds_exam();
 */
 
 --changeset Isaac:14 labels:mail context:stocke la volonté de recevoir des mails
-create table mailAlertEducationManager(
+create table mailAlertEducationalManager(
     idMailAlert serial,
     activated boolean not null,
     idAccount int references Account(idAccount)
@@ -529,6 +529,31 @@ create table mailAlertTeacher(
 );
 
 /* liquibase rollback
-   drop table mailAlertEducationManager
+   drop table mailAlertEducationManager;
    drop table mailAlertTeacher;
  */
+
+ --changeset Isaac:16 label:TriggerMail context: initialise les mailAlerts lors de l'insertion d'un teacher ou EM
+
+create or replace function initMailAlert()
+    returns trigger as $$
+begin
+    if(new.accounttype = 'Teacher') then
+        insert into mailAlertTeacher(activated, idAccount) values (true,new.idAccount);
+    end if;
+    if(new.accounttype = 'EducationalManager') then
+        insert into mailAlertEducationalManager(activated, idAccount) values (true,new.idAccount);
+        insert into mailAlertTeacher(activated, idAccount) values (true,new.idAccount);
+    end if;
+    RETURN NEW;
+end;
+$$ LANGUAGE plpgsql;
+CREATE TRIGGER trigger_account_init_mailAlert
+    AFTER INSERT OR UPDATE ON Account
+    FOR EACH ROW
+EXECUTE FUNCTION initMailAlert();
+
+/* liquibase rollback
+    drop trigger if exists trigger_account_init_mailAlert On Account;
+   drop function if exists initMailAlert;
+*/
