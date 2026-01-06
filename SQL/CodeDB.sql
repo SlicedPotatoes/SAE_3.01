@@ -489,5 +489,28 @@ CREATE TABLE studentPeriodAbs (
 ALTER TYPE courseType ADD VALUE IF NOT EXISTS 'DS';
 
 /* liquibase rollback
-alter table absence drop column 'DS'
+ALTER TABLE courseType DROP COLUMN DS
+*/
+
+--changeset Dimitri:13 labels:triggerDS context:met le DS en examen
+
+CREATE OR REPLACE FUNCTION force_ds_exam()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF NEW.courseType = 'DS' THEN
+        NEW.examen := TRUE;
+END IF;
+
+RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_ds_is_exam
+    BEFORE INSERT OR UPDATE ON absence
+                         FOR EACH ROW
+                         EXECUTE FUNCTION force_ds_exam();
+
+/* liquibase rollback
+DROP TRIGGER IF EXISTS trigger_ds_is_exam ON absence;
+DROP FUNCTION IF EXISTS force_ds_exam();
 */
