@@ -92,10 +92,12 @@ class ProportionStatisticsBuilder {
         if(!isset($this->pst)) { throw new BadMethodCallException("Un type doit être spécifier avant d'appeler 'execute()'."); }
         $conn = Connection::getInstance();
 
-        $this->join[] = $this->pst->join();
+        $join = $this->join;
+        $join[] = $this->pst->join();
+
         $query = 'SELECT COUNT(*) as value, ' . $this->pst->select() . ' as label
                   FROM absence a ' .
-                  implode(' ', $this->join);
+                  implode(' ', $join);
 
         if(!empty($this->where)) {
             $query .= ' WHERE ' . implode(" AND ", $this->where);

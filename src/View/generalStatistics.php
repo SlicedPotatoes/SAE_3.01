@@ -128,8 +128,8 @@ require __DIR__ . "/Composants/header.php";
                 <?php endforeach; ?>
             </div>
             <!-- Conteneur pour le graphique draggable -->
-            <div class="col-1 bg-white border-bottom border-end p-4 pt-5" style=" border-bottom-right-radius:  var(--bs-border-radius)" id="drag-zone">
-
+            <div class="col-1 bg-white border-bottom border-end pt-3 flex-fill d-flex flex-column" style="border-bottom-right-radius: var(--bs-border-radius)" id="drag-zone">
+                <div class="flex-column flex-fill align-items-center p-4" style="min-height: 0"></div>
             </div>
         </div>
 

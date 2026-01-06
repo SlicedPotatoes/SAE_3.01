@@ -48,5 +48,5 @@ dragzone.addEventListener('drop', (e) => {
     dragzone.classList.add('col-6')
 
     // Ajouter la copy dans la zone de drag
-    dragzone.appendChild(copy)
+    dragzone.querySelector('div').appendChild(copy)
 });
