@@ -1,8 +1,6 @@
 <?php
 
 namespace Uphf\GestionAbsence\Model\DB\Select;
-require "../Connection.php";
-require "../../../../vendor/autoload.php";
 
 use Uphf\GestionAbsence\Model\DB\Connection;
 
