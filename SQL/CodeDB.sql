@@ -484,3 +484,33 @@ CREATE TABLE studentPeriodAbs (
    DROP TABLE offPeriod;
    DROP TABLE studentPeriodAbs;
  */
+
+--changeset12 labels:semester context:gestion des semestres
+
+-- Table pour les années universitaires
+CREATE TABLE academicYear (
+    id SERIAL PRIMARY KEY,
+    label TEXT NOT NULL UNIQUE
+);
+
+
+-- Table pour les semestres
+CREATE TABLE semester (
+    id SERIAL PRIMARY KEY,
+    idAcademicYear INT NOT NULL REFERENCES academicYear(id),
+    label TEXT NOT NULL,
+    startDate DATE NOT NULL,
+    endDate DATE NOT NULL
+);
+
+-- Insertion de l'année universitaire actuelle et des semestres par défaut
+INSERT INTO academicYear (label) VALUES ('2025-2026');
+
+INSERT INTO semester (idAcademicYear, label, startDate, endDate) VALUES
+    (1, 'Semestre 1', '2025-09-01', '2026-01-15'),
+    (1, 'Semestre 2', '2026-01-16', '2026-06-30');
+
+/* liquibase rollback
+   DROP TABLE semester;
+   DROP TABLE academicYear;
+ */
