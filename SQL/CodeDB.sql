@@ -514,3 +514,21 @@ CREATE TRIGGER trigger_ds_is_exam
 DROP TRIGGER IF EXISTS trigger_ds_is_exam ON absence;
 DROP FUNCTION IF EXISTS force_ds_exam();
 */
+
+--changeset Isaac:14 labels:mail context:stocke la volonté de recevoir des mails
+create table mailAlertEducationManager(
+    idMailAlert serial,
+    activated boolean not null,
+    idAccount int references Account(idAccount)
+);
+
+create table mailAlertTeacher(
+    idMailAlert serial,
+    activated boolean not null,
+    idAccount int references Account(idAccount)
+);
+
+/* liquibase rollback
+   drop table mailAlertEducationManager
+   drop table mailAlertTeacher;
+ */
