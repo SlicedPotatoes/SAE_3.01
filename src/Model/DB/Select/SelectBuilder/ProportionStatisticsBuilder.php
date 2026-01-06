@@ -92,16 +92,8 @@ class ProportionStatisticsBuilder {
         if(!isset($this->pst)) { throw new BadMethodCallException("Un type doit être spécifier avant d'appeler 'execute()'."); }
         $conn = Connection::getInstance();
 
-        $subRequest = 'SELECT COUNT(*) FROM absence a';
-        if(!empty($this->join)) {
-            $subRequest .= ' ' . implode(' ', $this->join);
-        }
-        if(!empty($this->where)) {
-            $subRequest .= ' WHERE ' . implode(" AND ", $this->where);
-        }
-
         $this->join[] = $this->pst->join();
-        $query = 'SELECT ROUND(COUNT(*) / (' . $subRequest . ')::numeric, 2), ' . $this->pst->select() . '
+        $query = 'SELECT COUNT(*) as value, ' . $this->pst->select() . ' as label
                   FROM absence a ' .
                   implode(' ', $this->join);
 
@@ -138,7 +130,7 @@ use Dotenv\Dotenv;
 $dotenv = Dotenv::createImmutable(dirname(__DIR__,5));
 $dotenv->load();
 
-//$result = new ProportionStatisticsBuilder()->type(ProportionStatisticsType::TypeCourse)->execute(true);
+$result = new ProportionStatisticsBuilder()->type(ProportionStatisticsType::TypeCourse)->execute(true);
 //$result = new ProportionStatisticsBuilder()->type(ProportionStatisticsType::Teacher)->execute(true);
 //$result = new ProportionStatisticsBuilder()->type(ProportionStatisticsType::Resource)->execute(true);
 //$result = new ProportionStatisticsBuilder()->type(ProportionStatisticsType::Group)->execute(true);

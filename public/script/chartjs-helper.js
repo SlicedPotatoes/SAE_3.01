@@ -21,3 +21,6 @@ function tooltipWithTotalAndProportion(context) {
     // String de l'affichage
     return `${context.label}: ${value} (${percentage}%)`;
 }
+
+const chartJsCtx = {};
+const chartJsDatas = {};

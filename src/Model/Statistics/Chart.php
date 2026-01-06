@@ -48,23 +48,21 @@ class Chart {
         return
             '<canvas id="' . $elementId . '"></canvas>
             <script>
-                let ctx = document.getElementById("' . $elementId . '");
-                
-                let chartData = ' . $this->toJson() . ';
-                
+                chartJsCtx["' . $elementId . '"] = document.getElementById("' . $elementId . '");
+                chartJsDatas["' . $elementId . '"] = ' . $this->toJson() . ';
+                    
                 // Si la key existe, "transforme" le string en fonction (pointer vers l\'adresse memoire de la fonction)
-                if(chartData.options?.plugins?.tooltip?.callbacks.label) {
-                    let fName = chartData.options.plugins.tooltip.callbacks.label;
-                    chartData.options.plugins.tooltip.callbacks.label = window[fName];
+                if(chartJsDatas["' . $elementId . '"].options?.plugins?.tooltip?.callbacks.label) {
+                    let fName = chartJsDatas["' . $elementId . '"].options.plugins.tooltip.callbacks.label;
+                    chartJsDatas["' . $elementId . '"].options.plugins.tooltip.callbacks.label = window[fName];
                 }
-                
-                if(!ctx) {
+                    
+                if(!chartJsCtx["' . $elementId . '"]) {
                     console.error("Canvas element not found: ' . $elementId . '");
                 }
                 else {
-                    new Chart(ctx, chartData);
+                    new Chart(chartJsCtx["' . $elementId . '"], chartJsDatas["' . $elementId . '"]);
                 }
-                
             </script>';
     }
 
@@ -73,14 +71,14 @@ class Chart {
      *
      * @return array
      */
-    public static function getOptionsForPieChart(): array {
+    public static function getOptionsForPieChart($title): array {
         return [
-            "scales" => [
-                "y" => [
-                    "beginAtZero" => true
-                ]
-            ],
+            "animation" => false,
             "plugins" => [
+                "title" => [
+                    "display" => strlen($title) != 0,
+                    "text" => $title
+                ],
                 "tooltip" => [
                     "callbacks" => [
                         "label" => "tooltipWithTotalAndProportion"
