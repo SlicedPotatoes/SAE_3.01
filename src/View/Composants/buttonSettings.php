@@ -17,6 +17,9 @@ require_once __DIR__ . "/Modal/modalLogOut.html";
                 <a class="dropdown-item" href="/ChangePassword">Modifier le mot de passe</a>
             </li>
             <li>
+                <a class="dropdown-item" href="/SemesterSettings">Définir les semestres</a>
+            </li>
+            <li>
                 <button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#logoutModal">
                     Déconnexion
                 </button>

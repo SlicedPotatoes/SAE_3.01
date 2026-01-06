@@ -49,6 +49,7 @@ $router->addRoute("/detailPeriod/", "DetailPeriodController@show");
 $router->addRoute("/resitSession", "ResitSessionController@show");
 $router->addRoute("/changePassword", "ChangePasswordController@show");
 $router->addRoute("/listOffPeriod", "OffPeriodController@show");
+$router->addRoute("/SemesterSettings", "SemesterSettingsController@show");
 $router->addRoute("/routine", "Routine@launch");
 
 $path = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
