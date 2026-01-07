@@ -118,14 +118,18 @@ if(AuthManager::isLogin()) {
                 © 2025 Université Polytechnique Hauts‑de‑France</p>
         </div>
 
-        <div class=" footer-row me-3">
-           <a href="/rules">Règlement intérieur de l’établissement</a>
+        <?php if (!AuthManager::isRole(AccountType::EducationalManager)
+                || AuthManager::isRole(AccountType::Secretary)
+                || AuthManager::isRole(AccountType::Teacher)): ?>
 
-        </div>
+            <div class=" footer-row me-3">
+                <a href="/rules">Règlement intérieur de l’établissement</a>
+            </div>
 
-        <div class="footer-row me-3">
+            <div class="footer-row me-3">
                 <a href="/userManual">Manuel d’utilisation du site</a>
-        </div>
+            </div>
+        <?php endif; ?>
     </div>
 
 </footer>

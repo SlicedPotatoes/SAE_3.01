@@ -64,7 +64,7 @@ class OffPeriodController {
                 if(!isset($start) || !isset($end) || !isset($name)) {
                     Notification::addNotification(NotificationType::Error, "Un des champs obligatoire n'a pas été fournis");
                 }
-                else if(DateTime::createFromFormat("Y-m-d", $end) > DateTime::createFromFormat("Y-m-d", $start)) {
+                else if(DateTime::createFromFormat("Y-m-d", $end) < DateTime::createFromFormat("Y-m-d", $start)) {
                     Notification::addNotification(NotificationType::Error, "La date de début doit être inférieur ou égal a la date de fin");
                 }
                 else {
