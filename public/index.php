@@ -56,6 +56,9 @@ $router->addRoute("/changement-notification-enseignant", "ChangerMailAlertContro
 $router->addRoute("/statistique-general", "GeneralStatisticsController@show");
 $router->addRoute("/statistique-etudiant/{id:int}", "StudentStatisticsController@show");
 
+$router->addRoute("/userManual", "UserManualController@show");
+$router->addRoute("/rules", "RulesController@show");
+
 $path = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
 
 //echo $path;
@@ -113,9 +116,29 @@ if(AuthManager::isLogin()) {
     ?>
 </div>
 
-<footer class="p-3">
-    Le footer
+<footer class="footer bg-light">
+    <div class="container d-flex flex-row flex-wrap justify-content-between align-items-start py-3">
+        <div class="footer-row me-3">
+            <p class="mb-0">Application interne de l'IUT de Maubeuge<br>
+                © 2025 Université Polytechnique Hauts‑de‑France</p>
+        </div>
+
+        <?php if (!AuthManager::isRole(AccountType::EducationalManager)
+                || AuthManager::isRole(AccountType::Secretary)
+                || AuthManager::isRole(AccountType::Teacher)): ?>
+
+            <div class=" footer-row me-3">
+                <a href="/rules">Règlement intérieur de l’établissement</a>
+            </div>
+
+            <div class="footer-row me-3">
+                <a href="/userManual">Manuel d’utilisation du site</a>
+            </div>
+        <?php endif; ?>
+    </div>
+
 </footer>
+
 
 <script src="/script/bootstrap.bundle.min.js"></script>
 <script src="/script/alert.js"></script>
