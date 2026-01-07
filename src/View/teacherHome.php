@@ -34,8 +34,6 @@ require_once __DIR__ . "/Composants/header.php";
             <p class='fs-1 text-body-secondary p-3'>Aucune absence n'a été enregistrée lors de vos cours.</p>
           </div>
         <?php endif; ?>
-      </div>
     </div>
   </div>
 </div>
-
