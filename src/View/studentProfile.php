@@ -84,7 +84,3 @@ require_once __DIR__ . "/Composants/header.php";
     </div>
     <script src="/script/tabBarHandler.js"></script>
 </div>
-
-<?php
-require __DIR__ . "/Composants/Modal/modalRule.php";
-?>

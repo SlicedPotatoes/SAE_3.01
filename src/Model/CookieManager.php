@@ -9,7 +9,6 @@ class CookieManager {
     private static bool $cardOpen;
     private static string $lastPath;
     private static string $lastPath2;
-    private static bool $hideRuleModal = false;
 
     /**
      * Initialisation
@@ -20,7 +19,6 @@ class CookieManager {
         self::$cardOpen = ($_COOKIE['cardOpen'] ?? 'true') === 'true';
         self::$lastPath = $_COOKIE['lastPath'] ?? '/';
         self::$lastPath2 = $_COOKIE['lastPath2'] ?? '/';
-        self::$hideRuleModal = (isset($_COOKIE['hideRuleModal']) && $_COOKIE['hideRuleModal'] === '1');
 
         if(!str_starts_with(self::$lastPath, '/')) {
             self::$lastPath = '/';
@@ -48,46 +46,6 @@ class CookieManager {
         ];
 
         setcookie($key, $value, $options);
-    }
-
-    /**
-     * Définit ou supprime le cookie hideRuleModal via le serveur.
-     * @param bool $hide true pour définir le cookie (valeur '1'), false pour le supprimer
-     * @return void
-     */
-    public static function setHideRuleModal(bool $hide): void {
-        if ($hide) {
-            $options = [
-                'expires' => time() + 365 * 24 * 60 * 60,
-                'path' => '/',
-                'domain' => '',
-                'secure' => GlobalVariable::PROD(),
-                'httponly' => false,
-                'samesite' => 'Lax'
-            ];
-            setcookie('hideRuleModal', '1', $options);
-            self::$hideRuleModal = true;
-        } else {
-            $options = [
-                'expires' => time() - 3600,
-                'path' => '/',
-                'domain' => '',
-                'secure' => GlobalVariable::PROD(),
-                'httponly' => false,
-                'samesite' => 'Lax'
-            ];
-            setcookie('hideRuleModal', '', $options);
-            self::$hideRuleModal = false;
-        }
-    }
-
-    /**
-     * Indique si la modale de règlement doit être masquée (lu depuis le cookie)
-     *
-     * @return bool
-     */
-    public static function getHideRuleModal(): bool {
-        return self::$hideRuleModal;
     }
 
     /**
