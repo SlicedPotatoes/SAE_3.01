@@ -51,8 +51,6 @@ $router->addRoute("/changePassword", "ChangePasswordController@show");
 $router->addRoute("/listOffPeriod", "OffPeriodController@show");
 $router->addRoute("/SemesterSettings", "SemesterSettingsController@show");
 $router->addRoute("/routine", "Routine@launch");
-$router->addRoute("/changement-notification-rp", "ChangerMailAlertController@changerMailAlertEducationalManager");
-$router->addRoute("/changement-notification-enseignant", "ChangerMailAlertController@changerMailAlertTeacher");
 $router->addRoute("/statistique-general", "GeneralStatisticsController@show");
 $router->addRoute("/statistique-etudiant/{id:int}", "StudentStatisticsController@show");
 
