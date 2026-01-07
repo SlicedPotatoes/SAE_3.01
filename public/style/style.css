@@ -100,17 +100,7 @@ html, body {
     --bs-table-color : white;
 }
 
-.btn-uphf a.btn-link-inside {
-    color: #fff;              /* texte blanc */
-    text-decoration: none;    /* pas de soulignement */
-}
-
-.btn-uphf a.btn-link-inside:hover,
-.btn-uphf a.btn-link-inside:focus {
-    color: #fff;
-    text-decoration: none;
-
-  .btn-no-border
+.btn-no-border
 {
     border: none;
     outline: none;
