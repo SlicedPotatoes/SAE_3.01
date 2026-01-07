@@ -33,6 +33,8 @@ if (AuthManager::isRole(AccountType::EducationalManager) || AuthManager::isRole(
             <li>
                 <a class="dropdown-item" href="/PredefinedComments">Commentaires prédéfinis</a>
             </li>
+            <?php endif; ?>
+            <?php if (AuthManager::isRole(AccountType::EducationalManager) || AuthManager::isRole(AccountType::Secretary)) : ?>
             <li>
                 <a class="dropdown-item" href="/SemesterSettings">Définir les semestres</a>
             </li>
