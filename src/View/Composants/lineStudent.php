@@ -16,6 +16,7 @@ global $student;
             <p class="card-text mb-0">Numéro étudiant: <?= $student->studentNumber ?></p>
         </div>
         <div class="p-2 text-end">
+            <a href="/statistique-etudiant/<?= $student->idAccount ?>" class="btn btn-success btn-no-border">Voir les statistiques</a>
             <a href="/StudentProfile/<?= $student->idAccount ?>" class="btn btn-uphf">Voir le profil</a>
         </div>
     </div>

@@ -484,3 +484,105 @@ CREATE TABLE studentPeriodAbs (
    DROP TABLE offPeriod;
    DROP TABLE studentPeriodAbs;
  */
+
+--changeset Dimitri:12 labels:enumDS context:ajoute le DS
+ALTER TYPE courseType ADD VALUE IF NOT EXISTS 'DS';
+
+/* liquibase rollback
+ALTER TABLE courseType DROP COLUMN DS
+*/
+
+--changeset Dimitri:13 labels:triggerDS context:met le DS en examen
+
+CREATE OR REPLACE FUNCTION force_ds_exam()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF NEW.courseType = 'DS' THEN
+        NEW.examen := TRUE;
+END IF;
+
+RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_ds_is_exam
+    BEFORE INSERT OR UPDATE ON absence
+                         FOR EACH ROW
+                         EXECUTE FUNCTION force_ds_exam();
+
+/* liquibase rollback
+DROP TRIGGER IF EXISTS trigger_ds_is_exam ON absence;
+DROP FUNCTION IF EXISTS force_ds_exam();
+*/
+
+--changeset Isaac:14 labels:mail context:stocke la volonté de recevoir des mails
+create table mailAlertEducationalManager(
+    idMailAlert serial,
+    activated boolean not null,
+    idAccount int references Account(idAccount)
+);
+
+create table mailAlertTeacher(
+    idMailAlert serial,
+    activated boolean not null,
+    idAccount int references Account(idAccount)
+);
+
+/* liquibase rollback
+   drop table mailAlertEducationManager;
+   drop table mailAlertTeacher;
+ */
+
+ --changeset Isaac:16 label:TriggerMail context: initialise les mailAlerts lors de l'insertion d'un teacher ou EM
+
+create or replace function initMailAlert()
+    returns trigger as $$
+begin
+    if(new.accounttype = 'Teacher') then
+        insert into mailAlertTeacher(activated, idAccount) values (true,new.idAccount);
+    end if;
+    if(new.accounttype = 'EducationalManager') then
+        insert into mailAlertEducationalManager(activated, idAccount) values (true,new.idAccount);
+        insert into mailAlertTeacher(activated, idAccount) values (true,new.idAccount);
+    end if;
+    RETURN NEW;
+end;
+$$ LANGUAGE plpgsql;
+CREATE TRIGGER trigger_account_init_mailAlert
+    AFTER INSERT OR UPDATE ON Account
+    FOR EACH ROW
+EXECUTE FUNCTION initMailAlert();
+
+/* liquibase rollback
+    drop trigger if exists trigger_account_init_mailAlert On Account;
+   drop function if exists initMailAlert;
+*/
+--changeset15 labels:semester context:gestion des semestres
+
+-- Table pour les années universitaires
+CREATE TABLE academicYear (
+    id SERIAL PRIMARY KEY,
+    label TEXT NOT NULL UNIQUE
+);
+
+
+-- Table pour les semestres
+CREATE TABLE semester (
+    id SERIAL PRIMARY KEY,
+    idAcademicYear INT NOT NULL REFERENCES academicYear(id),
+    label TEXT NOT NULL,
+    startDate DATE NOT NULL,
+    endDate DATE NOT NULL
+);
+
+-- Insertion de l'année universitaire actuelle et des semestres par défaut
+INSERT INTO academicYear (label) VALUES ('2025-2026');
+
+INSERT INTO semester (idAcademicYear, label, startDate, endDate) VALUES
+    (1, 'Semestre 1', '2025-09-01', '2026-01-15'),
+    (1, 'Semestre 2', '2026-01-16', '2026-06-30');
+
+/* liquibase rollback
+   DROP TABLE semester;
+   DROP TABLE academicYear;
+ */

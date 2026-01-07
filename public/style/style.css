@@ -109,4 +109,10 @@ html, body {
 .btn-uphf a.btn-link-inside:focus {
     color: #fff;
     text-decoration: none;
+
+  .btn-no-border
+{
+    border: none;
+    outline: none;
+    box-shadow: none;
 }

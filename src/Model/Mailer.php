@@ -98,7 +98,11 @@ class Mailer
     Le service des absences.";
 
         self::sendMail($firstnameStudent, $lastnameStudent, $emailStudent, $bodyStudent, $subjectStudent);
-        self::sendMail($firstnameTeacher, $lastnameTeacher, $emailTeacher, $bodyTeacher, $subjectTeacher);
+
+        // Si l'enseignant ne souhaite pas de mail il n'en recevera pas
+        if($teacher->getMailAlert()) {
+            self::sendMail($firstnameTeacher, $lastnameTeacher, $emailTeacher, $bodyTeacher, $subjectTeacher);
+        }
     }
 
 
