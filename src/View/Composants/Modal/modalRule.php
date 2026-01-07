@@ -4,7 +4,14 @@
  */
 
 use Uphf\GestionAbsence\Model\CookieManager;
+use Uphf\GestionAbsence\Model\AuthManager;
+use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
 $hide = CookieManager::getHideRuleModal();
+
+// N'afficher la modale que pour les étudiants
+if (!AuthManager::isRole(AccountType::Student)) {
+    return;
+}
 
 ?>
 
