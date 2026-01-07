@@ -33,7 +33,6 @@ $isTeacher = AuthManager::isRole(AccountType::Teacher);
           <?php if ($isEducationalManager) : ?>
             <li class="nav-item"><a class="nav-link btn btn-uphf" href="/JustificationList">Justificatifs</a></li>
             <li class="nav-item"><a class="nav-link btn btn-uphf" href="/SearchStudent">Rechercher un étudiant</a></li>
-            <li class="nav-item"><a class="nav-link btn btn-uphf" href="/PredefinedComments">Commentaires prédéfinis</a></li>
             <li class="nav-item"><a class="nav-link btn btn-uphf" href="/ImportVT">Importer depuis VT</a></li>
             <li class="nav-item"><a class="nav-link btn btn-uphf" href="/resitSession">Rattrapage</a></li>
             <li class="nav-item"><a class="nav-link btn btn-uphf" href="/statistique-general">Statistiques générales</a></li>

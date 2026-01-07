@@ -41,7 +41,9 @@ class RoutineLoungAbsencesMail
 
         $query = "SELECT email, lastname, firstname
               FROM Account
-              WHERE accounttype = 'EducationalManager'";
+              JOIN mailAlertEducationalManager m USING (idaccount)
+              WHERE accounttype = 'EducationalManager'
+              AND m.activated = TRUE";
 
         $sql = $pdo->prepare($query);
         $sql->execute();
