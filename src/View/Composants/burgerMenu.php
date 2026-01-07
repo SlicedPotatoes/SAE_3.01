@@ -35,6 +35,7 @@ $isTeacher = AuthManager::isRole(AccountType::Teacher);
             <li class="nav-item"><a class="nav-link btn btn-uphf" href="/SearchStudent">Rechercher un étudiant</a></li>
             <li class="nav-item"><a class="nav-link btn btn-uphf" href="/ImportVT">Importer depuis VT</a></li>
             <li class="nav-item"><a class="nav-link btn btn-uphf" href="/resitSession">Rattrapage</a></li>
+            <li class="nav-item"><a class="nav-link btn btn-uphf" href="/statistique-general">Statistiques générales</a></li>
           <?php endif; ?>
 
           <!-- BURGER MENU DU SECRETARIAT -->

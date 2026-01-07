@@ -33,6 +33,9 @@ require_once __DIR__ . "/Modal/editNotificationsModal.php";
             </li>
             <?php endif; ?>
             <li>
+                <a class="dropdown-item" href="/SemesterSettings">Définir les semestres</a>
+            </li>
+            <li>
                 <button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#logoutModal">
                     Déconnexion
                 </button>

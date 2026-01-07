@@ -49,9 +49,12 @@ $router->addRoute("/detailPeriod/", "DetailPeriodController@show");
 $router->addRoute("/resitSession", "ResitSessionController@show");
 $router->addRoute("/changePassword", "ChangePasswordController@show");
 $router->addRoute("/listOffPeriod", "OffPeriodController@show");
+$router->addRoute("/SemesterSettings", "SemesterSettingsController@show");
 $router->addRoute("/routine", "Routine@launch");
 $router->addRoute("/changement-notification-rp", "ChangerMailAlertController@changerMailAlertEducationalManager");
 $router->addRoute("/changement-notification-enseignant", "ChangerMailAlertController@changerMailAlertTeacher");
+$router->addRoute("/statistique-general", "GeneralStatisticsController@show");
+$router->addRoute("/statistique-etudiant/{id:int}", "StudentStatisticsController@show");
 
 $path = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
 

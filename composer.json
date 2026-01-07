@@ -23,10 +23,12 @@
     },
     "scripts": {
         "post-install-cmd": [
-            "php copy_bootstrap.php"
+            "php copy_bootstrap.php",
+            "php get_chartjs.php"
         ],
         "post-update-cmd": [
-            "php copy_bootstrap.php"
+            "php copy_bootstrap.php",
+            "php get_chartjs.php"
         ]
     }
 }

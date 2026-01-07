@@ -99,3 +99,10 @@ html, body {
     --bs-table-bg : var(--color-uphf);
     --bs-table-color : white;
 }
+
+.btn-no-border
+{
+    border: none;
+    outline: none;
+    box-shadow: none;
+}
