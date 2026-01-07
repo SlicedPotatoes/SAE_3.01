@@ -23,12 +23,18 @@ class CommentValidator
         );
 
     }
+    /**
+     * Vérifie que les données soient valide selon l'action demandée
+     *
+     * @return array Tableau d'erreurs (vide si y'a R)
+     */
     public function checkAllGood(): array
     {
         if (!isset($this->input)) {
             return ["Impossible de traiter votre demande, veuillez contacter l'administrateur"];
         }
 
+        // Vérifier que l'action est présente et valide
         if (!isset($this->input['action']) || !in_array($this->input['action'], ['add', 'edit', 'delete'])) {
             return ["Action invalide ou manquante"];
         }
@@ -37,6 +43,7 @@ class CommentValidator
 
         $errors = [];
 
+        // Pour add et edit, le texte est obligatoire
         if (in_array($action, [ 'edit', 'add'])) {
             $errors = array_merge($errors, ValidationHelper::validateRequired($this->input,
                 ['textComment'],

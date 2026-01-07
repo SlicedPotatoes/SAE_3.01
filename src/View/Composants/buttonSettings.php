@@ -3,7 +3,13 @@
  * Frontend du bouton parametre
  */
 
+use Uphf\GestionAbsence\Model\AuthManager;
+use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
+
 require_once __DIR__ . "/Modal/modalLogOut.html";
+if (AuthManager::isRole(AccountType::EducationalManager) || AuthManager::isRole(AccountType::Teacher)) {
+    require_once __DIR__ . "/Modal/editNotificationsModal.php";
+}
 ?>
 
 <!-- Bouton pour avoir le dropdown menu pour modifier les informations du profil, nous pourrons ajouter d'autres fonctionnalités plus tard -->
@@ -15,6 +21,21 @@ require_once __DIR__ . "/Modal/modalLogOut.html";
         <ul class="dropdown-menu">
             <li>
                 <a class="dropdown-item" href="/ChangePassword">Modifier le mot de passe</a>
+            </li>
+            <?php if (AuthManager::isRole(AccountType::EducationalManager) || AuthManager::isRole(AccountType::Teacher)) : ?>
+            <li>
+                <button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#EditNotificationModal">
+                    Gérer les notifications
+                </button>
+            </li>
+            <?php endif; ?>
+            <?php if (AuthManager::isRole(AccountType::EducationalManager)) : ?>
+            <li>
+                <a class="dropdown-item" href="/PredefinedComments">Commentaires prédéfinis</a>
+            </li>
+            <?php endif; ?>
+            <li>
+                <a class="dropdown-item" href="/SemesterSettings">Définir les semestres</a>
             </li>
             <li>
                 <button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#logoutModal">
