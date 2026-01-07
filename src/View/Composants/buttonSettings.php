@@ -7,7 +7,9 @@ use Uphf\GestionAbsence\Model\AuthManager;
 use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
 
 require_once __DIR__ . "/Modal/modalLogOut.html";
-require_once __DIR__ . "/Modal/editNotificationsModal.php";
+if (AuthManager::isRole(AccountType::EducationalManager) || AuthManager::isRole(AccountType::Teacher)) {
+    require_once __DIR__ . "/Modal/editNotificationsModal.php";
+}
 ?>
 
 <!-- Bouton pour avoir le dropdown menu pour modifier les informations du profil, nous pourrons ajouter d'autres fonctionnalités plus tard -->
