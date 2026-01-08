@@ -492,17 +492,17 @@ ALTER TYPE courseType ADD VALUE IF NOT EXISTS 'DS';
 ALTER TABLE courseType DROP COLUMN DS
 */
 
---changeset Dimitri:13 labels:triggerDS context:met le DS en examen
+--changeset Dimitri:13 labels:triggerDS context:met le DS en examen splitStatements:false
 
 CREATE OR REPLACE FUNCTION force_ds_exam()
-RETURNS TRIGGER AS $$
+    RETURNS TRIGGER AS $$
 BEGIN
     IF NEW.courseType = 'DS' THEN
         NEW.examen := TRUE;
-END IF;
+    END IF;
 
-RETURN NEW;
-END;
+    RETURN NEW;
+END
 $$ LANGUAGE plpgsql;
 
 CREATE TRIGGER trigger_ds_is_exam
@@ -517,13 +517,13 @@ DROP FUNCTION IF EXISTS force_ds_exam();
 
 --changeset Isaac:14 labels:mail context:stocke la volonté de recevoir des mails
 create table mailAlertEducationalManager(
-    idMailAlert serial,
+    idMailAlert serial primary key,
     activated boolean not null,
     idAccount int references Account(idAccount)
 );
 
 create table mailAlertTeacher(
-    idMailAlert serial,
+    idMailAlert serial primary key,
     activated boolean not null,
     idAccount int references Account(idAccount)
 );
@@ -533,7 +533,7 @@ create table mailAlertTeacher(
    drop table mailAlertTeacher;
  */
 
- --changeset Isaac:16 label:TriggerMail context: initialise les mailAlerts lors de l'insertion d'un teacher ou EM
+--changeset Isaac:15 label:TriggerMail context: initialise les mailAlerts lors de l'insertion d'un teacher ou EM splitStatements:false
 
 create or replace function initMailAlert()
     returns trigger as $$
@@ -555,9 +555,9 @@ EXECUTE FUNCTION initMailAlert();
 
 /* liquibase rollback
     drop trigger if exists trigger_account_init_mailAlert On Account;
-   drop function if exists initMailAlert;
+   drop function if exists initMailAlert();
 */
---changeset15 labels:semester context:gestion des semestres
+--changeset Yann:16 labels:semester context:gestion des semestres
 
 -- Table pour les années universitaires
 CREATE TABLE academicYear (
@@ -585,14 +585,4 @@ INSERT INTO semester (idAcademicYear, label, startDate, endDate) VALUES
 /* liquibase rollback
    DROP TABLE semester;
    DROP TABLE academicYear;
- */
-
---changeset Isaac:17 label:Correctif context: Correctif des tables MailAlert
-ALTER table mailAlertTeacher add constraint mailAlertTeacher_primarykey primary key (idMailAlert);
-ALTER table mailAlertEducationalManager add constraint mailAlertEducationalManager_primarykey primary key (idMailAlert);
-
-
-/*liquibase rollback
-alter table mailAlertTeacher drop constraint mailAlertTeacher_primarykey;
-alter table mailAlertEducationalManager drop constraint mailAlertEducationalManager_primarykey;
  */
