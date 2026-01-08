@@ -517,13 +517,13 @@ DROP FUNCTION IF EXISTS force_ds_exam();
 
 --changeset Isaac:14 labels:mail context:stocke la volonté de recevoir des mails
 create table mailAlertEducationalManager(
-    idMailAlert serial,
+    idMailAlert serial primary key ,
     activated boolean not null,
     idAccount int references Account(idAccount)
 );
 
 create table mailAlertTeacher(
-    idMailAlert serial,
+    idMailAlert serial primary key,
     activated boolean not null,
     idAccount int references Account(idAccount)
 );
