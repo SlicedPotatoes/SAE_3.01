@@ -10,7 +10,7 @@ class ReaderCSV
 {
 
     /**
-     * Méthode générique permettant de lire n'importe qu'elle fichier csv
+     * Méthode générique permettant de lire n'importe quel fichier csv
      *
      * @warning !!! ATTENTION : Il est capable de lire certain format d'image, merci d'utiliser isCSV avant d'autres opérations !!!
      *
@@ -18,6 +18,7 @@ class ReaderCSV
      * @param  string  $deliminator
      * @param  string  $enclosure
      * @param  string  $escape
+     *
      *
      * @return array
      */
