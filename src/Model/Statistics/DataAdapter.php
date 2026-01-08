@@ -2,6 +2,8 @@
 
 namespace Uphf\GestionAbsence\Model\Statistics;
 
+use Exception;
+
 /**
  * Classe statique permettant d'adapter les données facilement en fonction du graphique
  */
@@ -13,6 +15,7 @@ class DataAdapter {
      * @param callable|null $formatterLabel : fonction permettant d'appliqué un traitement spécifique aux label
      * @param callable|null $bgColor : fonction permettant d'ajouter des couleurs spécifique en fonction du label
      * @return array
+     * @throws Exception // Si les données en entrée ne sont pas correcte
      */
     public static function proportionAdapter(array $rows, ?callable $formatterLabel, ?callable $bgColor): array {
         $formatterLabel ??= [self::class, 'defaultCallable'];
@@ -22,6 +25,10 @@ class DataAdapter {
         $backgroundColor = isset($bgColor) ? [] : null;
 
         foreach ($rows as $row) {
+            if(!isset($row['label']) || !isset($row['value'])) {
+                throw new Exception('Les données d\'entrée ne sont pas aux bon format');
+            }
+
             $labels[] = $formatterLabel($row['label']);
             $data[] = $row['value'];
             if(isset($backgroundColor)) {
