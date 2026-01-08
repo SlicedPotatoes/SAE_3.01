@@ -49,8 +49,8 @@ use \Uphf\GestionAbsence\Model\Entity\Account\AccountType;
                         Notification d’absence prolongée d’un étudiant (> 1 semaine)
                     </label>
                 </div>
-            </div>
                 <?php endif; ?>
+            </div>
 
             <div class="modal-footer">
                 <!-- Encore un bouton pour quitter le modal, pour plus de clarité pour l'user -->
