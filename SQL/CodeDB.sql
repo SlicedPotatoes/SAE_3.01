@@ -517,13 +517,13 @@ DROP FUNCTION IF EXISTS force_ds_exam();
 
 --changeset Isaac:14 labels:mail context:stocke la volonté de recevoir des mails
 create table mailAlertEducationalManager(
-    idMailAlert serial primary key ,
+    idMailAlert serial,
     activated boolean not null,
     idAccount int references Account(idAccount)
 );
 
 create table mailAlertTeacher(
-    idMailAlert serial primary key,
+    idMailAlert serial,
     activated boolean not null,
     idAccount int references Account(idAccount)
 );
@@ -585,4 +585,14 @@ INSERT INTO semester (idAcademicYear, label, startDate, endDate) VALUES
 /* liquibase rollback
    DROP TABLE semester;
    DROP TABLE academicYear;
+ */
+
+--changeset Isaac:17 label:Correctif context: Correctif des tables MailAlert
+ALTER table mailAlertTeacher add constraint mailAlertTeacher_primarykey primary key (idMailAlert);
+ALTER table mailAlertEducationalManager add constraint mailAlertEducationalManager_primarykey primary key (idMailAlert);
+
+
+/*liquibase rollback
+alter table mailAlertTeacher drop constraint mailAlertTeacher_primarykey;
+alter table mailAlertEducationalManager drop constraint mailAlertEducationalManager_primarykey;
  */
