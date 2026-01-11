@@ -19,7 +19,7 @@ use Uphf\GestionAbsence\Router;
 $dotenv = Dotenv::createImmutable(dirname(__DIR__));
 $dotenv->load();
 
-if(!GlobalVariable::PROD()) {
+if (!GlobalVariable::PROD()) {
     ini_set('display_errors', 1);
     ini_set('display_startup_errors', 1);
     error_reporting(E_ALL);
@@ -67,7 +67,7 @@ $dataRoute = $router->launch($path);
 $dataView = $dataRoute->data;
 $srcFolder = __DIR__ . '/../src';
 
-if($dataRoute->view != '/View/error.php') {
+if ($dataRoute->view != '/View/error.php') {
     CookieManager::setLastPath($path);
 }
 
@@ -92,7 +92,7 @@ Connection::close();
 <body class="bg-light d-flex flex-column m-0">
 <?php
 // Si l'utilisateur est connecté, afficher le bouton d'option
-if(AuthManager::isLogin()) {
+if (AuthManager::isLogin()) {
     require $srcFolder . "/View/Composants/buttonSettings.php";
 
     if (AuthManager::isRole(AccountType::EducationalManager) || AuthManager::isRole(AccountType::Secretary)) {
@@ -120,7 +120,8 @@ if(AuthManager::isLogin()) {
     <div class="container d-flex flex-row flex-wrap justify-content-between align-items-start py-3">
         <div class="footer-row me-3">
             <p class="mb-0">Application interne de l'IUT de Maubeuge<br>
-                © 2026 Université Polytechnique Hauts‑de‑France</p>
+                © <?php echo date("Y") ?> Université Polytechnique Hauts‑de‑France
+            </p>
         </div>
 
         <?php if (!AuthManager::isRole(AccountType::EducationalManager)
