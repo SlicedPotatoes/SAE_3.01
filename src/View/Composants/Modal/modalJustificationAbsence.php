@@ -39,7 +39,7 @@ use Uphf\GestionAbsence\Model\GlobalVariable;
                         <!-- Motif de l'absence -->
                         <div class="col-12 col-md-7">
                             <label for="justificationAbsenceReason" class="form-label h5 mb-2">Motif de l'absence</label>
-                            <textarea name="absenceReason" id="justificationAbsenceReason" class="form-control" rows="8" placeholder="Expliquez pourquoi vous avez était absent." form="addJustificationForm" required></textarea>
+                            <textarea name="absenceReason" id="justificationAbsenceReason" class="form-control" rows="8" placeholder="Expliquez pourquoi vous avez été absent." form="addJustificationForm" required></textarea>
                         </div>
 
                         <div class="col-12 col-md-5">

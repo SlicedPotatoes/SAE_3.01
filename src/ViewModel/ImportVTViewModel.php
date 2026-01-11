@@ -13,7 +13,7 @@ readonly class ImportVTViewModel extends BaseViewModel
           false,
           "Importation des",
           "données VT",
-          "dans la base de donnée",
+          "dans la base de données",
         );
     }
 

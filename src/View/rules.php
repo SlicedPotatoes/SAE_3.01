@@ -31,7 +31,7 @@
           <section id="consequences" class="mb-4">
             <h2 class="h5">Conséquences (résumé)</h2>
             <ul class="mb-2">
-              <li>Les justificatifs doivent être transmis au résponsable pédagogique dans les délais ; sinon l'absence peut être considérée comme non excusée.</li>
+              <li>Les justificatifs doivent être transmis au responsable pédagogique dans les délais ; sinon, l'absence peut être considérée comme non excusée.</li>
               <li>Absences injustifiées ou répétées → pénalités académiques (malus, notes 0) et, en cas de cumul, risque de radiation.</li>
             </ul>
           </section>

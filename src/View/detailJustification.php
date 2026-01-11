@@ -12,7 +12,7 @@ $justification = $dataView->justification;
 $currentState = $justification->state;
 $isEducationalManager = $dataView->roleUser === AccountType::EducationalManager;
 
-$h2 = "Jusificatif";
+$h2 = "Justificatif";
 if ($isEducationalManager)
 {
     $h2 .= " de " . $justification->studentFullName . ", ";
@@ -30,7 +30,7 @@ require_once __DIR__ . "/../View/Composants/Modal/filePreviewModal.php";
             <h2 class="mb-1"><?=$h2?></h2>
             <div class="d-flex gap-3 align-items-center">
                 <?php if($isEducationalManager): ?>
-                    <a href="/StudentProfile/<?= $dataView->student->idAccount ?>" class="btn btn-uphf">Profil Étudiant</a>
+                    <a href="/StudentProfile/<?= $dataView->student->idAccount ?>" class="btn btn-uphf">Profil étudiant</a>
                 <?php endif; ?>
                 <span class="badge rounded-pill text-bg-<?= $currentState->colorBadge() ?> fs-6 px-3 py-2">
                     <?= $currentState->label() ?>
@@ -96,7 +96,7 @@ require_once __DIR__ . "/../View/Composants/Modal/filePreviewModal.php";
                                    value="true"
                                    class="absence-input-lock">
                             <div class="btn-group gap-1 absence-cta-rp">
-                                <button type="button" class="btn btn-outline-success absence-btn-state rounded">Validé</button>
+                                <button type="button" class="btn btn-outline-success absence-btn-state rounded">Valider</button>
                                 <button type="button" class="btn btn-danger absence-btn-lock d-none"><i class="bi bi-lock"></i></button>
                             </div>
                         </div>

@@ -7,7 +7,7 @@ require_once __DIR__ . "/Composants/header.php";
 <div class="d-flex w-100 my-auto">
     <div class="border p-3 rounded-start w-50 ms-auto bg-white">
         <div>
-            <h5>Pré-requis pour le mot de passe :</h5>
+            <h5>Prérequis pour le mot de passe :</h5>
             <!-- Prérequis dynamique (couleur en fonction de si valide ou non) -->
             <ul class="mb-3">
                 <li id="req-length">Entre 12 et 30 caractères</li>
@@ -20,7 +20,7 @@ require_once __DIR__ . "/Composants/header.php";
             </ul>
 
             <div id="alertModifMDP" class="card border-0 p-2" style="background: var(--bs-danger-border-subtle)" role="alert">
-                Le mot de passe ne respecte pas tous les pré-requis.
+                Le mot de passe ne respecte pas tous les prérequis.
             </div>
 
             <!-- Formulaire pour changer de mdp -->

@@ -17,9 +17,9 @@ enum StateAbs: string {
      */
     public function label(): string {
         return match($this) {
-            self::Validated => 'Validé',
-            self::Refused => 'Refusé',
-            self::NotJustified => 'Non justifié',
+            self::Validated => 'Validée',
+            self::Refused => 'Refusée',
+            self::NotJustified => 'Non justifiée',
             self::Pending => 'En attente'
         };
     }

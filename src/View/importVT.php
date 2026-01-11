@@ -52,7 +52,7 @@ require_once __DIR__."/Composants/header.php";
     <input id="import_submit"
            class="btn btn-primary btn-uphf mt-3 align-self-end"
            type="submit"
-           value="Importer dans la base de donnée">
+           value="Importer dans la base de données">
   </form>
 </div>
 

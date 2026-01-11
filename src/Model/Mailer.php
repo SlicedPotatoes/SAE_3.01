@@ -53,7 +53,7 @@ class Mailer
         $subject = 'Traitement de votre justificatif d\'absence';
         $dateJour = date('d/m/Y');
         $body = "Bonjour " . $firstname . " " . $lastname . ",<br><br>
-    Votre demande de justification d'absence du " . $dateDebut->format('d/m/Y') . " au " . $dateFin->format('d/m/Y') . " a bien été traité par le responsable pédagogique le " . $dateJour . ".<br>
+    Votre demande de justification d'absence du " . $dateDebut->format('d/m/Y') . " au " . $dateFin->format('d/m/Y') . " a bien été traitée par le responsable pédagogique le " . $dateJour . ".<br>
     Nous vous invitons à consulter la décision du responsable pédagogique dans votre espace personnel.<br><br>
     Cordialement,<br>
     Le service des absences.";
@@ -87,12 +87,12 @@ class Mailer
         $dateJour = date('d/m/Y');
 
         $bodyTeacher = "Bonjour " . $firstnameTeacher . " " . $lastnameTeacher . ",<br><br>
-    L'étudiant " . $firstnameStudent . " " . $lastnameStudent . " a justifié son absence pour l'examen qui à eu lieu le " . $dateExam->format('d/m/Y') . ' à ' . $dateExam->format('h:i') . " pour la ressource " . $ressource->getLabel() . "<br><br>
+    L'étudiant " . $firstnameStudent . " " . $lastnameStudent . " a justifié son absence pour l'examen qui a eu lieu le " . $dateExam->format('d/m/Y') . ' à ' . $dateExam->format('h:i') . " pour la ressource " . $ressource->getLabel() . "<br><br>
     Cordialement,<br>
     Le service des absences.";
 
         $bodyStudent = "Bonjour " . $firstnameStudent . " " . $lastnameStudent . ",<br><br>
-    Votre demande de justification d'absence pour l'examen de " . $ressource->getLabel() . " du " . $dateExam->format('d/m/y') . ' à ' . $dateExam->format('h:i') . " a bien été prise en compte le " . $dateJour . ".<br>
+    Votre demande de justification d'absence pour l'examen de " . $ressource->getLabel() . " du " . $dateExam->format('d/m/Y') . ' à ' . $dateExam->format('h:i') . " a bien été prise en compte le " . $dateJour . ".<br>
     Vous pouvez contacter votre professeur " . $firstnameTeacher . " " . $lastnameTeacher . " pour vous renseigner sur les modalités de rattrapage de cet examen.<br><br>
     Cordialement,<br>
     Le service des absences.";
@@ -141,13 +141,13 @@ class Mailer
         $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? "https://" : "http://";
         $domain = $_SERVER['HTTP_HOST'];
         $url = $protocol . $domain . "/ChangePassword/" . $token ;
-        $subject = 'Mot de passe oublier';
+        $subject = 'Mot de passe oublié';
         $body = "Bonjour " . $firstname . " " . $lastname . ",<br><br>
                 Vous avez demandé la réinitialisation de votre mot de passe.<br>
                 Pour définir un nouveau mot de passe, cliquez sur le lien suivant : <br>
                 " . $url . "<br><br>
                 Pour des raisons de sécurité, ce lien est valable pendant une durée limitée. <br>
-                Si vous n'êtes pas à l'origine de cette modification, vous pouvez ignorer ce message.<br><br>
+                Si vous n'êtes pas à l'origine de cette demande, vous pouvez ignorer ce message.<br><br>
                 Cordialement,<br>
                 Le service des absences.";
 

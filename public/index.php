@@ -120,7 +120,7 @@ if(AuthManager::isLogin()) {
     <div class="container d-flex flex-row flex-wrap justify-content-between align-items-start py-3">
         <div class="footer-row me-3">
             <p class="mb-0">Application interne de l'IUT de Maubeuge<br>
-                © 2025 Université Polytechnique Hauts‑de‑France</p>
+                © 2026 Université Polytechnique Hauts‑de‑France</p>
         </div>
 
         <?php if (!AuthManager::isRole(AccountType::EducationalManager)

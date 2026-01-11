@@ -18,7 +18,7 @@ use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
 
       <form name="login" method="post">
         <div class="mb-3">
-          <label class="mb-0" for="email" class="form-label" id="emailLabel">E-mail :</label>
+          <label class="mb-0 form-label" for="email" id="emailLabel">Adresse e-mail :</label>
           <input type="text" class="form-control opacity-75" id="email" name="email" placeholder="" required>
         </div>
 

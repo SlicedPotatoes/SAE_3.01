@@ -41,7 +41,7 @@ use Uphf\GestionAbsence\Model\CookieManager;
     <!-- Liste des absences -->
     <div class="d-flex flex-column" style="flex: 1 1 30%; min-height: 0">
         <div class="d-flex align-items-center mb-2">
-            <h4 class="mb-0">Absences</h4>
+            <h4 class="mb-0">Absents</h4>
         </div>
 
         <div class="border-top flex-fill overflow-y-auto" style="min-height: 0">
@@ -50,7 +50,7 @@ use Uphf\GestionAbsence\Model\CookieManager;
                     <!-- Nom de l'étudiant -->
                     <div class="me-3">
                         <div>Prénom: <?= $absence->getStudent()->getFirstName() ?></div>
-                        <div>Durée: <?= $absence->getStudent()->getLastName() ?></div>
+                        <div>Nom: <?= $absence->getStudent()->getLastName() ?></div>
                     </div>
 
                     <!-- Etat de l'absence -->

@@ -16,7 +16,7 @@ $states = StateJustif::getAll();
     <!-- Tab bar -->
     <ul class="nav nav-tabs" id="tab-dashboard-stu" role="tablist">
         <li class="nav-item" role="presentation">
-            <button class="text-black nav-link <?= $dataView->currTab == 'proofToDo' ? 'active' : '' ?>" id="proofToDo-tab" data-bs-toggle="tab" data-bs-target="#proofToDo-tab-pane" type="button" role="tab" aria-controls="proofToDo-tab-pane" aria-selected="true">Justificatifs à traités</button>
+            <button class="text-black nav-link <?= $dataView->currTab == 'proofToDo' ? 'active' : '' ?>" id="proofToDo-tab" data-bs-toggle="tab" data-bs-target="#proofToDo-tab-pane" type="button" role="tab" aria-controls="proofToDo-tab-pane" aria-selected="true">Justificatifs à traiter</button>
         </li>
         <li class="nav-item" role="presentation">
             <button class="text-black nav-link <?= $dataView->currTab == 'proofDone' ? 'active' : '' ?>" id="proofDone-tab" data-bs-toggle="tab" data-bs-target="#proofDone-tab-pane" type="button" role="tab" aria-controls="proofDone-tab-pane" aria-selected="true">Justificatifs traités</button>
@@ -42,7 +42,7 @@ $states = StateJustif::getAll();
                 ?>
                 <?php if (count($listJustifications) == 0): ?>
                     <div class="d-flex flex-column align-items-center justify-content-center h-100">
-                        <p class='fs-1 text-body-secondary p-3'>Pas de justificatifs à traité</p>
+                        <p class='fs-1 text-body-secondary p-3'>Pas de justificatifs à traiter</p>
                     </div>
                 <?php endif; ?>
             </div>

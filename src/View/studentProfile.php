@@ -5,6 +5,7 @@
 
 use Uphf\GestionAbsence\Model\Entity\Justification\StateJustif;
 use Uphf\GestionAbsence\Model\Entity\Absence\StateAbs;
+use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
 
 global $dataView;
 
@@ -22,7 +23,10 @@ require_once __DIR__ . "/Composants/header.php";
         </li>
         <li class="ms-auto">
             <?php
-            require __DIR__ . "/Composants/Modal/modalJustificationAbsence.php";
+            // N'afficher le bouton/modal de justification que pour les étudiants connectés
+            if (isset($dataView->roleUser) && $dataView->roleUser === AccountType::Student) {
+                require __DIR__ . "/Composants/Modal/modalJustificationAbsence.php";
+            }
             ?>
         </li>
     </ul>
