@@ -12,7 +12,7 @@ class MailAlertSelector
         $query = $pdo->prepare('SELECT activated FROM account join mailAlertEducationalManager using (idaccount) WHERE idAccount = :idAccount;');
         $query->bindValue(':idAccount', $idAccount);
         $query->execute();
-        $result = $query->fetch();
+        $result = $query->fetchColumn();
         return $result;
     }
 
@@ -22,7 +22,7 @@ class MailAlertSelector
         $query = $pdo->prepare('SELECT activated FROM account join mailAlertTeacher using (idaccount) WHERE idAccount = :idAccount;');
         $query->bindValue(':idAccount', $idAccount);
         $query->execute();
-        $result = $query->fetch();
+        $result = $query->fetchColumn();
         return $result;
     }
     public static function MailAlertSIsActivated(int $idAccount):array
@@ -31,7 +31,7 @@ class MailAlertSelector
         $query = $pdo->prepare('SELECT mailAlertTeacher.activated as mailAlertTeacher,  COALESCE(mailAlertEducationalManager.activated,false) as mailAlertEducationalMannager FROM account join mailAlertTeacher using (idaccount) left join mailAlertEducationalManager using (idaccount) WHERE account.idAccount = :idAccount;');
         $query->bindValue(':idAccount', $idAccount);
         $query->execute();
-        $result = $query->fetch();
+        $result = $query->fetchColumn();
         return $result;
     }
 }

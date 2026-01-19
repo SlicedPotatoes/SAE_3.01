@@ -15,12 +15,9 @@ class Teacher extends Account {
 
     public function getMailAlert() : bool
     {
-        if ($this->mailAlert !== null) {
-            return $this->mailAlert;
-        }
-        else {
+        if(!isset($this->mailAlert)) {
             $this->mailAlert = MailAlertSelector::MailAlertTeacherIsActivated($this->getIdAccount());
-            return $this->mailAlert;
         }
+        return $this->mailAlert;
     }
 }
