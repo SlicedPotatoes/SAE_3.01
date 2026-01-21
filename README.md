@@ -2,12 +2,12 @@
 
 ## Contributeur
 
-SlicedPotatoes  -> Masmejean Kevin
-Steenkiste      -> van Steenkiste Dimitri
-Pileaucou59     -> Pileaucou Louis
-Casi223         -> Godisiabois Isaac
-LPtornad0       -> Helin Esteban
-Valyn5          -> Dascotte Yann
+- SlicedPotatoes  -> Masmejean Kevin
+- Steenkiste      -> van Steenkiste Dimitri
+- Pileaucou59     -> Pileaucou Louis
+- Casi223         -> Godisiabois Isaac
+- LPtornad0       -> Helin Esteban
+- Valyn5          -> Dascotte Yann
 
 ## Déploiement de Liquibase
 
