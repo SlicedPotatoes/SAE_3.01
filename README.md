@@ -1,5 +1,14 @@
 # SAE_3.01
 
+## Contributeur
+
+SlicedPotatoes  -> Masmejean Kevin
+Steenkiste      -> van Steenkiste Dimitri
+Pileaucou59     -> Pileaucou Louis
+Casi223         -> Godisiabois Isaac
+LPtornad0       -> Helin Esteban
+Valyn5          -> Dascotte Yann
+
 ## Déploiement de Liquibase
 
 ### Etape 1 : Le répertoire
