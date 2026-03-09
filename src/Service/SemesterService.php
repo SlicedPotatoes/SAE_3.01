@@ -1,0 +1,55 @@
+<?php
+
+namespace Uphf\GestionAbsence\Service;
+
+use Uphf\GestionAbsence\Database\Select\SemesterSelector;
+use Uphf\GestionAbsence\Database\Update\SemesterUpdater;
+use Uphf\GestionAbsence\Model\Entity\Semester;
+
+class SemesterService
+{
+    /**
+     * Récupérer tous les semestres d'une année universitaire
+     *
+     * @param int $idAcademicYear
+     * @return Semester[]
+     */
+    public static function getByAcademicYear(int $idAcademicYear): array
+    {
+        return SemesterSelector::getByAcademicYear($idAcademicYear);
+    }
+
+    /**
+     * Récupérer les semestres de l'année universitaire actuelle
+     *
+     * @return Semester[]
+     */
+    public static function getCurrentSemesters(): array
+    {
+        return SemesterSelector::getCurrentSemesters();
+    }
+
+    /**
+     * Récupérer un semestre par son ID
+     *
+     * @param int $id
+     * @return Semester|null
+     */
+    public static function getById(int $id): ?Semester
+    {
+        return SemesterSelector::getById($id);
+    }
+
+    /**
+     * Mettre à jour les dates d'un semestre
+     *
+     * @param int $id
+     * @param string $startDate
+     * @param string $endDate
+     * @return bool
+     */
+    public static function update(int $id, string $startDate, string $endDate): bool
+    {
+        return SemesterUpdater::update($id, $startDate, $endDate);
+    }
+}
