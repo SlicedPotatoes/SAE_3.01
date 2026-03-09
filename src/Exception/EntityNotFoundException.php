@@ -2,6 +2,6 @@
 
 namespace Uphf\GestionAbsence\Exception;
 
-class EntityNotFound extends \Exception
+class EntityNotFoundException extends \Exception
 {
 }
