@@ -51,6 +51,7 @@ class PredifinedCommentService
      *
      * @param int $idComment
      * @return Comment
+     * @throws InvalidArgumentException dans le cas où aucun commentaire n'est trouvé avec l'ID donné
      */
     public static function commentSelectorById(int $idComment): Comment
     {
