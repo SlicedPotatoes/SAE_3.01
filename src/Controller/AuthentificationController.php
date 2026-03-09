@@ -2,10 +2,9 @@
 
 namespace Uphf\GestionAbsence\Controller;
 
+use Uphf\GestionAbsence\Database\Select\AccountSelector;
+use Uphf\GestionAbsence\Database\Select\StudentSelector;
 use Uphf\GestionAbsence\Model\AuthManager;
-use Uphf\GestionAbsence\Model\DB\Select\AccountSelector;
-use Uphf\GestionAbsence\Model\DB\Select\StudentSelector;
-use Uphf\GestionAbsence\Model\Entity\Account\Account;
 use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
 use Uphf\GestionAbsence\Model\Notification\Notification;
 use Uphf\GestionAbsence\Model\Notification\NotificationType;

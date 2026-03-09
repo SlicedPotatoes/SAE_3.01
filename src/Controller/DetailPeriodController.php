@@ -3,9 +3,8 @@
 namespace Uphf\GestionAbsence\Controller;
 
 use DateTime;
+use Uphf\GestionAbsence\Database\Select\TimeSlotAbsenceSelector;
 use Uphf\GestionAbsence\Model\AuthManager;
-use Uphf\GestionAbsence\Model\DB\Select\TimeSlotAbsenceSelector;
-use Uphf\GestionAbsence\Model\Entity\Absence\Resource;
 use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
 use Uphf\GestionAbsence\ViewModel\DetailPeriodViewModel;
 

@@ -2,10 +2,10 @@
 
 namespace Uphf\GestionAbsence\Controller;
 
+use Uphf\GestionAbsence\Database\Select\GroupStudentSelector;
+use Uphf\GestionAbsence\Database\Select\SelectBuilder\ProportionStatisticsBuilder;
+use Uphf\GestionAbsence\Database\Select\SelectBuilder\ProportionStatisticsType;
 use Uphf\GestionAbsence\Model\AuthManager;
-use Uphf\GestionAbsence\Model\DB\Select\GroupStudentSelector;
-use Uphf\GestionAbsence\Model\DB\Select\SelectBuilder\ProportionStatisticsBuilder;
-use Uphf\GestionAbsence\Model\DB\Select\SelectBuilder\ProportionStatisticsType;
 use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
 use Uphf\GestionAbsence\Model\Statistics\DataAdapter;
 use Uphf\GestionAbsence\Model\Validation\FilterProportionStatisticsValidator;

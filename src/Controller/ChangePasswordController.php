@@ -2,11 +2,11 @@
 
 namespace Uphf\GestionAbsence\Controller;
 
+use Uphf\GestionAbsence\Database\Delete\TokenDelete;
+use Uphf\GestionAbsence\Database\Insert\TokenInsertor;
+use Uphf\GestionAbsence\Database\Select\AccountSelector;
+use Uphf\GestionAbsence\Database\Update\PasswordUpdate;
 use Uphf\GestionAbsence\Model\AuthManager;
-use Uphf\GestionAbsence\Model\DB\Delete\TokenDelete;
-use Uphf\GestionAbsence\Model\DB\Insert\TokenInsertor;
-use Uphf\GestionAbsence\Model\DB\Select\AccountSelector;
-use Uphf\GestionAbsence\Model\DB\Update\PasswordUpdate;
 use Uphf\GestionAbsence\Model\Entity\Account\Account;
 use Uphf\GestionAbsence\Model\Mailer;
 use Uphf\GestionAbsence\Model\Notification\Notification;

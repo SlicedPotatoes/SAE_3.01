@@ -8,9 +8,9 @@
 require_once __DIR__ . "/../vendor/autoload.php";
 
 use Dotenv\Dotenv;
+use Uphf\GestionAbsence\Database\Connection;
 use Uphf\GestionAbsence\Model\AuthManager;
 use Uphf\GestionAbsence\Model\CookieManager;
-use Uphf\GestionAbsence\Model\DB\Connection;
 use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
 use Uphf\GestionAbsence\Model\GlobalVariable;
 use Uphf\GestionAbsence\Model\Notification\Notification;

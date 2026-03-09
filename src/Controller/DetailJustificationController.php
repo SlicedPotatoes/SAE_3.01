@@ -2,12 +2,13 @@
 
 namespace Uphf\GestionAbsence\Controller;
 
+use BadMethodCallException;
+use Uphf\GestionAbsence\Database\Connection;
+use Uphf\GestionAbsence\Database\Select\CommentSelector;
+use Uphf\GestionAbsence\Database\Select\JustificationSelector;
+use Uphf\GestionAbsence\Database\Update\processJustificatif;
+use Uphf\GestionAbsence\Database\Update\UpdateBuilder\AbsenceUpdateBuilder;
 use Uphf\GestionAbsence\Model\AuthManager;
-use Uphf\GestionAbsence\Model\DB\Connection;
-use Uphf\GestionAbsence\Model\DB\Select\CommentSelector;
-use Uphf\GestionAbsence\Model\DB\Select\JustificationSelector;
-use Uphf\GestionAbsence\Model\DB\Update\processJustificatif;
-use Uphf\GestionAbsence\Model\DB\Update\UpdateBuilder\AbsenceUpdateBuilder;
 use Uphf\GestionAbsence\Model\Entity\Absence\StateAbs;
 use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
 use Uphf\GestionAbsence\Model\Entity\Justification\Justification;
@@ -16,7 +17,6 @@ use Uphf\GestionAbsence\Model\Notification\Notification;
 use Uphf\GestionAbsence\Model\Notification\NotificationType;
 use Uphf\GestionAbsence\Model\Validation\ProcessJustificationValidator;
 use Uphf\GestionAbsence\ViewModel\DetailJustificationViewModel;
-use BadMethodCallException;
 
 /**
  *  Controller pour le détail d'un justificatif

@@ -1,7 +1,7 @@
 <?php
 namespace Uphf\GestionAbsence\Model\Entity\Account;
 
-use Uphf\GestionAbsence\Model\DB\Select\StudentSelector;
+use Uphf\GestionAbsence\Database\Select\StudentSelector;
 use Uphf\GestionAbsence\Model\Hydrator\AccountHydrator;
 
 /**

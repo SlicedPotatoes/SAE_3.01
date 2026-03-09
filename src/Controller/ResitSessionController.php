@@ -2,11 +2,10 @@
 
 namespace Uphf\GestionAbsence\Controller;
 
+use Uphf\GestionAbsence\Database\Select\TimeSlotAbsenceSelector;
 use Uphf\GestionAbsence\Model\AuthManager;
-use Uphf\GestionAbsence\Model\DB\Select\TimeSlotAbsenceSelector;
 use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
 use Uphf\GestionAbsence\ViewModel\ResitSessionListViewModel;
-use Uphf\GestionAbsence\ViewModel\TeacherHomeViewModel;
 
 class ResitSessionController
 {

@@ -2,9 +2,9 @@
 
 namespace Uphf\GestionAbsence\Controller;
 
+use Uphf\GestionAbsence\Database\Update\MailAlertUpdater;
 use Uphf\GestionAbsence\Model\AuthManager;
 use Uphf\GestionAbsence\Model\CookieManager;
-use Uphf\GestionAbsence\Model\DB\Update\MailAlertUpdater;
 use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
 
 /**

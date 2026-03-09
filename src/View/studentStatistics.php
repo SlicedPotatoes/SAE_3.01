@@ -3,7 +3,7 @@
  * Front end de la page sur les statistiques
  */
 
-use Uphf\GestionAbsence\Model\DB\Select\SelectBuilder\ProportionStatisticsType;
+use Uphf\GestionAbsence\Database\Select\SelectBuilder\ProportionStatisticsType;
 use Uphf\GestionAbsence\Model\Entity\Absence\StateAbs;
 use Uphf\GestionAbsence\Model\Statistics\Chart;
 

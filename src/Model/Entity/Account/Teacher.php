@@ -1,7 +1,7 @@
 <?php
 namespace Uphf\GestionAbsence\Model\Entity\Account;
 
-use Uphf\GestionAbsence\Model\DB\Select\MailAlertSelector;
+use Uphf\GestionAbsence\Database\Select\MailAlertSelector;
 
 /**
  * Classe Teacher, basé sur la base de données.

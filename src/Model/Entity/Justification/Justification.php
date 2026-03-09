@@ -1,10 +1,10 @@
 <?php
 namespace Uphf\GestionAbsence\Model\Entity\Justification;
 
-use Uphf\GestionAbsence\Model\DB\Select\JustificationSelector;
+use DateTime;
+use Uphf\GestionAbsence\Database\Select\JustificationSelector;
 use Uphf\GestionAbsence\Model\Entity\Absence\Absence;
 use Uphf\GestionAbsence\Model\Entity\Account\Student;
-use DateTime;
 
 
 /**

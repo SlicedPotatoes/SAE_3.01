@@ -3,10 +3,10 @@
 namespace Uphf\GestionAbsence\Controller;
 
 use DateTime;
-use Uphf\GestionAbsence\Model\DB\Update\OffPeriodUpdater;
+use Uphf\GestionAbsence\Database\Insert\OffPeriodInsertor;
+use Uphf\GestionAbsence\Database\Select\OffPeriodSelector;
+use Uphf\GestionAbsence\Database\Update\OffPeriodUpdater;
 use Uphf\GestionAbsence\Model\AuthManager;
-use Uphf\GestionAbsence\Model\DB\Insert\OffPeriodInsertor;
-use Uphf\GestionAbsence\Model\DB\Select\OffPeriodSelector;
 use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
 use Uphf\GestionAbsence\Model\Notification\Notification;
 use Uphf\GestionAbsence\Model\Notification\NotificationType;

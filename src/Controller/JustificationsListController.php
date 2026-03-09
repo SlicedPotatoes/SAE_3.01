@@ -2,9 +2,9 @@
 
 namespace Uphf\GestionAbsence\Controller;
 
+use Uphf\GestionAbsence\Database\Select\SelectBuilder\JustificationSelectBuilder;
+use Uphf\GestionAbsence\Database\Select\SelectBuilder\SortOrder;
 use Uphf\GestionAbsence\Model\AuthManager;
-use Uphf\GestionAbsence\Model\DB\Select\SelectBuilder\JustificationSelectBuilder;
-use Uphf\GestionAbsence\Model\DB\Select\SelectBuilder\SortOrder;
 use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
 use Uphf\GestionAbsence\Model\Entity\Justification\StateJustif;
 use Uphf\GestionAbsence\Model\Validation\FilterJustificationValidator;

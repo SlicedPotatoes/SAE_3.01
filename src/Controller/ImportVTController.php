@@ -2,9 +2,9 @@
 
 namespace Uphf\GestionAbsence\Controller;
 
+use Uphf\GestionAbsence\Database\Insert\AbsenceInsertor;
+use Uphf\GestionAbsence\Database\Insert\NewAccountInsertor;
 use Uphf\GestionAbsence\Model\AuthManager;
-use Uphf\GestionAbsence\Model\DB\Insert\AbsenceInsertor;
-use Uphf\GestionAbsence\Model\DB\Insert\NewAccountInsertor;
 use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
 use Uphf\GestionAbsence\Model\Notification\Notification;
 use Uphf\GestionAbsence\Model\Notification\NotificationType;

@@ -1,16 +1,15 @@
 <?php
 namespace Uphf\GestionAbsence\Controller;
 
+use Uphf\GestionAbsence\Database\Delete\CommentDelete;
+use Uphf\GestionAbsence\Database\Insert\CommentInsertor;
+use Uphf\GestionAbsence\Database\Select\CommentSelector;
+use Uphf\GestionAbsence\Database\Update\CommentUpdater;
 use Uphf\GestionAbsence\Model\AuthManager;
-use Uphf\GestionAbsence\Model\DB\Delete\CommentDelete;
-use Uphf\GestionAbsence\Model\DB\Insert\CommentInsertor;
-use Uphf\GestionAbsence\Model\DB\Select\CommentSelector;
-use Uphf\GestionAbsence\Model\DB\Update\CommentUpdater;
 use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
 use Uphf\GestionAbsence\Model\Notification\Notification;
 use Uphf\GestionAbsence\Model\Notification\NotificationType;
 use Uphf\GestionAbsence\Model\Validation\CommentValidator;
-use Uphf\GestionAbsence\ViewModel\JustificationListViewModel;
 use Uphf\GestionAbsence\ViewModel\PredefinedCommentViewModel;
 
 

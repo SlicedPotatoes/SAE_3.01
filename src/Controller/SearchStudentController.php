@@ -2,8 +2,8 @@
 
 namespace Uphf\GestionAbsence\Controller;
 
+use Uphf\GestionAbsence\Database\Select\SelectBuilder\StudentSelectBuilder;
 use Uphf\GestionAbsence\Model\AuthManager;
-use Uphf\GestionAbsence\Model\DB\Select\SelectBuilder\StudentSelectBuilder;
 use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
 use Uphf\GestionAbsence\Model\Entity\Account\GroupStudent;
 use Uphf\GestionAbsence\Model\Validation\SearchStudentValidator;

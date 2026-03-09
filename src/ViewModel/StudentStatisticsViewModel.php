@@ -2,7 +2,7 @@
 
 namespace Uphf\GestionAbsence\ViewModel;
 
-use Uphf\GestionAbsence\Model\DB\Select\SelectBuilder\ProportionStatisticsType;
+use Uphf\GestionAbsence\Database\Select\SelectBuilder\ProportionStatisticsType;
 use Uphf\GestionAbsence\Model\Entity\Account\Student;
 
 /**
