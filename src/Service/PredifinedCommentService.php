@@ -7,10 +7,13 @@ use Uphf\GestionAbsence\Database\Delete\CommentDelete;
 use Uphf\GestionAbsence\Database\Insert\CommentInsertor;
 use Uphf\GestionAbsence\Database\Select\CommentSelector;
 use Uphf\GestionAbsence\Database\Update\CommentUpdater;
+use Uphf\GestionAbsence\Exception\EntityNotFoundException;
 use Uphf\GestionAbsence\Model\Entity\Comment\Comment;
 
 /**
  * Service pour les commentaires prédéfinis
+ *
+ * CRUD
  */
 class PredifinedCommentService
 {
@@ -39,7 +42,7 @@ class PredifinedCommentService
     /**
      * Récupère tous les commentaires prédéfinis de la base de données
      *
-     * @return array
+     * @return Comment[]
      */
     public static function commentSelectorAll(): array
     {
@@ -51,14 +54,14 @@ class PredifinedCommentService
      *
      * @param int $idComment
      * @return Comment
-     * @throws InvalidArgumentException dans le cas où aucun commentaire n'est trouvé avec l'ID donné
+     * @throws EntityNotFoundException dans le cas où aucun commentaire n'est trouvé avec l'ID donné
      */
     public static function commentSelectorById(int $idComment): Comment
     {
         $comment = CommentSelector::getCommentById($idComment);
 
         if ($comment === null) {
-            throw new InvalidArgumentException("Aucun commentaire trouvé avec l'ID : $idComment");
+            throw new EntityNotFoundException("Aucun commentaire trouvé avec l'ID : $idComment");
         }
 
         return $comment;
@@ -75,5 +78,4 @@ class PredifinedCommentService
     {
         return CommentUpdater::update($idcomment, $textcomment);
     }
-
 }

@@ -2,13 +2,21 @@
 
 namespace Uphf\GestionAbsence\Service;
 
-use DateTime;
 use Uphf\GestionAbsence\Database\Update\MailAlertUpdater;
 use Uphf\GestionAbsence\Model\Entity\Absence\Absence;
 use Uphf\GestionAbsence\Model\Entity\Account\Account;
 use Uphf\GestionAbsence\Model\Entity\Justification\Justification;
 use Uphf\GestionAbsence\Model\Mailer;
 
+/**
+ * Service responsable de l'envoi de mail
+ *
+ * Cette classe regroupe:
+ * - L'envoie du mail ForgotPassword
+ * - La modification des paramètres de notification des comptes RP et professeur
+ * - L'envoie de mail à l'étudiant et au professeur lors de la justification d'une absence a un examen
+ * - L'envoie d'un mail à l'étudiant lors d'un dépo de justificatif.
+ */
 class MailService
 {
     /**

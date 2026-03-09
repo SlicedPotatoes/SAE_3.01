@@ -4,40 +4,38 @@ namespace Uphf\GestionAbsence\Service;
 
 use Uphf\GestionAbsence\Database\Select\SelectBuilder\ProportionStatisticsBuilder;
 use Uphf\GestionAbsence\Database\Select\SelectBuilder\ProportionStatisticsType;
+use Uphf\GestionAbsence\Database\Select\StudentSelector;
 use Uphf\GestionAbsence\Exception\EntityNotFoundException;
 use Uphf\GestionAbsence\Model\Statistics\DataAdapter;
-use Uphf\GestionAbsence\Model\Validation\FilterProportionStatisticsValidator;
 
 class StatisticService {
     /**
-     * @param $idStudent
+     * @param array $filters filtre au format "key" => "value", les keys acceptés sont : "group", "examen" et "idStudent"
      * @return array
-     * @throws EntityNotFoundException, elle se déclenche lorsque l'étudiant recherché n'est pas dans la base de donnée
+     * @throws EntityNotFoundException Dans le cas ou un filtre sur l'étudiant est appliqué, ce déclanche si celui-ci n'existe pas
      */
-
-
-    public static function getStudentStatistic ($idStudent){
-        $student = StudentSelector::getStudentById($idStudent);
-
-        //Véridication de la présencde de l'étudiant dans la base de donné
-        if($student == null){
-            throw new EntityNotFoundException();
+    public static function getStudentStatistic (array $filters): array {
+        // Si un filtre est appliqué sur l'étudiant, vérifie ça présence dans la BDD
+        if(isset($filters['idStudent'])) {
+            $student = StudentSelector::getStudentById($filters['idStudent']);
+            if($student === null){
+                throw new EntityNotFoundException();
+            }
         }
 
         // Création des builders pour chaque type de statistique
         $builders = [];
         foreach (ProportionStatisticsType::getAll() as $type){
-            $builders[$type->value] = new ProportionStatisticsBuilder()->type($type);
+            $builders[$type->value] = new ProportionStatisticsBuilder();
+            $builders[$type->value] = $builders[$type->value]->type($type);
         }
 
         // Application des filtres
-        $filters = new FilterProportionStatisticsValidator()->getData();
-
-        $whiteListMethode = ['group', 'examen'];
+        $whiteListMethode = ['group', 'examen', 'idStudent'];
         foreach ($filters as $filter => $value){
-            if(isset($value) && in_array($value, $whiteListMethode)){
-                foreach ($builders as $type => $builders){
-                    call_user_func([$builders, $filter], $value);
+            if($value !== null && in_array($value, $whiteListMethode)){
+                foreach ($builders as $type => $builder){
+                    call_user_func([$builder, $filter], $value);
                 }
             }
         }
@@ -45,14 +43,8 @@ class StatisticService {
         // Récupération des données depuis la base
         $datas = [];
         foreach($builders as $type => $builder) {
-            $datas['global'][$type] = DataAdapter::proportionAdapter(
+            $datas[$type] = DataAdapter::proportionAdapter(
                 $builder->execute(),
-                ProportionStatisticsType::from($type)->callableLabelFormat(),
-                ProportionStatisticsType::from($type)->callableColorPie()
-            );
-
-            $datas['student'][$type] = DataAdapter::proportionAdapter(
-                $builder->idStudent($idStudent)->execute(),
                 ProportionStatisticsType::from($type)->callableLabelFormat(),
                 ProportionStatisticsType::from($type)->callableColorPie()
             );
