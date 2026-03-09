@@ -4,6 +4,7 @@ namespace Uphf\GestionAbsence\Service;
 
 use Uphf\GestionAbsence\Database\Select\SemesterSelector;
 use Uphf\GestionAbsence\Database\Update\SemesterUpdater;
+use Uphf\GestionAbsence\Exception\EntityNotFoundException;
 use Uphf\GestionAbsence\Model\Entity\Semester;
 
 class SemesterService
@@ -33,11 +34,18 @@ class SemesterService
      * Récupérer un semestre par son ID
      *
      * @param int $id
-     * @return Semester|null
+     * @return Semester
+     * @throws EntityNotFoundException Si le semestre n'existe pas
      */
-    public static function getById(int $id): ?Semester
+    public static function getById(int $id): Semester
     {
-        return SemesterSelector::getById($id);
+        $semester = SemesterSelector::getById($id);
+
+        if ($semester === null) {
+            throw new EntityNotFoundException("Aucun semestre trouvé avec l'ID : $id");
+        }
+
+        return $semester;
     }
 
     /**
