@@ -124,9 +124,7 @@ if (AuthManager::isLogin()) {
             </p>
         </div>
 
-        <?php if (!AuthManager::isRole(AccountType::EducationalManager)
-                || AuthManager::isRole(AccountType::Secretary)
-                || AuthManager::isRole(AccountType::Teacher)): ?>
+        <?php if (AuthManager::isRole(AccountType::Student)): ?>
 
             <div class=" footer-row me-3">
                 <a href="/rules">Règlement intérieur de l’établissement</a>

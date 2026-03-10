@@ -4,10 +4,13 @@ namespace Uphf\GestionAbsence\Controller;
 
 use Uphf\GestionAbsence\Database\Select\AccountSelector;
 use Uphf\GestionAbsence\Database\Select\StudentSelector;
+use Uphf\GestionAbsence\Exception\BadCredentialException;
+use Uphf\GestionAbsence\Exception\EntityNotFoundException;
 use Uphf\GestionAbsence\Model\AuthManager;
 use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
 use Uphf\GestionAbsence\Model\Notification\Notification;
 use Uphf\GestionAbsence\Model\Notification\NotificationType;
+use Uphf\GestionAbsence\Service\AccountService;
 use Uphf\GestionAbsence\ViewModel\BaseViewModel;
 
 /**
@@ -22,8 +25,6 @@ class AuthentificationController {
      *
      * Si celui-ci est déjà connecté, alors il est renvoyé vers sa page par défault selon son role.
      *
-     * Si celui-ci tente de s'authentifier avec des identifiants valide, il est redirigé vers sa page par défault.
-     *
      * @return ControllerData
      */
     public static function login(): ControllerData {
@@ -32,32 +33,41 @@ class AuthentificationController {
             return HomeController::home();
         }
 
-        if ($_SERVER["REQUEST_METHOD"] == "POST") {
-            $account = AccountSelector::getAccountByEmail($_POST["email"]);
-            if ($account ==! null && password_verify($_POST["password"], AccountSelector::getPasswordHashedById($account->getIdAccount())))
-            {
-                if($account->getAccountType() === AccountType::Student) {
-                    $account = StudentSelector::getStudentById($account->getIdAccount());
-                }
+        // Utilisateur n'est pas connecté et ne tente pas de s'authentifier, on affiche la view d'authentification
+        return new ControllerData(
+            "/View/login.php",
+            "Connexion",
+            new BaseViewModel()
+        );
+    }
 
-                // Connexion au niveau de la session
-                AuthManager::login(
-                    $account->getAccountType(),
-                    $account
-                );
+    /**
+     * Tentative de connection de l'utilisateur
+     *
+     * @return ControllerData|void
+     */
+    public static function postLogin() {
 
-                header("Location: /");
-                exit();
-            }
-            else
-            {
-                Notification::addNotification(
-                    NotificationType::Error,
-                "Email ou mot de passe incorrect");
-            }
+        try {
+            $account = AccountService::loginAccount($_POST["email"], $_POST["password"]);
+
+            // Connexion au niveau de la session
+            AuthManager::login(
+                $account->getAccountType(),
+                $account
+            );
+
+            header("Location: /");
+            exit();
+
+        } catch (EntityNotFoundException | BadCredentialException) {
+            Notification::addNotification(
+                NotificationType::Error,
+                "Email ou mot de passe incorrect"
+            );
         }
 
-        // Utilisateur n'est pas connecté et ne tente pas de s'authentifier, on affiche la view d'authentification
+        // Utilisateur n'est pas connecté, on affiche la view d'authentification
         return new ControllerData(
             "/View/login.php",
             "Connexion",
