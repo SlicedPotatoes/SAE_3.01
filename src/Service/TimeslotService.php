@@ -4,6 +4,7 @@ namespace Uphf\GestionAbsence\Service;
 
 use DateTime;
 use Uphf\GestionAbsence\Database\Select\TimeSlotAbsenceSelector;
+use Uphf\GestionAbsence\Exception\EntityNotFoundException;
 use Uphf\GestionAbsence\Model\Entity\Absence\TimeSlotAbsence;
 
 /**
@@ -19,14 +20,14 @@ class TimeslotService
      * @param int $idTeacher
      * @param string|null $group
      * @return TimeSlotAbsence
-     * @throws \Exception dans le cas où aucun timeslot n'est trouvé pour les critères donnés
+     * @throws EntityNotFoundException dans le cas où aucun timeslot n'est trouvé pour les critères donnés
      */
     public static function getTimeSlot(DateTime $date, int $idResource, int $idTeacher, ?string $group = null): TimeSlotAbsence
     {
         $timeSlot = TimeSlotAbsenceSelector::getTimeSlot($date, $idResource, $idTeacher, $group);
 
         if ($timeSlot === null) {
-            throw new \Exception("Timeslot not found");
+            throw new EntityNotFoundException("Timeslot not found");
         }
 
         return $timeSlot;
