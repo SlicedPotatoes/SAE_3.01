@@ -1,7 +1,8 @@
 <?php
 
-namespace Uphf\GestionAbsence\Controller;
+namespace Uphf\GestionAbsence\Controller\OLD;
 
+use Uphf\GestionAbsence\Controller\ControllerData;
 use Uphf\GestionAbsence\Database\Update\MailAlertUpdater;
 use Uphf\GestionAbsence\Model\AuthManager;
 use Uphf\GestionAbsence\Model\CookieManager;

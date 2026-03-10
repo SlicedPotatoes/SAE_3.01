@@ -19,42 +19,25 @@ use Uphf\GestionAbsence\ViewModel\ImportVTViewModel;
 class ImportVTController
 {
     /**
-     * Si l'utilisateur n'est pas connecté => Rediriger vers login
-     *
-     * Si l'utilisateur n'est pas RP ou secrétaire => 403
-     *
-     * Si requête POST => Traitement de l'import
+     * Afficher la vue importVT.php
      *
      * @return ControllerData
      */
     public static function showImportVT(): ControllerData
     {
-        /**
-         *  TODO : A RETIRER QUAND LES ROUTES SERONT REFAIT
-         *
-         * Si n'est pas RP ou Secrétaire redirection vers la page 403
-         */
-        if (!AuthManager::isRole(AccountType::EducationalManager) && !AuthManager::isRole(AccountType::Secretary)) {
-            return ControllerData::get403();
-        }
-
         return new ControllerData(
             '/View/importVT.php',
             'Importation de VT',
             new importVTViewModel());
     }
 
+    /**
+     * Traitement de l'import d'un export VT
+     *
+     * @return ControllerData
+     */
     public static function postImportVT(): ControllerData
     {
-        /**
-         * TODO : A RETIRER QUAND LES ROUTES SERONT REFAIT
-         *
-         * Si n'est pas RP ou Secrétaire redirection vers la page 403
-         */
-        if (!AuthManager::isRole(AccountType::EducationalManager) && !AuthManager::isRole(AccountType::Secretary)) {
-            return ControllerData::get403();
-        }
-
         try {
             ImportVTService::import($_FILES['vt_file']);
 

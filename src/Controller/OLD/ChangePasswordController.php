@@ -1,7 +1,8 @@
 <?php
 
-namespace Uphf\GestionAbsence\Controller;
+namespace Uphf\GestionAbsence\Controller\OLD;
 
+use Uphf\GestionAbsence\Controller\ControllerData;
 use Uphf\GestionAbsence\Database\Delete\TokenDelete;
 use Uphf\GestionAbsence\Database\Insert\TokenInsertor;
 use Uphf\GestionAbsence\Database\Select\AccountSelector;

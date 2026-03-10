@@ -23,17 +23,9 @@ class AuthentificationController {
     /**
      * Renvoie l'utilisateur vers la page de connexion
      *
-     * Si celui-ci est déjà connecté, alors il est renvoyé vers sa page par défault selon son role.
-     *
      * @return ControllerData
      */
     public static function login(): ControllerData {
-        // Si l'utilisateur est connecté, il est redirigé vers sa page par défault
-        if(AuthManager::isLogin()) {
-            return HomeController::home();
-        }
-
-        // Utilisateur n'est pas connecté et ne tente pas de s'authentifier, on affiche la view d'authentification
         return new ControllerData(
             "/View/login.php",
             "Connexion",

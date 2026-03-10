@@ -26,16 +26,16 @@ class HomeController {
         if(AuthManager::isLogin()) {
             switch(AuthManager::getRole()) {
                 case AccountType::Student:
-                    header("Location: /StudentProfile");
+                    header("Location: /profil-etudiant");
                     exit();
                 case AccountType::EducationalManager:
-                    header("Location: /JustificationList");
+                    header("Location: /justifications");
                     exit();
                 case AccountType::Teacher:
-                    header("Location: /teacherHome");
+                    header("Location: /absences-a-mes-cours");
                     exit();
                 case AccountType::Secretary:
-                    header("Location: /ImportVT");
+                    header("Location: /televersement");
                     exit();
                 default:
                     Notification::addNotification(NotificationType::Error, "Ce type de compte n'est pas encore fonctionnel");
@@ -43,7 +43,7 @@ class HomeController {
             }
         }
         else {
-            header("Location: /login");
+            header("Location: /connexion");
             exit();
         }
     }

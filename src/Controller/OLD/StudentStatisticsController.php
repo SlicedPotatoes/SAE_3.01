@@ -1,7 +1,8 @@
 <?php
 
-namespace Uphf\GestionAbsence\Controller;
+namespace Uphf\GestionAbsence\Controller\OLD;
 
+use Uphf\GestionAbsence\Controller\ControllerData;
 use Uphf\GestionAbsence\Database\Select\GroupStudentSelector;
 use Uphf\GestionAbsence\Database\Select\SelectBuilder\ProportionStatisticsBuilder;
 use Uphf\GestionAbsence\Database\Select\SelectBuilder\ProportionStatisticsType;
