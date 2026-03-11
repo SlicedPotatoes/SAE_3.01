@@ -7,6 +7,8 @@ use Uphf\GestionAbsence\Model\AuthManager;
 use Uphf\GestionAbsence\Model\CookieManager;
 use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
 use Uphf\GestionAbsence\Service\MailService;
+use Uphf\GestionAbsence\Utils\ResponseApi\HttpStatus;
+use Uphf\GestionAbsence\Utils\ResponseApi\ResponseApi;
 
 /**
  * Controller pour le changement des notifications pour le responsable pédagogique / enseigant
@@ -14,10 +16,10 @@ use Uphf\GestionAbsence\Service\MailService;
 class ChangerMailAlertControllerApi
 {
     /**
+     * PUT /api/mailAlert
      * Fonction permettant de changer les obtions de notifications envoyé par mail pour le RP et les profs
-     *
      */
-    public static function update()
+    public static function putMailAlert()
     {
         $account = AuthManager::getAccount();
 
@@ -28,7 +30,6 @@ class ChangerMailAlertControllerApi
             $mailAlertTeacher,
             $mailAlertEducationalManager);
 
-        echo json_encode(["success" => true]);
-        exit();
+        new ResponseApi(HttpStatus::NO_CONTENT, array())->done();
     }
 }
