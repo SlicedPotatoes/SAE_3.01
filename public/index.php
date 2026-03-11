@@ -90,17 +90,18 @@ $router->addRoute(RequestMethod::PUT, '/api/justifications/{id:int}', '')
 
 // TimeslotController
 //$router->addRoute("/teacherHome", "TeacherHomeController@show");
-$router->addRoute(RequestMethod::GET, '/absences-a-mes-cours', '')
+$router->addRoute(RequestMethod::GET, '/absences-a-mes-cours', 'TimeslotController@showTeacherHome')
         ->requireLogin()
-        ->addAuthorization(AccountType::Teacher);
+        ->addAuthorization(AccountType::Teacher)
+        ->addAuthorization(AccountType::EducationalManager);
 //$router->addRoute("/detailPeriod/", "DetailPeriodController@show");
-$router->addRoute(RequestMethod::GET, '/absences-a-un-cours/{idTeacher:int}/{idRessource:int}/{idGroup:int}/{datetime}', '')
+$router->addRoute(RequestMethod::GET, '/absences-a-un-cours/{idTeacher:int}/{idRessource:int}/{group}/{datetime}', 'TimeslotController@showDetailTimeslot')
         ->requireLogin()
         ->addAuthorization(AccountType::Teacher)
         ->addAuthorization(AccountType::EducationalManager)
         ->addAuthorization(AccountType::Secretary);
 //$router->addRoute("/resitSession", "ResitSessionController@show");
-$router->addRoute(RequestMethod::GET, '/rattrapage', '')
+$router->addRoute(RequestMethod::GET, '/rattrapage', 'TimeslotController@showResitSession')
         ->requireLogin()
         ->addAuthorization(AccountType::EducationalManager)
         ->addAuthorization(AccountType::Secretary);
@@ -187,7 +188,7 @@ $router->addRoute(RequestMethod::GET, '/api/students', 'SearchStudentController@
 
 // SemesterSettingsController
 //$router->addRoute("/SemesterSettings", "SemesterSettingsController@show");
-$router->addRoute(RequestMethod::GET, '/configuration-des-semestres', '')
+$router->addRoute(RequestMethod::GET, '/configuration-des-semestres', 'SemesterSettingsController@showSemesterSettings')
         ->requireLogin()
         ->addAuthorization(AccountType::EducationalManager)
         ->addAuthorization(AccountType::Secretary);
@@ -206,11 +207,11 @@ $router->addRoute(RequestMethod::DELETE, '/configuration-des-semestres', '')
 
 // StudentProfilController
 //$router->addRoute("/StudentProfile", "StudentProfileController@show");
-$router->addRoute(RequestMethod::GET, '/profil-etudiant', '')
+$router->addRoute(RequestMethod::GET, '/profil-etudiant', 'StudentProfileController@showStudentProfile')
         ->requireLogin()
         ->addAuthorization(AccountType::Student);
 //$router->addRoute("/StudentProfile/{id:int}", "StudentProfileController@show");
-$router->addRoute(RequestMethod::GET, '/profil-etudiant/{id:int}', '')
+$router->addRoute(RequestMethod::GET, '/profil-etudiant/{id:int}', 'StudentProfileController@showStudentProfile')
         ->requireLogin()
         ->addAuthorization(AccountType::EducationalManager);
 

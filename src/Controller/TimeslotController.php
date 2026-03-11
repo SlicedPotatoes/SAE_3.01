@@ -22,21 +22,12 @@ class TimeslotController
      * @return ControllerData
      * @throws EntityNotFoundException dans le cas où aucun timeslot n'est trouvé pour les critères donnés
      */
-    public static function showDetailTimeslot(): ControllerData
+    public static function showDetailTimeslot($params): ControllerData
     {
-        if (
-            !isset($_GET['time']) ||
-            !isset($_GET['resourceId']) ||
-            !isset($_GET['teacher']) ||
-            !isset($_GET['group'])
-        ) {
-            return ControllerData::get404();
-        }
-
-        $time = DateTime::createFromFormat('Y-m-d-H-i', $_GET['time']);
-        $resourceId = (int)$_GET['resourceId'];
-        $teacherId = (int)$_GET['teacher'];
-        $group = ($_GET['group'] === 'nogroup') ? null : $_GET['group'];
+        $time = DateTime::createFromFormat('Y-m-d-H-i', $params['datetime']);
+        $resourceId = (int)$params['idRessource'];
+        $teacherId = (int)$params['idTeacher'];
+        $group = ($params['group'] === 'nogroup' || $params['group'] === null) ? null : urldecode($params['group']);
 
         try {
             $timeslot = TimeslotService::getTimeSlot($time, $resourceId, $teacherId, $group);
@@ -93,27 +84,10 @@ class TimeslotController
     }
 
     /**
-     * Renvoi un JSON des sessions de rattrapage trouvé avec les filtres, permet ainsi leurs affichages via Ajax JavaScript.
+     * Affiche le tableau de bord du professeur.
      *
-     * @return void
+     * @return ControllerData
      */
-    public static function getResitSession() : void
-    {
-        $dateStartFilter = $_GET['dateStartFilter'] ?? null;
-        $dateEndFilter = $_GET['dateEndFilter'] ?? null;
-        $dateStartFilter = ($dateStartFilter !== '') ? $dateStartFilter : null;
-        $dateEndFilter = ($dateEndFilter !== '') ? $dateEndFilter : null;
-
-        $timeSlots = TimeslotService::getListTimeSlotWithFilter(
-            null,
-            true,
-            $dateStartFilter,
-            $dateEndFilter
-        );
-
-        echo json_encode($timeSlots);
-    }
-
     public static function showTeacherHome(): ControllerData {
         $filters = [
             'examFilter' => null,
@@ -138,38 +112,5 @@ class TimeslotController
                 AuthManager::getAccount()->getFirstName() . " " . AuthManager::getAccount()->getLastName()
             )
         );
-    }
-
-
-    /**
-     * Renvoi un JSON des périodes trouvé avec les filtres, permet ainsi leurs affichages via Ajax JavaScript
-     *
-     * @return void
-     */
-    public static function getTeacherHome(): void {
-
-        $examFilter      = isset($_GET['examFilter']);
-        $dateStartFilter = $_GET['dateStartFilter'] ?? null;
-        $dateEndFilter   = $_GET['dateEndFilter'] ?? null;
-
-        $dateStartFilter = ($dateStartFilter !== '') ? $dateStartFilter : null;
-        $dateEndFilter   = ($dateEndFilter !== '') ? $dateEndFilter : null;
-
-        $filters = [
-            'examFilter' => $examFilter,
-            'dateStartFilter' => $dateStartFilter,
-            'dateEndFilter' => $dateEndFilter
-        ];
-
-
-        $account = AuthManager::getAccount();
-        $timeslot = TimeslotService::getListTimeSlotWithFilter(
-            $account->getIdAccount(),
-            $filters['examFilter'],
-            $filters['dateStartFilter'],
-            $filters['dateEndFilter']
-        );
-
-        echo json_encode($timeslot);
     }
 }

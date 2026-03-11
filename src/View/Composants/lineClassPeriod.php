@@ -16,13 +16,12 @@ $isTeacher    = AuthManager::isRole(AccountType::Teacher);
 
 $groupValue = $period->getGroup();
 $groupSlug  = $groupValue !== '' ? $groupValue : 'nogroup';
-
 $url = sprintf(
-  '/detailPeriod?time=%s&resourceId=%s&teacher=%s&group=%s',
-  urlencode($timeSlug),
-  urlencode((string) $resourceSlug),
+  '/absences-a-un-cours/%s/%s/%s/%s',
   urlencode((string) $teacherSlug),
-  urlencode($groupSlug)
+  urlencode((string) $resourceSlug),
+  urlencode($groupSlug),
+  urlencode($timeSlug)
 );
 
 ?>
