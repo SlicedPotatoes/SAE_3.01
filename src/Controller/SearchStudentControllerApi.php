@@ -17,7 +17,7 @@ class SearchStudentControllerApi
      * @return void (echo json)
      */
     public static function getSearchStudent(): void {
-        $validator = new SearchStudentValidator();
+        $validator = new SearchStudentValidator($_GET);
         $filters = $validator->getData();
 
         $students = AccountService::getFilteredStudents($filters);

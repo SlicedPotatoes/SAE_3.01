@@ -5,9 +5,9 @@ namespace Uphf\GestionAbsence\Model\Validation;
 class SearchStudentValidator {
     private array | null $input;
 
-    public function __construct() {
-        $this->input = filter_input_array(
-            INPUT_GET,
+    public function __construct(array $data) {
+        $this->input = filter_var_array(
+            $data,
             [
                 "search" => [
                     "filter" => FILTER_CALLBACK,
