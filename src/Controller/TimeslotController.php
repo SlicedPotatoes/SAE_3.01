@@ -19,10 +19,10 @@ class TimeslotController
     /**
      * Affiche les détails d'un timeslot d'absence à partir de la date, de l'id de la ressource, de l'id du professeur et éventuellement du groupe. Si aucun timeslot n'est trouvé, une page 404 est retournée.
      *
+     * @param array $params
      * @return ControllerData
-     * @throws EntityNotFoundException dans le cas où aucun timeslot n'est trouvé pour les critères donnés
      */
-    public static function showDetailTimeslot($params): ControllerData
+    public static function showDetailTimeslot(array $params): ControllerData
     {
         $time = DateTime::createFromFormat('Y-m-d-H-i', $params['datetime']);
         $resourceId = (int)$params['idRessource'];
@@ -62,15 +62,15 @@ class TimeslotController
     {
         $filters = [
             'examFilter' => true,
-            'dateStartFilter' => $dateStartFilter = null,
-            'dateEndFilter' => $dateEndFilter = null,
+            'dateStartFilter' => null,
+            'dateEndFilter' => null,
         ];
 
         $timeslots = TimeslotService::getListTimeSlotWithFilter(
             null,
-            true,
-            $dateStartFilter,
-            $dateEndFilter
+            $filters['examFilter'],
+            $filters['dateStartFilter'],
+            $filters['dateEndFilter']
         );
 
         return new ControllerData(
