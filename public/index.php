@@ -60,7 +60,7 @@ $router->addRoute(RequestMethod::POST, '/mot-de-passe-oublie/{token}', 'ChangePa
 // ChangerMailAlertControllerApi
 //$router->addRoute("/changement-notification-rp", "ChangerMailAlertControllerApi@changerMailAlertEducationalManager");
 //$router->addRoute("/changement-notification-enseignant", "ChangerMailAlertControllerApi@changerMailAlertTeacher");
-$router->addRoute(RequestMethod::POST, '/api/mailAlert', 'ChangerMailAlertControllerApi@update')
+$router->addRoute(RequestMethod::PUT, '/api/mailAlert', 'ChangerMailAlertControllerApi@update')
         ->requireLogin()
         ->addAuthorization(AccountType::Teacher)
         ->addAuthorization(AccountType::EducationalManager);
@@ -139,15 +139,19 @@ $router->addRoute(RequestMethod::GET, '/periode-de-vacances', 'HolidayController
         ->requireLogin()
         ->addAuthorization(AccountType::EducationalManager)
         ->addAuthorization(AccountType::Secretary);
-$router->addRoute(RequestMethod::POST, '/periode-de-vacances', 'HolidayController@postHoliday')
+$router->addRoute(RequestMethod::GET, '/api//holidays', 'HolidayControllerApi@getHolidays')
         ->requireLogin()
         ->addAuthorization(AccountType::EducationalManager)
         ->addAuthorization(AccountType::Secretary);
-$router->addRoute(RequestMethod::PUT, '/periode-de-vacances', 'HolidayController@putHoliday')
+$router->addRoute(RequestMethod::POST, '/api//holidays', 'HolidayControllerApi@postHoliday')
         ->requireLogin()
         ->addAuthorization(AccountType::EducationalManager)
         ->addAuthorization(AccountType::Secretary);
-$router->addRoute(RequestMethod::DELETE, '/periode-de-vacances', 'HolidayController@deleteHoliday')
+$router->addRoute(RequestMethod::PUT, '/api//holidays/{id:int]}', 'HolidayControllerApi@putHoliday')
+        ->requireLogin()
+        ->addAuthorization(AccountType::EducationalManager)
+        ->addAuthorization(AccountType::Secretary);
+$router->addRoute(RequestMethod::DELETE, '/api//holidays/{id:int]}', 'HolidayControllerApi@deleteHoliday')
         ->requireLogin()
         ->addAuthorization(AccountType::EducationalManager)
         ->addAuthorization(AccountType::Secretary);
