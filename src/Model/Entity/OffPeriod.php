@@ -3,6 +3,7 @@
 namespace Uphf\GestionAbsence\Model\Entity;
 
 use DateTime;
+use stdClass;
 
 /**
  * Classe représentant une période de congé
@@ -34,6 +35,24 @@ class OffPeriod{
 
     public function getEndDate():DateTime {
         return $this->endDate;
+    }
+
+    public function jsonSerialize() {
+        $json = new stdClass();
+        $json->id = $this->id;
+        $json->periodName = $this->periodName;
+        $json->startDate = $this->startDate;
+        $json->endDate = $this->endDate;
+
+        return $json;
+    }
+
+    public static function jsonSerializeHoliday(array $holidays) {
+        $result = [];
+        foreach ($holidays as $holiday) {
+            $result[] = $holiday->jsonSerialize();
+        }
+        return $result;
     }
 
 }
