@@ -57,14 +57,10 @@ $router->addRoute(RequestMethod::GET, '/mot-de-passe-oublie/{token}', 'ChangePas
 $router->addRoute(RequestMethod::POST, '/mot-de-passe-oublie/{token}', 'ChangePasswordController@postTokenChangePassword')
         ->requireNotLogin();
 
-// ChangerMailAlertController
-//$router->addRoute("/changement-notification-rp", "ChangerMailAlertController@changerMailAlertEducationalManager");
-//$router->addRoute("/changement-notification-enseignant", "ChangerMailAlertController@changerMailAlertTeacher");
-$router->addRoute(RequestMethod::GET, '/changement-notification', '')
-        ->requireLogin()
-        ->addAuthorization(AccountType::Teacher)
-        ->addAuthorization(AccountType::EducationalManager);
-$router->addRoute(RequestMethod::POST, '/changement-notification', '')
+// ChangerMailAlertControllerApi
+//$router->addRoute("/changement-notification-rp", "ChangerMailAlertControllerApi@changerMailAlertEducationalManager");
+//$router->addRoute("/changement-notification-enseignant", "ChangerMailAlertControllerApi@changerMailAlertTeacher");
+$router->addRoute(RequestMethod::POST, '/api/mailAlert', 'ChangerMailAlertControllerApi@update')
         ->requireLogin()
         ->addAuthorization(AccountType::Teacher)
         ->addAuthorization(AccountType::EducationalManager);
