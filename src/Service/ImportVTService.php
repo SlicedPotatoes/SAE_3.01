@@ -2,11 +2,8 @@
 
 namespace Uphf\GestionAbsence\Service;
 
-use Uphf\GestionAbsence\Controller\ImportVTController;
 use Uphf\GestionAbsence\Database\Insert\AbsenceInsertor;
 use Uphf\GestionAbsence\Database\Insert\NewAccountInsertor;
-use Uphf\GestionAbsence\Model\Notification\Notification;
-use Uphf\GestionAbsence\Model\Notification\NotificationType;
 use Uphf\GestionAbsence\Model\ReaderCSV;
 use Uphf\GestionAbsence\Model\Validation\ImportAbsenceValidator;
 

@@ -1,6 +1,7 @@
 <?php
 namespace Uphf\GestionAbsence\Model\Entity\Account;
 
+use stdClass;
 use Uphf\GestionAbsence\Database\Select\TableSelector;
 use Uphf\GestionAbsence\Model\Hydrator\AccountHydrator;
 
@@ -37,5 +38,12 @@ class GroupStudent {
         }
 
         return $groupStudent;
+    }
+
+    public function jsonSerialize() {
+        $json = new StdClass();
+        $json->idGroupStudent = $this->idGroupStudent;
+        $json->label = $this->label;
+        return $json;
     }
 }

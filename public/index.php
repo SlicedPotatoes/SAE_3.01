@@ -57,14 +57,10 @@ $router->addRoute(RequestMethod::GET, '/mot-de-passe-oublie/{token}', 'ChangePas
 $router->addRoute(RequestMethod::POST, '/mot-de-passe-oublie/{token}', 'ChangePasswordController@postTokenChangePassword')
         ->requireNotLogin();
 
-// ChangerMailAlertController
-//$router->addRoute("/changement-notification-rp", "ChangerMailAlertController@changerMailAlertEducationalManager");
-//$router->addRoute("/changement-notification-enseignant", "ChangerMailAlertController@changerMailAlertTeacher");
-$router->addRoute(RequestMethod::GET, '/changement-notification', '')
-        ->requireLogin()
-        ->addAuthorization(AccountType::Teacher)
-        ->addAuthorization(AccountType::EducationalManager);
-$router->addRoute(RequestMethod::POST, '/changement-notification', '')
+// ChangerMailAlertControllerApi
+//$router->addRoute("/changement-notification-rp", "ChangerMailAlertControllerApi@changerMailAlertEducationalManager");
+//$router->addRoute("/changement-notification-enseignant", "ChangerMailAlertControllerApi@changerMailAlertTeacher");
+$router->addRoute(RequestMethod::POST, '/api/mailAlert', 'ChangerMailAlertControllerApi@update')
         ->requireLogin()
         ->addAuthorization(AccountType::Teacher)
         ->addAuthorization(AccountType::EducationalManager);
@@ -114,11 +110,11 @@ $router->addRoute(RequestMethod::GET, '/api/timeslots', '')
 
 // StatistiqueController
 //$router->addRoute("/statistique-general", "GeneralStatisticsController@show");
-$router->addRoute(RequestMethod::GET, '/statistiques-generales', '')
+$router->addRoute(RequestMethod::GET, '/statistiques-generales', 'StatisticsController@showGeneralStatistics')
         ->requireLogin()
         ->addAuthorization(AccountType::EducationalManager);
 //$router->addRoute("/statistique-etudiant/{id:int}", "StudentStatisticsController@show");
-$router->addRoute(RequestMethod::GET, '/statistiques-etudiant/{id:int}', '')
+$router->addRoute(RequestMethod::GET, '/statistiques-etudiant/{id:int}', 'StatisticsController@showStudentStatistics')
         ->requireLogin()
         ->addAuthorization(AccountType::EducationalManager);
 
@@ -138,19 +134,19 @@ $router->addRoute(RequestMethod::POST, '/televersement', 'ImportVTController@pos
 
 // HolidayController
 //$router->addRoute("/listOffPeriod", "OffPeriodController@show");
-$router->addRoute(RequestMethod::GET, '/periode-de-vacances', '')
+$router->addRoute(RequestMethod::GET, '/periode-de-vacances', 'HolidayController@showHoliday')
         ->requireLogin()
         ->addAuthorization(AccountType::EducationalManager)
         ->addAuthorization(AccountType::Secretary);
-$router->addRoute(RequestMethod::POST, '/periode-de-vacances', '')
+$router->addRoute(RequestMethod::POST, '/periode-de-vacances', 'HolidayController@postHoliday')
         ->requireLogin()
         ->addAuthorization(AccountType::EducationalManager)
         ->addAuthorization(AccountType::Secretary);
-$router->addRoute(RequestMethod::PUT, '/periode-de-vacances', '')
+$router->addRoute(RequestMethod::PUT, '/periode-de-vacances', 'HolidayController@putHoliday')
         ->requireLogin()
         ->addAuthorization(AccountType::EducationalManager)
         ->addAuthorization(AccountType::Secretary);
-$router->addRoute(RequestMethod::DELETE, '/periode-de-vacances', '')
+$router->addRoute(RequestMethod::DELETE, '/periode-de-vacances', 'HolidayController@deleteHoliday')
         ->requireLogin()
         ->addAuthorization(AccountType::EducationalManager)
         ->addAuthorization(AccountType::Secretary);
@@ -182,7 +178,7 @@ $router->addRoute(RequestMethod::GET, '/rechercher-un-etudiant', 'SearchStudentC
         ->requireLogin()
         ->addAuthorization(AccountType::EducationalManager);
 
-$router->addRoute(RequestMethod::GET, '/api/students', 'SearchStudentController@getSearchStudent')
+$router->addRoute(RequestMethod::GET, '/api/students', 'SearchStudentControllerApi@getSearchStudent')
         ->requireLogin()
         ->addAuthorization(AccountType::EducationalManager);
 

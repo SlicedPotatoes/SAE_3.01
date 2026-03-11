@@ -14,7 +14,7 @@ class StatisticService {
      * @return array
      * @throws EntityNotFoundException Dans le cas ou un filtre sur l'étudiant est appliqué, ce déclanche si celui-ci n'existe pas
      */
-    public static function getStudentStatistic (array $filters): array {
+    public static function getStatistic (array $filters): array {
         // Si un filtre est appliqué sur l'étudiant, vérifie ça présence dans la BDD
         if(isset($filters['idStudent'])) {
             $student = StudentSelector::getStudentById($filters['idStudent']);
