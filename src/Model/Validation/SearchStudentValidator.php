@@ -7,7 +7,7 @@ class SearchStudentValidator {
 
     public function __construct() {
         $this->input = filter_input_array(
-            INPUT_POST,
+            INPUT_GET,
             [
                 "search" => [
                     "filter" => FILTER_CALLBACK,
@@ -19,6 +19,13 @@ class SearchStudentValidator {
                 ]
             ]
         );
+
+        if (empty($this->input["search"])) {
+            $this->input["search"] = null;
+        }
+        if (empty($this->input["groupStudent"])) {
+            $this->input["groupStudent"] = null;
+        }
     }
 
     /**

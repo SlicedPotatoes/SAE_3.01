@@ -33,17 +33,4 @@ class SearchStudentController {
             )
         );
     }
-
-    /**
-     * Renvoi un JSON des étudiants trouvé avec les filtres, permet ainsi leurs affichages via Ajax JavaScript
-     *
-     * @return void (echo json)
-     */
-    public static function getSearchStudent(): void {
-        $validator = new SearchStudentValidator();
-        $filters = $validator->getData();
-
-        $students = AccountService::getFilteredStudents($filters);
-        echo json_encode($students);
-    }
 }

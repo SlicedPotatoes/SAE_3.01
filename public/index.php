@@ -181,7 +181,7 @@ $router->addRoute(RequestMethod::GET, '/rechercher-un-etudiant', 'SearchStudentC
         ->requireLogin()
         ->addAuthorization(AccountType::EducationalManager);
 
-$router->addRoute(RequestMethod::GET, '/api/students', 'SearchStudentController@getSearchStudent')
+$router->addRoute(RequestMethod::GET, '/api/students', 'SearchStudentControllerApi@getSearchStudent')
         ->requireLogin()
         ->addAuthorization(AccountType::EducationalManager);
 
