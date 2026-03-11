@@ -140,7 +140,7 @@ class Mailer
     {
         $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? "https://" : "http://";
         $domain = $_SERVER['HTTP_HOST'];
-        $url = $protocol . $domain . "/ChangePassword/" . $token ;
+        $url = $protocol . $domain . "/mot-de-passe-oublie/" . $token ;
         $subject = 'Mot de passe oublié';
         $body = "Bonjour " . $firstname . " " . $lastname . ",<br><br>
                 Vous avez demandé la réinitialisation de votre mot de passe.<br>

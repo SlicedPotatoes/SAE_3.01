@@ -38,30 +38,23 @@ $router->addRoute(RequestMethod::GET, '/', 'HomeController@home');
 // AuthentificationController
 $router->addRoute(RequestMethod::GET, '/connexion', 'AuthentificationController@login')
         ->requireNotLogin();
-$router->addRoute(RequestMethod::POST, '/connexion', 'AuthentificationController@login')
+$router->addRoute(RequestMethod::POST, '/connexion', 'AuthentificationController@postLogin')
         ->requireNotLogin();
 $router->addRoute(RequestMethod::GET, '/deconnexion', 'AuthentificationController@logout')
         ->requireLogin();
 
 // ChangePasswordController
-
-//$router->addRoute("/changePassword", "ChangePasswordController@show");
-$router->addRoute(RequestMethod::GET, '/changement-de-mot-de-passe', '')
+$router->addRoute(RequestMethod::GET, '/changement-de-mot-de-passe', 'ChangePasswordController@showConnectedChangePassword')
         ->requireLogin();
-//$router->addRoute("/ChangePassword", "ChangePasswordController@changeWhenLogin");
-$router->addRoute(RequestMethod::POST, '/changement-de-mot-de-passe', '')
+$router->addRoute(RequestMethod::POST, '/changement-de-mot-de-passe', 'ChangePasswordController@postConnectedChangePassword')
         ->requireLogin();
-//$router->addRoute("/PasswordLost", "ChangePasswordController@passwordLost");
-$router->addRoute(RequestMethod::GET, '/mot-de-passe-oublie', '')
+$router->addRoute(RequestMethod::GET, '/mot-de-passe-oublie', 'ChangePasswordController@showLostPassword')
         ->requireNotLogin();
-//$router->addRoute("/PasswordLost", "ChangePasswordController@passwordLost");
-$router->addRoute(RequestMethod::POST, '/mot-de-passe-oublie', '')
+$router->addRoute(RequestMethod::POST, '/mot-de-passe-oublie', 'ChangePasswordController@postLostPassword')
         ->requireNotLogin();
-//$router->addRoute("/ChangePassword/{token}", "ChangePasswordController@changeWithToken");
-$router->addRoute(RequestMethod::GET, '/mot-de-passe-oublie/{token}', '')
+$router->addRoute(RequestMethod::GET, '/mot-de-passe-oublie/{token}', 'ChangePasswordController@showTokenChangePassword')
         ->requireNotLogin();
-//$router->addRoute("/ChangePassword/{token}", "ChangePasswordController@changeWithToken");
-$router->addRoute(RequestMethod::POST, '/mot-de-passe-oublie/{token}', '')
+$router->addRoute(RequestMethod::POST, '/mot-de-passe-oublie/{token}', 'ChangePasswordController@postTokenChangePassword')
         ->requireNotLogin();
 
 // ChangerMailAlertController

@@ -2,12 +2,9 @@
 
 namespace Uphf\GestionAbsence\Controller;
 
-use Uphf\GestionAbsence\Database\Select\AccountSelector;
-use Uphf\GestionAbsence\Database\Select\StudentSelector;
 use Uphf\GestionAbsence\Exception\BadCredentialException;
 use Uphf\GestionAbsence\Exception\EntityNotFoundException;
 use Uphf\GestionAbsence\Model\AuthManager;
-use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
 use Uphf\GestionAbsence\Model\Notification\Notification;
 use Uphf\GestionAbsence\Model\Notification\NotificationType;
 use Uphf\GestionAbsence\Service\AccountService;
@@ -39,7 +36,6 @@ class AuthentificationController {
      * @return ControllerData|void
      */
     public static function postLogin() {
-
         try {
             $account = AccountService::loginAccount($_POST["email"], $_POST["password"]);
 
