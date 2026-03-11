@@ -14,7 +14,8 @@ use Uphf\GestionAbsence\Model\CookieManager;
 use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
 use Uphf\GestionAbsence\Model\GlobalVariable;
 use Uphf\GestionAbsence\Model\Notification\Notification;
-use Uphf\GestionAbsence\Router;
+use Uphf\GestionAbsence\Router\Router;
+use Uphf\GestionAbsence\Router\RequestMethod;
 
 $dotenv = Dotenv::createImmutable(dirname(__DIR__));
 $dotenv->load();
@@ -30,34 +31,201 @@ CookieManager::init();
 
 // Création des routes
 $router = new Router();
-$router->addRoute("/", "HomeController@home");
-$router->addRoute("/login", "AuthentificationController@login");
-$router->addRoute("/logout", "AuthentificationController@logout");
-$router->addRoute("/StudentProfile", "StudentProfileController@show");
-$router->addRoute("/StudentProfile/{id:int}", "StudentProfileController@show");
-$router->addRoute("/JustificationList", "JustificationsListController@show");
-$router->addRoute("/SearchStudent", "SearchStudentController@show");
-$router->addRoute("/DetailJustification/{id}", "DetailJustificationController@show");
-$router->addRoute("/PredefinedComments", "PredefinedCommentController@show");
-$router->addRoute("/DetailJustification/{id:int}", "DetailJustificationController@show");
-$router->addRoute("/ChangePassword", "ChangePasswordController@changeWhenLogin");
-$router->addRoute("/ChangePassword/{token}", "ChangePasswordController@changeWithToken");
-$router->addRoute("/PasswordLost", "ChangePasswordController@passwordLost");
-$router->addRoute("/ImportVT", "ImportVTController@show");
-$router->addRoute("/teacherHome", "TeacherHomeController@show");
-$router->addRoute("/detailPeriod/", "DetailPeriodController@show");
-$router->addRoute("/resitSession", "ResitSessionController@show");
-$router->addRoute("/changePassword", "ChangePasswordController@show");
-$router->addRoute("/listOffPeriod", "OffPeriodController@show");
-$router->addRoute("/SemesterSettings", "SemesterSettingsController@show");
-$router->addRoute("/routine", "Routine@launch");
-$router->addRoute("/changement-notification-rp", "ChangerMailAlertController@changerMailAlertEducationalManager");
-$router->addRoute("/changement-notification-enseignant", "ChangerMailAlertController@changerMailAlertTeacher");
-$router->addRoute("/statistique-general", "GeneralStatisticsController@show");
-$router->addRoute("/statistique-etudiant/{id:int}", "StudentStatisticsController@show");
 
-$router->addRoute("/userManual", "UserManualController@show");
-$router->addRoute("/rules", "RulesController@show");
+// HomeController
+$router->addRoute(RequestMethod::GET, '/', 'HomeController@home');
+
+// AuthentificationController
+$router->addRoute(RequestMethod::GET, '/connexion', 'AuthentificationController@login')
+        ->requireNotLogin();
+$router->addRoute(RequestMethod::POST, '/connexion', 'AuthentificationController@postLogin')
+        ->requireNotLogin();
+$router->addRoute(RequestMethod::GET, '/deconnexion', 'AuthentificationController@logout')
+        ->requireLogin();
+
+// ChangePasswordController
+$router->addRoute(RequestMethod::GET, '/changement-de-mot-de-passe', 'ChangePasswordController@showConnectedChangePassword')
+        ->requireLogin();
+$router->addRoute(RequestMethod::POST, '/changement-de-mot-de-passe', 'ChangePasswordController@postConnectedChangePassword')
+        ->requireLogin();
+$router->addRoute(RequestMethod::GET, '/mot-de-passe-oublie', 'ChangePasswordController@showLostPassword')
+        ->requireNotLogin();
+$router->addRoute(RequestMethod::POST, '/mot-de-passe-oublie', 'ChangePasswordController@postLostPassword')
+        ->requireNotLogin();
+$router->addRoute(RequestMethod::GET, '/mot-de-passe-oublie/{token}', 'ChangePasswordController@showTokenChangePassword')
+        ->requireNotLogin();
+$router->addRoute(RequestMethod::POST, '/mot-de-passe-oublie/{token}', 'ChangePasswordController@postTokenChangePassword')
+        ->requireNotLogin();
+
+// ChangerMailAlertController
+//$router->addRoute("/changement-notification-rp", "ChangerMailAlertController@changerMailAlertEducationalManager");
+//$router->addRoute("/changement-notification-enseignant", "ChangerMailAlertController@changerMailAlertTeacher");
+$router->addRoute(RequestMethod::GET, '/changement-notification', '')
+        ->requireLogin()
+        ->addAuthorization(AccountType::Teacher)
+        ->addAuthorization(AccountType::EducationalManager);
+$router->addRoute(RequestMethod::POST, '/changement-notification', '')
+        ->requireLogin()
+        ->addAuthorization(AccountType::Teacher)
+        ->addAuthorization(AccountType::EducationalManager);
+
+// JustificationController
+//$router->addRoute("/JustificationList", "JustificationsListController@show");
+$router->addRoute(RequestMethod::GET, '/justifications', '')
+        ->requireLogin()
+        ->addAuthorization(AccountType::EducationalManager);
+//$router->addRoute("/DetailJustification/{id:int}", "DetailJustificationController@show");
+$router->addRoute(RequestMethod::GET, '/detail-justification/{id:int}', '')
+        ->requireLogin()
+        ->addAuthorization(AccountType::EducationalManager)
+        ->addAuthorization(AccountType::Student);
+
+$router->addRoute(RequestMethod::GET, '/api/justifications', '')
+        ->requireLogin()
+        ->addAuthorization(AccountType::EducationalManager)
+        ->addAuthorization(AccountType::Student);
+$router->addRoute(RequestMethod::PUT, '/api/justifications/{id:int}', '')
+        ->requireLogin()
+        ->addAuthorization(AccountType::EducationalManager);
+
+// TimeslotController
+//$router->addRoute("/teacherHome", "TeacherHomeController@show");
+$router->addRoute(RequestMethod::GET, '/absences-a-mes-cours', '')
+        ->requireLogin()
+        ->addAuthorization(AccountType::Teacher);
+//$router->addRoute("/detailPeriod/", "DetailPeriodController@show");
+$router->addRoute(RequestMethod::GET, '/absences-a-un-cours/{idTeacher:int}/{idRessource:int}/{idGroup:int}/{datetime}', '')
+        ->requireLogin()
+        ->addAuthorization(AccountType::Teacher)
+        ->addAuthorization(AccountType::EducationalManager)
+        ->addAuthorization(AccountType::Secretary);
+//$router->addRoute("/resitSession", "ResitSessionController@show");
+$router->addRoute(RequestMethod::GET, '/rattrapage', '')
+        ->requireLogin()
+        ->addAuthorization(AccountType::EducationalManager)
+        ->addAuthorization(AccountType::Secretary);
+
+$router->addRoute(RequestMethod::GET, '/api/timeslots', '')
+        ->requireLogin()
+        ->addAuthorization(AccountType::Teacher)
+        ->addAuthorization(AccountType::EducationalManager)
+        ->addAuthorization(AccountType::Secretary);
+
+// StatistiqueController
+//$router->addRoute("/statistique-general", "GeneralStatisticsController@show");
+$router->addRoute(RequestMethod::GET, '/statistiques-generales', '')
+        ->requireLogin()
+        ->addAuthorization(AccountType::EducationalManager);
+//$router->addRoute("/statistique-etudiant/{id:int}", "StudentStatisticsController@show");
+$router->addRoute(RequestMethod::GET, '/statistiques-etudiant/{id:int}', '')
+        ->requireLogin()
+        ->addAuthorization(AccountType::EducationalManager);
+
+$router->addRoute(RequestMethod::GET, '/api/statistics', '')
+        ->requireLogin()
+        ->addAuthorization(AccountType::EducationalManager);
+
+// ImportVTController
+$router->addRoute(RequestMethod::GET, '/televersement', 'ImportVTController@showImportVT')
+        ->requireLogin()
+        ->addAuthorization(AccountType::EducationalManager)
+        ->addAuthorization(AccountType::Secretary);
+$router->addRoute(RequestMethod::POST, '/televersement', 'ImportVTController@postImportVT')
+        ->requireLogin()
+        ->addAuthorization(AccountType::EducationalManager)
+        ->addAuthorization(AccountType::Secretary);
+
+// HolidayController
+//$router->addRoute("/listOffPeriod", "OffPeriodController@show");
+$router->addRoute(RequestMethod::GET, '/periode-de-vacances', '')
+        ->requireLogin()
+        ->addAuthorization(AccountType::EducationalManager)
+        ->addAuthorization(AccountType::Secretary);
+$router->addRoute(RequestMethod::POST, '/periode-de-vacances', '')
+        ->requireLogin()
+        ->addAuthorization(AccountType::EducationalManager)
+        ->addAuthorization(AccountType::Secretary);
+$router->addRoute(RequestMethod::PUT, '/periode-de-vacances', '')
+        ->requireLogin()
+        ->addAuthorization(AccountType::EducationalManager)
+        ->addAuthorization(AccountType::Secretary);
+$router->addRoute(RequestMethod::DELETE, '/periode-de-vacances', '')
+        ->requireLogin()
+        ->addAuthorization(AccountType::EducationalManager)
+        ->addAuthorization(AccountType::Secretary);
+
+// PredefinedCommentController
+//$router->addRoute("/PredefinedComments", "PredefinedCommentController@show");
+$router->addRoute(RequestMethod::GET, '/commentaire-predefini', '')
+        ->requireLogin()
+        ->addAuthorization(AccountType::EducationalManager);
+$router->addRoute(RequestMethod::POST, '/commentaire-predefini', '')
+        ->requireLogin()
+        ->addAuthorization(AccountType::EducationalManager);
+$router->addRoute(RequestMethod::PUT, '/commentaire-predefini', '')
+        ->requireLogin()
+        ->addAuthorization(AccountType::EducationalManager);
+$router->addRoute(RequestMethod::DELETE, '/commentaire-predefini', '')
+        ->requireLogin()
+        ->addAuthorization(AccountType::EducationalManager);
+
+// RulesController
+$router->addRoute(RequestMethod::GET, '/reglement-interieur', 'InformationController@rules');
+
+// UserManualController
+$router->addRoute(RequestMethod::GET, '/manuel-d-utilisation', 'InformationController@userManual');
+
+// SearchStudentController
+//$router->addRoute("/SearchStudent", "SearchStudentController@show");
+$router->addRoute(RequestMethod::GET, '/rechercher-un-etudiant', 'SearchStudentController@showSearchStudent')
+        ->requireLogin()
+        ->addAuthorization(AccountType::EducationalManager);
+
+$router->addRoute(RequestMethod::GET, '/api/students', 'SearchStudentController@getSearchStudent')
+        ->requireLogin()
+        ->addAuthorization(AccountType::EducationalManager);
+
+// SemesterSettingsController
+//$router->addRoute("/SemesterSettings", "SemesterSettingsController@show");
+$router->addRoute(RequestMethod::GET, '/configuration-des-semestres', '')
+        ->requireLogin()
+        ->addAuthorization(AccountType::EducationalManager)
+        ->addAuthorization(AccountType::Secretary);
+$router->addRoute(RequestMethod::POST, '/configuration-des-semestres', '')
+        ->requireLogin()
+        ->addAuthorization(AccountType::EducationalManager)
+        ->addAuthorization(AccountType::Secretary);
+$router->addRoute(RequestMethod::PUT, '/configuration-des-semestres', '')
+        ->requireLogin()
+        ->addAuthorization(AccountType::EducationalManager)
+        ->addAuthorization(AccountType::Secretary);
+$router->addRoute(RequestMethod::DELETE, '/configuration-des-semestres', '')
+        ->requireLogin()
+        ->addAuthorization(AccountType::EducationalManager)
+        ->addAuthorization(AccountType::Secretary);
+
+// StudentProfilController
+//$router->addRoute("/StudentProfile", "StudentProfileController@show");
+$router->addRoute(RequestMethod::GET, '/profil-etudiant', '')
+        ->requireLogin()
+        ->addAuthorization(AccountType::Student);
+//$router->addRoute("/StudentProfile/{id:int}", "StudentProfileController@show");
+$router->addRoute(RequestMethod::GET, '/profil-etudiant/{id:int}', '')
+        ->requireLogin()
+        ->addAuthorization(AccountType::EducationalManager);
+
+$router->addRoute(RequestMethod::GET, '/api/absences', '')
+        ->requireLogin()
+        ->addAuthorization(AccountType::Student)
+        ->addAuthorization(AccountType::EducationalManager);
+$router->addRoute(RequestMethod::PUT, '/api/hideRuleModal', '')
+        ->requireLogin()
+        ->addAuthorization(AccountType::Student);
+
+/*
+TODO: A voir plus tard
+$router->addRoute("/routine", "Routine@launch");
+*/
 
 $path = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
 
@@ -124,16 +292,14 @@ if (AuthManager::isLogin()) {
             </p>
         </div>
 
-        <?php if (!AuthManager::isRole(AccountType::EducationalManager)
-                || AuthManager::isRole(AccountType::Secretary)
-                || AuthManager::isRole(AccountType::Teacher)): ?>
+        <?php if (AuthManager::isRole(AccountType::Student) || !AuthManager::isLogin()): ?>
 
             <div class=" footer-row me-3">
-                <a href="/rules">Règlement intérieur de l’établissement</a>
+                <a href="/reglement-interieur">Règlement intérieur de l’établissement</a>
             </div>
 
             <div class="footer-row me-3">
-                <a href="/userManual">Manuel d’utilisation du site</a>
+                <a href="/manuel-d-utilisation">Manuel d’utilisation du site</a>
             </div>
         <?php endif; ?>
     </div>

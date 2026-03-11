@@ -1,52 +1,59 @@
 <?php
 
-namespace Uphf\GestionAbsence;
+namespace Uphf\GestionAbsence\Router;
 
-use Uphf\GestionAbsence\Controller\ControllerData;
 use RuntimeException;
+use Uphf\GestionAbsence\Controller\ControllerData;
+use Uphf\GestionAbsence\Model\AuthManager;
 
 /**
- * Routeur basique permettant de rediriger vers le bon controller
+ * Routeur basique permettant de rediriger vers la méthode d'un controller
  */
 class Router {
-    //Représente la route par défault, devrais être changé en prod par / si server bien configuré
     private array $routes = [];
 
     /**
      * Permet de définir des routes
      *
-     * Une route est une paire composée d'un chemin et d'un handler
+     * Une route est composée d'une méthode, d'un chemin et d'un handler
      *
-     * Un handler est une chaine qui représente la classe d'un controller et la méthode au format suivant:
-     * "MonController@Method"
+     * Un handler est une chaine qui représente la classe d'un controller et la méthode au format suivant :
+     * "MonController@Method".
      *
+     * @param RequestMethod $requestMethod
      * @param string $path
      * @param string $handler
-     * @return void
+     * @return Route
      */
-    public function addRoute(string $path, string $handler): void {
-        $this->routes[$this->normalizePath($path)] = $handler;
+    public function addRoute(RequestMethod $requestMethod, string $path, string $handler): Route {
+        $route = new Route($handler);
+        $this->routes[$requestMethod->name][$this->normalizePath($path)] = $route;
+
+        return $route;
     }
 
     /**
      * Prend un chemin en paramètre, et exécute le bon handler de ce chemin
      * @param $path
      * @return ControllerData
-     * @throws RuntimeException Si le format de l'handler correspondant à la route est invalide
-     * @throws RuntimeException Si la classe du controller n'a pas été trouvé
-     * @throws RuntimeException Si la méthode du controller n'a pas été trouvé
      */
     public function launch($path): ControllerData {
         $path = $this->normalizePath($path);
 
-        // Parcours de l'ensemble des routes pour chercher une correspondance avec path
-        foreach($this->routes as $pattern => $handler) {
+        // Parcours de l'ensemble des routes REQUEST_METHOD pour chercher une correspondance avec path
+        foreach($this->routes[$_SERVER['REQUEST_METHOD']] as $pattern => $route) {
             $params = $this->matchPattern($pattern, $path);
 
             if(!$params && !is_array($params)) { continue; }
 
-            // Il y a un match, appel de l'handler
+            // Il y a un match, vérification des authorisations
+            $result = $this->checkAuthorization($route);
+            if($result !== null) {
+                return $result;
+            }
 
+            // Appel de la méthode du controller
+            $handler = $route->getHandler();
             if(!is_string($handler) || !str_contains($handler, '@')) {
                 throw new RuntimeException("Le format de l'handler est invalide pour cette route: $handler");
             }
@@ -61,10 +68,59 @@ class Router {
                 throw new RuntimeException("La méthode $method n'exite pas dans le controller $class.");
             }
 
-            return call_user_func([$class, $method], $params);
+            return $class::$method($params);
         }
 
         return ControllerData::get404();
+    }
+
+    /**
+     * Vérifie les autorisations pour accéder à la route demandée
+     *
+     * Dans le cas où la route requis un utilisateur non connecté et que celui-ci l'est, renvoie vers sa page Home
+     *
+     * Dans le cas où la route requis un utilisateur connecté et que celui-ci ne l'est pas, renvoie vers le login
+     *
+     * Dans le cas où un login est requis et qu'aucun type de compte n'a été définie dans la route, alors tout type de compte est autorisé à y accéder.
+     *
+     * Renvoie 403 dans le cas où l'utilisateur n'a pas les droits pour accéder à la route.
+     *
+     * Renvoie null si l'utilisateur peut accéder à la route.
+     *
+     * @param $route
+     * @return ControllerData|null
+     */
+    private function checkAuthorization($route): ?ControllerData {
+        // Route ne requis pas de login, mais utilisateur connecté
+        if($route->getRequireNotLogin() && AuthManager::isLogin()) {
+            header("Location: /");
+            exit();
+        }
+
+        if($route->getRequireLogin()) {
+            // Route requis un login, mais utilisateur non connecté
+            if(!AuthManager::isLogin()) {
+                header("Location: /");
+                exit();
+            }
+
+            $authorization = $route->getAuthorization();
+            // Tout type de compte peut accéder a cette page
+            if(empty($authorization)) {
+                return null;
+            }
+
+            // Check si l'utilisateur à un role autorisant l'accès a cette page
+            foreach ($authorization as $role) {
+                if(AuthManager::isRole($role)) {
+                    return null;
+                }
+            }
+
+            return ControllerData::get403();
+        }
+
+        return null;
     }
 
     /**

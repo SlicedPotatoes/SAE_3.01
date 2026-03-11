@@ -48,4 +48,15 @@ class TimeslotService
         return TimeSlotAbsenceSelector::selectTimeSlotAbsence($idTeacher, $exam, $dateStart, $dateEnd);
     }
 
+    /**
+     * Cette méthode permet de récupérer une liste d'absences à partir d'un timeslot d'absence donné.
+     *
+     * @param TimeSlotAbsence $timeSlotAbsence
+     * @return array
+     */
+    public static function getListAbsenceWithTimeSlot(TimeSlotAbsence $timeSlotAbsence): array
+    {
+        return TimeSlotAbsenceSelector::getAbsenceListByTimeSlotAbsence($timeSlotAbsence);
+    }
+
 }

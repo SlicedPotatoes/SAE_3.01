@@ -2,64 +2,59 @@
 
 namespace Uphf\GestionAbsence\Controller;
 
-use Uphf\GestionAbsence\Database\Delete\TokenDelete;
-use Uphf\GestionAbsence\Database\Insert\TokenInsertor;
-use Uphf\GestionAbsence\Database\Select\AccountSelector;
-use Uphf\GestionAbsence\Database\Update\PasswordUpdate;
+use Uphf\GestionAbsence\Exception\BadCredentialException;
+use Uphf\GestionAbsence\Exception\EntityNotFoundException;
 use Uphf\GestionAbsence\Model\AuthManager;
-use Uphf\GestionAbsence\Model\Entity\Account\Account;
-use Uphf\GestionAbsence\Model\Mailer;
 use Uphf\GestionAbsence\Model\Notification\Notification;
 use Uphf\GestionAbsence\Model\Notification\NotificationType;
 use Uphf\GestionAbsence\Model\Validation\ChangePasswordValidator;
+use Uphf\GestionAbsence\Service\AccountService;
 use Uphf\GestionAbsence\ViewModel\BaseViewModel;
 use Uphf\GestionAbsence\ViewModel\ChangePasswordViewModel;
 
 /**
  * Controller relatif aux différentes Views pour le changement de mot de passe / mot de passe oublié
  */
-class ChangePasswordController{
-
+class ChangePasswordController {
     /**
-     * View: changePassword - Sans token (donc login)
+     * Affiche la vue pour changer le mot de passe d'un compte dans le cas ou l'utilisateur est connecté
      *
-     * Si l'utilisateur n'est pas connecté => Rediriger vers login
-     *
-     * Si requête POST => Traité le changement du mot de passe
-     *
-     * @param $params
      * @return ControllerData
      */
-    public static function changeWhenLogin($params): ControllerData {
-        if(!AuthManager::isLogin()) {
-            header("Location: /");
-            exit();
-        }
+    public static function showConnectedChangePassword(): ControllerData {
+        return new ControllerData(
+            "/View/changePassword.php",
+            "Changer le mot de passe",
+            new ChangePasswordViewModel(false)
+        );
+    }
 
-        // Si l'utilisateur change son mot de passe
-        if($_SERVER['REQUEST_METHOD'] == "POST") {
-            $validator = new ChangePasswordValidator();
-            $errors = $validator->checkAllGood();
+    /**
+     * Traitement d'un changement de mot de passe, dans le cas ou l'utilisateur fournis sont mot ancien mot de passe comme preuve d'authentification
+     *
+     * @return ControllerData
+     */
+    public static function postConnectedChangePassword(): ControllerData {
+        $validator = new ChangePasswordValidator();
+        $errors = $validator->checkAllGood();
 
-            if(count($errors) != 0) {
-                foreach($errors as $error) {
-                    Notification::addNotification(NotificationType::Error, $error);
-                }
+        if(count($errors) != 0) {
+            foreach($errors as $error) {
+                Notification::addNotification(NotificationType::Error, $error);
             }
-            // Les champs sont valides.
-            else {
+        }
+        else {
+            try {
                 $datas = $validator->getData();
-
-                $account = AuthManager::getAccount();
-                $currHash = AccountSelector::getPasswordHashedById($account->getIdAccount());
-
-                // On vérifie si l'utilisateur a bien fourni son mot de passe actuel.
-                if(password_verify($datas['lastPassword'], $currHash)) {
-                    self::changePassword($account, $datas['newPassword']);
-                }
-                else {
-                    Notification::addNotification(NotificationType::Error, "Changement de mot de passe: L'ancien mot de passe ne correspond pas");
-                }
+                AccountService::changePasswordWithOldPassword(AuthManager::getAccount(), $datas['lastPassword'], $datas['newPassword']);
+                Notification::addNotification(NotificationType::Success, "Votre mot de passe a bien été changé !");
+            }
+            catch (BadCredentialException $e) {
+                Notification::addNotification(NotificationType::Error, "Changement de mot de passe: L'ancien mot de passe ne correspond pas");
+            }
+            // Ne devrait pas se produire.
+            catch (EntityNotFoundException $e) {
+                Notification::addNotification(NotificationType::Error, "Erreur interne");
             }
         }
 
@@ -71,45 +66,55 @@ class ChangePasswordController{
     }
 
     /**
-     * View: changePassword - Avec token (donc pas login)
+     * Affiche la vue mot de passe oublié
      *
-     * Si l'utilisateur est login => 403
+     * @return ControllerData
+     */
+    public static function showLostPassword(): ControllerData {
+        return new ControllerData(
+            "/View/PasswordLost.php",
+            "Mot de passe oublié",
+            new BaseViewModel()
+        );
+    }
+
+    /**
+     * Traite la demande de mot de passe oublié
+     *
+     * @return ControllerData
+     */
+    public static function postLostPassword(): ControllerData {
+        $email = $_POST['email'];
+
+        try {
+            AccountService::passwordLost($email);
+        }
+        catch (EntityNotFoundException $e) {}
+
+        Notification::addNotification(
+            NotificationType::Success,
+            "Si un compte correspondant à cette adresse existe, un email de réinitialisation vient de vous être envoyés."
+        );
+
+        return new ControllerData(
+            "/View/PasswordLost.php",
+            "Mot de passe oublié",
+            new BaseViewModel()
+        );
+    }
+
+    /**
+     * Affiche la vue pour changer de mot de passe à partir d'un token
+     *
+     * Dans le cas ou le token fournis dans l'URL est invalide / expiré, renvoie vers 403.
      *
      * @param $params
      * @return ControllerData
      */
-    public static function changeWithToken($params): ControllerData {
-        // Ne devrais pas arriver
-        if(!isset($params['token'])) {
-            Notification::addNotification(NotificationType::Error, "Aucun token fournis");
-            return ControllerData::get403();
-        }
-
-        $token = $params['token'];
-        $account = AccountSelector::getAccountFromToken($token);
-
-        // Le n'existe pas dans la BDD où est expiré
-        if(!isset($account)) {
+    public static function showTokenChangePassword($params): ControllerData {
+        if(!AccountService::isValidToken($params['token'])) {
             Notification::addNotification(NotificationType::Error, "Token expiré");
             return ControllerData::get403();
-        }
-
-        // Si l'utilisateur change son mot de passe
-        if($_SERVER['REQUEST_METHOD'] == "POST") {
-            $validator = new ChangePasswordValidator();
-            $errors = $validator->checkAllGoodToken();
-
-            if(count($errors) != 0) {
-                foreach($errors as $error) {
-                    Notification::addNotification(NotificationType::Error, $error);
-                }
-            }
-            // Les champs sont valides.
-            else {
-                $datas = $validator->getData();
-                self::changePassword($account, $datas['newPassword']);
-                TokenDelete::deleteToken($token);
-            }
         }
 
         return new ControllerData(
@@ -120,68 +125,51 @@ class ChangePasswordController{
     }
 
     /**
-     * TODO: A faire UwU
+     * Traite le changement de mot de passe à partir d'un token
+     *
+     * Dans le cas ou le token fournis dans l'URL est invalide / expiré, renvoie vers 403
+     *
+     * Dans le cas ou les données fournis dans le formulaire par l'utilisateur son invalide, renvoie vers le formulaire.
+     *
+     * Dans le cas d'un succés, renvoie vers la page login.
      *
      * @param $params
      * @return ControllerData
      */
-    public static function passwordLost($params): ControllerData {
-        if(AuthManager::isLogin()) {
-            Notification::addNotification(NotificationType::Error, "Cette page est accéssible seulement si vous n'êtes pas connecté");
-            return ControllerData::get403();
-        }
+    public static function postTokenChangePassword($params): ControllerData {
+        try {
+            $validator = new ChangePasswordValidator();
+            $errors = $validator->checkAllGoodToken();
 
-        if($_SERVER['REQUEST_METHOD'] === "POST") {
-            $mail = $_POST['email'];
+            // Entrée du formulaire invalide
+            if(count($errors) != 0) {
+                foreach($errors as $error) {
+                    Notification::addNotification(NotificationType::Error, $error);
+                }
 
-            $account = AccountSelector::getAccountByEmail($mail);
-
-            if(isset($account)) {
-                $bytes = random_bytes(64);
-                $token = urlencode(strtr(base64_encode($bytes), '+/', '-_'));
-
-                TokenInsertor::insertToken($account->getIdAccount(), $token);
-
-                Mailer::sendPasswordChanger(
-                    $account->getLastName(),
-                    $account->getFirstName(),
-                    $account->getEmail(),
-                    $token
+                return new ControllerData(
+                    "/View/changePassword.php",
+                    "Changer le mot de passe",
+                    new ChangePasswordViewModel(true)
                 );
             }
+            // Les champs sont valides.
+            else {
+                $datas = $validator->getData();
+                AccountService::changePasswordWithToken($params['token'], $datas['newPassword']);
+                Notification::addNotification(NotificationType::Success, "Votre mot de passe a bien été changé !");
 
-            Notification::addNotification(
-                NotificationType::Success,
-                "Si un compte correspondant à cette adresse existe, un email de réinitialisation vient de vous être envoyés."
-            );
+                return new ControllerData(
+                    "/View/login.php",
+                    "Connexion",
+                    new BaseViewModel()
+                );
+            }
         }
-
-        return new ControllerData(
-            "/View/PasswordLost.php",
-            "Mot de passe oublié",
-            new BaseViewModel()
-        );
-    }
-
-    /**
-     * Hash le password et fait appel a la methode de changement de mot de passe dans la bdd
-     * Envoie le mail de confirmation
-     *
-     * @param Account $account
-     * @param string $newPassword
-     * @return void
-     */
-    private static function changePassword(Account $account, string $newPassword): void {
-        $passwordHash = password_hash($newPassword, PASSWORD_DEFAULT);
-        PasswordUpdate::updatePassword($account->getIdAccount(), $passwordHash);
-
-        Notification::addNotification(NotificationType::Success, "Votre mot de passe a bien été changé !");
-
-        Mailer::sendPasswordChangeNotification(
-            $account->getLastName(),
-            $account->getFirstName(),
-            $account->getEmail()
-        );
+        // Token invalide
+        catch (EntityNotFoundException $e) {
+            Notification::addNotification(NotificationType::Error, "Token expiré");
+            return ControllerData::get403();
+        }
     }
 }
-

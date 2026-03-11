@@ -3,6 +3,7 @@
 namespace Uphf\GestionAbsence\Service;
 
 use Uphf\GestionAbsence\Database\Delete\TokenDelete;
+use Uphf\GestionAbsence\Database\Insert\TokenInsertor;
 use Uphf\GestionAbsence\Database\Select\AccountSelector;
 use Uphf\GestionAbsence\Database\Select\SelectBuilder\StudentSelectBuilder;
 use Uphf\GestionAbsence\Database\Select\StudentSelector;
@@ -54,25 +55,52 @@ class AccountService {
     /**
      * Changer le mot de passe d'un compte avec comme authentification son ancien mot de passe
      *
-     * @param $accountId int
-     * @param $oldPassword string
-     * @param $newPassword string
+     * @param Account $account
+     * @param string $oldPassword
+     * @param string $newPassword
      * @return void
-     * @throws EntityNotFoundException Si le compte n'existe pas
-     * @throws BadCredentialException Mot de passe incorrecte
+     * @throws BadCredentialException Si le compte n'existe pas
+     * @throws EntityNotFoundException Mot de passe incorrecte
      */
-    public static function changePasswordWithOldPassword(int $accountId, string $oldPassword, string $newPassword): void {
-        $currHash = AccountSelector::getPasswordHashedById($accountId);
+    public static function changePasswordWithOldPassword(Account $account, string $oldPassword, string $newPassword): void {
+        $currHash = AccountSelector::getPasswordHashedById($account->getIdAccount());
 
         if($currHash === null) {
-            throw new EntityNotFoundException("Account with id " . $accountId . " not found");
+            throw new EntityNotFoundException("Account with id " . $account->getIdAccount() . " not found");
         }
         if(!password_verify($oldPassword, $currHash)) {
             throw new BadCredentialException("Incorrect password");
         }
 
         $passwordHash = password_hash($newPassword, PASSWORD_DEFAULT);
-        PasswordUpdate::updatePassword($accountId, $passwordHash);
+        PasswordUpdate::updatePassword($account->getIdAccount(), $passwordHash);
+
+        MailService::sendPasswordChangeNotification($account);
+    }
+
+    public static function passwordLost($email): void {
+        $account = AccountSelector::getAccountByEmail($email);
+
+        if($account === null) {
+            throw new EntityNotFoundException("No account found with email: " . $email);
+        }
+
+        $bytes = random_bytes(64);
+        $token = urlencode(strtr(base64_encode($bytes), '+/', '-_'));
+
+        TokenInsertor::insertToken($account->getIdAccount(), $token);
+        MailService::sendPasswordToken($account, $token);
+    }
+
+    /**
+     * Permet de vérifier la validité d'un token
+     *
+     * @param string $token
+     * @return bool
+     */
+    public static function isValidToken(string $token): bool {
+        $account = AccountSelector::getAccountFromToken($token);
+        return $account !== null;
     }
 
     /**
@@ -93,6 +121,8 @@ class AccountService {
         $passwordHash = password_hash($newPassword, PASSWORD_DEFAULT);
         PasswordUpdate::updatePassword($account->getIdAccount(), $passwordHash);
         TokenDelete::deleteToken($token);
+
+        MailService::sendPasswordChangeNotification($account);
     }
 
     /**

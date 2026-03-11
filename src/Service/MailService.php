@@ -87,4 +87,34 @@ class MailService
         Mailer::sendAccRecpJustification($lastname, $firstname, $email, $dateDebut, $dateFin);
     }
 
+    /**
+     * Permet d'envoyer un mail lorsqu'un utilisateur à changer son mot de passe
+     *
+     * @param Account $account
+     * @return void
+     */
+    public static function sendPasswordChangeNotification(Account $account): void {
+        Mailer::sendPasswordChangeNotification(
+            $account->getLastName(),
+            $account->getFirstName(),
+            $account->getEmail()
+        );
+    }
+
+    /**
+     * Permet d'envoyer un mail avec un token lors de mot de passe oublié
+     *
+     * @param Account $account
+     * @param string $token
+     * @return void
+     */
+    public static function sendPasswordToken(Account $account, string $token): void {
+        Mailer::sendPasswordChanger(
+            $account->getLastName(),
+            $account->getFirstName(),
+            $account->getEmail(),
+            $token
+        );
+    }
+
 }

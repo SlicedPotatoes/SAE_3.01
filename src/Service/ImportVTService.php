@@ -49,7 +49,7 @@ class ImportVTService
         'Email',
         'Identifiant national');
 
-    public function import(array $file)
+    public static function import(array $file)
     {
         if (!ReaderCSV::isCSV($file['name'])) {
             throw new \Exception("Aucun fichier CSV valide fourni.");
@@ -58,12 +58,12 @@ class ImportVTService
         $data = ReaderCSV::readCSV($_FILES['vt_file']['tmp_name']);
 
         if (ReaderCSV::haveCollum($data, ImportVTService::$absenceColumns)) {
-            $this->importAbsences($data);
+            ImportVTService::importAbsences($data);
             return true;
         }
 
         if (ReaderCSV::haveCollum($data, ImportVTService::$studentColumns)) {
-            $this->importStudents($data);
+            ImportVTService::importStudents($data);
             return true;
         }
 
@@ -71,12 +71,12 @@ class ImportVTService
 
     }
 
-    private function importStudents(array $data)
+    private static function importStudents(array $data)
     {
         NewAccountInsertor::insertStudentAccount($data);
     }
 
-    private function importAbsences(array $data)
+    private static function importAbsences(array $data)
     {
         $validator = new ImportAbsenceValidator($data);
         $data = $validator->getData();

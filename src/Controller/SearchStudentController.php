@@ -2,11 +2,9 @@
 
 namespace Uphf\GestionAbsence\Controller;
 
-use Uphf\GestionAbsence\Database\Select\SelectBuilder\StudentSelectBuilder;
-use Uphf\GestionAbsence\Model\AuthManager;
-use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
 use Uphf\GestionAbsence\Model\Entity\Account\GroupStudent;
 use Uphf\GestionAbsence\Model\Validation\SearchStudentValidator;
+use Uphf\GestionAbsence\Service\AccountService;
 use Uphf\GestionAbsence\ViewModel\SearchStudentViewModel;
 
 /**
@@ -14,44 +12,16 @@ use Uphf\GestionAbsence\ViewModel\SearchStudentViewModel;
  */
 class SearchStudentController {
     /**
-     * Si l'utilisateur n'est pas connecté => Rediriger vers login
-     *
-     * Si l'utilisateur n'est pas RP => 403
-     *
-     * Gestion des filtres appliquée
+     * Page de recherche étudiant
      *
      * @return ControllerData
      */
-    public static function show(): ControllerData {
-        // Utilisateur non connecté, rediriger vers /
-        if(!AuthManager::isLogin()) {
-            header("Location: /");
-            exit();
-        }
-
-        // Si compte autre que RP => 403
-        if(!AuthManager::isRole(AccountType::EducationalManager)) {
-            return ControllerData::get403();
-        }
-
-        // Builder pour récupérer les étudiants
-        $builderStudents = new StudentSelectBuilder();
-
-        $validator = new SearchStudentValidator();
-        $filters = $validator->getData();
-
-        // Gestions des filtres
-        if(isset($filters['search'])) {
-            $builderStudents->searchBar($filters['search']);
-        }
-        else {
-            $builderStudents->allStudent();
-        }
-        if(isset($filters['groupStudent'])) {
-            $builderStudents->groupStudent($filters['groupStudent']);
-        }
-
-        $students = $builderStudents->execute();
+    public static function showSearchStudent(): ControllerData {
+        $filters = [
+            'search' => null,
+            'groupStudent' => null
+        ];
+        $students = AccountService::getFilteredStudents($filters);
 
         return new ControllerData(
             "/View/searchStudent.php",
@@ -62,5 +32,18 @@ class SearchStudentController {
                 $filters
             )
         );
+    }
+
+    /**
+     * Renvoi un JSON des étudiants trouvé avec les filtres, permet ainsi leurs affichages via Ajax JavaScript
+     *
+     * @return void (echo json)
+     */
+    public static function getSearchStudent(): void {
+        $validator = new SearchStudentValidator();
+        $filters = $validator->getData();
+
+        $students = AccountService::getFilteredStudents($filters);
+        echo json_encode($students);
     }
 }
