@@ -113,11 +113,11 @@ $router->addRoute(RequestMethod::GET, '/api/timeslots', '')
 
 // StatistiqueController
 //$router->addRoute("/statistique-general", "GeneralStatisticsController@show");
-$router->addRoute(RequestMethod::GET, '/statistiques-generales', '')
+$router->addRoute(RequestMethod::GET, '/statistiques-generales', 'StatisticsController@showGeneralStatistics')
         ->requireLogin()
         ->addAuthorization(AccountType::EducationalManager);
 //$router->addRoute("/statistique-etudiant/{id:int}", "StudentStatisticsController@show");
-$router->addRoute(RequestMethod::GET, '/statistiques-etudiant/{id:int}', '')
+$router->addRoute(RequestMethod::GET, '/statistiques-etudiant/{id:int}', 'StatisticsController@showStudentStatistics')
         ->requireLogin()
         ->addAuthorization(AccountType::EducationalManager);
 
