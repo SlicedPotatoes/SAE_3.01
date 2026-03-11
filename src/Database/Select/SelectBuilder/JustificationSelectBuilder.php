@@ -107,8 +107,6 @@ class JustificationSelectBuilder {
     /**
      * Permet de définir les colonnes et l'ordre pour la clause ORDER BY de la requête
      *
-     * IMPORTANT: Ne jamais passer de données fournies par l'utilisateur à \$columns
-     *
      * @param array $columns
      * @param SortOrder $order
      * @return $this
@@ -117,6 +115,13 @@ class JustificationSelectBuilder {
     public function orderBy(array $columns, SortOrder $order): JustificationSelectBuilder {
         if(isset($this->flags['orderBy'])) { throw new BadMethodCallException("Second appel de la méthode 'orderBy()'."); }
         $this->flags['orderBy'] = true;
+
+        $whiteList = ['idjustification', 'cause', 'currentstate', 'startdate', 'enddate', 'senddate', 'processeddate', 'refusalreason'];
+        foreach ($columns as $column) {
+            if (!in_array(strtolower($column), $whiteList)) {
+                throw new \InvalidArgumentException($column . " is not in the whitelist");
+            }
+        }
 
         $this->orderByColumns = $columns;
         $this->order = $order;

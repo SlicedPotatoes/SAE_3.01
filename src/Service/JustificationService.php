@@ -135,28 +135,30 @@ class JustificationService
     /**
      * Cette méthode permet de récupérer les justificatifs d'un étudiant en fonction de différents filtres.
      *
-     * @param $idStudent
+     * Le tableau `$sortOptions` doit contenir les clés suivantes :
+     *  - "columns" : un tableau de colonnes sur lesquels le trie sera éffectuer
+     *  - "sortOrder" : Un objet de l'enum SortOrder
+     *
      * @param $filters
+     * @param array $sortOptions
      * @return array
      */
-    public static function getJustificationsWithFilters($filters, int|null $idStudent = null) : array
+    public static function getJustificationsWithFilters($filters, array $sortOptions) : array
     {
         $builder = new JustificationSelectBuilder();
 
-        if($idStudent) {
-            $builder->idStudent($idStudent);
-        }
-
         // Application des filtres
-        $whiteListMethod = ['dateStart', 'dateEnd', 'state', 'examen'];
+        $whiteListMethod = ['dateStart', 'dateEnd', 'state', 'examen', 'idStudent'];
 
-        foreach ($filters as $filter) {
+        foreach ($filters as $filter => $value) {
             if(isset($value) && in_array($filter, $whiteListMethod)) {
                 call_user_func([$builder, $filter], $value);
             }
         }
 
-        $builder->orderBy(["sendDate"], SortOrder::DESC);
+        if(!empty($sortOptions['columns']) && $sortOptions['sortOrder'] !== null) {
+            $builder->orderBy($sortOptions['columns'], $sortOptions['sortOrder']);
+        }
 
         return $builder->execute();
     }

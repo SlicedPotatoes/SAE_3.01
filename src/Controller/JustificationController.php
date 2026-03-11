@@ -16,27 +16,35 @@ use Uphf\GestionAbsence\ViewModel\DetailJustificationViewModel;
 use Uphf\GestionAbsence\ViewModel\JustificationListViewModel;
 
 /**
- * Controller pour les justificatifs
+ * Controller de vue pour les justificatifs
+ *
+ *  - GET /justifications -> showJustificationList()
  */
 class JustificationController
 {
     /**
-     * Affiche la liste des justificatifs pour le RP
+     * Affiche la vue avec la liste des justificatifs pour le RP
      *
      * @return ControllerData
      */
-    public static function justificationListGet(): ControllerData
+    public static function showJustificationList(): ControllerData
     {
         $currTab = $_GET['currTab'] ?? 'proofToDo';
 
-        $justificationToDoBuilder = (new JustificationSelectBuilder())->state(StateJustif::NotProcessed);
-        $justificationDoneBuilder = (new JustificationSelectBuilder())->state(StateJustif::Processed);
-
-        $justificationToDoBuilder->orderBy(['sendDate'], SortOrder::ASC);
-        $justificationDoneBuilder->orderBy(['sendDate'], SortOrder::DESC);
-
-        $justificationsToDo = $justificationToDoBuilder->execute();
-        $justificationsDone = $justificationDoneBuilder->execute();
+        $justificationsToDo = JustificationService::getJustificationsWithFilters(
+            ['state' => StateJustif::NotProcessed],
+            [
+                "columns" => ['sendDate'],
+                "sortOrder" => SortOrder::ASC
+            ]
+        );
+        $justificationsDone = JustificationService::getJustificationsWithFilters(
+            ['state' => StateJustif::Processed],
+            [
+                "columns" => ['sendDate'],
+                "sortOrder" => SortOrder::DESC
+            ]
+        );
 
         return new ControllerData(
             '/View/justificationList.php',

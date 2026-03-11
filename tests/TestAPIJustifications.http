@@ -1,0 +1,17 @@
+### Login a un compte RP
+POST http://localhost/connexion
+Content-Type: application/x-www-form-urlencoded
+
+email=kevin.masmejean@uphf.fr&password=password
+
+### Récupérer les justificatifs sans filtres
+GET http://localhost/api/justifications
+
+### Test des filtres
+GET http://localhost/api/justifications?filters[state]=NotProcessed
+
+### Test orderBy
+GET http://localhost/api/justifications?orderOptions[columns][]=idJustification&orderOptions[sortOrder]=DESC
+
+### Test error
+GET http://localhost/api/justifications?orderOptions[columns][]=illegalColumn&orderOptions[sortOrder]=DESC
