@@ -7,6 +7,11 @@ use Uphf\GestionAbsence\Database\Update\SemesterUpdater;
 use Uphf\GestionAbsence\Exception\EntityNotFoundException;
 use Uphf\GestionAbsence\Model\Entity\Semester;
 
+/**
+ * Service pour les semestres
+ *
+ * CRUD
+ */
 class SemesterService
 {
     /**
