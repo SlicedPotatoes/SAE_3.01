@@ -137,19 +137,19 @@ $router->addRoute(RequestMethod::POST, '/televersement', 'ImportVTController@pos
 
 // HolidayController
 //$router->addRoute("/listOffPeriod", "OffPeriodController@show");
-$router->addRoute(RequestMethod::GET, '/periode-de-vacances', '')
+$router->addRoute(RequestMethod::GET, '/periode-de-vacances', 'HolidayController@showHoliday')
         ->requireLogin()
         ->addAuthorization(AccountType::EducationalManager)
         ->addAuthorization(AccountType::Secretary);
-$router->addRoute(RequestMethod::POST, '/periode-de-vacances', '')
+$router->addRoute(RequestMethod::POST, '/periode-de-vacances', 'HolidayController@postHoliday')
         ->requireLogin()
         ->addAuthorization(AccountType::EducationalManager)
         ->addAuthorization(AccountType::Secretary);
-$router->addRoute(RequestMethod::PUT, '/periode-de-vacances', '')
+$router->addRoute(RequestMethod::PUT, '/periode-de-vacances', 'HolidayController@putHoliday')
         ->requireLogin()
         ->addAuthorization(AccountType::EducationalManager)
         ->addAuthorization(AccountType::Secretary);
-$router->addRoute(RequestMethod::DELETE, '/periode-de-vacances', '')
+$router->addRoute(RequestMethod::DELETE, '/periode-de-vacances', 'HolidayController@deleteHoliday')
         ->requireLogin()
         ->addAuthorization(AccountType::EducationalManager)
         ->addAuthorization(AccountType::Secretary);
