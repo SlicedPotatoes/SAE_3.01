@@ -22,31 +22,25 @@ class JustificationService
         return $justification;
     }
 
-    public static function ifStudentThenIsItsOwnJustification($studentId, $justificationId)
+    /**
+     * @param $studentId
+     * @param $justification
+     * @return bool
+     */
+    public static function ifStudentThenIsItsOwnJustification($studentId, $justification)
     {
-        $justification = JustificationSelector::getJustificationById($justificationId);
-        if($justification === null) {
-            throw new EntityNotFoundException("Justification not found");
-        }
-        if($justification->getStudent() === $studentId) {
-            return true;
-        }else{
-            return false;
-        }
+        return $justification->getStudent() === $studentId;
     }
 
+    /**
+     * @param $justification
+     * @param $data
+     * @param $absences
+     * @return true
+     * @throws EntityNotFoundException
+     */
     public static function ProcessJustification ($justification, $data, $absences)
     {
-        // Récupération des données POST
-        $validator = new ProcessJustificationValidator();
-
-        if(!$validator->checkAllGood()) {
-            Notification::addNotification(NotificationType::Error, "Impossible de traiter votre demande, veuillez contacter l'administrateur");
-            return;
-        }
-
-        $data = $validator->getData();
-
         // Données récupérer en post apres application des filtres
         $comment = $data['rejectionReason'];
         $absencesDataPost = $data['absences'];
@@ -101,7 +95,13 @@ class JustificationService
         Connection::commit();
         return true;
     }
-    public static function getJustificationByFliters($filters,$currTab)
+
+    /**
+     * @param $filters
+     * @param $currTab
+     * @return array
+     */
+    public static function getJustificationByFliters($filters, $currTab)
     {
         // Builder pour récupérer les justificatifs
         $justificationToDoBuilder = new JustificationSelectBuilder()->state(StateJustif::NotProcessed);
@@ -125,7 +125,13 @@ class JustificationService
         return [$justificationsToDo, $justificationsDone];
     }
 
-    public static function addJustification($idStudent,$data,$files)
+    /**
+     * @param $idStudent
+     * @param $data
+     * @param $files
+     * @return void
+     */
+    public static function addJustification($idStudent, $data, $files)
     {
         $student = StudentSelector::getStudentById($idStudent);
         try {
