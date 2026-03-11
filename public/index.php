@@ -219,6 +219,13 @@ $router->addRoute(RequestMethod::PUT, '/api/hideRuleModal', '')
         ->requireLogin()
         ->addAuthorization(AccountType::Student);
 
+
+// TODO: Route de test, à delete
+$router->addRoute(RequestMethod::GET, '/api/test', 'TestApiController@getTest');
+$router->addRoute(RequestMethod::POST, '/api/test', 'TestApiController@postTest');
+$router->addRoute(RequestMethod::PUT, '/api/test/{id:int}', 'TestApiController@putTest');
+$router->addRoute(RequestMethod::DELETE, '/api/test/{id:int}', 'TestApiController@deleteTest');
+
 /*
 TODO: A voir plus tard
 $router->addRoute("/routine", "Routine@launch");

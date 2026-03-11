@@ -2,6 +2,8 @@
 
 namespace Uphf\GestionAbsence\Model\Notification;
 
+use stdClass;
+
 /**
  * Système de notification
  *
@@ -45,5 +47,23 @@ class Notification {
      */
     public static function getNotifications(): array {
         return self::$arr;
+    }
+
+    public function jsonSerialize() {
+        $json = new StdClass();
+        $json->type = $this->type->name;
+        $json->message = $this->message;
+
+        return $json;
+    }
+
+    public static function jsonSerializeStudent(): array {
+        $result = [];
+
+        foreach (self::$arr as $notification) {
+            $result[] = $notification->jsonSerialize();
+        }
+
+        return $result;
     }
 }
