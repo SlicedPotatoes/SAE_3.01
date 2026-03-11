@@ -119,7 +119,7 @@ $router->addRoute(RequestMethod::GET, '/statistiques-etudiant/{id:int}', 'Statis
         ->requireLogin()
         ->addAuthorization(AccountType::EducationalManager);
 
-$router->addRoute(RequestMethod::GET, '/api/statistics', '')
+$router->addRoute(RequestMethod::GET, '/api/statistics', 'StatisticsControllerApi@getStatistics')
         ->requireLogin()
         ->addAuthorization(AccountType::EducationalManager);
 
