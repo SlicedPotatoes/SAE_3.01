@@ -58,8 +58,6 @@ $router->addRoute(RequestMethod::POST, '/mot-de-passe-oublie/{token}', 'ChangePa
         ->requireNotLogin();
 
 // ChangerMailAlertControllerApi
-//$router->addRoute("/changement-notification-rp", "ChangerMailAlertControllerApi@changerMailAlertEducationalManager");
-//$router->addRoute("/changement-notification-enseignant", "ChangerMailAlertControllerApi@changerMailAlertTeacher");
 $router->addRoute(RequestMethod::PUT, '/api/mailAlert', 'ChangerMailAlertControllerApi@update')
         ->requireLogin()
         ->addAuthorization(AccountType::Teacher)
@@ -86,24 +84,21 @@ $router->addRoute(RequestMethod::PUT, '/api/justifications/{id:int}', 'Justifica
         ->addAuthorization(AccountType::EducationalManager);
 
 // TimeslotController
-//$router->addRoute("/teacherHome", "TeacherHomeController@show");
 $router->addRoute(RequestMethod::GET, '/absences-a-mes-cours', 'TimeslotController@showTeacherHome')
         ->requireLogin()
         ->addAuthorization(AccountType::Teacher)
         ->addAuthorization(AccountType::EducationalManager);
-//$router->addRoute("/detailPeriod/", "DetailPeriodController@show");
 $router->addRoute(RequestMethod::GET, '/absences-a-un-cours/{idTeacher:int}/{idRessource:int}/{group}/{datetime}', 'TimeslotController@showDetailTimeslot')
         ->requireLogin()
         ->addAuthorization(AccountType::Teacher)
         ->addAuthorization(AccountType::EducationalManager)
         ->addAuthorization(AccountType::Secretary);
-//$router->addRoute("/resitSession", "ResitSessionController@show");
 $router->addRoute(RequestMethod::GET, '/rattrapage', 'TimeslotController@showResitSession')
         ->requireLogin()
         ->addAuthorization(AccountType::EducationalManager)
         ->addAuthorization(AccountType::Secretary);
 
-$router->addRoute(RequestMethod::GET, '/api/timeslots', '')
+$router->addRoute(RequestMethod::GET, '/api/timeslots', 'TimeslotControllerApi@getTimeslots')
         ->requireLogin()
         ->addAuthorization(AccountType::Teacher)
         ->addAuthorization(AccountType::EducationalManager)
