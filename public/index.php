@@ -67,11 +67,11 @@ $router->addRoute(RequestMethod::POST, '/api/mailAlert', 'ChangerMailAlertContro
 
 // JustificationController
 //$router->addRoute("/JustificationList", "JustificationsListController@show");
-$router->addRoute(RequestMethod::GET, '/justifications', '')
+$router->addRoute(RequestMethod::GET, '/justifications', 'JustificationController@justificationListGet')
         ->requireLogin()
         ->addAuthorization(AccountType::EducationalManager);
 //$router->addRoute("/DetailJustification/{id:int}", "DetailJustificationController@show");
-$router->addRoute(RequestMethod::GET, '/detail-justification/{id:int}', '')
+$router->addRoute(RequestMethod::GET, '/detail-justification/{id:int}', 'JustificationController@detailJustificationGet')
         ->requireLogin()
         ->addAuthorization(AccountType::EducationalManager)
         ->addAuthorization(AccountType::Student);
@@ -153,7 +153,7 @@ $router->addRoute(RequestMethod::DELETE, '/periode-de-vacances', 'HolidayControl
 
 // PredefinedCommentController
 //$router->addRoute("/PredefinedComments", "PredefinedCommentController@show");
-$router->addRoute(RequestMethod::GET, '/commentaire-predefini', '')
+$router->addRoute(RequestMethod::GET, '/commentaire-predefini', 'PredefinedCommentController@predefinedCommentGet')
         ->requireLogin()
         ->addAuthorization(AccountType::EducationalManager);
 $router->addRoute(RequestMethod::POST, '/commentaire-predefini', '')
