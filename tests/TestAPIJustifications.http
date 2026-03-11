@@ -15,3 +15,56 @@ GET http://localhost/api/justifications?orderOptions[columns][]=idJustification&
 
 ### Test error
 GET http://localhost/api/justifications?orderOptions[columns][]=illegalColumn&orderOptions[sortOrder]=DESC
+
+### Test traitement d'un justificatif (Error, not found)
+PUT http://localhost/api/justifications/110
+Content-Type: application/json
+
+{}
+
+### Test traitement d'un justificatif (Error, aucune donnée fournis)
+PUT http://localhost/api/justifications/112
+Content-Type: application/json
+
+{}
+
+### Test traitement d'un justificatif (Error, justificatif déjà traité)
+PUT http://localhost/api/justifications/112
+Content-Type: application/json
+
+{
+  "absences": {
+    "2_2026-01-05 08:00:00": {"state":"Validated", "lock":"true"},
+    "2_2026-01-05 10:00:00": {"state":"Validated", "lock":"true"},
+    "2_2026-01-05 14:00:00": {"state":"Validated", "lock":"true"},
+    "2_2026-01-05 15:30:00": {"state":"Validated", "lock":"true"},
+  },
+  "rejectionReason":""
+}
+
+### Test traitement d'un justificatif (Error, absences not provided)
+PUT http://localhost/api/justifications/113
+Content-Type: application/json
+
+{
+  "absences": {},
+  "rejectionReason": ""
+}
+
+### Test traitement d'un justificatif (Error, comment not provided when at least one absence is refused)
+PUT http://localhost/api/justifications/113
+Content-Type: application/json
+
+{
+  "absences": {"2_2026-01-06 08:00:00": {"state":"Refused", "lock":"true"}},
+  "rejectionReason":""
+}
+
+### Test traitement d'un justificatif (OK, a reset dans la bdd)
+PUT http://localhost/api/justifications/113
+Content-Type: application/json
+
+{
+  "absences": {"2_2026-01-06 08:00:00": {"state":"Refused", "lock":"true"}},
+  "rejectionReason":"Mechant"
+}

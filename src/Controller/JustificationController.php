@@ -2,8 +2,6 @@
 
 namespace Uphf\GestionAbsence\Controller;
 
-use Uphf\GestionAbsence\Database\Select\CommentSelector;
-use Uphf\GestionAbsence\Database\Select\SelectBuilder\JustificationSelectBuilder;
 use Uphf\GestionAbsence\Database\Select\SelectBuilder\SortOrder;
 use Uphf\GestionAbsence\Exception\EntityNotFoundException;
 use Uphf\GestionAbsence\Model\AuthManager;
@@ -12,6 +10,7 @@ use Uphf\GestionAbsence\Model\Entity\Justification\StateJustif;
 use Uphf\GestionAbsence\Model\Notification\Notification;
 use Uphf\GestionAbsence\Model\Notification\NotificationType;
 use Uphf\GestionAbsence\Service\JustificationService;
+use Uphf\GestionAbsence\Service\PredifinedCommentService;
 use Uphf\GestionAbsence\ViewModel\DetailJustificationViewModel;
 use Uphf\GestionAbsence\ViewModel\JustificationListViewModel;
 
@@ -19,6 +18,7 @@ use Uphf\GestionAbsence\ViewModel\JustificationListViewModel;
  * Controller de vue pour les justificatifs
  *
  *  - GET /justifications -> showJustificationList()
+ *  - GET /detail-justification/{id} -> showDetailJustification()
  */
 class JustificationController
 {
@@ -68,7 +68,7 @@ class JustificationController
      * @param array $params
      * @return ControllerData
      */
-    public static function detailJustificationGet(array $params): ControllerData
+    public static function showDetailJustification(array $params): ControllerData
     {
         try {
             $justification = JustificationService::getJustificationById((int) $params['id']);
@@ -79,14 +79,22 @@ class JustificationController
 
         // Un étudiant ne peut voir que ses propres justificatifs
         if (!AuthManager::isRole(AccountType::EducationalManager)
-            && $justification->getStudent()->getIdAccount() != AuthManager::getAccount()->getIdAccount()) {
+            && JustificationService::isJustificationOwnedByStudent(AuthManager::getAccount(), $justification)) {
             Notification::addNotification(NotificationType::Error, "Vous n'avez pas l'autorisation de voir ce justificatif");
             return ControllerData::get403();
         }
 
         $absences = $justification->getAbsences();
         $files = $justification->getFiles();
-        $comments = CommentSelector::getAllComments();
+        $comments = PredifinedCommentService::commentSelectorAll();
+
+        /*
+        // DEBUG
+        if($_SERVER['REQUEST_METHOD'] === "POST") {
+            header('Content-Type: application/json; charset=utf-8');
+            echo json_encode($_POST);
+            exit();
+        }*/
 
         return new ControllerData(
             '/View/detailJustification.php',

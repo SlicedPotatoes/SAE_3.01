@@ -5,6 +5,7 @@ namespace Uphf\GestionAbsence\Service;
 use Uphf\GestionAbsence\Database\Update\MailAlertUpdater;
 use Uphf\GestionAbsence\Model\Entity\Absence\Absence;
 use Uphf\GestionAbsence\Model\Entity\Account\Account;
+use Uphf\GestionAbsence\Model\Entity\Account\Student;
 use Uphf\GestionAbsence\Model\Entity\Justification\Justification;
 use Uphf\GestionAbsence\Model\Mailer;
 
@@ -117,4 +118,20 @@ class MailService
         );
     }
 
+    /**
+     * Permet d'envoyer un mail à un étudiant lorsque l'un de ses justificatifs a été traité par le responsable pédagogique
+     *
+     * @param Student $student
+     * @param Justification $justification
+     * @return void
+     */
+    public static function sendProcessedJustification(Student $student, Justification $justification): void {
+        Mailer::sendProcessedJustification(
+            $student->getLastName(),
+            $student->getFirstName(),
+            $student->getEmail(),
+            $justification->getStartDate(),
+            $justification->getEndDate()
+        );
+    }
 }

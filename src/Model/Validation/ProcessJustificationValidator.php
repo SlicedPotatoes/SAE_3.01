@@ -9,14 +9,14 @@ use Uphf\GestionAbsence\Model\Entity\Absence\StateAbs;
  */
 class ProcessJustificationValidator {
     private array | null $input;
-    public function __construct() {
+    public function __construct($data) {
         /**
          * Filtre du "1er niveau"
          * - rejectionReason => Enlève tout les espaces de début et fin de chaine
          * - absences => Dans le cas ce n'est pas un tableau, transforme en tableau avec une seule valeur.
          */
-        $this->input = filter_input_array(
-            INPUT_POST,
+        $this->input = filter_var_array(
+            $data,
             [
                 "rejectionReason" => [
                     "filter" => FILTER_CALLBACK,
@@ -28,6 +28,10 @@ class ProcessJustificationValidator {
                 ]
             ]
         );
+
+        if($this->input['rejectionReason'] === null) {
+            $this->input['rejectionReason'] = '';
+        }
 
         if(!isset($this->input) || !is_array($this->input['absences'])) {
             return;

@@ -2,18 +2,26 @@
 
 namespace Uphf\GestionAbsence\Service;
 
+use Uphf\GestionAbsence\Database\Connection;
 use Uphf\GestionAbsence\Database\Select\JustificationSelector;
 use Uphf\GestionAbsence\Database\Select\SelectBuilder\JustificationSelectBuilder;
-use Uphf\GestionAbsence\Database\Select\SelectBuilder\SortOrder;
+use Uphf\GestionAbsence\Database\Update\ProcessJustificatif;
+use Uphf\GestionAbsence\Database\Update\UpdateBuilder\AbsenceUpdateBuilder;
+use Uphf\GestionAbsence\Exception\AbsenceNotProvidedException;
+use Uphf\GestionAbsence\Exception\CommentEducationalManagerNotProvidedException;
 use Uphf\GestionAbsence\Exception\EntityNotFoundException;
+use Uphf\GestionAbsence\Model\Entity\Absence\StateAbs;
+use Uphf\GestionAbsence\Model\Entity\Account\Student;
 use Uphf\GestionAbsence\Model\Entity\Justification\Justification;
 
 class JustificationService
 {
     /**
+     * Renvoie un justificatif à partir de son ID
+     *
      * @param $idJustification
      * @return Justification
-     * @throws EntityNotFoundException
+     * @throws EntityNotFoundException Dans le cas ou aucun justificatif n'existe pour cet ID
      */
     public static function getJustificationById($idJustification): Justification
     {
@@ -25,27 +33,28 @@ class JustificationService
     }
 
     /**
-     * @param $studentId
-     * @param $justification
+     * Renvoie true si le justificatif appartient à l'étudiant, sinon false.
+     *
+     * @param Student $student
+     * @param Justification $justification
      * @return bool
      */
-    public static function ifStudentThenIsItsOwnJustification($studentId, $justification)
-    {
-        return $justification->getStudent() === $studentId;
+    public static function isJustificationOwnedByStudent(Student $student, Justification $justification): bool {
+        return $justification->getStudent()->getIdAccount() === $student->getIdAccount();
     }
 
     /**
-     * @param $justification
-     * @param $data
-     * @param $absences
-     * @return true
-     * @throws EntityNotFoundException
+     * Traitement une justificatif et mise à jour des absences lié au justificatif
+     *
+     * @param Justification $justification
+     * @param array $data
+     * @return void
+     * @throws AbsenceNotProvidedException Dans le cas ou une absence lié au justificatif n'a pas été fournis avec les informations de comment la traité
+     * @throws CommentEducationalManagerNotProvidedException Dans le cas ou une absence est refusé et que le RP n'a pas fournis de raison
      */
-    public static function ProcessJustification ($justification, $data, $absences)
-    {
+    public static function processJustification (Justification $justification, array $data): void {
         // Données récupérer en post apres application des filtres
         $comment = $data['rejectionReason'];
-        $absencesDataPost = $data['absences'];
 
         // Liste des absences lors d'examen pour le justificatif
         $absencesExemens = [];
@@ -56,7 +65,7 @@ class JustificationService
         try {
             ProcessJustificatif::execute($justification, $comment);
         }
-        catch(BadMethodCallException $e) {
+        catch(\BadMethodCallException $e) {
             Connection::rollback();
             throw $e;
         }
@@ -64,18 +73,18 @@ class JustificationService
         $absencesUpdater = new AbsenceUpdateBuilder();
 
         // Parcours des absences
-        foreach($absences as $abs) {
+        foreach($justification->getAbsences() as $abs) {
             // Construction de la clé et récupération des valeurs envoyée en POST pour cette absence
             $key = $abs->getIdAccount() . "_" . $abs->getTime()->format('Y-m-d H:i:s');
 
-            // Cas ou l'absence n'a pas été fournis en POST, ne devrait jamais arriver dans une utilisation normale de l'application
-            if(!array_key_exists($key, $absencesDataPost)) {
+            // Cas ou l'absence n'a pas été fournis, ne devrait jamais arriver dans une utilisation normale de l'application
+            if(!array_key_exists($key, $data['absences'])) {
                 Connection::rollback();
-                throw new EntityNotFoundException("Absence not found");
+                throw new AbsenceNotProvidedException("Absence not provided: " . $key);
             }
 
             // Récupération du traitement à effectuer sur cette absence
-            $values = $absencesDataPost[$key];
+            $values = $data['absences'][$key];
 
             // Remplir une liste avec les absences justifiée lors d'examen
             if($values['state'] == StateAbs::Validated && $abs->getExamen()){
@@ -86,7 +95,7 @@ class JustificationService
             // On annule le traitement du justificatif (Le RP doit préciser un motif de refus dans le cas ou au moins une abs est refusé).
             if($values['state'] == StateAbs::Refused && $comment === '') {
                 Connection::rollback();
-                throw new EntityNotFoundException("Comment not found");
+                throw new CommentEducationalManagerNotProvidedException("Comment is required when at least one absence is refused");
             }
 
             // On charge l'absence dans l'updater et on effectue son traitement
@@ -95,7 +104,15 @@ class JustificationService
 
         $absencesUpdater->execute();
         Connection::commit();
-        return true;
+
+        // Pours chacune des absences justifiées lors d'examen, on envoie un mail au professeur et l'étudiant
+        foreach ($absencesExemens as $absExam) {
+            MailService::sendMailExam($absExam);
+        }
+
+        // Envoie du mail à l'étudiant pour le prévenir du traitement de son justificatif
+        $student = $justification->getAbsences()[0]->getStudent();
+        MailService::sendProcessedJustification($student, $justification);
     }
 
     /**
