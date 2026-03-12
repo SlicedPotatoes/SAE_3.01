@@ -7,6 +7,7 @@ use InvalidArgumentException;
 use Uphf\GestionAbsence\Database\Insert\OffPeriodInsertor;
 use Uphf\GestionAbsence\Database\Select\OffPeriodSelector;
 use Uphf\GestionAbsence\Database\Update\OffPeriodUpdater;
+use Uphf\GestionAbsence\Exception\EntityNotFoundException;
 use Uphf\GestionAbsence\Model\Entity\OffPeriod;
 
 /**
@@ -55,6 +56,7 @@ class HolidaysService {
      * @param string $name
      * @return void
      * @throws InvalidArgumentException Dans le cas ou la date de début est supérieure à la date de fin
+     * @throws EntityNotFoundException Dans le cas ou l'élément recherché n'existe pas
      */
     public static function update (int $id, string $start, string $end, string $name): void {
         if(DateTime::createFromFormat("Y-m-d", $end) < DateTime::createFromFormat("Y-m-d", $start)) {
@@ -64,7 +66,7 @@ class HolidaysService {
         $updated = OffPeriodUpdater::update($id, $start, $end, $name);
 
         if (!$updated) {
-            throw new InvalidArgumentException("Not found");
+            throw new EntityNotFoundException("Not found");
         }
     }
 

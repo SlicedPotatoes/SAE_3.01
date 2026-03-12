@@ -15,18 +15,15 @@ use Uphf\GestionAbsence\Service\HolidaysService;
 use Uphf\GestionAbsence\ViewModel\OffPeriodViewModel;
 
 /**
- *  Controller pour la gestion des périodes de vacances
- */
-
-/**
  * Controller pour la gestion des périodes de congé
  *
- * - holidayGet    -> GET    /holiday     (Vue)
+ * - GET /periode-de-vacances -> showHoliday()
  */
 class HolidayController
 {
     /**
-     * @param aray $params
+     * Affiche la vue de configuration des périodes de vacance
+     *
      * @return ControllerData
      */
     public static function showHoliday(): ControllerData

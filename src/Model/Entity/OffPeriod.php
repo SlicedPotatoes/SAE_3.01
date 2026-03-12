@@ -8,7 +8,7 @@ use stdClass;
 /**
  * Classe représentant une période de congé
  */
-class OffPeriod{
+class OffPeriod implements \JsonSerializable {
     private int $id;
     private string $periodName;
     private DateTime $startDate;
@@ -37,22 +37,12 @@ class OffPeriod{
         return $this->endDate;
     }
 
-    public function jsonSerialize() {
-        $json = new stdClass();
-        $json->id = $this->id;
-        $json->periodName = $this->periodName;
-        $json->startDate = $this->startDate;
-        $json->endDate = $this->endDate;
-
-        return $json;
+    public function jsonSerialize(): array {
+        return [
+            "id" => $this->id,
+            "periodName" => $this->periodName,
+            "startDate" => $this->startDate->format("Y-m-d"),
+            "endDate" => $this->endDate->format("Y-m-d")
+        ];
     }
-
-    public static function jsonSerializeHoliday(array $holidays) {
-        $result = [];
-        foreach ($holidays as $holiday) {
-            $result[] = $holiday->jsonSerialize();
-        }
-        return $result;
-    }
-
 }

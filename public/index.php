@@ -132,7 +132,6 @@ $router->addRoute(RequestMethod::POST, '/televersement', 'ImportVTController@pos
         ->addAuthorization(AccountType::Secretary);
 
 // HolidayController
-//$router->addRoute("/listOffPeriod", "OffPeriodController@show");
 $router->addRoute(RequestMethod::GET, '/periode-de-vacances', 'HolidayController@showHoliday')
         ->requireLogin()
         ->addAuthorization(AccountType::EducationalManager)

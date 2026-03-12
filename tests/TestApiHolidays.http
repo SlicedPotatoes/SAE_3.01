@@ -1,8 +1,14 @@
+### Deconnexion
+GET http://localhost/deconnexion
+
 ### Login a un compte RP
 POST http://localhost/connexion
 Content-Type: application/x-www-form-urlencoded
 
 email=kevin.masmejean@uphf.fr&password=password
+
+### Récupérer la liste des période de vacances
+GET http://localhost/api/holidays
 
 ### Création d'une période de vacance valide
 POST http://localhost/api/holidays
@@ -24,7 +30,7 @@ Content-Type: application/json
 }
 
 ### Mettre à jour une période de vacance valide
-PUT http://localhost/api/holidays/7
+PUT http://localhost/api/holidays/9
 Content-Type: application/json
 
 {
@@ -34,7 +40,7 @@ Content-Type: application/json
 }
 
 ### Mettre à jour une période de vacance non-valide
-PUT http://localhost/api/holidays/7
+PUT http://localhost/api/holidays/9
 Content-Type: application/json
 
 {
@@ -53,7 +59,7 @@ Content-Type: application/json
 }
 
 ### Supprimer une période de vacance
-DELETE http://localhost/api/holidays/8
+DELETE http://localhost/api/holidays/9
 
 ### Supprimer une période de vacance qui n'existe pas
 DELETE http://localhost/api/holidays/-666
