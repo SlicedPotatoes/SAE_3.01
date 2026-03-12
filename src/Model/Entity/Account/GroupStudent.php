@@ -1,6 +1,7 @@
 <?php
 namespace Uphf\GestionAbsence\Model\Entity\Account;
 
+use JsonSerializable;
 use stdClass;
 use Uphf\GestionAbsence\Database\Select\TableSelector;
 use Uphf\GestionAbsence\Model\Hydrator\AccountHydrator;
@@ -8,7 +9,7 @@ use Uphf\GestionAbsence\Model\Hydrator\AccountHydrator;
 /**
  * Représente les groupes des étudiants, basé sur la base de données.
  */
-class GroupStudent {
+class GroupStudent implements JsonSerializable{
     private int $idGroupStudent;
     private string $label;
 
@@ -40,10 +41,11 @@ class GroupStudent {
         return $groupStudent;
     }
 
-    public function jsonSerialize() {
-        $json = new StdClass();
-        $json->idGroupStudent = $this->getIdGroupStudent();
-        $json->label = $this->getLabel();
-        return $json;
+    public function jsonSerialize(): mixed
+    {
+        return array(
+            "idGroupStudent" => $this->idGroupStudent,
+            "label" => $this->label,
+        );
     }
 }
