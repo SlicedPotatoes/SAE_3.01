@@ -17,7 +17,7 @@ class PredefinedCommentController
      *
      * @return ControllerData
      */
-    public static function predefinedCommentGet(): ControllerData
+    public static function showPredefinedComment(): ControllerData
     {
         $comments = PredifinedCommentService::commentSelectorAll();
 

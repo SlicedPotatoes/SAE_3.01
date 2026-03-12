@@ -134,35 +134,35 @@ $router->addRoute(RequestMethod::GET, '/periode-de-vacances', 'HolidayController
         ->requireLogin()
         ->addAuthorization(AccountType::EducationalManager)
         ->addAuthorization(AccountType::Secretary);
-$router->addRoute(RequestMethod::GET, '/api//holidays', 'HolidayControllerApi@getHolidays')
+$router->addRoute(RequestMethod::GET, '/api/holidays', 'HolidayControllerApi@getHolidays')
         ->requireLogin()
         ->addAuthorization(AccountType::EducationalManager)
         ->addAuthorization(AccountType::Secretary);
-$router->addRoute(RequestMethod::POST, '/api//holidays', 'HolidayControllerApi@postHoliday')
+$router->addRoute(RequestMethod::POST, '/api/holidays', 'HolidayControllerApi@postHoliday')
         ->requireLogin()
         ->addAuthorization(AccountType::EducationalManager)
         ->addAuthorization(AccountType::Secretary);
-$router->addRoute(RequestMethod::PUT, '/api//holidays/{id:int]}', 'HolidayControllerApi@putHoliday')
+$router->addRoute(RequestMethod::PUT, '/api/holidays/{id:int}', 'HolidayControllerApi@putHoliday')
         ->requireLogin()
         ->addAuthorization(AccountType::EducationalManager)
         ->addAuthorization(AccountType::Secretary);
-$router->addRoute(RequestMethod::DELETE, '/api//holidays/{id:int]}', 'HolidayControllerApi@deleteHoliday')
+$router->addRoute(RequestMethod::DELETE, '/api/holidays/{id:int}', 'HolidayControllerApi@deleteHoliday')
         ->requireLogin()
         ->addAuthorization(AccountType::EducationalManager)
         ->addAuthorization(AccountType::Secretary);
 
 // PredefinedCommentController
 //$router->addRoute("/PredefinedComments", "PredefinedCommentController@show");
-$router->addRoute(RequestMethod::GET, '/commentaire-predefini', 'PredefinedCommentController@predefinedCommentGet')
+$router->addRoute(RequestMethod::GET, '/commentaire-predefini', 'PredefinedCommentController@showPredefinedComment')
         ->requireLogin()
         ->addAuthorization(AccountType::EducationalManager);
-$router->addRoute(RequestMethod::POST, '/commentaire-predefini', '')
+$router->addRoute(RequestMethod::POST, '/api/predefinedComment', 'PredefinedCommentControllerApi@postPredefinedComment')
         ->requireLogin()
         ->addAuthorization(AccountType::EducationalManager);
-$router->addRoute(RequestMethod::PUT, '/commentaire-predefini', '')
+$router->addRoute(RequestMethod::PUT, '/api/predefinedComment/{id:int}', 'PredefinedCommentControllerApi@putPredefinedComment')
         ->requireLogin()
         ->addAuthorization(AccountType::EducationalManager);
-$router->addRoute(RequestMethod::DELETE, '/commentaire-predefini', '')
+$router->addRoute(RequestMethod::DELETE, '/api/predefinedComment/{id:int}', 'PredefinedCommentControllerApi@deletePredefinedComment')
         ->requireLogin()
         ->addAuthorization(AccountType::EducationalManager);
 
