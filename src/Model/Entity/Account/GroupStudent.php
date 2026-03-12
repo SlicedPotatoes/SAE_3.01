@@ -42,8 +42,8 @@ class GroupStudent {
 
     public function jsonSerialize() {
         $json = new StdClass();
-        $json->idGroupStudent = $this->idGroupStudent;
-        $json->label = $this->label;
+        $json->idGroupStudent = $this->getIdGroupStudent();
+        $json->label = $this->getLabel();
         return $json;
     }
 }

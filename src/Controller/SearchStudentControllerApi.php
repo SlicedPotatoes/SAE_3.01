@@ -21,7 +21,8 @@ class SearchStudentControllerApi
         $validator = new SearchStudentValidator($_GET);
         $filters = $validator->getData();
 
-        $students = AccountService::getFilteredStudents($filters);
+        $students = Student::jsonSerializeStudent(AccountService::getFilteredStudents($filters));
+
         new ResponseApi(HttpStatus::OK, ["result" => $students])->done();
     }
 }

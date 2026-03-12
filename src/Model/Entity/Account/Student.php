@@ -188,12 +188,12 @@ class Student extends Account {
     public function jsonSerialize()
     {
         $json = new StdClass();
-        $json->idAccount = $this->idAccount;
-        $json->lastName = $this->lastName;
-        $json->firstName = $this->firstName;
-        $json->email = $this->email;
-        $json->studentNumber = $this->studentNumber;
-        $json->groupStudent = $this->groupStudent->jsonSerialize();
+        $json->idAccount = $this->getIdAccount();
+        $json->lastName = $this->getLastName();
+        $json->firstName = $this->getFirstName();
+        $json->email = $this->getEmail();
+        $json->studentNumber = $this->getStudentNumber();
+        $json->groupStudent = $this->getGroupStudent()->jsonSerialize();
 
         return $json;
     }
