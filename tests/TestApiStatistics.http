@@ -1,0 +1,9 @@
+### Login a un compte RP
+POST http://localhost/connexion
+Content-Type: application/x-www-form-urlencoded
+
+### Récupération des donnée sans filtre
+GET http://localhost/api/statistics
+
+### Récupération des donnée avec le filtre d'état
+GET http://localhost/api/statistics?state=Refused
