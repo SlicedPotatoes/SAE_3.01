@@ -54,7 +54,7 @@ class HolidayControllerApi
 
         $start = $data['startDate'] ?? null;
         $end = $data['endDate'] ?? null;
-        $name = $data['periodName'] ?? null;
+        $name = $data['label'] ?? null;
 
         if (!$start || !$end || !$name) {
             Notification::addNotification(
@@ -91,14 +91,15 @@ class HolidayControllerApi
      * PUT /holidays/{id:int]}
      * Permet de mettre à jour une période de vacance
      */
-    public static function putHoliday(): void {
-        // Récupération des données
-        $data = json_decode(file_get_contents('php//input'), true ?? []);
+    public static function putHoliday(array $params): void {
+        $id = $params['id'] ?? null;
 
-        $id = $data['id'] ?? null;
+        // Récupération des données
+        $data = json_decode(file_get_contents('php://input'), true ?? []);
+
         $start = $data['startDate'] ?? null;
         $end = $data['endDate'] ?? null;
-        $name = $data['periodName'] ?? null;
+        $name = $data['label'] ?? null;
 
         // Vérifie que tous les champs obligatoires sont présents
         if (!$id || !$start || !$end || !$name) {
@@ -127,7 +128,7 @@ class HolidayControllerApi
                 "Erreur lors de la mise à jours de la période de vacances, réessayez plus tard"
             );
             new ResponseApi(
-                HttpStatus::BAD_REQUEST,
+                HttpStatus::NOT_FOUND,
                 array("error" => $e->getMessage())
             )->done();
         }
@@ -137,7 +138,7 @@ class HolidayControllerApi
      * DELETE /holidays/{id:int}
      * Permet la suppression d'une période de vacance
      */
-    public static function deleteHoliday(): void{
+    public static function deleteHoliday(array $params): void{
         $id = $params['id'] ?? null;
 
         if (!$id) {
@@ -162,7 +163,7 @@ class HolidayControllerApi
                 "Erreur lors de la suppression de la période de vacances, réessayez plus tard"
             );
             new ResponseApi(
-                HttpStatus::BAD_REQUEST,
+                HttpStatus::NOT_FOUND,
                 array("error" => $e->getMessage())
             )->done();
         }

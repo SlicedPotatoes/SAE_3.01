@@ -33,6 +33,9 @@ class ChangerMailAlertControllerApi
 
         if (AuthManager::isRole(AccountType::Teacher)) {
             if ($mailAlertTeacher === null) {
+                Notification::addNotification(
+                    NotificationType::Error,
+                    "Les champs obligatoires n'ont pas était remplis");
                 new ResponseApi(
                     HttpStatus::BAD_REQUEST,
                     array("response" => "Les champs obligatoires n'ont pas était remplis")
@@ -44,6 +47,9 @@ class ChangerMailAlertControllerApi
 
         if (AuthManager::isRole(AccountType::EducationalManager)) {
             if ($mailAlertTeacher === null || $mailAlertEducationalManager === null) {
+                Notification::addNotification(
+                    NotificationType::Error,
+                    "Les champs obligatoires n'ont pas était remplis");
                 new ResponseApi(
                     HttpStatus::BAD_REQUEST,
                     array("response" => "Les champs obligatoires n'ont pas était remplis")

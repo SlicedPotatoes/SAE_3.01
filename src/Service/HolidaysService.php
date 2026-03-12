@@ -40,7 +40,10 @@ class HolidaysService {
      * @return void
      */
     public static function delete (int $id): void {
-        OffPeriodUpdater::delete($id);
+        $deleted = OffPeriodUpdater::delete($id);
+        if(!$deleted) {
+            throw new InvalidArgumentException("Not found");
+        }
     }
 
     /**
@@ -58,7 +61,11 @@ class HolidaysService {
             throw new InvalidArgumentException("La date de début dois être inférieure a la date de fin");
         }
 
-        OffPeriodUpdater::update($id, $start, $end, $name);
+        $updated = OffPeriodUpdater::update($id, $start, $end, $name);
+
+        if (!$updated) {
+            throw new InvalidArgumentException("Not found");
+        }
     }
 
     /**
