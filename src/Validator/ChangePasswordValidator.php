@@ -40,12 +40,12 @@ class ChangePasswordValidator {
      *      - Ne contient pas d'espace
      * - Une clé "confirmPassword", de type string, non vide, identique à "newPassword"
      *
-     * @param $data
+     * @param array $data
      * @return void
      * @throws NestedValidationException
      * @throws InvalidPasswordConfirmationException
      */
-    public static function validateConnectedChangePassword($data): void {
+    public static function validateConnectedChangePassword(array $data): void {
         $validator =
             v::key('lastPassword', v::stringType()
                 ->notEmpty()->setTemplate("L'ancien mot de passe n'a pas été fournis")
@@ -67,11 +67,11 @@ class ChangePasswordValidator {
      *
      * - Une clé "email", de type string, non vide
      *
-     * @param $data
+     * @param array $data
      * @return void
      * @throws NestedValidationException
      */
-    public static function validatePasswordLost($data): void {
+    public static function validatePasswordLost(array $data): void {
         $validator = v::key('email', v::stringType()
             ->notEmpty()->setTemplate("L'email est obligatoire")
         )->setTemplate("Le champ 'Adresse e-mail' est obligatoire");
@@ -91,12 +91,12 @@ class ChangePasswordValidator {
      *      - Ne contient pas d'espace
      * - Une clé "confirmPassword", de type string, non vide, identique à "newPassword"
      *
-     * @param $data
+     * @param array $data
      * @return void
      * @throws NestedValidationException
      * @throws InvalidPasswordConfirmationException
      */
-    public static function validateTokenChangePassword($data): void {
+    public static function validateTokenChangePassword(array $data): void {
         $validator =
             v::key('newPassword', self::getPasswordRule())->setTemplate("Le champ 'Nouveau mot de passe' est obligatoire")
             ->key('confirmPassword', v::stringType()
