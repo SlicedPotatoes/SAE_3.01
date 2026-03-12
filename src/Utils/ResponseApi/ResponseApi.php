@@ -11,7 +11,7 @@ class ResponseApi {
     private HttpStatus $status;
     private array $data;
 
-    public function __construct(HttpStatus $status, array $data) {
+    public function __construct(HttpStatus $status, array $data = []) {
         $this->status = $status;
         $this->data = $data;
     }
