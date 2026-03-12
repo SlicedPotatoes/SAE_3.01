@@ -71,6 +71,9 @@ $router->addRoute(RequestMethod::GET, '/detail-justification/{id:int}', 'Justifi
         ->requireLogin()
         ->addAuthorization(AccountType::EducationalManager)
         ->addAuthorization(AccountType::Student);
+$router->addRoute(RequestMethod::POST, '/api/ajouter-justification', 'JustificationControllerApi@postJustification')
+        ->requireLogin()
+        ->addAuthorization(AccountType::Student);
 
 // For debug
 //$router->addRoute(RequestMethod::POST, '/detail-justification/{id:int}', 'JustificationController@showDetailJustification');
@@ -211,7 +214,7 @@ $router->addRoute(RequestMethod::GET, '/profil-etudiant/{id:int}', 'StudentProfi
         ->requireLogin()
         ->addAuthorization(AccountType::EducationalManager);
 
-$router->addRoute(RequestMethod::GET, '/api/absences', '')
+$router->addRoute(RequestMethod::GET, '/api/absences', 'StudentProfileCOntrollerApi@getAbsences')
         ->requireLogin()
         ->addAuthorization(AccountType::Student)
         ->addAuthorization(AccountType::EducationalManager);

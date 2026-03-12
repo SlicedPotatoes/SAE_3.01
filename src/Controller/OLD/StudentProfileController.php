@@ -87,7 +87,7 @@ class StudentProfileController {
      * @return void
      */
     private static function studentCreateJustification(Student $student): void {
-        // Gestion  du paramètre POST pour masquer la modale de règles
+        // Gestion du paramètre POST pour masquer la modale de règles
         if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action']) && $_POST['action'] === 'setHideRuleModal') {
             $hide = isset($_POST['hide']) && ($_POST['hide'] === '1' || $_POST['hide'] === 'true' || $_POST['hide'] === 1);
             \Uphf\GestionAbsence\Model\CookieManager::setHideRuleModal($hide);

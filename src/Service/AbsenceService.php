@@ -23,9 +23,10 @@ class AbsenceService
 
         $whiteListMethod = ['dateStart', 'dateEnd', 'state', 'examen', 'lock'];
 
-        foreach ($filters as $filter) {
+        foreach ($filters as $filter => $value) {
             if(isset($value) && in_array($filter, $whiteListMethod)) {
                 call_user_func([$builder, $filter], $value);
+                echo $filter;
             }
         }
 
