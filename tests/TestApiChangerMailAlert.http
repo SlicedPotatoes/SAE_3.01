@@ -1,0 +1,79 @@
+### Login a un compte RP
+POST http://localhost/connexion
+Content-Type: application/x-www-form-urlencoded
+
+email=kevin.masmejean@uphf.fr&password=password
+
+### Activer toutes les notifications
+PUT http://localhost/api/mailAlert
+Content-Type: application/json
+
+{
+  "notifications": {
+    "mailAlertTeacher": true,
+    "mailAlertEducationalManager": true
+  }
+}
+
+### Désactiver toutes les notifications
+PUT http://localhost/api/mailAlert
+Content-Type: application/json
+
+{
+  "notifications": {
+    "mailAlertTeacher": false,
+    "mailAlertEducationalManager": false
+  }
+}
+
+### Activer uniquement les notifications du prof
+PUT http://localhost/api/mailAlert
+
+{
+  "notifications": {
+    "mailAlertTeacher": true,
+    "mailAlertEducationalManager": false
+  }
+}
+
+### Activer uniquement les notifications du rp
+PUT http://localhost/api/mailAlert
+
+{
+  "notifications": {
+    "mailAlertTeacher": false,
+    "mailAlertEducationalManager": true
+  }
+}
+
+### Mauvais format 1
+PUT http://localhost/api/mailAlert
+
+{
+  "notifications": {
+    "mailAlertTeacher": false
+  }
+}
+
+### Mauvais format 2
+PUT http://localhost/api/mailAlert
+
+{
+  "notifications": {
+    "mailAlertEducationalManager": true
+  }
+}
+
+### Mauvais format 3
+PUT http://localhost/api/mailAlert
+
+{
+  "mailAlertTeacher": false,
+  "mailAlertEducationalManager": true
+}
+
+### Ne rien envoyer
+PUT http://localhost/api/mailAlert
+Content-Type: application/json
+
+{}

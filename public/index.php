@@ -58,7 +58,7 @@ $router->addRoute(RequestMethod::POST, '/mot-de-passe-oublie/{token}', 'ChangePa
         ->requireNotLogin();
 
 // ChangerMailAlertControllerApi
-$router->addRoute(RequestMethod::PUT, '/api/mailAlert', 'ChangerMailAlertControllerApi@update')
+$router->addRoute(RequestMethod::PUT, '/api/mailAlert', 'ChangerMailAlertControllerApi@putMailAlert')
         ->requireLogin()
         ->addAuthorization(AccountType::Teacher)
         ->addAuthorization(AccountType::EducationalManager);
