@@ -58,10 +58,7 @@ class AuthentificationController {
 
         }
         catch (EntityNotFoundException | BadCredentialException) {
-            Notification::addNotification(
-                NotificationType::Error,
-                "Email ou mot de passe incorrect"
-            );
+            Notification::addNotification(NotificationType::Error, "Email ou mot de passe incorrect");
         }
         catch (NestedValidationException $e) {
             foreach ($e->getMessages() as $error) {

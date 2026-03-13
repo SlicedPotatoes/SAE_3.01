@@ -33,7 +33,7 @@ class SearchStudentValidator {
 
         $validator->assert($data);
 
-        // On créer les clés avec comme valeurs null dans le cas ou elle n'existe pas
+        // Création des clés avec comme valeurs null dans le cas où elle n'existe pas
         if(!isset($data['search'])) {
             $data['search'] = null;
         }

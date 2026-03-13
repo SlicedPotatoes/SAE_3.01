@@ -15,11 +15,11 @@ class AuthentificationValidator {
      * - Une clé "email", de type string, non vide
      * - Une clé "password" de type string, non vide
      *
-     * @param $data
+     * @param array $data
      * @return void
      * @throws NestedValidationException
      */
-    public static function validateLogin($data): void {
+    public static function validateLogin(array $data): void {
         $validator =
             v::key('email', v::stringType()
                 ->notEmpty()->setTemplate("L'email est obligatoire")
