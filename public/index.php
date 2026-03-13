@@ -214,13 +214,17 @@ $router->addRoute(RequestMethod::GET, '/profil-etudiant/{id:int}', 'StudentProfi
         ->requireLogin()
         ->addAuthorization(AccountType::EducationalManager);
 
-$router->addRoute(RequestMethod::GET, '/api/absences', 'StudentProfileCOntrollerApi@getAbsences')
+$router->addRoute(RequestMethod::GET, '/api/absences', 'StudentProfileControllerApi@getAbsences')
         ->requireLogin()
         ->addAuthorization(AccountType::Student)
         ->addAuthorization(AccountType::EducationalManager);
-$router->addRoute(RequestMethod::PUT, '/api/hideRuleModal', '')
+$router->addRoute(RequestMethod::POST, '/api/justifications', 'StudentProfileControllerApi@postJustification')
         ->requireLogin()
         ->addAuthorization(AccountType::Student);
+
+//$router->addRoute(RequestMethod::PUT, '/api/hideRuleModal', '')
+//        ->requireLogin()
+//        ->addAuthorization(AccountType::Student);
 
 
 // TODO: Route de test, à delete

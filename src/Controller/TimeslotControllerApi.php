@@ -25,13 +25,24 @@ class TimeslotControllerApi {
             $filters['examFilter'] = true;
         }
 
-        $timeslots = TimeslotService::getListTimeSlotWithFilter(
-            $filters['idTeacher'],
-            $filters['examFilter'],
-            $filters['dateStartFilter'],
-            $filters['dateEndFilter']
-        );
+        try {
+            $timeslots = TimeslotService::getListTimeSlotWithFilter(
+                $filters['idTeacher'],
+                $filters['examFilter'],
+                $filters['dateStartFilter'],
+                $filters['dateEndFilter']
+            );
+            new ResponseApi(
+                HttpStatus::OK,
+                $timeslots
+            )->done();
+        } catch (\Exception $e) {
+            new ResponseApi(
+                HttpStatus::BAD_REQUEST,
+                (array) $e->getMessage()
+            )->done();
+        }
 
-        new ResponseApi(HttpStatus::OK, $timeslots)->done();
+        exit();
     }
 }

@@ -13,9 +13,14 @@ use Uphf\GestionAbsence\Service\StatisticService;
 use Uphf\GestionAbsence\ViewModel\GeneralStatisticsViewModel;
 use Uphf\GestionAbsence\ViewModel\StudentStatisticsViewModel;
 
+/**
+ * Controller pour l'affichage des pages sur les statistiques
+ */
 class StatisticsController {
 
     /**
+     * Méthode pour l'affichage de la page des statistiques générales
+     *
      * @return ControllerData
      * @throws EntityNotFoundException
      */
@@ -35,6 +40,8 @@ class StatisticsController {
     }
 
     /**
+     * Méthode pour l'affichage des statistiques d'un étudiant
+     *
      * @param array $params
      * @return ControllerData
      * @throws EntityNotFoundException
@@ -47,7 +54,6 @@ class StatisticsController {
         $groups = GroupService::selectAllGroup();
         $currTab ??= ProportionStatisticsType::getAll()[0];
 
-
         try{
             $statisticsStudent = StatisticService::getStatistic((array)$student);
         }catch (EntityNotFoundException $e){
@@ -59,15 +65,10 @@ class StatisticsController {
         $datas['global'] = $statisticsGeneral;
         $datas['student'] = $statisticsStudent;
 
-
         return new ControllerData(
             "/View/studentStatistics.php",
             "Statistiques",
             new StudentStatisticsViewModel($student, $datas, $currTab, $groups, $filters )
         );
-
-
-
     }
-
 }

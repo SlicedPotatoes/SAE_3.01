@@ -8,21 +8,22 @@ use Uphf\GestionAbsence\Utils\ResponseApi\ResponseApi;
 
 
 class StatisticsControllerApi {
+    public static function getStatistics(): void {
+        try {
+            $filters = $_GET;
 
-    /**
-     * @param $filter
-     * @return void
-     * @throws \Uphf\GestionAbsence\Exception\EntityNotFoundException
-     */
-    public static function getStatistics($filters): void {
+            $statistics = StatisticService::getStatistic($filters);
 
-        $statistics = StatisticService::getStatistic($filters);
-
-        new ResponseApi(
-            HttpStatus::OK,
-            ['result' => $statistics],
-        )->done();
-
+            new ResponseApi(
+                HttpStatus::OK,
+                $statistics
+            )->done();
+        } catch (\Exception $e) {
+            new ResponseApi(
+                HttpStatus::BAD_REQUEST,
+                (array)$e->getMessage()
+            )->done();
+        }
     }
 
 }

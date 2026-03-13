@@ -3,12 +3,13 @@
 namespace Uphf\GestionAbsence\Model\Entity;
 
 use DateTime;
+use JsonSerializable;
 use stdClass;
 
 /**
  * Classe représentant une période de congé
  */
-class OffPeriod implements \JsonSerializable {
+class OffPeriod implements JsonSerializable{
     private int $id;
     private string $periodName;
     private DateTime $startDate;

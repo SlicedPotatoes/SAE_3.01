@@ -13,13 +13,16 @@ Content-Type: application/json
 }
 
 ### test de suppression d'un commentaire
-DELETE http://localhost/api/predefinedComment/1
+DELETE http://localhost/api/predefinedComment/9
 Content-Type: application/json
 
 ### Test de la modification d'un commetaire
-PUT http://localhost/api/predefinedComment/5
+PUT http://localhost/api/predefinedComment/9
 Content-type: application/json
 
 {
-  "textComment": "Saucisse Dure"
+  "textComment": "Saucisse"
 }
+
+### Déconnexion
+GET http://localhost/deconnexion
