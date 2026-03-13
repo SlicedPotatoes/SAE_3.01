@@ -12,17 +12,45 @@ Content-Type: application/json
   "textComment": "Merguez"
 }
 
+### test d'insertion d'un nouveau commentaire (Error, texte vide)
+POST http://localhost/api/predefinedComment/
+Content-Type: application/json
+
+{
+  "textComment": ""
+}
+
+### test d'insertion d'un nouveau commentaire (Error, textComment required)
+POST http://localhost/api/predefinedComment/
+Content-Type: application/json
+
+{}
+
 ### test de suppression d'un commentaire
 DELETE http://localhost/api/predefinedComment/9
 Content-Type: application/json
 
 ### Test de la modification d'un commetaire
-PUT http://localhost/api/predefinedComment/9
+PUT http://localhost/api/predefinedComment/10
 Content-type: application/json
 
 {
   "textComment": "Saucisse"
 }
+
+### Test de la modification d'un commetaire (Error, texte vide)
+PUT http://localhost/api/predefinedComment/10
+Content-Type: application/json
+
+{
+  "textComment": ""
+}
+
+### test d'insertion d'un nouveau commentaire (Error, textComment required)
+PUT http://localhost/api/predefinedComment/10
+Content-Type: application/json
+
+{}
 
 ### Déconnexion
 GET http://localhost/deconnexion
