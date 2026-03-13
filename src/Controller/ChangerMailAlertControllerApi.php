@@ -38,7 +38,7 @@ class ChangerMailAlertControllerApi
                     "Les champs obligatoires n'ont pas était remplis");
                 new ResponseApi(
                     HttpStatus::BAD_REQUEST,
-                    array("response" => "Les champs obligatoires n'ont pas était remplis")
+                    (array)"Les champs obligatoires n'ont pas était remplis"
                 )->done();
                 return;
             }
@@ -52,7 +52,7 @@ class ChangerMailAlertControllerApi
                     "Les champs obligatoires n'ont pas était remplis");
                 new ResponseApi(
                     HttpStatus::BAD_REQUEST,
-                    array("response" => "Les champs obligatoires n'ont pas était remplis")
+                    (array)"Les champs obligatoires n'ont pas était remplis"
                 )->done();
                 return;
             }
@@ -64,8 +64,7 @@ class ChangerMailAlertControllerApi
                 $mailAlertTeacher,
                 $mailAlertEducationalManager);
             new ResponseApi(
-                HttpStatus::NO_CONTENT,
-                array()
+                HttpStatus::NO_CONTENT
             )->done();
         } catch (Exception $e) {
             Notification::addNotification(
@@ -73,7 +72,7 @@ class ChangerMailAlertControllerApi
                 "Erreur lors de la mise à jours des paramètres de notification, réessayez plus tard");
             new ResponseApi(
                 HttpStatus::BAD_REQUEST,
-                array("response" => $e->getMessage())
+                (array)$e->getMessage()
             );
         }
     }

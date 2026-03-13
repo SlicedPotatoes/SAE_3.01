@@ -31,8 +31,6 @@ class HolidayController
      */
     public static function showHoliday(): ControllerData
     {
-
-        // TODO : A changer lors de la mise en place d'Ajax
         $listHoliday = HolidaysService::selectAll();
 
         return new ControllerData(

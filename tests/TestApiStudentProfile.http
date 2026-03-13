@@ -1,0 +1,44 @@
+### Connexion profile étudiant
+POST http://localhost/connexion
+Content-Type: application/x-www-form-urlencoded
+
+email=kevin.masmejean@gmail.com&password=password
+
+### Déconnexion
+GET http://localhost/deconnexion
+
+### Création d'un justificatif avec commentaire
+POST http://localhost/api/justifications
+Content-Type: application/x-www-form-urlencoded
+
+absenceReason=Malade&startDate=2026-03-01&endDate=2026-03-02
+
+### Création d'un justificatif sans commentaire
+POST http://localhost/api/justifications
+Content-Type: application/x-www-form-urlencoded
+
+startDate=2026-03-01&endDate=2026-03-02
+
+### Création d'un justificatif sans date de début
+POST http://localhost/api/justifications
+Content-Type: application/x-www-form-urlencoded
+
+absenceReason=Malade&endDate=2026-03-02
+
+### Création d'un justificatif sans date de fin
+POST http://localhost/api/justifications
+Content-Type: application/x-www-form-urlencoded
+
+absenceReason=Malade&startDate=2026-03-01
+
+### Création d'un justicatif avec une date de début inférieur à la date de fin
+POST http://localhost/api/justifications
+Content-Type: application/x-www-form-urlencoded
+
+absenceReason=Malade&startDate=2026-03-02&endDate=2026-03-01
+
+### Création d'un justificatif sur période sans absence
+POST http://localhost/api/justifications
+Content-Type: application/x-www-form-urlencoded
+
+absenceReason=Malade&startDate=2030-12-01&endDate=2030-12-02

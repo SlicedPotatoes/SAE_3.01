@@ -3,12 +3,13 @@
 namespace Uphf\GestionAbsence\Model\Entity;
 
 use DateTime;
+use JsonSerializable;
 use stdClass;
 
 /**
  * Classe représentant une période de congé
  */
-class OffPeriod{
+class OffPeriod implements JsonSerializable{
     private int $id;
     private string $periodName;
     private DateTime $startDate;
@@ -38,21 +39,11 @@ class OffPeriod{
     }
 
     public function jsonSerialize() {
-        $json = new stdClass();
-        $json->id = $this->id;
-        $json->periodName = $this->periodName;
-        $json->startDate = $this->startDate;
-        $json->endDate = $this->endDate;
-
-        return $json;
+        return [
+            'id' => $this->id,
+            'periodName' => $this->periodName,
+            'startDate' => $this->startDate,
+            'endDate' => $this->endDate
+        ];
     }
-
-    public static function jsonSerializeHoliday(array $holidays) {
-        $result = [];
-        foreach ($holidays as $holiday) {
-            $result[] = $holiday->jsonSerialize();
-        }
-        return $result;
-    }
-
 }

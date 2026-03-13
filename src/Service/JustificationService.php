@@ -2,9 +2,13 @@
 
 namespace Uphf\GestionAbsence\Service;
 
+use Exception;
+use InvalidArgumentException;
 use Uphf\GestionAbsence\Database\Connection;
+use Uphf\GestionAbsence\Database\Insert\JustificationInsertor;
 use Uphf\GestionAbsence\Database\Select\JustificationSelector;
 use Uphf\GestionAbsence\Database\Select\SelectBuilder\JustificationSelectBuilder;
+use Uphf\GestionAbsence\Database\Select\StudentSelector;
 use Uphf\GestionAbsence\Database\Update\ProcessJustificatif;
 use Uphf\GestionAbsence\Database\Update\UpdateBuilder\AbsenceUpdateBuilder;
 use Uphf\GestionAbsence\Exception\AbsenceNotProvidedException;
@@ -13,6 +17,7 @@ use Uphf\GestionAbsence\Exception\EntityNotFoundException;
 use Uphf\GestionAbsence\Model\Entity\Absence\StateAbs;
 use Uphf\GestionAbsence\Model\Entity\Account\Student;
 use Uphf\GestionAbsence\Model\Entity\Justification\Justification;
+use Uphf\GestionAbsence\Model\FileUpload;
 
 class JustificationService
 {

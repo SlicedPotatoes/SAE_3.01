@@ -45,6 +45,20 @@ class TimeslotService
      */
     public static function getListTimeSlotWithFilter(int|null $idTeacher, bool|null $exam, string|null $dateStart, string|null $dateEnd): array
     {
+        if ($dateStart !== null) {
+            // DateTime::createFromFormat() renvoie false en cas d'erreur, donc je l'utilise ici pour vérifier si le format de la date est chelou
+            if (!DateTime::createFromFormat('Y-m-d', $dateStart)) {
+                throw new \InvalidArgumentException("Invalid date start date format");
+            }
+        }
+
+        if ($dateEnd !== null) {
+            // DateTime::createFromFormat() renvoie false en cas d'erreur, donc je l'utilise ici pour vérifier si le format de la date est chelou
+            if (!DateTime::createFromFormat('Y-m-d', $dateEnd)) {
+                throw new \InvalidArgumentException("Invalid date end date format");
+            }
+        }
+
         return TimeSlotAbsenceSelector::selectTimeSlotAbsence($idTeacher, $exam, $dateStart, $dateEnd);
     }
 

@@ -5,7 +5,11 @@ namespace Uphf\GestionAbsence\Controller;
 use Uphf\GestionAbsence\Model\AuthManager;
 use Uphf\GestionAbsence\Model\Entity\Absence\StateAbs;
 use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
+use Uphf\GestionAbsence\Model\FileUpload;
+use Uphf\GestionAbsence\Model\Notification\Notification;
+use Uphf\GestionAbsence\Model\Validation\CreateJustificationValidator;
 use Uphf\GestionAbsence\Service\AbsenceService;
+use Uphf\GestionAbsence\Service\JustificationService;
 use Uphf\GestionAbsence\Utils\ResponseApi\HttpStatus;
 use Uphf\GestionAbsence\Utils\ResponseApi\ResponseApi;
 
@@ -15,9 +19,8 @@ use Uphf\GestionAbsence\Utils\ResponseApi\ResponseApi;
 class StudentProfileControllerApi
 {
     /**
+     * GET /api/absences
      * Récupérer les absences d'un étudiant avec des filtres
-     *
-     * @return void
      */
     public static function getAbsences(): void
     {
@@ -37,5 +40,41 @@ class StudentProfileControllerApi
         $absences = AbsenceService::absenceSelectService($idStudent, $_GET);
 
         new ResponseApi(HttpStatus::OK, $absences)->done();
+    }
+
+    /**
+     * POST /api/justifications
+     * Permet d'ajouter un nouveau justificatif pour l'étudiant connecté
+     */
+    public static function postJustification(): void {
+        $validator = new CreateJustificationValidator();
+        $errors = $validator->checkAllGood();
+
+        if(!empty($errors))
+        {
+            new ResponseApi(
+                HttpStatus::BAD_REQUEST,
+                (array)$errors
+            )->done();
+        }
+
+        $data = $validator->getData();
+        $files = FileUpload::upload('files');
+
+        try {
+            JustificationService::addJustification(
+                AuthManager::getAccount()->getIdAccount(),
+                $data,
+                $files
+            );
+            new ResponseApi(
+                HttpStatus::NO_CONTENT,
+            )->done();
+        } catch (\Exception $e) {
+            new ResponseApi(
+                HttpStatus::BAD_REQUEST,
+                (array)$e->getMessage()
+            )->done();
+        }
     }
 }

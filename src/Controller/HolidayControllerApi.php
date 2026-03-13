@@ -40,7 +40,7 @@ class HolidayControllerApi
 
         new ResponseApi(
             HttpStatus::OK,
-            ["result" => $holidays]
+            $holidays
         )->done();
     }
 
@@ -62,7 +62,7 @@ class HolidayControllerApi
                 "Tous les champs n'ont pas étaient remplis");
             new ResponseApi(
                 HttpStatus::BAD_REQUEST,
-                ["result" => "Tous les champs n'ont pas étaient remplis"]
+                (array)"Tous les champs n'ont pas étaient remplis"
             )->done();
         }
 
@@ -72,8 +72,7 @@ class HolidayControllerApi
                 NotificationType::Success,
                 "Nouvelle période de vacances créer avec succès");
             new ResponseApi(
-                HttpStatus::CREATED,
-                array()
+                HttpStatus::CREATED
             )->done();
         } catch (InvalidArgumentException $e) {
             Notification::addNotification(
@@ -82,7 +81,7 @@ class HolidayControllerApi
             );
             new ResponseApi(
                 HttpStatus::BAD_REQUEST,
-                array("error" => $e->getMessage())
+                (array)$e->getMessage()
             )->done();
         }
     }
@@ -108,7 +107,7 @@ class HolidayControllerApi
                 "Tous les champs n'ont pas étaient remplis");
             new ResponseApi(
                 HttpStatus::BAD_REQUEST,
-                ["result" => "Tous les champs n'ont pas étaient remplis"]
+                (array)"Tous les champs n'ont pas étaient remplis"
             )->done();
         }
 
@@ -119,9 +118,8 @@ class HolidayControllerApi
                 NotificationType::Success,
                 "Mise à jours de la période de vacances avec succès");
             new ResponseApi(
-                HttpStatus::CREATED,
-                array())
-                ->done();
+                HttpStatus::CREATED
+            )->done();
         } catch (InvalidArgumentException $e) {
             Notification::addNotification(
                 NotificationType::Error,
@@ -129,7 +127,7 @@ class HolidayControllerApi
             );
             new ResponseApi(
                 HttpStatus::NOT_FOUND,
-                array("error" => $e->getMessage())
+                (array)$e->getMessage()
             )->done();
         }
     }
@@ -154,8 +152,7 @@ class HolidayControllerApi
                 NotificationType::Success,
                 "Suppression de la période de vacances avec succès");
             new ResponseApi(
-                HttpStatus::NO_CONTENT,
-                array()
+                HttpStatus::NO_CONTENT
             )->done();
         } catch (InvalidArgumentException $e) {
             Notification::addNotification(
@@ -164,7 +161,7 @@ class HolidayControllerApi
             );
             new ResponseApi(
                 HttpStatus::NOT_FOUND,
-                array("error" => $e->getMessage())
+                (array)$e->getMessage()
             )->done();
         }
     }

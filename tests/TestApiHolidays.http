@@ -4,6 +4,9 @@ Content-Type: application/x-www-form-urlencoded
 
 email=kevin.masmejean@uphf.fr&password=password
 
+### Recevoir les périodes de vacances
+GET http://localhost/api/holidays
+
 ### Création d'une période de vacance valide
 POST http://localhost/api/holidays
 Content-Type: application/json
