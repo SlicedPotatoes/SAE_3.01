@@ -5,22 +5,21 @@ namespace Uphf\GestionAbsence\Controller;
 use DateTime;
 use Exception;
 use InvalidArgumentException;
+use Respect\Validation\Exceptions\NestedValidationException;
 use Uphf\GestionAbsence\Database\Insert\JustificationInsertor;
-use Uphf\GestionAbsence\Database\Select\SelectBuilder\SortOrder;
 use Uphf\GestionAbsence\Exception\AbsenceNotProvidedException;
 use Uphf\GestionAbsence\Exception\CommentEducationalManagerNotProvidedException;
 use Uphf\GestionAbsence\Exception\EntityNotFoundException;
 use Uphf\GestionAbsence\Model\Entity\Account\Student;
-use Uphf\GestionAbsence\Model\Entity\Justification\StateJustif;
 use Uphf\GestionAbsence\Model\FileUpload;
 use Uphf\GestionAbsence\Model\Mailer;
 use Uphf\GestionAbsence\Model\Notification\Notification;
 use Uphf\GestionAbsence\Model\Notification\NotificationType;
 use Uphf\GestionAbsence\Model\Validation\CreateJustificationValidator;
-use Uphf\GestionAbsence\Model\Validation\ProcessJustificationValidator;
 use Uphf\GestionAbsence\Service\JustificationService;
 use Uphf\GestionAbsence\Utils\ResponseApi\HttpStatus;
 use Uphf\GestionAbsence\Utils\ResponseApi\ResponseApi;
+use Uphf\GestionAbsence\Validator\JustificationValidator;
 
 /**
  * Controller api pour les justificatifs
@@ -36,27 +35,28 @@ class JustificationControllerApi {
      * @return void
      */
     public static function getJustificationList(): void {
-        $filters = $_GET['filters'] ?? [];
-        $orderOptions = $_GET['orderOptions'] ?? [];
-        if(isset($filters['state']) && StateJustif::tryFrom($filters['state']) !== null) {
-            $filters['state'] = StateJustif::from($filters['state']);
-        }
-        if(isset($orderOptions['sortOrder']) && SortOrder::tryFrom($orderOptions['sortOrder']) !== null) {
-            $orderOptions['sortOrder'] = SortOrder::from($orderOptions['sortOrder']);
-        }
-
         try {
+            JustificationValidator::validationGetJustificationList($_GET);
+
+            $filters = $_GET['filters'] ?? [];
+            $orderOptions = $_GET['orderOptions'] ?? [];
+
             $justifications = JustificationService::getJustificationsWithFilters($filters, $orderOptions);
             new ResponseApi(HttpStatus::OK, $justifications)->done();
         }
+        catch (NestedValidationException $e) {
+            foreach ($e->getMessages() as $message) {
+                Notification::addNotification(NotificationType::Error, $message);
+            }
+        }
         catch (\InvalidArgumentException $e) {
             Notification::addNotification(NotificationType::Error, $e->getMessage());
-            new ResponseApi(HttpStatus::BAD_REQUEST)->done();
         }
+        new ResponseApi(HttpStatus::BAD_REQUEST)->done();
     }
 
     /**
-     * Traité une justificatif
+     * Traité un justificatif
      *
      * @param array $params
      * @return void
@@ -66,14 +66,9 @@ class JustificationControllerApi {
             $justification = JustificationService::getJustificationById((int) $params['id']);
             $data = json_decode(file_get_contents('php://input'), true);
 
-            $validator = new ProcessJustificationValidator($data);
-            if(!$validator->checkAllGood()) {
-                Notification::addNotification(NotificationType::Error, "Impossible de traiter votre demande, veuillez contacter l'administrateur");
-                new ResponseApi(HttpStatus::BAD_REQUEST)->done();
-            }
-            $data = $validator->getData();
-
+            JustificationValidator::validationPutDetailJustification($data);
             JustificationService::processJustification($justification, $data);
+
             new ResponseApi(HttpStatus::NO_CONTENT)->done();
         }
         catch (EntityNotFoundException $e) {
@@ -82,12 +77,18 @@ class JustificationControllerApi {
         }
         catch (\BadMethodCallException $e) {
             Notification::addNotification(NotificationType::Error, "Le justificatif a déjà été traité");
-            new ResponseApi(HttpStatus::BAD_REQUEST)->done();
         }
         catch (AbsenceNotProvidedException | CommentEducationalManagerNotProvidedException $e) {
             Notification::addNotification(NotificationType::Error, $e->getMessage());
-            new ResponseApi(HttpStatus::BAD_REQUEST)->done();
         }
+        catch (NestedValidationException $e) {
+            foreach ($e->getMessages() as $message) {
+                Notification::addNotification(NotificationType::Error, $message);
+            }
+            //Notification::addNotification(NotificationType::Error, "Impossible de traiter votre demande, veuillez contacter l'administrateur");
+        }
+
+        new ResponseApi(HttpStatus::BAD_REQUEST)->done();
     }
 
 

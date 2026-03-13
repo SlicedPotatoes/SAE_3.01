@@ -1,3 +1,6 @@
+### Deconnexion
+GET http://localhost/deconnexion
+
 ### Login a un compte RP
 POST http://localhost/connexion
 Content-Type: application/x-www-form-urlencoded
@@ -8,13 +11,25 @@ email=kevin.masmejean@uphf.fr&password=password
 GET http://localhost/api/justifications
 
 ### Test des filtres
-GET http://localhost/api/justifications?filters[state]=NotProcessed
+GET http://localhost/api/justifications?filters[state]=Processed
 
 ### Test orderBy
 GET http://localhost/api/justifications?orderOptions[columns][]=idJustification&orderOptions[sortOrder]=DESC
 
 ### Test error
 GET http://localhost/api/justifications?orderOptions[columns][]=illegalColumn&orderOptions[sortOrder]=DESC
+
+### Deconnexion
+GET http://localhost/deconnexion
+
+### Login a un compte etudiant
+POST http://localhost/connexion
+Content-Type: application/x-www-form-urlencoded
+
+email=saucisse@uphf.fr&password=password
+
+### Récupérer les justificatifs sans filtres (etudiant)
+GET http://localhost/api/justifications
 
 ### Test traitement d'un justificatif (Error, not found)
 PUT http://localhost/api/justifications/110
@@ -28,22 +43,26 @@ Content-Type: application/json
 
 {}
 
+### Test traitement d'un justificatif (Error, invalid format for absence)
+PUT http://localhost/api/justifications/112
+Content-Type: application/json
+
+{
+    "absences": {"test": ""},
+    "rejectionReason": ""
+}
+
 ### Test traitement d'un justificatif (Error, justificatif déjà traité)
 PUT http://localhost/api/justifications/112
 Content-Type: application/json
 
 {
-  "absences": {
-    "2_2026-01-05 08:00:00": {"state":"Validated", "lock":"true"},
-    "2_2026-01-05 10:00:00": {"state":"Validated", "lock":"true"},
-    "2_2026-01-05 14:00:00": {"state":"Validated", "lock":"true"},
-    "2_2026-01-05 15:30:00": {"state":"Validated", "lock":"true"},
-  },
+  "absences": {},
   "rejectionReason":""
 }
 
 ### Test traitement d'un justificatif (Error, absences not provided)
-PUT http://localhost/api/justifications/113
+PUT http://localhost/api/justifications/114
 Content-Type: application/json
 
 {
@@ -51,20 +70,49 @@ Content-Type: application/json
   "rejectionReason": ""
 }
 
-### Test traitement d'un justificatif (Error, comment not provided when at least one absence is refused)
-PUT http://localhost/api/justifications/113
+### Test traitement d'un justificatif (Error, Manque des absences)
+PUT http://localhost/api/justifications/114
 Content-Type: application/json
 
 {
-  "absences": {"2_2026-01-06 08:00:00": {"state":"Refused", "lock":"true"}},
+  "absences": {
+    "5_2026-01-09 14:00:00": {"state":"Validated", "lock":false}
+  },
   "rejectionReason":""
 }
 
-### Test traitement d'un justificatif (OK, a reset dans la bdd)
-PUT http://localhost/api/justifications/113
+### Test traitement d'un justificatif (Error, comment not provided when at least one absence is Refused)
+PUT http://localhost/api/justifications/114
 Content-Type: application/json
 
 {
-  "absences": {"2_2026-01-06 08:00:00": {"state":"Refused", "lock":"true"}},
-  "rejectionReason":"Mechant"
+  "absences": {
+    "5_2026-01-09 14:00:00": {"state":"Refused", "lock":true},
+    "5_2026-01-09 15:30:00": {"state":"Validated", "lock":false}
+  },
+  "rejectionReason": ""
+}
+
+### Test traitement d'un justificatif (Error, bad state)
+PUT http://localhost/api/justifications/114
+Content-Type: application/json
+
+{
+  "absences": {
+    "5_2026-01-09 14:00:00": {"state":"Saucisse", "lock":true},
+    "5_2026-01-09 15:30:00": {"state":"Validated", "lock":false}
+  },
+  "rejectionReason": ""
+}
+
+### Test traitement d'un justificatif (OK, a reset dans la bdd)
+PUT http://localhost/api/justifications/114
+Content-Type: application/json
+
+{
+  "absences": {
+    "5_2026-01-09 14:00:00": {"state":"Refused", "lock":true},
+    "5_2026-01-09 15:30:00": {"state":"Validated", "lock":false}
+  },
+  "rejectionReason": "Méchant"
 }
