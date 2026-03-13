@@ -13,7 +13,7 @@ GET http://localhost/api/absences
 GET http://localhost/api/absences?state=Refused&dateStart=2026-01-01&dateEnd=2026-01-07
 
 ### Déconnexion
-POST http://localhost/deconnexion
+GET http://localhost/deconnexion
 
 ### Connexion en tant que RP
 POST http://localhost/connexion

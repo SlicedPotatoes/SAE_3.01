@@ -121,33 +121,24 @@ class JustificationService
     }
 
     /**
-     * @param $idStudent
-     * @param $data
-     * @param $files
+     * @param int $idStudent
+     * @param array $data
+     * @param array $files
      * @return void
+     * @throws InvalidArgumentException Dans le cas où il n'y a pas d'absence justifiable sur la période sélectionnée
      */
-    public static function addJustification($idStudent, $data, $files)
+    public static function addJustification(int $idStudent, array $data, array $files): void
     {
-        $student = StudentSelector::getStudentById($idStudent);
         try {
-            // Créer le justificatif dans la BDD
             JustificationInsertor::insert(
-                $student->getIdAccount(),
+                $idStudent,
                 $data['absenceReason'],
                 $data['startDate'],
                 $data['endDate'],
                 $files
             );
-            return;
         }
-            // Exception levée par JustificationInsertor::insert, quand il n'y a pas d'absence justifiable sur la période sélectionnée
         catch (InvalidArgumentException $e) {
-            // S'il y a eu une erreur critique pendent la création du justificatif, supprimer les fichiers du dossier upload
-            FileUpload::deleteFiles($files);
-            throw $e;
-        }
-        catch (Exception $e) {
-            error_log("Créer Justification: " . $e->getMessage());
             // S'il y a eu une erreur critique pendent la création du justificatif, supprimer les fichiers du dossier upload
             FileUpload::deleteFiles($files);
             throw $e;

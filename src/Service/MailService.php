@@ -2,6 +2,7 @@
 
 namespace Uphf\GestionAbsence\Service;
 
+use DateTime;
 use Uphf\GestionAbsence\Database\Update\MailAlertUpdater;
 use Uphf\GestionAbsence\Model\Entity\Absence\Absence;
 use Uphf\GestionAbsence\Model\Entity\Account\Account;
@@ -72,20 +73,22 @@ class MailService
     }
 
     /**
-     *  Permet d'envoyer un mail à un étudiant lorsqu'il justifie d'une absence
+     * Permet d'envoyer un mail à un étudiant lorsqu'il justifie d'une absence
      *
-     * @param Justification $justification
+     * @param Student $student
+     * @param DateTime $dateDebut
+     * @param DateTime $dateFin
      * @return void
      */
-    public static function sendAccRecepJustification(Justification $justification) : void
+    public static function sendAccRecepJustification(Student $student, DateTime $dateDebut, DateTime $dateFin) : void
     {
-        $lastname = $justification->getStudent()->getLastname();
-        $firstname = $justification->getStudent()->getFirstname();
-        $email = $justification->getStudent()->getEmail();
-        $dateDebut = $justification->getStartDate()->format('d/m/Y');
-        $dateFin = $justification->getEndDate()->format('d/m/Y');
-
-        Mailer::sendAccRecpJustification($lastname, $firstname, $email, $dateDebut, $dateFin);
+        Mailer::sendAccRecpJustification(
+            $student->getLastName(),
+            $student->getFirstName(),
+            $student->getEmail(),
+            $dateDebut->format("d/m/Y"),
+            $dateFin->format("d/m/Y")
+        );
     }
 
     /**

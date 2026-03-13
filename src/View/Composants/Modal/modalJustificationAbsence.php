@@ -16,7 +16,7 @@ use Uphf\GestionAbsence\Model\GlobalVariable;
             <!-- Button Close -->
             <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Fermer"></button>
 
-            <form id="addJustificationForm" method="post" enctype="multipart/form-data">
+            <form id="addJustificationForm" method="post" action="/api/justifications" enctype="multipart/form-data">
                 <div class="modal-header">
                     <!-- Date de début et de fin -->
                     <div>

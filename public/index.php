@@ -72,9 +72,6 @@ $router->addRoute(RequestMethod::GET, '/detail-justification/{id:int}', 'Justifi
         ->requireLogin()
         ->addAuthorization(AccountType::EducationalManager)
         ->addAuthorization(AccountType::Student);
-$router->addRoute(RequestMethod::POST, '/api/ajouter-justification', 'JustificationControllerApi@postJustification')
-        ->requireLogin()
-        ->addAuthorization(AccountType::Student);
 
 // For debug
 //$router->addRoute(RequestMethod::POST, '/detail-justification/{id:int}', 'JustificationController@showDetailJustification');
@@ -205,11 +202,9 @@ $router->addRoute(RequestMethod::DELETE, '/configuration-des-semestres', '')
         ->addAuthorization(AccountType::Secretary);
 
 // StudentProfilController
-//$router->addRoute("/StudentProfile", "StudentProfileController@show");
 $router->addRoute(RequestMethod::GET, '/profil-etudiant', 'StudentProfileController@showStudentProfile')
         ->requireLogin()
         ->addAuthorization(AccountType::Student);
-//$router->addRoute("/StudentProfile/{id:int}", "StudentProfileController@show");
 $router->addRoute(RequestMethod::GET, '/profil-etudiant/{id:int}', 'StudentProfileController@showStudentProfile')
         ->requireLogin()
         ->addAuthorization(AccountType::EducationalManager);

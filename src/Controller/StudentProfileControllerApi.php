@@ -2,16 +2,21 @@
 
 namespace Uphf\GestionAbsence\Controller;
 
+use DateTime;
+use Exception;
+use InvalidArgumentException;
+use Respect\Validation\Exceptions\NestedValidationException;
 use Uphf\GestionAbsence\Model\AuthManager;
-use Uphf\GestionAbsence\Model\Entity\Absence\StateAbs;
 use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
 use Uphf\GestionAbsence\Model\FileUpload;
 use Uphf\GestionAbsence\Model\Notification\Notification;
-use Uphf\GestionAbsence\Model\Validation\CreateJustificationValidator;
+use Uphf\GestionAbsence\Model\Notification\NotificationType;
 use Uphf\GestionAbsence\Service\AbsenceService;
 use Uphf\GestionAbsence\Service\JustificationService;
+use Uphf\GestionAbsence\Service\MailService;
 use Uphf\GestionAbsence\Utils\ResponseApi\HttpStatus;
 use Uphf\GestionAbsence\Utils\ResponseApi\ResponseApi;
+use Uphf\GestionAbsence\Validator\StudentProfileValidator;
 
 /**
  * Controller api pour le profil étudiant
@@ -24,22 +29,32 @@ class StudentProfileControllerApi
      */
     public static function getAbsences(): void
     {
-        if (AuthManager::isRole(AccountType::EducationalManager) && isset($_GET['idStudent'])) {
-            $idStudent = (int) $_GET['idStudent'];
-        } elseif (AuthManager::isRole(AccountType::Student)) {
-            $idStudent = AuthManager::getAccount()->getIdAccount();
-        } else {
-            new ResponseApi(HttpStatus::FORBIDDEN)->done();
+        try {
+            StudentProfileValidator::validationGetAbsences($_GET);
+
+            if (AuthManager::isRole(AccountType::EducationalManager) && isset($_GET['idStudent'])) {
+                $idStudent = (int) $_GET['idStudent'];
+            }
+            elseif (AuthManager::isRole(AccountType::Student)) {
+                $idStudent = AuthManager::getAccount()->getIdAccount();
+            }
+            else {
+                new ResponseApi(HttpStatus::FORBIDDEN)->done(); // Ne devrais pas arriver
+            }
+
+            $absences = AbsenceService::absenceSelectService($idStudent, $_GET);
+
+            new ResponseApi(HttpStatus::OK, $absences)->done();
         }
-
-        if(isset($_GET['state']) && StateAbs::tryFrom($_GET['state']) !== null) {
-            $_GET['state'] = StateAbs::from($_GET['state']);
+        catch (NestedValidationException $e) {
+            foreach ($e->getMessages() as $message) {
+                Notification::addNotification(NotificationType::Error, $message);
+            }
         }
-
-
-        $absences = AbsenceService::absenceSelectService($idStudent, $_GET);
-
-        new ResponseApi(HttpStatus::OK, $absences)->done();
+        catch (Exception $e) {
+            Notification::addNotification(NotificationType::Error, $e->getMessage());
+        }
+        new ResponseApi(HttpStatus::BAD_REQUEST)->done();
     }
 
     /**
@@ -47,34 +62,39 @@ class StudentProfileControllerApi
      * Permet d'ajouter un nouveau justificatif pour l'étudiant connecté
      */
     public static function postJustification(): void {
-        $validator = new CreateJustificationValidator();
-        $errors = $validator->checkAllGood();
-
-        if(!empty($errors))
-        {
-            new ResponseApi(
-                HttpStatus::BAD_REQUEST,
-                (array)$errors
-            )->done();
-        }
-
-        $data = $validator->getData();
-        $files = FileUpload::upload('files');
-
         try {
+            StudentProfileValidator::validationPostJustification($_POST);
+            $files = FileUpload::upload('files');
+
             JustificationService::addJustification(
                 AuthManager::getAccount()->getIdAccount(),
-                $data,
+                $_POST,
                 $files
             );
-            new ResponseApi(
-                HttpStatus::NO_CONTENT,
-            )->done();
-        } catch (\Exception $e) {
-            new ResponseApi(
-                HttpStatus::BAD_REQUEST,
-                (array)$e->getMessage()
-            )->done();
+
+            MailService::sendAccRecepJustification(
+                AuthManager::getAccount(),
+                DateTime::createFromFormat("Y-m-d", $_POST['startDate']),
+                DateTime::createFromFormat("Y-m-d", $_POST['endDate'])
+            );
+
+            Notification::addNotification(NotificationType::Success, "Justificatif envoyé avec succès");
+            new ResponseApi(HttpStatus::NO_CONTENT)->done();
         }
+        catch (NestedValidationException $e) {
+            Notification::reset();
+            foreach ($e->getMessages() as $message) {
+                Notification::addNotification(NotificationType::Error, $message);
+            }
+        }
+        catch (InvalidArgumentException $e) {
+            Notification::reset();
+            Notification::addNotification(NotificationType::Error, "Il n'y a pas d'absence justifiable sur la période sélectionnée");
+        }
+        catch (\Exception $e) {
+            Notification::addNotification(NotificationType::Error, $e->getMessage());
+        }
+
+        new ResponseApi(HttpStatus::BAD_REQUEST)->done();
     }
 }
