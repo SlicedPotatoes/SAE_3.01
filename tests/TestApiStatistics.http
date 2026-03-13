@@ -12,3 +12,12 @@ GET http://localhost/api/statistics
 
 ### Récupération des donnée avec le filtre d'état
 GET http://localhost/api/statistics?state=Refused
+
+### Récupération des donnée avec le filtre idStudent
+GET http://localhost/api/statistics?idStudent=5
+
+### Récupération des donnée avec le filtre idStudent (Error)
+GET http://localhost/api/statistics?idStudent=15
+
+### Récupération des données avec un mauvais filtre (Error)
+GET http://localhost/api/statistics?idStudent=Merguez

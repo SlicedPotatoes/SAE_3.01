@@ -26,8 +26,7 @@ class StatisticService {
         // Création des builders pour chaque type de statistique
         $builders = [];
         foreach (ProportionStatisticsType::getAll() as $type){
-            $builders[$type->value] = new ProportionStatisticsBuilder();
-            $builders[$type->value] = $builders[$type->value]->type($type);
+            $builders[$type->value] = new ProportionStatisticsBuilder()->type($type);
         }
 
         // Application des filtres

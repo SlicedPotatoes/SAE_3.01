@@ -9,9 +9,9 @@ use Uphf\GestionAbsence\Model\Notification\Notification;
  */
 class ResponseApi {
     private HttpStatus $status;
-    private array $data;
+    private mixed $data;
 
-    public function __construct(HttpStatus $status, array $data = []) {
+    public function __construct(HttpStatus $status, mixed $data = []) {
         $this->status = $status;
         $this->data = $data;
     }
@@ -23,7 +23,7 @@ class ResponseApi {
         $responseArray = ["data" => $this->data];
 
         if(!empty(Notification::getNotifications())) {
-            $responseArray["message"] = Notification::jsonSerializeStudent();
+            $responseArray["messages"] = Notification::jsonSerializeStudent();
         }
 
         echo json_encode($responseArray);
