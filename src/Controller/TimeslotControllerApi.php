@@ -2,47 +2,36 @@
 
 namespace Uphf\GestionAbsence\Controller;
 
+use Respect\Validation\Exceptions\NestedValidationException;
+use Respect\Validation\Rules\Time;
 use Uphf\GestionAbsence\Model\AuthManager;
 use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
+use Uphf\GestionAbsence\Model\Notification\Notification;
+use Uphf\GestionAbsence\Model\Notification\NotificationType;
 use Uphf\GestionAbsence\Service\TimeslotService;
 use Uphf\GestionAbsence\Utils\ResponseApi\HttpStatus;
 use Uphf\GestionAbsence\Utils\ResponseApi\ResponseApi;
+use Uphf\GestionAbsence\Validator\TimeslotValidator;
 
 class TimeslotControllerApi {
 
     public static function getTimeslots(): void {
-        $filters = [
-            'examFilter' => $_GET['examFilter'] ?? null,
-            'dateStartFilter' => $_GET['dateStartFilter'] ?? null,
-            'dateEndFilter' => $_GET['dateEndFilter'] ?? null
-        ];
-
-        if(AuthManager::isRole(AccountType::Teacher)) {
-            $filters['idTeacher'] = AuthManager::getAccount()->getIdAccount();
-        }
-        if(AuthManager::isRole(AccountType::EducationalManager)) {
-            $filters['idTeacher'] = null;
-            $filters['examFilter'] = true;
-        }
-
         try {
-            $timeslots = TimeslotService::getListTimeSlotWithFilter(
-                $filters['idTeacher'],
-                $filters['examFilter'],
-                $filters['dateStartFilter'],
-                $filters['dateEndFilter']
-            );
-            new ResponseApi(
-                HttpStatus::OK,
-                $timeslots
-            )->done();
-        } catch (\Exception $e) {
-            new ResponseApi(
-                HttpStatus::BAD_REQUEST,
-                (array) $e->getMessage()
-            )->done();
-        }
+            TimeslotValidator::validationGetTimeslots($_GET);
 
-        exit();
+            $timeslots = TimeslotService::getListTimeSlotWithFilter(
+                $_GET['idTeacher'],
+                $_GET['examFilter'],
+                $_GET['dateStartFilter'],
+                $_GET['dateEndFilter']
+            );
+            new ResponseApi(HttpStatus::OK, $timeslots)->done();
+        } catch (NestedValidationException $e) {
+            foreach ($e->getMessages() as $message) {
+                Notification::addNotification(NotificationType::Error, $message);
+            }
+
+            new ResponseApi(HttpStatus::BAD_REQUEST)->done();
+        }
     }
 }
