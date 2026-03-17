@@ -1,6 +1,6 @@
 <?php
 
-namespace Uphf\GestionAbsence\Router;
+namespace Uphf\GestionAbsence\Utils\Router;
 
 use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
 

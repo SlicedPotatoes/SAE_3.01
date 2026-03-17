@@ -14,8 +14,8 @@ use Uphf\GestionAbsence\Model\CookieManager;
 use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
 use Uphf\GestionAbsence\Model\GlobalVariable;
 use Uphf\GestionAbsence\Model\Notification\Notification;
-use Uphf\GestionAbsence\Router\Router;
-use Uphf\GestionAbsence\Router\RequestMethod;
+use Uphf\GestionAbsence\Utils\Router\RequestMethod;
+use Uphf\GestionAbsence\Utils\Router\Router;
 
 $dotenv = Dotenv::createImmutable(dirname(__DIR__));
 $dotenv->load();
@@ -74,8 +74,6 @@ $router->addRoute(RequestMethod::GET, '/detail-justification/{id:int}', 'Justifi
         ->addAuthorization(AccountType::Student);
 
 // For debug
-//$router->addRoute(RequestMethod::POST, '/detail-justification/{id:int}', 'JustificationController@showDetailJustification');
-
 $router->addRoute(RequestMethod::GET, '/api/justifications', 'JustificationControllerApi@getJustificationList')
         ->requireLogin()
         ->addAuthorization(AccountType::EducationalManager)
@@ -106,11 +104,9 @@ $router->addRoute(RequestMethod::GET, '/api/timeslots', 'TimeslotControllerApi@g
         ->addAuthorization(AccountType::Secretary);
 
 // StatistiqueController
-//$router->addRoute("/statistique-general", "GeneralStatisticsController@show");
 $router->addRoute(RequestMethod::GET, '/statistiques-generales', 'StatisticsController@showGeneralStatistics')
         ->requireLogin()
         ->addAuthorization(AccountType::EducationalManager);
-//$router->addRoute("/statistique-etudiant/{id:int}", "StudentStatisticsController@show");
 $router->addRoute(RequestMethod::GET, '/statistiques-etudiant/{id:int}', 'StatisticsController@showStudentStatistics')
         ->requireLogin()
         ->addAuthorization(AccountType::EducationalManager);
@@ -152,7 +148,6 @@ $router->addRoute(RequestMethod::DELETE, '/api/holidays/{id:int}', 'HolidayContr
         ->addAuthorization(AccountType::Secretary);
 
 // PredefinedCommentController
-//$router->addRoute("/PredefinedComments", "PredefinedCommentController@show");
 $router->addRoute(RequestMethod::GET, '/commentaire-predefini', 'PredefinedCommentController@showPredefinedComment')
         ->requireLogin()
         ->addAuthorization(AccountType::EducationalManager);
@@ -173,17 +168,14 @@ $router->addRoute(RequestMethod::GET, '/reglement-interieur', 'InformationContro
 $router->addRoute(RequestMethod::GET, '/manuel-d-utilisation', 'InformationController@userManual');
 
 // SearchStudentController
-//$router->addRoute("/SearchStudent", "SearchStudentController@show");
 $router->addRoute(RequestMethod::GET, '/rechercher-un-etudiant', 'SearchStudentController@showSearchStudent')
         ->requireLogin()
         ->addAuthorization(AccountType::EducationalManager);
-
 $router->addRoute(RequestMethod::GET, '/api/students', 'SearchStudentControllerApi@getSearchStudent')
         ->requireLogin()
         ->addAuthorization(AccountType::EducationalManager);
 
 // SemesterSettingsController
-//$router->addRoute("/SemesterSettings", "SemesterSettingsController@show");
 $router->addRoute(RequestMethod::GET, '/configuration-des-semestres', 'SemesterSettingsController@showSemesterSettings')
         ->requireLogin()
         ->addAuthorization(AccountType::EducationalManager)

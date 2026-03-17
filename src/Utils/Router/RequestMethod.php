@@ -1,6 +1,6 @@
 <?php
 
-namespace Uphf\GestionAbsence\Router;
+namespace Uphf\GestionAbsence\Utils\Router;
 
 /**
  * Énumération définissant les différents types de request, utilisé pour définir les routes proprement *
