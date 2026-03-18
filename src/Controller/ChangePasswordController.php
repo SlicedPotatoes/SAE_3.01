@@ -32,7 +32,7 @@ class ChangePasswordController {
      */
     public static function showConnectedChangePassword(): void {
         Renderer::render(
-            '../ViewOLD/changePassword.php',
+            'changePassword.php',
             'Changer le mot de passe',
             ['haveToken' => false]
         );
@@ -67,7 +67,7 @@ class ChangePasswordController {
         }
 
         Renderer::render(
-            '../ViewOLD/changePassword.php',
+            'changePassword.php',
             'Changer le mot de passe',
             ['haveToken' => false]
         );
