@@ -48,6 +48,7 @@ class HolidayControllerApi
 
             Notification::addNotification(NotificationType::Success, "Nouvelle période de vacances créer avec succès");
             new ResponseApi(HttpStatus::CREATED,)->done();
+            return;
         }
         catch (NestedValidationException $e) {
             foreach ($e->getMessages() as $message) {
@@ -73,7 +74,9 @@ class HolidayControllerApi
 
             HolidaysService::update($params['id'], $data['startDate'], $data['endDate'], $data['label']);
             Notification::addNotification(NotificationType::Success, "Mise à jours de la période de vacances avec succès");
+
             new ResponseApi(HttpStatus::CREATED)->done();
+            return;
         }
         catch (NestedValidationException $e) {
             foreach ($e->getMessages() as $message) {

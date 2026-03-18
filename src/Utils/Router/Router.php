@@ -3,8 +3,8 @@
 namespace Uphf\GestionAbsence\Utils\Router;
 
 use RuntimeException;
-use Uphf\GestionAbsence\Controller\ControllerData;
 use Uphf\GestionAbsence\Model\AuthManager;
+use Uphf\GestionAbsence\Utils\Renderer;
 
 /**
  * Routeur basique permettant de rediriger vers la méthode d'un controller
@@ -35,9 +35,9 @@ class Router {
     /**
      * Prend un chemin en paramètre, et exécute le bon handler de ce chemin
      * @param $path
-     * @return ControllerData
+     * @return void
      */
-    public function launch($path): ControllerData {
+    public function launch($path): void {
         $path = $this->normalizePath($path);
 
         // Parcours de l'ensemble des routes REQUEST_METHOD pour chercher une correspondance avec path
@@ -47,9 +47,9 @@ class Router {
             if(!$params && !is_array($params)) { continue; }
 
             // Il y a un match, vérification des authorisations
-            $result = $this->checkAuthorization($route);
-            if($result !== null) {
-                return $result;
+            if(!$this->checkAuthorization($route)) {
+                Renderer::render403();
+                return;
             }
 
             // Appel de la méthode du controller
@@ -68,10 +68,11 @@ class Router {
                 throw new RuntimeException("La méthode $method n'exite pas dans le controller $class.");
             }
 
-            return $class::$method($params);
+            $class::$method($params);
+            return;
         }
 
-        return ControllerData::get404();
+        Renderer::render404();
     }
 
     /**
@@ -83,14 +84,12 @@ class Router {
      *
      * Dans le cas où un login est requis et qu'aucun type de compte n'a été définie dans la route, alors tout type de compte est autorisé à y accéder.
      *
-     * Renvoie 403 dans le cas où l'utilisateur n'a pas les droits pour accéder à la route.
-     *
-     * Renvoie null si l'utilisateur peut accéder à la route.
+     * Renvoie true si l'utilisateur peut accéder à la route, sinon false
      *
      * @param $route
-     * @return ControllerData|null
+     * @return bool
      */
-    private function checkAuthorization($route): ?ControllerData {
+    private function checkAuthorization($route): bool {
         // Route ne requis pas de login, mais utilisateur connecté
         if($route->getRequireNotLogin() && AuthManager::isLogin()) {
             header("Location: /");
@@ -105,22 +104,22 @@ class Router {
             }
 
             $authorization = $route->getAuthorization();
-            // Tout type de compte peut accéder a cette page
+            // Tout type de compte peut accéder à cette page
             if(empty($authorization)) {
-                return null;
+                return true;
             }
 
-            // Check si l'utilisateur à un role autorisant l'accès a cette page
+            // Check si l'utilisateur à un role autorisant l'accès à cette page
             foreach ($authorization as $role) {
                 if(AuthManager::isRole($role)) {
-                    return null;
+                    return true;
                 }
             }
 
-            return ControllerData::get403();
+            return false;
         }
 
-        return null;
+        return true;
     }
 
     /**

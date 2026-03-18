@@ -11,11 +11,11 @@ use Uphf\GestionAbsence\Model\Notification\NotificationType;
 use Uphf\GestionAbsence\Service\AbsenceService;
 use Uphf\GestionAbsence\Service\AccountService;
 use Uphf\GestionAbsence\Service\JustificationService;
-use Uphf\GestionAbsence\ViewModel\StudentProfileViewModel;
+use Uphf\GestionAbsence\Utils\Renderer;
 
 class StudentProfileController
 {
-        public static function showStudentProfile(array $params): ControllerData {
+        public static function showStudentProfile(array $params): void {
             try {
                 if (AuthManager::isRole(AccountType::Student)) {
                     $studentId = AuthManager::getAccount()->getIdAccount();
@@ -27,7 +27,7 @@ class StudentProfileController
                 }
 
                 $absences = AbsenceService::absenceSelectService($studentId, []);
-                $justification = JustificationService::getJustificationsWithFilters(
+                $justifications = JustificationService::getJustificationsWithFilters(
                     ['idStudent' => $studentId],
                     [
                         "columns" => ['sendDate'],
@@ -35,29 +35,32 @@ class StudentProfileController
                     ]
                 );
 
-                return new ControllerData(
-                    "/View/studentProfile.php",
-                    "Profil étudiant",
-                    new StudentProfileViewModel(
-                        $student,
-                        $absences,
-                        $justification,
-                        $student->getAbsTotal(),
-                        $student->getHalfdaysAbsences(),
-                        $student->getAbsCanBeJustified(),
-                        $student->getMalusPoints(),
-                        $student->getMalusPointsWithoutPending(),
-                        $student->getPenalizingAbsence(),
-                        $student->getHalfdayPenalizingAbsence(),
-                        'proof',
-                        [],
-                        AuthManager::getRole(),
-                    )
+                //TODO: FAIRE UN SERVICE POUR CA:
+                // Actuellement c'est des méthodes du model, les déplacés dans BDD
+                $studentAbsInfos = [
+                    'absTotal' => $student->getAbsTotal(),
+                    'halfdaysAbsences' => $student->getHalfdaysAbsences(),
+                    'absCanBeJustified' => $student->getAbsCanBeJustified(),
+                    'malusPoints' => $student->getMalusPoints(),
+                    'malusPointsWithoutPending' => $student->getMalusPointsWithoutPending(),
+                    'penalizingAbsence' => $student->getPenalizingAbsence(),
+                    'halfdayPenalizingAbsence' => $student->getHalfdayPenalizingAbsence()
+                ];
+
+                Renderer::render(
+                    '../ViewOLD/studentProfile.php',
+                    'Profil étudiant',
+                    [
+                        'student' => $student,
+                        'absences' => $absences,
+                        'justifications' => $justifications,
+                        'studentAbsInfos' => $studentAbsInfos
+                    ]
                 );
             }
             catch (EntityNotFoundException $e){
                 Notification::addNotification(NotificationType::Error, "L'étudiant demandé n'existe pas");
-                return ControllerData::get404();
+                Renderer::render404();
             }
         }
 }

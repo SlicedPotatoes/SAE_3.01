@@ -59,8 +59,8 @@ class AccountService {
      * @param string $oldPassword
      * @param string $newPassword
      * @return void
-     * @throws BadCredentialException Si le compte n'existe pas
-     * @throws EntityNotFoundException Mot de passe incorrecte
+     * @throws BadCredentialException Mot de passe incorrecte
+     * @throws EntityNotFoundException Si le compte n'existe pas
      */
     public static function changePasswordWithOldPassword(Account $account, string $oldPassword, string $newPassword): void {
         $currHash = AccountSelector::getPasswordHashedById($account->getIdAccount());

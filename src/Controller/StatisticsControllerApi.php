@@ -19,6 +19,7 @@ class StatisticsControllerApi {
             $statistics = StatisticService::getStatistic($_GET);
 
             new ResponseApi(HttpStatus::OK, $statistics)->done();
+            return;
         }
         catch (NestedValidationException $e) {
             foreach ($e->getMessages() as $message) {

@@ -35,6 +35,7 @@ class JustificationControllerApi {
 
             $justifications = JustificationService::getJustificationsWithFilters($filters, $orderOptions);
             new ResponseApi(HttpStatus::OK, $justifications)->done();
+            return;
         }
         catch (NestedValidationException $e) {
             foreach ($e->getMessages() as $message) {
@@ -62,6 +63,7 @@ class JustificationControllerApi {
             JustificationService::processJustification($justification, $data);
 
             new ResponseApi(HttpStatus::NO_CONTENT)->done();
+            return;
         }
         catch (EntityNotFoundException $e) {
             Notification::addNotification(NotificationType::Error, "Le justificatif demandé n'existe pas");

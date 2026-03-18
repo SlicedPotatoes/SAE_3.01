@@ -2,7 +2,9 @@
 /**
  * Point d'entrée de l'application
  *
- * Gére l'affichage de la page en fonction de l'état de l'application
+ * - Initialisation de AuthManager et CookieManager
+ * - Définition des routes
+ * - Lancement du routeur
  */
 
 require_once __DIR__ . "/../vendor/autoload.php";
@@ -13,7 +15,6 @@ use Uphf\GestionAbsence\Model\AuthManager;
 use Uphf\GestionAbsence\Model\CookieManager;
 use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
 use Uphf\GestionAbsence\Model\GlobalVariable;
-use Uphf\GestionAbsence\Model\Notification\Notification;
 use Uphf\GestionAbsence\Utils\Router\RequestMethod;
 use Uphf\GestionAbsence\Utils\Router\Router;
 
@@ -209,16 +210,12 @@ $router->addRoute(RequestMethod::POST, '/api/justifications', 'StudentProfileCon
         ->requireLogin()
         ->addAuthorization(AccountType::Student);
 
-//$router->addRoute(RequestMethod::PUT, '/api/hideRuleModal', '')
-//        ->requireLogin()
-//        ->addAuthorization(AccountType::Student);
-
-
 // TODO: Route de test, à delete
 $router->addRoute(RequestMethod::GET, '/api/test', 'TestApiController@getTest');
 $router->addRoute(RequestMethod::POST, '/api/test', 'TestApiController@postTest');
 $router->addRoute(RequestMethod::PUT, '/api/test/{id:int}', 'TestApiController@putTest');
 $router->addRoute(RequestMethod::DELETE, '/api/test/{id:int}', 'TestApiController@deleteTest');
+$router->addRoute(RequestMethod::GET, '/test', 'TestApiController@viewTest');
 
 /*
 TODO: A voir plus tard
@@ -226,87 +223,12 @@ $router->addRoute("/routine", "Routine@launch");
 */
 
 $path = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
-
 //echo $path;
+$router->launch($path);
 
-$dataRoute = $router->launch($path);
-$dataView = $dataRoute->data;
-$srcFolder = __DIR__ . '/../src';
-
-if ($dataRoute->view != '/View/error.php') {
+// TODO: Gestion bouton return
+/*if ($dataRoute->view != '/View/error.php') {
     CookieManager::setLastPath($path);
-}
+}*/
 
 Connection::close();
-?>
-
-<!doctype html>
-<html lang="fr">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <title>
-        <?= $dataRoute->title ?>
-    </title>
-
-    <link rel="stylesheet" href="/style/bootstrap.min.css">
-    <link rel="stylesheet" href="/style/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="/style/style.css">
-</head>
-
-<body class="bg-light d-flex flex-column m-0">
-<?php
-// Si l'utilisateur est connecté, afficher le bouton d'option
-if (AuthManager::isLogin()) {
-    require $srcFolder . "/View/Composants/buttonSettings.php";
-
-    if (AuthManager::isRole(AccountType::EducationalManager) || AuthManager::isRole(AccountType::Secretary)) {
-        require $srcFolder . "/View/Composants/burgerMenu.php";
-    }
-}
-?>
-<div id="notificationsContainer" class="container mt-3">
-    <?php
-    // Gestion des messages de "notification"
-    $notifications = Notification::getNotifications();
-    foreach ($notifications as $notification) {
-        require $srcFolder . "/View/Composants/alert.php";
-    }
-    ?>
-</div>
-<!-- Contenue de la page -->
-<div class="container d-flex flex-column gap-3 flex-fill" style="min-height: 0">
-    <?php
-    require_once $srcFolder . $dataRoute->view;
-    ?>
-</div>
-
-<footer class="footer bg-light">
-    <div class="container d-flex flex-row flex-wrap justify-content-between align-items-start py-3">
-        <div class="footer-row me-3">
-            <p class="mb-0">Application interne de l'IUT de Maubeuge<br>
-                © <?php echo date("Y") ?> Université Polytechnique Hauts‑de‑France
-            </p>
-        </div>
-
-        <?php if (AuthManager::isRole(AccountType::Student) || !AuthManager::isLogin()): ?>
-
-            <div class=" footer-row me-3">
-                <a href="/reglement-interieur">Règlement intérieur de l’établissement</a>
-            </div>
-
-            <div class="footer-row me-3">
-                <a href="/manuel-d-utilisation">Manuel d’utilisation du site</a>
-            </div>
-        <?php endif; ?>
-    </div>
-
-</footer>
-
-
-<script src="/script/bootstrap.bundle.min.js"></script>
-<script src="/script/alert.js"></script>
-<script src="/script/tooltip.js"></script>
-</body>
-</html>

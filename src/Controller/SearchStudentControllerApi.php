@@ -34,6 +34,5 @@ class SearchStudentControllerApi
 
             new ResponseApi(HttpStatus::BAD_REQUEST)->done();
         }
-
     }
 }

@@ -69,6 +69,7 @@ class PredefinedCommentControllerApi {
 
             Notification::addNotification(NotificationType::Success, "Commentaires modifié avec succès");
             new ResponseApi(HttpStatus::NO_CONTENT)->done();
+            return;
         }
         catch (NestedValidationException $e) {
             foreach($e->getMessages() as $message) {

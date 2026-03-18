@@ -2,9 +2,8 @@
 
 namespace Uphf\GestionAbsence\Controller;
 
-use Uphf\GestionAbsence\Model\AuthManager;
 use Uphf\GestionAbsence\Service\PredifinedCommentService;
-use Uphf\GestionAbsence\ViewModel\PredefinedCommentViewModel;
+use Uphf\GestionAbsence\Utils\Renderer;
 
 /**
  * Controller pour les commentaires prédéfinis
@@ -15,19 +14,18 @@ class PredefinedCommentController
     /**
      * Affiche la liste des commentaires prédéfinis
      *
-     * @return ControllerData
+     * @return void
      */
-    public static function showPredefinedComment(): ControllerData
+    public static function showPredefinedComment(): void
     {
         $comments = PredifinedCommentService::commentSelectorAll();
 
-        return new ControllerData(
-            '/View/predefinedComments.php',
+        Renderer::render(
+            '../ViewOLD/predefinedComments.php',
             'Liste des commentaires prédéfinis',
-            new PredefinedCommentViewModel(
-                AuthManager::getRole(),
-                $comments
-            )
+            [
+                'comments' => $comments
+            ]
         );
     }
 }

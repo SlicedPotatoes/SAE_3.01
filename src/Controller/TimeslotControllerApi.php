@@ -3,9 +3,6 @@
 namespace Uphf\GestionAbsence\Controller;
 
 use Respect\Validation\Exceptions\NestedValidationException;
-use Respect\Validation\Rules\Time;
-use Uphf\GestionAbsence\Model\AuthManager;
-use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
 use Uphf\GestionAbsence\Model\Notification\Notification;
 use Uphf\GestionAbsence\Model\Notification\NotificationType;
 use Uphf\GestionAbsence\Service\TimeslotService;

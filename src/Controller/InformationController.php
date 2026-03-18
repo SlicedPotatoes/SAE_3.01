@@ -2,25 +2,17 @@
 
 namespace Uphf\GestionAbsence\Controller;
 
-use Uphf\GestionAbsence\ViewModel\BaseViewModel;
+use Uphf\GestionAbsence\Utils\Renderer;
 
 /**
  * Controller pour la gestion du guide de l'utilisateur pour l'application et pour le règlement intérieur
  */
 class InformationController {
-    public static function rules(): ControllerData {
-        return new ControllerData(
-            '/View/rules.php',
-            "Règlement intérieur de l’établissement",
-            new BaseViewModel()
-        );
+    public static function rules(): void {
+        Renderer::render('../ViewOLD/rules.php', 'Règlement intérieur de l\'établissement');
     }
 
-    public static function userManual(): ControllerData {
-        return new ControllerData(
-            '/View/userManual.php',
-            "Manuel d'utilisation",
-            new BaseViewModel()
-        );
+    public static function userManual(): void {
+        Renderer::render('../ViewOLD/userManual.php', 'Manuel d\'utilisation');
     }
 }

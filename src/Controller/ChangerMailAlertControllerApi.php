@@ -30,16 +30,16 @@ class ChangerMailAlertControllerApi
             ChangerMailAlertValidator::validationMailAlert($data);
             MailService::changeMailAlert($account, $data['mailAlertTeacher'], $data['mailAlertEducationalManager']);
             new ResponseApi(HttpStatus::NO_CONTENT)->done();
+            return;
         }
         catch (\Exception $e) {
             Notification::addNotification(NotificationType::Error, $e->getMessage());
-            new ResponseApi(HttpStatus::BAD_REQUEST)->done();
         }
         catch (NestedValidationException $e) {
             foreach ($e->getMessages() as $message) {
                 Notification::addNotification(NotificationType::Error, $message);
             }
-            new ResponseApi(HttpStatus::BAD_REQUEST)->done();
         }
+        new ResponseApi(HttpStatus::BAD_REQUEST)->done();
     }
 }

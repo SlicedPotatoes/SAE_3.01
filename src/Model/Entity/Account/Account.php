@@ -52,18 +52,6 @@ class Account implements JsonSerializable{
         $this->accountType = AccountType::from($data['accounttype']);
     }
 
-    // Utilisé pour le "login temporaire", TODO: à enlever
-    public static function getAllAccount() : array {
-        $rows = TableSelector::fromTable("Account");
-        $accounts = [];
-
-        foreach($rows as $row) {
-            $accounts[$row['idaccount']] = AccountHydrator::unserializeAccount($row);
-        }
-
-        return $accounts;
-    }
-
     public function jsonSerialize(): mixed
     {
         return [

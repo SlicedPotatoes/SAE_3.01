@@ -40,11 +40,13 @@ class StudentProfileControllerApi
             }
             else {
                 new ResponseApi(HttpStatus::FORBIDDEN)->done(); // Ne devrais pas arriver
+                return;
             }
 
             $absences = AbsenceService::absenceSelectService($idStudent, $_GET);
 
             new ResponseApi(HttpStatus::OK, $absences)->done();
+            return;
         }
         catch (NestedValidationException $e) {
             foreach ($e->getMessages() as $message) {
@@ -80,6 +82,7 @@ class StudentProfileControllerApi
 
             Notification::addNotification(NotificationType::Success, "Justificatif envoyé avec succès");
             new ResponseApi(HttpStatus::NO_CONTENT)->done();
+            return;
         }
         catch (NestedValidationException $e) {
             Notification::reset();

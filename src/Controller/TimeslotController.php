@@ -5,11 +5,8 @@ namespace Uphf\GestionAbsence\Controller;
 use DateTime;
 use Uphf\GestionAbsence\Exception\EntityNotFoundException;
 use Uphf\GestionAbsence\Model\AuthManager;
-use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
 use Uphf\GestionAbsence\Service\TimeslotService;
-use Uphf\GestionAbsence\ViewModel\DetailPeriodViewModel;
-use Uphf\GestionAbsence\ViewModel\ResitSessionListViewModel;
-use Uphf\GestionAbsence\ViewModel\TeacherHomeViewModel;
+use Uphf\GestionAbsence\Utils\Renderer;
 
 /**
  * Controller pour les timeslots d'absence, notamment pour afficher les détails d'un timeslot et pour afficher la liste des sessions de rattrapage.
@@ -20,9 +17,9 @@ class TimeslotController
      * Affiche les détails d'un timeslot d'absence à partir de la date, de l'id de la ressource, de l'id du professeur et éventuellement du groupe. Si aucun timeslot n'est trouvé, une page 404 est retournée.
      *
      * @param array $params
-     * @return ControllerData
+     * @return void
      */
-    public static function showDetailTimeslot(array $params): ControllerData
+    public static function showDetailTimeslot(array $params): void
     {
         $time = DateTime::createFromFormat('Y-m-d-H-i', $params['datetime']);
         $resourceId = (int)$params['idRessource'];
@@ -32,63 +29,48 @@ class TimeslotController
         try {
             $timeslot = TimeslotService::getTimeSlot($time, $resourceId, $teacherId, $group);
         } catch (EntityNotFoundException $e) {
-            return ControllerData::get404();
+            Renderer::render404();
+            return;
         }
 
         $absences = TimeslotService::getListAbsenceWithTimeSlot($timeslot);
-
-        return new ControllerData(
-            "/View/detailPeriod.php",
-            "Détail crénaux",
-            new DetailPeriodViewModel(
-                $absences,
-                $timeslot->getTime(),
-                $timeslot->isExamen(),
-                $timeslot->getCourseType(),
-                $timeslot->getResource(),
-                $timeslot->getGroup(),
-                $timeslot->getTeacher()->getLastName() . ", " . $timeslot->getTeacher()->getFirstName(),
-                AuthManager::isRole(AccountType::Teacher)
-            )
+        Renderer::render(
+            '../ViewOLD/detailPeriod.php',
+            'Détail crénaux',
+            [
+                'absences' => $absences,
+                'timeslot' => $timeslot,
+            ]
         );
     }
 
     /**
      * Affiche la liste des sessions de rattrapage.
      *
-     * @return ControllerData
+     * @return void
      */
-    public static function showResitSession(): ControllerData
+    public static function showResitSession(): void
     {
-        $filters = [
-            'examFilter' => true,
-            'dateStartFilter' => null,
-            'dateEndFilter' => null,
-        ];
-
         $timeslots = TimeslotService::getListTimeSlotWithFilter(
             null,
-            $filters['examFilter'],
-            $filters['dateStartFilter'],
-            $filters['dateEndFilter']
+            true,
+            null,
+            null
         );
 
-        return new ControllerData(
-            "/View/resitSessionList.php",
-            "Rattrapage",
-            new ResitSessionListViewModel(
-                $timeslots,
-                $filters
-            )
+        Renderer::render(
+            '../ViewOLD/resitSessionList.php',
+            'Rattrapage',
+            ['timeslots' => $timeslots]
         );
     }
 
     /**
      * Affiche le tableau de bord du professeur.
      *
-     * @return ControllerData
+     * @return void
      */
-    public static function showTeacherHome(): ControllerData {
+    public static function showTeacherHome(): void {
         $filters = [
             'examFilter' => null,
             'dateStartFilter' => null,
@@ -96,21 +78,17 @@ class TimeslotController
         ];
 
         $account = AuthManager::getAccount();
-        $timeslot = TimeslotService::getListTimeSlotWithFilter(
+        $timeslots = TimeslotService::getListTimeSlotWithFilter(
             $account->getIdAccount(),
             $filters['examFilter'],
             $filters['dateStartFilter'],
             $filters['dateEndFilter']
         );
 
-        return new ControllerData(
-            "/View/teacherHome.php",
+        Renderer::render(
+            '../ViewOLD/teacherHome.php',
             "Tableau de bord Professeur",
-            new TeacherHomeViewModel(
-                $timeslot,
-                $filters,
-                AuthManager::getAccount()->getFirstName() . " " . AuthManager::getAccount()->getLastName()
-            )
+            ['timeslots' => $timeslots]
         );
     }
 }

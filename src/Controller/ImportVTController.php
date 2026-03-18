@@ -5,7 +5,7 @@ namespace Uphf\GestionAbsence\Controller;
 use Uphf\GestionAbsence\Model\Notification\Notification;
 use Uphf\GestionAbsence\Model\Notification\NotificationType;
 use Uphf\GestionAbsence\Service\ImportVTService;
-use Uphf\GestionAbsence\ViewModel\ImportVTViewModel;
+use Uphf\GestionAbsence\Utils\Renderer;
 
 /**
  * Classe controlleur pour la page d'importation des fichiers .cvs venant de VT
@@ -15,22 +15,19 @@ class ImportVTController
     /**
      * Afficher la vue importVT.php
      *
-     * @return ControllerData
+     * @return void
      */
-    public static function showImportVT(): ControllerData
+    public static function showImportVT(): void
     {
-        return new ControllerData(
-            '/View/importVT.php',
-            'Importation de VT',
-            new importVTViewModel());
+        Renderer::render('../ViewOLD/importVT.php', "Importation de VT");
     }
 
     /**
      * Traitement de l'import d'un export VT
      *
-     * @return ControllerData
+     * @return void
      */
-    public static function postImportVT(): ControllerData
+    public static function postImportVT(): void
     {
         try {
             ImportVTService::import($_FILES['vt_file']);
@@ -46,9 +43,6 @@ class ImportVTController
             );
         }
 
-        return new ControllerData(
-            '/View/importVT.php',
-            'Importation de VT',
-            new importVTViewModel());
+        Renderer::render('../ViewOLD/importVT.php', "Importation de VT");
     }
 }

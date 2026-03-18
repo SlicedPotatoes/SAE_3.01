@@ -2,7 +2,6 @@
 
 namespace Uphf\GestionAbsence\Database\Select;
 
-use PDO;
 use Uphf\GestionAbsence\Database\Connection;
 use Uphf\GestionAbsence\Model\Entity\Account\GroupStudent;
 use Uphf\GestionAbsence\Model\Hydrator\GroupStudentHydrator;
@@ -44,18 +43,11 @@ class GroupStudentSelector
      * @return GroupStudent[]
      */
     public static function getAllGroup(): array {
-        $pdo = Connection::getInstance();
-
-        $query = "SELECT * FROM groupstudent";
-
-        $sql = $pdo->prepare($query);
-        $sql->execute();
-
-        $rows = $sql->fetchAll(PDO::FETCH_ASSOC);
+        $res = TableSelector::fromTable("GroupStudent");
 
         $result = [];
 
-        foreach ($rows as $row) {
+        foreach ($res as $row) {
             $result[] = GroupStudentHydrator::unserializeGroupStudent($row);
         }
 

@@ -27,6 +27,5 @@ class ResponseApi {
         }
 
         echo json_encode($responseArray);
-        exit();
     }
 }

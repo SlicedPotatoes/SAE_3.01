@@ -9,8 +9,8 @@ use Uphf\GestionAbsence\Model\AuthManager;
 use Uphf\GestionAbsence\Model\Notification\Notification;
 use Uphf\GestionAbsence\Model\Notification\NotificationType;
 use Uphf\GestionAbsence\Service\AccountService;
+use Uphf\GestionAbsence\Utils\Renderer;
 use Uphf\GestionAbsence\Validator\AuthentificationValidator;
-use Uphf\GestionAbsence\ViewModel\BaseViewModel;
 
 /**
  * Controller de vue pour la gestion de l'Authentification
@@ -26,22 +26,18 @@ class AuthentificationController {
     /**
      * Renvoie l'utilisateur vers la page de connexion
      *
-     * @return ControllerData
+     * @return void
      */
-    public static function login(): ControllerData {
-        return new ControllerData(
-            "/View/login.php",
-            "Connexion",
-            new BaseViewModel()
-        );
+    public static function login(): void {
+        Renderer::render('../ViewOLD/login.php', 'Connexion');
     }
 
     /**
      * Tentative de connection de l'utilisateur
      *
-     * @return ControllerData|void
+     * @return void
      */
-    public static function postLogin() {
+    public static function postLogin(): void {
         try {
             AuthentificationValidator::validateLogin($_POST);
 
@@ -54,8 +50,7 @@ class AuthentificationController {
             );
 
             header("Location: /");
-            exit();
-
+            return;
         }
         catch (EntityNotFoundException | BadCredentialException) {
             Notification::addNotification(NotificationType::Error, "Email ou mot de passe incorrect");
@@ -67,11 +62,7 @@ class AuthentificationController {
         }
 
         // Utilisateur n'est pas connecté, on affiche la view d'authentification
-        return new ControllerData(
-            "/View/login.php",
-            "Connexion",
-            new BaseViewModel()
-        );
+        Renderer::render('../ViewOLD/login.php', 'Connexion');
     }
 
     /**
@@ -81,6 +72,5 @@ class AuthentificationController {
     public static function logout(): void {
         AuthManager::logout();
         header("Location: /");
-        exit();
     }
 }

@@ -11,8 +11,7 @@ use Uphf\GestionAbsence\Model\Notification\Notification;
 use Uphf\GestionAbsence\Model\Notification\NotificationType;
 use Uphf\GestionAbsence\Service\JustificationService;
 use Uphf\GestionAbsence\Service\PredifinedCommentService;
-use Uphf\GestionAbsence\ViewModel\DetailJustificationViewModel;
-use Uphf\GestionAbsence\ViewModel\JustificationListViewModel;
+use Uphf\GestionAbsence\Utils\Renderer;
 
 /**
  * Controller de vue pour les justificatifs
@@ -25,12 +24,9 @@ class JustificationController
     /**
      * Affiche la vue avec la liste des justificatifs pour le RP
      *
-     * @return ControllerData
+     * @return void
      */
-    public static function showJustificationList(): ControllerData
-    {
-        $currTab = $_GET['currTab'] ?? 'proofToDo';
-
+    public static function showJustificationList(): void {
         $justificationsToDo = JustificationService::getJustificationsWithFilters(
             ['state' => StateJustif::NotProcessed],
             [
@@ -46,17 +42,14 @@ class JustificationController
             ]
         );
 
-        return new ControllerData(
-            '/View/justificationList.php',
+        Renderer::render(
+            '../ViewOLD/justificationList.php',
             'Liste des justifications',
-            new JustificationListViewModel(
-                $currTab,
-                AuthManager::getRole(),
-                $justificationsToDo,
-                $justificationsDone,
-                [],
-                AuthManager::getAccount()->getFirstName() . ' ' . AuthManager::getAccount()->getLastName()
-            )
+            [
+                'listToDo' => $justificationsToDo,
+                'listDone' => $justificationsDone,
+                'showState' => false
+            ]
         );
     }
 
@@ -66,46 +59,53 @@ class JustificationController
      * Un étudiant ne peut voir que ses propres justificatifs.
      *
      * @param array $params
-     * @return ControllerData
+     * @return void
      */
-    public static function showDetailJustification(array $params): ControllerData
-    {
+    public static function showDetailJustification(array $params): void {
         try {
             $justification = JustificationService::getJustificationById((int) $params['id']);
-        } catch (EntityNotFoundException) {
+
+            // Un étudiant ne peut voir que ses propres justificatifs
+            if (!AuthManager::isRole(AccountType::EducationalManager)
+                && JustificationService::isJustificationOwnedByStudent(AuthManager::getAccount(), $justification)) {
+                throw new \Exception();
+            }
+
+            $absences = $justification->getAbsences();
+            $files = $justification->getFiles();
+            $comments = [];
+
+            // Récupération des commentaires prédéfinie seulement quand RP
+            if(AuthManager::isRole(AccountType::EducationalManager)) {
+                $comments = PredifinedCommentService::commentSelectorAll();
+            }
+
+            /*
+            // DEBUG
+            if($_SERVER['REQUEST_METHOD'] === "POST") {
+                header('Content-Type: application/json; charset=utf-8');
+                echo json_encode($_POST);
+                exit();
+            }*/
+
+            Renderer::render(
+                '../ViewOLD/detailJustification.php',
+                'Détails de la justification',
+                [
+                    'justification' => $justification,
+                    'absences' => $absences,
+                    'files' => $files,
+                    'comments' => $comments
+                ]
+            );
+        }
+        catch (EntityNotFoundException) {
             Notification::addNotification(NotificationType::Error, "Le justificatif demandé n'existe pas");
-            return ControllerData::get404();
+            Renderer::render404();
         }
-
-        // Un étudiant ne peut voir que ses propres justificatifs
-        if (!AuthManager::isRole(AccountType::EducationalManager)
-            && JustificationService::isJustificationOwnedByStudent(AuthManager::getAccount(), $justification)) {
+        catch (\Exception $e) {
             Notification::addNotification(NotificationType::Error, "Vous n'avez pas l'autorisation de voir ce justificatif");
-            return ControllerData::get403();
+            Renderer::render403();
         }
-
-        $absences = $justification->getAbsences();
-        $files = $justification->getFiles();
-        $comments = PredifinedCommentService::commentSelectorAll();
-
-        /*
-        // DEBUG
-        if($_SERVER['REQUEST_METHOD'] === "POST") {
-            header('Content-Type: application/json; charset=utf-8');
-            echo json_encode($_POST);
-            exit();
-        }*/
-
-        return new ControllerData(
-            '/View/detailJustification.php',
-            'Détails de la justification',
-            new DetailJustificationViewModel(
-                $justification,
-                $absences,
-                $files,
-                AuthManager::getRole(),
-                $comments
-            )
-        );
     }
 }

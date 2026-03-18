@@ -10,9 +10,8 @@ use Uphf\GestionAbsence\Model\AuthManager;
 use Uphf\GestionAbsence\Model\Notification\Notification;
 use Uphf\GestionAbsence\Model\Notification\NotificationType;
 use Uphf\GestionAbsence\Service\AccountService;
+use Uphf\GestionAbsence\Utils\Renderer;
 use Uphf\GestionAbsence\Validator\ChangePasswordValidator;
-use Uphf\GestionAbsence\ViewModel\BaseViewModel;
-use Uphf\GestionAbsence\ViewModel\ChangePasswordViewModel;
 
 /**
  * Controller de vue relatif aux différentes Views pour le changement de mot de passe / mot de passe oublié
@@ -29,22 +28,22 @@ class ChangePasswordController {
     /**
      * Affiche la vue pour changer le mot de passe d'un compte dans le cas ou l'utilisateur est connecté
      *
-     * @return ControllerData
+     * @return void
      */
-    public static function showConnectedChangePassword(): ControllerData {
-        return new ControllerData(
-            "/View/changePassword.php",
-            "Changer le mot de passe",
-            new ChangePasswordViewModel(false)
+    public static function showConnectedChangePassword(): void {
+        Renderer::render(
+            '../ViewOLD/changePassword.php',
+            'Changer le mot de passe',
+            ['haveToken' => false]
         );
     }
 
     /**
-     * Traitement d'un changement de mot de passe, dans le cas ou l'utilisateur fournis sont mot ancien mot de passe comme preuve d'authentification
+     * Traitement d'un changement de mot de passe, dans le cas où l'utilisateur fourni son mot ancien mot de passe comme preuve d'authentification
      *
-     * @return ControllerData
+     * @return void
      */
-    public static function postConnectedChangePassword(): ControllerData {
+    public static function postConnectedChangePassword(): void {
         try {
             ChangePasswordValidator::validateConnectedChangePassword($_POST);
 
@@ -67,32 +66,31 @@ class ChangePasswordController {
             Notification::addNotification(NotificationType::Error, "Erreur interne");
         }
 
-        return new ControllerData(
-            "/View/changePassword.php",
-            "Changer le mot de passe",
-            new ChangePasswordViewModel(false)
+        Renderer::render(
+            '../ViewOLD/changePassword.php',
+            'Changer le mot de passe',
+            ['haveToken' => false]
         );
     }
 
     /**
      * Affiche la vue mot de passe oublié
      *
-     * @return ControllerData
+     * @return void
      */
-    public static function showLostPassword(): ControllerData {
-        return new ControllerData(
-            "/View/PasswordLost.php",
-            "Mot de passe oublié",
-            new BaseViewModel()
+    public static function showLostPassword(): void {
+        Renderer::render(
+            '../ViewOLD/PasswordLost.php',
+            'Mot de passe oublié',
         );
     }
 
     /**
      * Traite la demande de mot de passe oublié
      *
-     * @return ControllerData
+     * @return void
      */
-    public static function postLostPassword(): ControllerData {
+    public static function postLostPassword(): void {
         $notificationType = NotificationType::Success;
         $message = "Si un compte correspondant à cette adresse existe, un email de réinitialisation vient de vous être envoyés.";
 
@@ -108,10 +106,9 @@ class ChangePasswordController {
 
         Notification::addNotification($notificationType, $message);
 
-        return new ControllerData(
-            "/View/PasswordLost.php",
-            "Mot de passe oublié",
-            new BaseViewModel()
+        Renderer::render(
+            '../ViewOLD/PasswordLost.php',
+            'Mot de passe oublié',
         );
     }
 
@@ -121,18 +118,19 @@ class ChangePasswordController {
      * Dans le cas ou le token fournis dans l'URL est invalide / expiré, renvoie vers 403.
      *
      * @param $params
-     * @return ControllerData
+     * @return void
      */
-    public static function showTokenChangePassword($params): ControllerData {
+    public static function showTokenChangePassword($params): void {
         if(!AccountService::isValidToken($params['token'])) {
             Notification::addNotification(NotificationType::Error, "Token expiré");
-            return ControllerData::get403();
+            Renderer::render403();
+            return;
         }
 
-        return new ControllerData(
-            "/View/changePassword.php",
-            "Changer le mot de passe",
-            new ChangePasswordViewModel(true)
+        Renderer::render(
+            '../ViewOLD/changePassword.php',
+            'Changer le mot de passe',
+            ['haveToken' => true]
         );
     }
 
@@ -146,19 +144,16 @@ class ChangePasswordController {
      * Dans le cas d'un succés, renvoie vers la page login.
      *
      * @param $params
-     * @return ControllerData
+     * @return void
      */
-    public static function postTokenChangePassword($params): ControllerData {
+    public static function postTokenChangePassword($params): void {
         try {
             ChangePasswordValidator::validateTokenChangePassword($_POST);
             AccountService::changePasswordWithToken($params['token'], $_POST['newPassword']);
             Notification::addNotification(NotificationType::Success, "Votre mot de passe a bien été changé !");
 
-            return new ControllerData(
-                "/View/login.php",
-                "Connexion",
-                new BaseViewModel()
-            );
+            Renderer::render('../ViewOLD/login.php', 'Connexion');
+            return;
         }
         catch (NestedValidationException $e) {
             foreach ($e->getMessages() as $message) {
@@ -170,13 +165,14 @@ class ChangePasswordController {
         }
         catch (EntityNotFoundException $e) {
             Notification::addNotification(NotificationType::Error, "Token expiré");
-            return ControllerData::get403();
+            Renderer::render403();
+            return;
         }
 
-        return new ControllerData(
-            "/View/changePassword.php",
-            "Changer le mot de passe",
-            new ChangePasswordViewModel(true)
+        Renderer::render(
+            '../ViewOLD/changePassword.php',
+            'Changer le mot de passe',
+            ['haveToken' => true]
         );
     }
 }

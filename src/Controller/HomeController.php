@@ -6,6 +6,7 @@ use Uphf\GestionAbsence\Model\AuthManager;
 use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
 use Uphf\GestionAbsence\Model\Notification\Notification;
 use Uphf\GestionAbsence\Model\Notification\NotificationType;
+use Uphf\GestionAbsence\Utils\Renderer;
 
 /**
  * Controller de redirection pour la route /
@@ -20,9 +21,9 @@ class HomeController {
      * Redirige l'utilisateur vers sa page par défaut selon son role
      *
      * Si l'utilisateur n'est pas connecté, il est redirigé vers le login
-     * @return ControllerData
+     * @return void
      */
-    public static function home(): ControllerData {
+    public static function home(): void {
         if(AuthManager::isLogin()) {
             switch(AuthManager::getRole()) {
                 case AccountType::Student:
@@ -39,7 +40,7 @@ class HomeController {
                     exit();
                 default:
                     Notification::addNotification(NotificationType::Error, "Ce type de compte n'est pas encore fonctionnel");
-                    return ControllerData::get403();
+                    Renderer::render403();
             }
         }
         else {
