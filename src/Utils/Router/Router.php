@@ -10,6 +10,7 @@ use Uphf\GestionAbsence\Utils\Renderer;
  * Routeur basique permettant de rediriger vers la méthode d'un controller
  */
 class Router {
+    private static Route $currRoute;
     private array $routes = [];
 
     /**
@@ -23,10 +24,11 @@ class Router {
      * @param RequestMethod $requestMethod
      * @param string $path
      * @param string $handler
+     * @param string $name
      * @return Route
      */
-    public function addRoute(RequestMethod $requestMethod, string $path, string $handler): Route {
-        $route = new Route($handler);
+    public function addRoute(RequestMethod $requestMethod, string $path, string $handler, string $name = ''): Route {
+        $route = new Route($name, $handler);
         $this->routes[$requestMethod->name][$this->normalizePath($path)] = $route;
 
         return $route;
@@ -51,6 +53,8 @@ class Router {
                 Renderer::render403();
                 return;
             }
+
+            self::$currRoute = $route;
 
             // Appel de la méthode du controller
             $handler = $route->getHandler();
@@ -190,5 +194,17 @@ class Router {
             $path = rtrim($path, '/');
         }
         return $path;
+    }
+
+    /**
+     * Renvoie true si la route courante porte le nom passé en paramètre
+     * sinon false
+     *
+     * @param $name
+     * @return bool
+     */
+    public static function isCurrRoute($name): bool {
+        if(self::$currRoute === null) { return false; }
+        return self::$currRoute->getName() === $name;
     }
 }

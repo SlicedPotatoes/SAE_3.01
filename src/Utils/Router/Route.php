@@ -8,6 +8,7 @@ use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
  * Classe définissant une route avec les permissions et le handler.
  */
 class Route {
+    private string $name;
     private string $handler;
     private array $authorization = [];
     private bool $requireNotLogin = false;
@@ -18,7 +19,8 @@ class Route {
      *
      * @param string $handler
      */
-    public function __construct(string $handler) {
+    public function __construct(string $name, string $handler) {
+        $this->name = $name;
         $this->handler = $handler;
     }
 
@@ -59,6 +61,14 @@ class Route {
 
         $this->requireLogin = true;
         return $this;
+    }
+
+    /**
+     * Récupérer le nom de la route
+     * @return string
+     */
+    public function getName(): string {
+        return $this->name;
     }
 
     /**
