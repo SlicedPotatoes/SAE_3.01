@@ -204,7 +204,7 @@ class Router {
      * @return bool
      */
     public static function isCurrRoute($name): bool {
-        if(self::$currRoute === null) { return false; }
+        if(!isset(self::$currRoute)) { return false; }
         return self::$currRoute->getName() === $name;
     }
 }
