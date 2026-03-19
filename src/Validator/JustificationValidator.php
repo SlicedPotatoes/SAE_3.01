@@ -40,7 +40,7 @@ class JustificationValidator {
             ->key('dateEnd', v::date('Y-m-d'), false)
             ->key('state', v::in(['Processed', 'NotProcessed']), false)
             ->key('examen', v::boolType(), false)
-            ->key('idStudent', v::intType(), false),
+            ->key('idStudent', v::intVal(), false),
             false
         )->key(
             'orderOptions',

@@ -26,7 +26,6 @@ class AbsenceService
         foreach ($filters as $filter => $value) {
             if(isset($value) && in_array($filter, $whiteListMethod)) {
                 call_user_func([$builder, $filter], $value);
-                echo $filter;
             }
         }
 

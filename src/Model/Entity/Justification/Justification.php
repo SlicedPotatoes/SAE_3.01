@@ -149,7 +149,8 @@ class Justification implements \JsonSerializable
             'startDate' => $this->startDate->format("Y-m-d H:i:s"),
             'endDate' => $this->endDate->format("Y-m-d H:i:s"),
             'processedDate' => $this->processedDate?->format("Y-m-d H:i:s.u"),
-            'refusalReason' => $this->refusalReason
+            'refusalReason' => $this->refusalReason,
+            'student' => $this->student->jsonSerialize(),
         ];
     }
 }
