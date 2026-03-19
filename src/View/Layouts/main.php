@@ -12,14 +12,13 @@
     <link rel="stylesheet" href="/style/bootstrap-icons.min.css">
     <link rel="stylesheet" href="/style/style.css">
 </head>
-<body class="bg-light d-flex flex-column m-0">
+<body class="bg-light d-flex flex-column gap-3">
 <?php
-require __DIR__ . "/../Component/buttonSettings.php";
-require __DIR__ . "/../Component/burgerMenu.php";
+require __DIR__ . '/../Component/Navbar/navbar.php';
 require __DIR__ . "/../Component/Notification/notificationContainer.php";
 ?>
 
-<div class="container d-flex flex-column gap-3 flex-fill" style="min-height: 0">
+<div class="container scroll-parent gap-3 px-3 px-md-4 px-lg-5">
     <?= $content ?>
 </div>
 
