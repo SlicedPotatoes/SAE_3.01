@@ -4,22 +4,23 @@
  */
 ?>
 
-<div class="card p-3 flex-fill d-flex flex-column" style="min-height:0">
+<div class="card-md p-md-3 flex-fill d-flex flex-column"
+     style="min-height:0">
 
     <!-- Tab bar -->
-    <ul class="nav nav-tabs"
+    <ul class="nav nav-tabs d-none d-md-flex"
         id="tab-dashboard-stu"
         role="tablist">
 
         <li class="nav-item"
             role="presentation">
             <button
-                class="text-black nav-link active"
-                id="proof-tab"
-                data-bs-toggle="tab"
-                data-bs-target="#proof-tab-pane"
-                type="button"
-                role="tab">
+                    class="text-black nav-link active"
+                    id="proof-tab"
+                    data-bs-toggle="tab"
+                    data-bs-target="#proof-tab-pane"
+                    type="button"
+                    role="tab">
                 Justificatifs
             </button>
         </li>
@@ -27,12 +28,12 @@
         <li class="nav-item"
             role="presentation">
             <button
-                class="text-black nav-link"
-                id="absence-tab"
-                data-bs-toggle="tab"
-                data-bs-target="#absence-tab-pane"
-                type="button"
-                role="tab">
+                    class="text-black nav-link"
+                    id="absence-tab"
+                    data-bs-toggle="tab"
+                    data-bs-target="#absence-tab-pane"
+                    type="button"
+                    role="tab">
                 Absences
             </button>
         </li>
@@ -42,7 +43,7 @@
         </li>
     </ul>
 
-    <div class="tab-content bg-white border-bottom border-start border-end rounded-bottom pt-3 flex-fill d-flex flex-column"
+    <div class="tab-content border-bottom border-start border-end rounded-bottom pt-3 flex-fill d-flex flex-column"
          style="min-height:0"
          id="tab-dashboard-stuContent">
 
@@ -88,11 +89,62 @@
         </div>
 
     </div>
+</div>
 
 <?php require __DIR__ . "/../ViewOLD/Composants/Modal/modalRule.php"; ?>
 
 
+<div class="mobile-bottom-nav d-md-none" role="tablist">
+
+    <button class="btn-nav active"
+            id="proof-tab-mobile"
+            data-bs-toggle="tab"
+            data-bs-target="#proof-tab-pane"
+            type="button"
+            role="tab">
+        <i class="bi bi-clipboard-minus-fill fs-3"></i>
+        <span>Justificatifs</span>
+    </button>
+
+    <button class="btn-nav"
+            id="absence-tab-mobile"
+            data-bs-toggle="tab"
+            data-bs-target="#absence-tab-pane"
+            type="button"
+            role="tab">
+        <i class="bi bi-calendar-week-fill fs-3"></i>
+        <span>Absences</span>
+    </button>
+
+    <button class="btn-nav"
+            data-bs-toggle="modal"
+            data-bs-target="#modalJustificationAbsence"
+            type="button">
+        <i class="bi bi-file-earmark-plus-fill fs-3"></i>
+        <span>Ajouter</span>
+    </button>
+</div>
+
 <script>
+    let footer = document.getElementById("footer");
+
+    window.addEventListener("load", () => {
+        setTimeout(() => {
+            footer = document.getElementById("footer");
+            fixFooterMobile();
+        }, 100);
+    });
+
+    // Fix pour le footer sur mobile
+    function fixFooterMobile() {
+        if (footer && window.innerWidth < 768) {
+            footer.style.setProperty("margin-bottom", "70px", "important");
+        } else if (footer && window.innerWidth >= 768) {
+            footer.style.setProperty("margin-bottom", "0px", "important");
+        }
+    }
+
+
     // Fonctions utilitaires pour l'affichages ect...
     function isMobile() {
         return window.innerWidth < 768;
@@ -360,7 +412,7 @@
 
     function renderAbsencesMobile(container, absences) {
 
-        let html = `<div class="d-flex flex-column gap-3 px-2">`;
+        let html = `<div class="d-flex flex-column gap-3 px-2 mt-2">`;
 
         absences.forEach(abs => {
 
@@ -368,7 +420,7 @@
 
             if (!abs.allowedJustification && abs.currentState === "Refused") {
                 lockIcon = `
-                <i class="bi bi-file-lock2 ms-2"
+                <i class="bi bi-file-lock2 ms-2 fs-4"
                    data-bs-toggle="tooltip"
                    data-bs-title="Le responsable pédagogique n'autorise pas la justification">
                 </i>`;
@@ -379,15 +431,15 @@
 
             <div class="card-body p-3">
 
-                <div class="d-flex justify-content-between mb-2">
-                    <p>Le <strong>${formatDate(abs.time)}</strong> à <strong>${formatTime(abs.time)}</strong> </p>
+                <div>
+                    <p class="mb-0">Le <strong>${formatDate(abs.time)}</strong> à <strong>${formatTime(abs.time)}</strong> </p>
                 </div>
 
-                <div class="mb-2">
+                <div class="mb-1">
                     <strong>Durée :</strong> ${formatDuration(abs.duration)}
                 </div>
 
-                <div class="mb-2">
+                <div class="mb-1">
                     <span class="badge rounded-pill text-bg-${stateToBadge(abs.currentState)}">
                         ${translateLabelState(abs.currentState)}
                     </span>
@@ -511,7 +563,7 @@
     }
 
     function renderJustificationsMobile(container, justifications, showStudent = false) {
-        let html = `<div class="d-flex flex-column gap-3 px-2">`;
+        let html = `<div class="d-flex flex-column gap-3 px-2 mt-2">`;
 
         justifications.forEach(j => {
 
@@ -569,8 +621,63 @@
     // Events
     // Fonction pour cette page qui permet de charger les données dans le format adapté
     document.addEventListener("DOMContentLoaded", () => {
-        loadJustifications();
+
+        // Boutons de navigation mobile
+        const navButtons = document.querySelectorAll(".btn-nav");
+
+        navButtons.forEach(btn => {
+            btn.addEventListener("click", () => {
+
+                navButtons.forEach(b => b.classList.remove("active"));
+                btn.classList.add("active");
+
+            });
+        });
+
+        //
+        document.querySelectorAll('[data-bs-toggle="tab"]').forEach(tab => {
+            tab.addEventListener('shown.bs.tab', (event) => {
+
+                const target = event.target.getAttribute("data-bs-target");
+
+                document.querySelectorAll(".btn-nav").forEach(btn => {
+                    btn.classList.remove("active");
+
+                    if (btn.getAttribute("data-bs-target") === target) {
+                        btn.classList.add("active");
+                    }
+                });
+
+            });
+        });
+
+        // Bouton pour les filtres
+        document.querySelectorAll(".apply-filters").forEach(btn => {
+            btn.addEventListener("click", () => {
+                const target = btn.dataset.target;
+
+                if (target === "absence") {
+                    applyAbsenceFilters();
+                }
+                if (target === "justification") {
+                    applyJustificationFilters();
+                }
+
+                // fermeture de la fenêtre quand nous sommes sur mobile
+                if (isMobile()) {
+                    const collapse = btn.closest(".collapse");
+                    if (collapse) {
+                        bootstrap.Collapse.getInstance(collapse)?.hide();
+                    }
+                }
+
+            });
+
+        });
+
+        // chargement des justifications et absences
         loadAbsences();
+        loadJustifications();
     });
 
     // Si la fenêtre change de taille on refait l'affichage sans refaire une requête Ajax
@@ -583,6 +690,7 @@
         resizeTimer = setTimeout(() => {
             renderAbsences();
             renderJustifications();
+            fixFooterMobile()
         }, 150);
 
     });
@@ -618,28 +726,4 @@
 
         loadJustifications(params.toString());
     }
-
-
-    document.querySelectorAll(".apply-filters").forEach(btn => {
-        btn.addEventListener("click", () => {
-            const target = btn.dataset.target;
-
-            if (target === "absence") {
-                applyAbsenceFilters();
-            }
-            if (target === "justification") {
-                applyJustificationFilters();
-            }
-
-            // fermeture de la fenêtre quand nous sommes sur mobile
-            if (isMobile()) {
-                const collapse = btn.closest(".collapse");
-                if (collapse) {
-                    bootstrap.Collapse.getInstance(collapse)?.hide();
-                }
-            }
-
-        });
-
-    });
 </script>

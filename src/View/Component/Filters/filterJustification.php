@@ -1,3 +1,5 @@
+<?php $prefix = $prefix ?? "proof"; ?>
+
 <form class="border-bottom px-4 m-0">
 
     <!-- Bouton mobile pour afficher/caché les filtres -->
@@ -16,10 +18,7 @@
         <div class="row g-3 pb-3 align-items-end">
 
             <!-- Filtre des dates -->
-            <?php
-            $prefix = $prefix ?? "proof";
-            require "filterDateRange.php";
-            ?>
+            <?php require "filterDateRange.php"; ?>
 
             <div class="col-12 col-lg-auto">
                 <label for="<?= $prefix ?>State" class="form-label">État</label>
