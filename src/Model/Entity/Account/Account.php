@@ -2,13 +2,14 @@
 
 namespace Uphf\GestionAbsence\Model\Entity\Account;
 
-use Uphf\GestionAbsence\Model\DB\Select\TableSelector;
+use JsonSerializable;
+use Uphf\GestionAbsence\Database\Select\TableSelector;
 use Uphf\GestionAbsence\Model\Hydrator\AccountHydrator;
 
 /**
  * Classe Account, basé sur la base de données.
  */
-class Account {
+class Account implements JsonSerializable{
     protected int $idAccount;
     protected string $lastName;
     protected string $firstName;
@@ -51,16 +52,15 @@ class Account {
         $this->accountType = AccountType::from($data['accounttype']);
     }
 
-    // Utilisé pour le "login temporaire", TODO: à enlever
-    public static function getAllAccount() : array {
-        $rows = TableSelector::fromTable("Account");
-        $accounts = [];
-
-        foreach($rows as $row) {
-            $accounts[$row['idaccount']] = AccountHydrator::unserializeAccount($row);
-        }
-
-        return $accounts;
+    public function jsonSerialize(): mixed
+    {
+        return [
+            'idAccount' => $this->idAccount,
+            'lastName' => $this->lastName,
+            'firstName' => $this->firstName,
+            'email' => $this->email,
+            'accountType' => $this->accountType,
+        ];
     }
 }
 

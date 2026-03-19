@@ -1,0 +1,65 @@
+### Deconnexion
+GET http://localhost/deconnexion
+
+### Login a un compte RP
+POST http://localhost/connexion
+Content-Type: application/x-www-form-urlencoded
+
+email=kevin.masmejean@uphf.fr&password=password
+
+### Recevoir les périodes de vacances
+GET http://localhost/api/holidays
+
+### Création d'une période de vacance valide
+POST http://localhost/api/holidays
+Content-Type: application/json
+
+{
+  "startDate": "2026-07-19",
+  "endDate": "2026-07-20",
+  "label": "Mon anniversaire"
+}
+
+### Création d'une période de vacance non-valide
+POST http://localhost/api/holidays
+Content-Type: application/json
+
+{
+  "endDate": "2026-07-20",
+  "label": "Mon anniversaire"
+}
+
+### Mettre à jour une période de vacance valide
+PUT http://localhost/api/holidays/7
+Content-Type: application/json
+
+{
+  "startDate": "2026-07-19",
+  "endDate": "2026-07-20",
+  "label": "Le gateau"
+}
+
+### Mettre à jour une période de vacance non-valide
+PUT http://localhost/api/holidays/7
+Content-Type: application/json
+
+{
+  "endDate": "2026-07-20",
+  "label": "Non anniversaire"
+}
+
+### Mettre à jour une période de vacance qui n'existe pas
+PUT http://localhost/api/holidays/-666
+Content-Type: application/json
+
+{
+  "startDate": "2026-07-19",
+  "endDate": "2026-07-20",
+  "label": "Le gateau"
+}
+
+### Supprimer une période de vacance
+DELETE http://localhost/api/holidays/8
+
+### Supprimer une période de vacance qui n'existe pas
+DELETE http://localhost/api/holidays/-666

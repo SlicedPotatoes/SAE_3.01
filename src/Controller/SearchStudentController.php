@@ -2,65 +2,35 @@
 
 namespace Uphf\GestionAbsence\Controller;
 
-use Uphf\GestionAbsence\Model\AuthManager;
-use Uphf\GestionAbsence\Model\DB\Select\SelectBuilder\StudentSelectBuilder;
-use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
-use Uphf\GestionAbsence\Model\Entity\Account\GroupStudent;
-use Uphf\GestionAbsence\Model\Validation\SearchStudentValidator;
-use Uphf\GestionAbsence\ViewModel\SearchStudentViewModel;
+use Uphf\GestionAbsence\Service\AccountService;
+use Uphf\GestionAbsence\Service\GroupService;
+use Uphf\GestionAbsence\Utils\Renderer;
 
 /**
  * Controller pour la recherche d'étudiant coté RP
  */
 class SearchStudentController {
     /**
-     * Si l'utilisateur n'est pas connecté => Rediriger vers login
+     * Page de recherche étudiant
      *
-     * Si l'utilisateur n'est pas RP => 403
-     *
-     * Gestion des filtres appliquée
-     *
-     * @return ControllerData
+     * @return void
      */
-    public static function show(): ControllerData {
-        // Utilisateur non connecté, rediriger vers /
-        if(!AuthManager::isLogin()) {
-            header("Location: /");
-            exit();
-        }
+    public static function showSearchStudent(): void {
+        $filters = [
+            'search' => null,
+            'groupStudent' => null
+        ];
 
-        // Si compte autre que RP => 403
-        if(!AuthManager::isRole(AccountType::EducationalManager)) {
-            return ControllerData::get403();
-        }
+        $students = AccountService::getFilteredStudents($filters);
+        $groupsStudent = GroupService::selectAllGroup();
 
-        // Builder pour récupérer les étudiants
-        $builderStudents = new StudentSelectBuilder();
-
-        $validator = new SearchStudentValidator();
-        $filters = $validator->getData();
-
-        // Gestions des filtres
-        if(isset($filters['search'])) {
-            $builderStudents->searchBar($filters['search']);
-        }
-        else {
-            $builderStudents->allStudent();
-        }
-        if(isset($filters['groupStudent'])) {
-            $builderStudents->groupStudent($filters['groupStudent']);
-        }
-
-        $students = $builderStudents->execute();
-
-        return new ControllerData(
-            "/View/searchStudent.php",
-            "Recherche étudiant",
-            new SearchStudentViewModel(
-                $students,
-                GroupStudent::getAllGroupsStudent(),
-                $filters
-            )
+        Renderer::render(
+            '../ViewOLD/searchStudent.php',
+            'Recherche étudiant',
+            [
+                'students' => $students,
+                'groups' => $groupsStudent
+            ]
         );
     }
 }

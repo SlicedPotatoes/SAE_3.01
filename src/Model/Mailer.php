@@ -140,7 +140,7 @@ class Mailer
     {
         $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? "https://" : "http://";
         $domain = $_SERVER['HTTP_HOST'];
-        $url = $protocol . $domain . "/ChangePassword/" . $token ;
+        $url = $protocol . $domain . "/mot-de-passe-oublie/" . $token ;
         $subject = 'Mot de passe oublié';
         $body = "Bonjour " . $firstname . " " . $lastname . ",<br><br>
                 Vous avez demandé la réinitialisation de votre mot de passe.<br>
@@ -243,12 +243,12 @@ Vous disposez de 48 heures pour justifier cette absence en soumettant un justifi
         try {
             // Configuration SMTP
             $mailer->isSMTP();
-            $mailer->Host = 'smtp.gmail.com';                     // Serveur SMTP Gmail - on ne touche pas
+            $mailer->Host = $_ENV["MAILER_HOST"];                     // Serveur SMTP Gmail - on ne touche pas
             $mailer->SMTPAuth = true;                             // Activer authentification SMTP - on ne touche pas
-            $mailer->Username = 'suivi.absences@gmail.com';       // Adresse Gmail - mail d'envoi
-            $mailer->Password = 'utah jvpz ehui nhvk';            // Mot de passe d’application Google - mot de passe d'application, ici "utah jvpz ehui nhvk"
+            $mailer->Username = $_ENV["MAILER_MAIL"];       // Adresse Gmail - mail d'envoi
+            $mailer->Password = $_ENV["MAILER_PASSWORD"];            // Mot de passe d’application Google - mot de passe d'application, ici "utah jvpz ehui nhvk"
             $mailer->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; // Activer chiffrement TLS - pas touche
-            $mailer->Port = 587;                                  // Port TLS - pas touche
+            $mailer->Port = $_ENV["MAILER_PORT"];                                  // Port TLS - pas touche
 
             // Destinataires
             $mailer->setFrom('suivi.absences@gmail.com', 'Suivi Absences');
@@ -267,6 +267,7 @@ Vous disposez de 48 heures pour justifier cette absence en soumettant un justifi
             error_log("L'envoi du message a échoué: {$mailer->ErrorInfo}");
         }
     }
+
     /**
      * Permet d'envoyer un mail au Responsable Pédagogique lorsqu'un étudiant a été absent plus d'une semaine de manière consécutive
      *

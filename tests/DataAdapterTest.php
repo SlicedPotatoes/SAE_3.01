@@ -1,8 +1,8 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
+use Uphf\GestionAbsence\Database\Select\SelectBuilder\ProportionStatisticsType;
 use Uphf\GestionAbsence\Model\Statistics\DataAdapter;
-use Uphf\GestionAbsence\Model\DB\Select\SelectBuilder\ProportionStatisticsType;
 
 /**
  * Classe de test pour la classe statique DataAdapter

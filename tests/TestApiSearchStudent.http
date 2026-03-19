@@ -1,0 +1,14 @@
+### Login a un compte RP
+POST http://localhost/connexion
+Content-Type: application/x-www-form-urlencoded
+
+email=kevin.masmejean@uphf.fr&password=password
+
+### Récupère tous les étudiants
+GET http://localhost/api/students
+
+### Récupère les étudiants avec la recherche par nom
+GET http://localhost/api/students?search=Frommage
+
+### Récupère les étudiants avec la recherche par groupe
+GET http://localhost/api/students?groupStudent=-1

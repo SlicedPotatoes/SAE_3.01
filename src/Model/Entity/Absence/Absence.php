@@ -9,7 +9,7 @@ use DateTime;
 /**
  * Classe d'Absence, basé sur la base de données.
  */
-class Absence {
+class Absence implements \JsonSerializable {
     // Attribut de base
     private Student $student;
     private DateTime $time;
@@ -51,4 +51,20 @@ class Absence {
     // Setter de base
     public function setState(StateAbs $state): void { $this->currentState = $state; }
     public function setAllowedJustification(bool $value): void { $this->allowedJustification = $value; }
+
+    public function jsonSerialize(): array
+    {
+        return [
+            'idStudent' => $this->student->getIdAccount(),
+            'time' => $this->time->format('Y-m-d H:i:s'),
+            'duration' => $this->duration,
+            'examen' => $this->examen,
+            'allowedJustification' => $this->allowedJustification,
+            'idTeacher' => $this->teacher?->getIdAccount(),
+            'currentState' => $this->currentState->value,
+            'courseType' => $this->courseType->value,
+            'resource' => $this->resource->getIdResource(),
+            'dateResit' => $this->dateResit?->format('Y-m-d H:i:s')
+        ];
+    }
 }

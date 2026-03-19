@@ -1,0 +1,24 @@
+###
+GET http://localhost/api/test
+
+###
+GET http://localhost/api/test?test=saucise
+
+###
+POST http://localhost:80/api/test
+Content-Type: application/json
+
+{
+  "UwU": "Merguez"
+}
+
+###
+PUT http://localhost:80/api/test/3
+Content-Type: application/json
+
+{
+  "Chat": "Saucisse"
+}
+
+###
+DELETE http://localhost:80/api/test/3

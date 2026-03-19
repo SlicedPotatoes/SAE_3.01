@@ -2,68 +2,67 @@
 
 namespace Uphf\GestionAbsence\Controller;
 
+use Respect\Validation\Exceptions\NestedValidationException;
+use Uphf\GestionAbsence\Exception\BadCredentialException;
+use Uphf\GestionAbsence\Exception\EntityNotFoundException;
 use Uphf\GestionAbsence\Model\AuthManager;
-use Uphf\GestionAbsence\Model\DB\Select\AccountSelector;
-use Uphf\GestionAbsence\Model\DB\Select\StudentSelector;
-use Uphf\GestionAbsence\Model\Entity\Account\Account;
-use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
 use Uphf\GestionAbsence\Model\Notification\Notification;
 use Uphf\GestionAbsence\Model\Notification\NotificationType;
-use Uphf\GestionAbsence\ViewModel\BaseViewModel;
+use Uphf\GestionAbsence\Service\AccountService;
+use Uphf\GestionAbsence\Utils\Renderer;
+use Uphf\GestionAbsence\Validator\AuthentificationValidator;
 
 /**
- * Authentification Controller
+ * Controller de vue pour la gestion de l'Authentification
  *
  * Gère le login et logout
+ *
+ * - GET /connexion -> login()
+ * - POST /connexion -> postLogin()
+ * - GET /deconnexion -> logout()
  */
 class AuthentificationController {
 
     /**
      * Renvoie l'utilisateur vers la page de connexion
      *
-     * Si celui-ci est déjà connecté, alors il est renvoyé vers sa page par défault selon son role.
-     *
-     * Si celui-ci tente de s'authentifier avec des identifiants valide, il est redirigé vers sa page par défault.
-     *
-     * @return ControllerData
+     * @return void
      */
-    public static function login(): ControllerData {
-        // Si l'utilisateur est connecté, il est redirigé vers sa page par défault
-        if(AuthManager::isLogin()) {
-            return HomeController::home();
+    public static function login(): void {
+        Renderer::render('../ViewOLD/login.php', 'Connexion');
+    }
+
+    /**
+     * Tentative de connection de l'utilisateur
+     *
+     * @return void
+     */
+    public static function postLogin(): void {
+        try {
+            AuthentificationValidator::validateLogin($_POST);
+
+            $account = AccountService::loginAccount($_POST["email"], $_POST["password"]);
+
+            // Connexion au niveau de la session
+            AuthManager::login(
+                $account->getAccountType(),
+                $account
+            );
+
+            header("Location: /");
+            return;
+        }
+        catch (EntityNotFoundException | BadCredentialException) {
+            Notification::addNotification(NotificationType::Error, "Email ou mot de passe incorrect");
+        }
+        catch (NestedValidationException $e) {
+            foreach ($e->getMessages() as $error) {
+                Notification::addNotification(NotificationType::Error, $error);
+            }
         }
 
-        if ($_SERVER["REQUEST_METHOD"] == "POST") {
-            $account = AccountSelector::getAccountByEmail($_POST["email"]);
-            if ($account ==! null && password_verify($_POST["password"], AccountSelector::getPasswordHashedById($account->getIdAccount())))
-            {
-                if($account->getAccountType() === AccountType::Student) {
-                    $account = StudentSelector::getStudentById($account->getIdAccount());
-                }
-
-                // Connexion au niveau de la session
-                AuthManager::login(
-                    $account->getAccountType(),
-                    $account
-                );
-
-                header("Location: /");
-                exit();
-            }
-            else
-            {
-                Notification::addNotification(
-                    NotificationType::Error,
-                "Email ou mot de passe incorrect");
-            }
-        }
-
-        // Utilisateur n'est pas connecté et ne tente pas de s'authentifier, on affiche la view d'authentification
-        return new ControllerData(
-            "/View/login.php",
-            "Connexion",
-            new BaseViewModel()
-        );
+        // Utilisateur n'est pas connecté, on affiche la view d'authentification
+        Renderer::render('../ViewOLD/login.php', 'Connexion');
     }
 
     /**
@@ -73,6 +72,5 @@ class AuthentificationController {
     public static function logout(): void {
         AuthManager::logout();
         header("Location: /");
-        exit();
     }
 }

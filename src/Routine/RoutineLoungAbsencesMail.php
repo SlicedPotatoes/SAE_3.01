@@ -2,7 +2,7 @@
 
 namespace Uphf\GestionAbsence\Routine;
 use PDO;
-use Uphf\GestionAbsence\Model\DB\Connection;
+use Uphf\GestionAbsence\Database\Connection;
 use Uphf\GestionAbsence\Model\Mailer;
 
 /**

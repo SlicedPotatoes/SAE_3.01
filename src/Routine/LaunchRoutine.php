@@ -8,7 +8,7 @@
  */
 
 use Dotenv\Dotenv;
-use Uphf\GestionAbsence\Model\DB\Connection;
+use Uphf\GestionAbsence\Database\Connection;
 use Uphf\GestionAbsence\Routine\RoutineLoungAbsencesMail;
 use Uphf\GestionAbsence\Routine\RoutineStudentComback;
 

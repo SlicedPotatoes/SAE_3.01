@@ -3,10 +3,11 @@
 namespace Uphf\GestionAbsence\Model\Entity\Absence;
 
 use DateTime;
+use JsonSerializable;
 use Uphf\GestionAbsence\Model\Entity\Account\Student;
 use Uphf\GestionAbsence\Model\Entity\Account\Teacher;
 
-class TimeSlotAbsence
+class TimeSlotAbsence implements JsonSerializable
 {
     private DateTime $time;
     private bool $examen;
@@ -103,4 +104,18 @@ class TimeSlotAbsence
     }
 
 
+    public function jsonSerialize(): mixed
+    {
+        return [
+            "time" => $this->time->format("Y-m-d H:i:s"),
+            "examen" => $this->examen,
+            "duration" => $this->duration,
+            "countStudentsAbsences" => $this->countStudentsAbsences,
+            "countStudentsAbsencesJustified" => $this->countStudentsAbsencesJustified,
+            "teacher" => $this->teacher,
+            "courseType" => $this->courseType,
+            "group" => $this->group,
+            "resource" => $this->resource
+        ];
+    }
 }

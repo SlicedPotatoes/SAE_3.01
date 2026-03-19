@@ -1,16 +1,16 @@
 <?php
 namespace Uphf\GestionAbsence\Model\Entity\Justification;
 
-use Uphf\GestionAbsence\Model\DB\Select\JustificationSelector;
+use DateTime;
+use Uphf\GestionAbsence\Database\Select\JustificationSelector;
 use Uphf\GestionAbsence\Model\Entity\Absence\Absence;
 use Uphf\GestionAbsence\Model\Entity\Account\Student;
-use DateTime;
 
 
 /**
  * Classe Justification, basé sur la base de données.
  */
-class Justification
+class Justification implements \JsonSerializable
 {
 
     // Attributs de base de la classe
@@ -140,4 +140,16 @@ class Justification
     public function setRefusalReason($message) { $this->refusalReason = $message; }
     public function setState(StateJustif $state) { $this->currentState = $state; }
     public function setProcessedDate() { $this->processedDate = new DateTime(); }
+
+    public function jsonSerialize(): array {
+        return [
+            'idJustification' => $this->idJustification,
+            'cause' => $this->cause,
+            'currentState' => $this->currentState->value,
+            'startDate' => $this->startDate->format("Y-m-d H:i:s"),
+            'endDate' => $this->endDate->format("Y-m-d H:i:s"),
+            'processedDate' => $this->processedDate?->format("Y-m-d H:i:s.u"),
+            'refusalReason' => $this->refusalReason
+        ];
+    }
 }

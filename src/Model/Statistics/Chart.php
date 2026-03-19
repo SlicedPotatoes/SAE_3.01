@@ -7,7 +7,7 @@ use JsonException;
 /**
  * Wrapper PHP pour ChartJS
  *
- * Version simplifier de https://github.com/bbsnly/chartjs-php (Celle ci avais un probleme sur la dernière version de PHP)
+ * Version simplifier de https://github.com/bbsnly/chartjs-php (Celle-ci avait un probleme sur la dernière version de PHP)
  */
 class Chart {
     private string $type;

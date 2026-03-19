@@ -1,13 +1,15 @@
 <?php
 namespace Uphf\GestionAbsence\Model\Entity\Account;
 
-use Uphf\GestionAbsence\Model\DB\Select\StudentSelector;
+use JsonSerializable;
+use stdClass;
+use Uphf\GestionAbsence\Database\Select\StudentSelector;
 use Uphf\GestionAbsence\Model\Hydrator\AccountHydrator;
 
 /**
  * Classe Student, basé sur la BDD
  */
-class Student extends Account {
+class Student extends Account implements JsonSerializable{
     // Attribut de base de la classe
     private int $studentNumber;
     private GroupStudent $groupStudent;
@@ -182,5 +184,28 @@ class Student extends Account {
         }
 
         return $this->halfdayPenalizing;
+    }
+
+    public function jsonSerialize(): mixed
+    {
+        return array(
+            "idAccount" => $this->idAccount,
+            "lastName" => $this->lastName,
+            "firstName" => $this->firstName,
+            "email" => $this->email,
+            "studentNumber" => $this->studentNumber,
+            "groupStudent" => $this->groupStudent
+        );
+    }
+
+    public static function jsonSerializeStudent(array $students): array
+    {
+        $result = [];
+
+        foreach ($students as $student) {
+            $result[] = $student->jsonSerialize();
+        }
+
+        return $result;
     }
 }
