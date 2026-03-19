@@ -80,7 +80,7 @@ class ChangePasswordController {
      */
     public static function showLostPassword(): void {
         Renderer::render(
-            '../ViewOLD/PasswordLost.php',
+            'PasswordLost.php',
             'Mot de passe oublié',
         );
     }
@@ -107,7 +107,7 @@ class ChangePasswordController {
         Notification::addNotification($notificationType, $message);
 
         Renderer::render(
-            '../ViewOLD/PasswordLost.php',
+            'PasswordLost.php',
             'Mot de passe oublié',
         );
     }
