@@ -1,0 +1,117 @@
+/**
+ *
+ * Les fonctions utilitaires utilisé dans les différentes autres fonctions javascript
+ *
+ */
+
+/**
+ * Permets de savoir si l'utilisateur à sa fenêtre en format mobile
+ * @returns {boolean}
+ */
+export function isMobile() {
+    return window.innerWidth < 768;
+}
+
+/**
+ * Permet de prendre une date sous string brute et de la traduire en un string sous format français
+ *
+ * Exemple : "2026-03-20" -> "20/03/2026"
+ *
+ * @param dateString
+ * @returns {string}
+ */
+export function formatDate(dateString) {
+    const d = new Date(dateString);
+
+    return d.toLocaleDateString("fr-FR");
+}
+
+/**
+ * Permets d'avoir l'heure avec une date complète issu de l'api
+ *
+ * Exemple : "2026-03-20T15:55:00" -> "15h55"
+ *
+ * @param dateString
+ * @returns {string}
+ */
+export function formatTime(dateString) {
+    const d = new Date(dateString);
+
+    const hours = String(d.getHours()).padStart(2, "0");
+    const minutes = String(d.getMinutes()).padStart(2, "0");
+
+    return `${hours}h${minutes}`;
+}
+
+/**
+ * Permet de formater une durée issue de l'api
+ *
+ * Exemple : "01:30" -> "2h30"
+ *
+ * @param duration
+ * @returns {string}
+ */
+export function formatDuration(duration) {
+    const [h,m] = duration.split(":");
+
+    return parseInt(h) + "h" + m;
+}
+
+/**
+ * Permet de formater une date issu de l'api d'une manière plus lisible
+ *
+ * Exemple : "2026-03-20T15:55:00" -> "20/03/2026 15:55"
+ *
+ * @param dateString
+ * @returns {string}
+ */
+export function formatDateTime(dateString) {
+    const d = new Date(dateString);
+
+    return d.toLocaleString("fr-FR");
+}
+
+/**
+ * Permet de convertir un state php en classe Bootstrap pour les petits badges
+ *
+ * @param state
+ * @returns {string}
+ */
+export function stateToBadge(state) {
+    switch(state) {
+        case "Processed":
+        case "Validated":
+            return "success";
+
+        case "Refused":
+            return "danger";
+
+        default:
+            return "secondary";
+    }
+}
+
+/**
+ * Permet de traduire les state php en label pour les petits badges
+ *
+ * @param state
+ * @returns {*|string}
+ */
+export function translateLabelState(state) {
+    switch(state) {
+        case "Validated":
+            return "Validée";
+        case "Refused":
+            return "Refusée";
+        case "NotJustified":
+            return "Non justifiée";
+        case "Pending":
+            return "En attente";
+        case "Processed":
+            return "Traité";
+        case "NotProcessed":
+            return "En cours de traitement";
+        default:
+            return state;
+    }
+}
