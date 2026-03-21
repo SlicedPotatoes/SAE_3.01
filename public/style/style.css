@@ -21,6 +21,9 @@
     &:disabled {
       background: var(--color-uphf-disabled) !important;
     }
+    &.active {
+        background: var(--color-uphf-active) !important;
+    }
 }
 
 .border-uphf {
@@ -102,13 +105,6 @@
         outline: none;
         box-shadow: none;
     }
-}
-
-/* Permet d'avoir le texte en noir sur les onglets pour les boutons uphf */
-#tab-dashboard-stu .btn-uphf.active {
-    color: black !important;
-    background: white !important;
-    border: 1px solid var(--color-uphf);
 }
 
 /* Animer l'affichage des notifications */

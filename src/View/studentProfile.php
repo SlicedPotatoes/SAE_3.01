@@ -15,6 +15,31 @@ use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
     </p>
 <?php endif; ?>
 
+<div class="accordion my-2" id="accordionInformationsCards">
+    <div class="accordion-header text-center text-md-start">
+
+        <button class="p-0 border-0 bg-transparent text-decoration-none small"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#collapseOne"
+                aria-expanded="true"
+                aria-controls="collapseOne"
+        >
+            Afficher les indicateurs d'assiduité
+        </button>
+
+        <hr class="my-1">
+
+    </div>
+
+    <div id="collapseOne"
+         class="accordion-collapse collapse show"
+         data-bs-parent="#accordionInformationsCards"
+    >
+        <?php require __DIR__ . "/Component/Pages/studentProfile/studentInformationsCards.php"; ?>
+    </div>
+</div>
+
 <div class="card-md p-md-3 flex-fill d-flex flex-column"
      style="min-height:0">
 
@@ -115,7 +140,7 @@ use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
 
                 <div class="d-flex flex-column h-100 p-3" style="min-height:0">
 
-                    <?php require __DIR__ . "/Component/formJustification.php"; ?>
+                    <?php require __DIR__ . "/Component/Pages/studentProfile/formJustification.php"; ?>
 
                 </div>
 
@@ -159,6 +184,10 @@ use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
         </button>
     <?php endif; ?>
 </div>
+
+<?php
+require __DIR__ . "/Component/Modal/modalRule.php";
+?>
 
 <script>
     const STUDENT_ID = <?= $student->getIdAccount() ?>;
