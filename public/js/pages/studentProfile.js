@@ -22,7 +22,10 @@ async function loadAbsences(query = "") {
     showLoader(container);
 
     try {
-        absencesData = await fetchAbsences(query);
+        const base = `idStudent=${STUDENT_ID}`;
+        const finalQuery = query ? `${base}&${query}` : base;
+
+        absencesData = await fetchAbsences(finalQuery);
         renderAbsences(container, absencesData);
     } catch (error) {
         console.error(error);
@@ -47,7 +50,10 @@ async function loadJustifications(query = "") {
     showLoader(container);
 
     try {
-        justificationsData = await fetchJustifications(query);
+        const base = `filters[idStudent]=${STUDENT_ID}`;
+        const finalQuery = query ? `${base}&${query}` : base;
+
+        justificationsData = await fetchJustifications(finalQuery);
         renderJustifications(container, justificationsData);
     } catch (error) {
         console.error(error);

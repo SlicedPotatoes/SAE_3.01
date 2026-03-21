@@ -1,7 +1,7 @@
 import { fetchAPI } from "../../core/api.js";
 
 export function fetchAbsences(query = "") {
-    const url = query ? "api/absences?" + query : "api/absences";
+    const url = query ? "/api/absences?" + query : "/api/absences";
     return fetchAPI(url);
 }
 

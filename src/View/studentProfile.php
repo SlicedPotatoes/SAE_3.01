@@ -8,6 +8,13 @@ use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
 
 ?>
 
+<?php if (AuthManager::isRole(AccountType::EducationalManager)) : ?>
+    <p class="h3 mb-0 text-center text-md-start">
+        Profile de
+        <span class='text-uphf fw-bold'> <?= $student->getFirstName() . ' ' . $student->getLastName() ?> </span>
+    </p>
+<?php endif; ?>
+
 <div class="card-md p-md-3 flex-fill d-flex flex-column"
      style="min-height:0">
 
@@ -153,4 +160,7 @@ use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
     <?php endif; ?>
 </div>
 
+<script>
+    const STUDENT_ID = <?= $student->getIdAccount() ?>;
+</script>
 <script type="module" src="/js/pages/studentProfile.js"></script>

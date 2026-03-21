@@ -18,6 +18,7 @@ class Renderer {
      * @return void
      */
     public static function render(string $view, string $title, array $data = [], string $layout = 'main.php'): void {
+        extract($data);
         ob_start();
         require Renderer::$viewsDirectory . $view;
         $content = ob_get_clean();

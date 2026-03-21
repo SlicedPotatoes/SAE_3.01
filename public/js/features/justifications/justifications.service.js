@@ -1,8 +1,8 @@
 import { fetchAPI } from "../../core/api.js";
 
 export function fetchJustifications(query = "") {
-    const url = query ? "api/justifications?" + query : "api/justifications";
-    return fetchAPI(url)
+    const url = query ? "/api/justifications?" + query : "/api/justifications";
+    return fetchAPI(url);
 }
 
 export function fetchJustificationsToDo() {
