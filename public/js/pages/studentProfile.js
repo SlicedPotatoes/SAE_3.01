@@ -4,7 +4,7 @@ import { fetchJustifications } from "../features/justifications/justifications.s
 import { renderAbsences } from "../features/absences/absences.renderer.js";
 import { renderJustifications } from "../features/justifications/justifications.renderer.js";
 
-import { isMobile } from "../core/utils.js";
+import { isMobile, showLoader } from "../core/utils.js";
 
 // Variables de caches pour les fetchs de l'api
 let absencesData = [];
@@ -58,23 +58,6 @@ async function loadJustifications(query = "") {
             </div>
         `;
     }
-}
-
-/**
- * Permet d'afficher le loader
- * Utiliser lors du chargement des données pour permettre un feedback utilisateur
- *
- * @param container
- */
-function showLoader(container) {
-    container.innerHTML = `
-        <div class="d-flex justify-content-center align-items-center h-100">
-            <div class="spinner-border"
-                 style="width: 3.5rem; height: 3.5rem;"
-                 role="status">
-            </div>
-        </div>
-    `;
 }
 
 /**

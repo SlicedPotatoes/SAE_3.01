@@ -115,3 +115,20 @@ export function translateLabelState(state) {
             return state;
     }
 }
+
+/**
+ * Permet d'afficher le loader
+ * Utiliser lors du chargement des données pour permettre un feedback utilisateur
+ *
+ * @param container
+ */
+export function showLoader(container) {
+    container.innerHTML = `
+        <div class="d-flex justify-content-center align-items-center h-100">
+            <div class="spinner-border"
+                 style="width: 3.5rem; height: 3.5rem;"
+                 role="status">
+            </div>
+        </div>
+    `;
+}

@@ -2,6 +2,10 @@
 /**
  * Page du "dashboard étudiant", permettant d'observer les absences et justificatifs d'un étudiant
  */
+
+use Uphf\GestionAbsence\Model\AuthManager;
+use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
+
 ?>
 
 <div class="card-md p-md-3 flex-fill d-flex flex-column"
@@ -39,7 +43,17 @@
         </li>
 
         <li class="ms-auto">
-            <?php require __DIR__ . "/../ViewOLD/Composants/Modal/modalJustificationAbsence.php"; ?>
+            <?php if (AuthManager::isRole(AccountType::Student)) : ?>
+                <button
+                        class="nav-link rounded-bottom-0 btn btn-uphf"
+                        id="add-tab"
+                        data-bs-toggle="tab"
+                        data-bs-target="#add-tab-pane"
+                        type="button"
+                        role="tab">
+                    Déposer un justficatif
+                </button>
+            <?php endif; ?>
         </li>
     </ul>
 
@@ -83,16 +97,26 @@
                      style="min-height:0">
                     Chargement de données...
                 </div>
+            </div>
+        </div>
+
+        <!-- TAB JUSTIFIER UNE ABSENCE -->
+        <?php if (AuthManager::isRole(AccountType::Student)) : ?>
+            <div class="tab-pane fade h-100"
+                 id="add-tab-pane"
+                 role="tabpanel">
+
+                <div class="d-flex flex-column h-100 p-3" style="min-height:0">
+
+                    <?php require __DIR__ . "/Component/formJustification.php"; ?>
+
+                </div>
 
             </div>
-
-        </div>
+        <?php endif; ?>
 
     </div>
 </div>
-
-<?php require __DIR__ . "/../ViewOLD/Composants/Modal/modalRule.php"; ?>
-
 
 <div class="mobile-bottom-nav d-md-none" role="tablist">
 
@@ -116,13 +140,17 @@
         <span>Absences</span>
     </button>
 
-    <button class="btn-nav"
-            data-bs-toggle="modal"
-            data-bs-target="#modalJustificationAbsence"
-            type="button">
-        <i class="bi bi-file-earmark-plus-fill fs-3"></i>
-        <span>Ajouter</span>
-    </button>
+    <?php if (AuthManager::isRole(AccountType::Student)) : ?>
+        <button class="btn-nav"
+                id="add-tab-mobile"
+                data-bs-toggle="tab"
+                data-bs-target="#add-tab-pane"
+                type="button"
+                role="tab">
+            <i class="bi bi-file-earmark-plus-fill fs-3"></i>
+            <span>Ajouter</span>
+        </button>
+    <?php endif; ?>
 </div>
 
 <script type="module" src="/js/pages/studentProfile.js"></script>
