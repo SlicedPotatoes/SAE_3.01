@@ -124,10 +124,7 @@ formJustification.addEventListener('submit', async (e) => {
         window.location.reload();
 
     } catch (error) {
-        console.error("REAL ERROR:", error);
-
+        console.error("ERROR:", error);
         container.innerHTML = originalContent;
-
-        alert("Erreur lors de l'envoi");
     }
 });

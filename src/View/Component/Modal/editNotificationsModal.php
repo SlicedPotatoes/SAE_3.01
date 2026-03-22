@@ -9,19 +9,19 @@ use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
 
 ?>
 
-<div class="modal fade" id="EditNotificationModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+<div class="modal fade" id="EditNotificationModal" tabindex="-1" aria-labelledby="EditNotificationModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="logoutModalLabel">Gérer les notifications par mail</h1>
+                <h1 class="modal-title fs-5" id="EditNotificationModalLabel">Gérer les notifications par mail</h1>
                 <!-- Bouton pour quitter le modal, pour plus de clarité pour l'user -->
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
             <!-- Cela permet de pouvoir rediger vers la bonne page par rapport au type de comte -->
             <form method="post"
-                  action="/changement-notification-<?php if (AuthManager::isRole(AccountType::EducationalManager)) echo 'rp';
-                            elseif (AuthManager::isRole(AccountType::Teacher)) echo 'enseignant';?>">
+                  id="EditNotificationForm"
+            >
             <div class="modal-body">
                 <div class="form-switch mb-2">
                     <input class="form-check-input"
@@ -56,10 +56,14 @@ use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
                 <!-- Encore un bouton pour quitter le modal, pour plus de clarité pour l'user -->
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
                 <!-- button pour submit le formulaire -->
-                <button type="submit" class="btn btn-primary btn-uphf">Enregistrer</button>
+                <button id="editNotifSubmit"
+                        type="submit"
+                        class="btn btn-primary btn-uphf">Enregistrer</button>
             </div>
 
             </form>
         </div>
     </div>
 </div>
+
+<script type="module" src="/js/pages/editNotificationsModal.js"></script>
