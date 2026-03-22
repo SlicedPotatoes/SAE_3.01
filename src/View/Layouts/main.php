@@ -1,3 +1,8 @@
+<?php
+
+use Uphf\GestionAbsence\Utils\Renderer;
+
+?>
 <!doctype html>
 <html lang="fr">
 <head>
@@ -11,6 +16,7 @@
     <link rel="stylesheet" href="/style/bootstrap.min.css">
     <link rel="stylesheet" href="/style/bootstrap-icons.min.css">
     <link rel="stylesheet" href="/style/style.css">
+    <?= implode('', Renderer::$assets['head'] ?? []) ?>
 </head>
 <body class="bg-light d-flex flex-column gap-3">
 <?php
@@ -27,5 +33,6 @@ require __DIR__ . "/../Component/Notification/notificationContainer.php";
 <script src="/script/bootstrap.bundle.min.js"></script>
 <script type="module" src="/js/core/notifications.js"></script>
 <script src="/script/tooltip.js"></script>
+<?= implode('', Renderer::$assets['script'] ?? []) ?>
 </body>
 </html>

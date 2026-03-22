@@ -7,6 +7,27 @@ namespace Uphf\GestionAbsence\Utils;
  */
 class Renderer {
     private static string $viewsDirectory = __DIR__ . '/../View/';
+    public static array $assets;
+
+    /**
+     * Permet d'injecter un asset dans le layout
+     *
+     * Cas d'utilisation :
+     * Une view a besoin d'un script js / style css spécifique, qui n'est pas commun à toutes les pages
+     *
+     * Utilisation pour JS :
+     * Renderer::pushAsset('script', '<script src="/script/mon-script.js"></script>');
+     *
+     * Utilisation pour CSS :
+     * Renderer::pushAsset('head', '<link rel="stylesheet" href="/style/mon-style.css">');
+     *
+     * @param string $type head ou script
+     * @param string $content balise a injecter dans le layout
+     * @return void
+     */
+    public static function pushAsset(string $type, string $content): void {
+        self::$assets[$type][] = $content;
+    }
 
     /**
      * Permet le rendu d'une view
