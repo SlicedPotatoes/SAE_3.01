@@ -25,7 +25,7 @@ require __DIR__ . "/../Component/Notification/notificationContainer.php";
 <?php require __DIR__ . "/../Component/footer.php"; ?>
 
 <script src="/script/bootstrap.bundle.min.js"></script>
-<script src="/script/alert.js"></script>
+<script type="module" src="/js/core/notifications.js"></script>
 <script src="/script/tooltip.js"></script>
 </body>
 </html>
