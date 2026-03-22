@@ -1,4 +1,7 @@
-<?php $prefix = $prefix ?? "proof"; ?>
+<?php
+$prefix = $prefix ?? "proof";
+$showStateFilter = $showStateFilter ?? false;
+?>
 
 <form class="border-bottom px-4 m-0">
 
@@ -20,6 +23,7 @@
             <!-- Filtre des dates -->
             <?php require "filterDateRange.php"; ?>
 
+            <?php if ($showStateFilter): ?>
             <div class="col-12 col-lg-auto">
                 <label for="<?= $prefix ?>State" class="form-label">État</label>
 
@@ -35,12 +39,14 @@
                     <?php endforeach; ?>
                 </select>
             </div>
+            <?php endif; ?>
 
             <div class="col-12 col-lg-auto ms-lg-auto">
                 <button
                         class="apply-filters btn btn-uphf w-100 w-lg-auto"
                         type="button"
-                        data-target="justification" >
+                        data-target="justification"
+                        data-tab="<?= $prefix ?>">
                     Appliquer les filtres
                 </button>
             </div>

@@ -5,10 +5,12 @@ export function fetchJustifications(query = "") {
     return fetchAPI(url);
 }
 
-export function fetchJustificationsToDo() {
-    return fetchAPI("api/justifications?status=todo");
+export function fetchJustificationsToDo(query = "") {
+    const url = query ? "/api/justifications?filters[state]=NotProcessed&" + query : "/api/justifications?filters[state]=NotProcessed";
+    return fetchAPI(url);
 }
 
-export function fetchJustificationsDone() {
-    return fetchAPI("api/justifications?status=done");
+export function fetchJustificationsDone(query = "") {
+    const url = query ? "/api/justifications?filters[state]=Processed&" + query : "/api/justifications?filters[state]=Processed";
+    return fetchAPI(url);
 }

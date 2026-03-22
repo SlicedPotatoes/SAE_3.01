@@ -101,7 +101,10 @@ use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
             <div class="d-flex flex-column h-100"
                  style="min-height:0">
 
-                <?php require __DIR__ . "/Component/filters/filterJustification.php"; ?>
+                <?php
+                $showStateFilter = true;
+                require __DIR__ . "/Component/filters/filterJustification.php";
+                ?>
 
                 <div id="justificationContainer"
                      class="flex-fill overflow-y-auto"

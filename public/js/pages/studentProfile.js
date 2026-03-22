@@ -112,7 +112,7 @@ function applyJustificationFilters() {
 
     if (dateStart) params.append("filters[dateStart]", dateStart);
     if (dateEnd) params.append("filters[dateEnd]", dateEnd);
-    if (state) params.append("filters[currentState]", state);
+    if (state) params.append("filters[state]", state);
 
     loadJustifications(params.toString());
 }
