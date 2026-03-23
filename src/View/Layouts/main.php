@@ -20,6 +20,7 @@ use Uphf\GestionAbsence\Utils\Renderer;
 </head>
 <body class="bg-light d-flex flex-column gap-3">
 <?php
+require __DIR__ . '/../Component/fullScreenLoader.html';
 require __DIR__ . '/../Component/Navbar/navbar.php';
 require __DIR__ . "/../Component/Notification/notificationContainer.php";
 ?>

@@ -22,6 +22,19 @@
       background: var(--color-uphf-disabled) !important;
     }
 }
+.btn-outline-uphf {
+    --bs-btn-color: var(--color-uphf);
+    --bs-btn-border-color: var(--color-uphf);
+    --bs-btn-hover-color: #ffffff;
+    --bs-btn-hover-bg: var(--color-uphf-hover);
+    --bs-btn-hover-border-color: var(--color-uphf-hover);
+    --bs-btn-active-color: #ffffff;
+    --bs-btn-active-bg: var(--color-uphf-active);
+    --bs-btn-active-border-color: var(--color-uphf-active);
+    --bs-btn-disabled-color: var(--color-uphf);
+    --bs-btn-disabled-bg: transparent;
+    --bs-btn-disabled-border-color: var(--color-uphf);
+}
 
 .border-uphf {
   border: 2px solid var(--color-uphf);
@@ -126,6 +139,9 @@
 .justify-text {
   text-align: justify;
 }
+.w-fit-content {
+    width: fit-content!important;
+}
 
 /* main layout */
 html, body {
@@ -144,6 +160,20 @@ html, body {
     overflow: auto;
 }
 
+.scrollable, .scroll-shadows {
+    /* Système de shadow sur les containers qui scroll, récupérer sur css-tricks https://css-tricks.com/books/greatest-css-tricks/scroll-shadows/ */
+
+    background:
+            linear-gradient(white 30%, rgba(255, 255, 255, 0)) center top,
+            linear-gradient(rgba(255, 255, 255, 0), white 70%) center bottom,
+            radial-gradient(farthest-side at 50% 0, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0)) center top,
+            radial-gradient(farthest-side at 50% 100%, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0)) center bottom;
+
+    background-repeat: no-repeat;
+    background-size: 100% 40px, 100% 40px, 100% 14px, 100% 14px;
+    background-attachment: local, local, scroll, scroll;
+}
+
 @media (max-width: 991px) {
     html, body {
         height: auto;
@@ -153,4 +183,71 @@ html, body {
     .scrollable {
         overflow: visible;
     }
+}
+
+/* slides dot pagination */
+.pagination-dots {
+    display: flex;
+    gap: 0.25rem;
+    justify-content: center;
+}
+
+.dot {
+    width: 10px;
+    height: 10px;
+    background-color: #b9b9b9;
+    border-radius: 50%;
+}
+
+.dot.active {
+    background-color: #000000;
+}
+
+/* detail-justification */
+@media (min-width: 991px) {
+    .detail-justification-fixed-height {
+        max-height: 220px;
+    }
+}
+
+/* table-like */
+.table-like .row-content > * {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem;
+    border-top: 1px solid var(--bs-border-color);
+    border-left: 1px solid var(--bs-border-color);
+    background-color: var(--bs-table-bg);
+}
+.table-like .row-content:last-child > * {
+    border-bottom: 1px solid var(--bs-border-color);
+}
+.table-like .row-content > *:last-child {
+    border-right: 1px solid var(--bs-border-color);
+}
+
+.table-like .row-content {
+    display: contents;
+}
+@media(min-width: 992px) {
+    .table-like {
+        display: grid;
+        grid-auto-rows: min-content;
+    }
+}
+@media(max-width: 991px) {
+    .table-like {
+        display: none;
+    }
+}
+
+/* FullScreen loader */
+#full-screen-loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6); /* assombrissement */
+    z-index: 9999;
 }
