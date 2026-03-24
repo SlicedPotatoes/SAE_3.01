@@ -43,7 +43,7 @@ class JustificationController
         );
 
         Renderer::render(
-            '../ViewOLD/justificationList.php',
+            '/justificationDashboard.php',
             'Liste des justifications',
             [
                 'listToDo' => $justificationsToDo,

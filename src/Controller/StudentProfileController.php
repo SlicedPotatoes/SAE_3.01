@@ -48,7 +48,7 @@ class StudentProfileController
                 ];
 
                 Renderer::render(
-                    '../ViewOLD/studentProfile.php',
+                    'studentProfile.php',
                     'Profil étudiant',
                     [
                         'student' => $student,
