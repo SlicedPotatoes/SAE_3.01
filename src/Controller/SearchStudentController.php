@@ -25,7 +25,7 @@ class SearchStudentController {
         $groupsStudent = GroupService::selectAllGroup();
 
         Renderer::render(
-            '../ViewOLD/searchStudent.php',
+            '../View/searchStudent.php',
             'Recherche étudiant',
             [
                 'students' => $students,
