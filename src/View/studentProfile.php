@@ -4,6 +4,7 @@
  */
 
 use Uphf\GestionAbsence\Model\AuthManager;
+use Uphf\GestionAbsence\Model\CookieManager;
 use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
 
 ?>
@@ -33,7 +34,7 @@ use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
     </div>
 
     <div id="collapseOne"
-         class="accordion-collapse collapse show"
+         class="accordion-collapse collapse <?= CookieManager::getCardOpen() ? 'show' : '' ?>""
          data-bs-parent="#accordionInformationsCards"
     >
         <?php require __DIR__ . "/Component/Pages/studentProfile/studentInformationsCards.php"; ?>

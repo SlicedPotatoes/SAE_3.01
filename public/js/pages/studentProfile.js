@@ -129,6 +129,15 @@ function initEvents() {
         btn.addEventListener("click", () => {
             navButtons.forEach(b => b.classList.remove("active"));
             btn.classList.add("active");
+
+            const target = btn.getAttribute("data-bs-target");
+
+            const desktopTab = document.querySelector(`.nav-tabs [data-bs-target="${target}"]`);
+
+            if (desktopTab) {
+                const tabInstance = new bootstrap.Tab(desktopTab);
+                tabInstance.show();
+            }
         });
     });
 
