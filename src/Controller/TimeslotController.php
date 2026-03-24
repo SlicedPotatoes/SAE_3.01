@@ -21,7 +21,7 @@ class TimeslotController
      */
     public static function showDetailTimeslot(array $params): void
     {
-        $time = DateTime::createFromFormat('Y-m-d-H-i', $params['datetime']);
+        $time = DateTime::createFromFormat('Y-m-d H:i:s', $params['datetime']);
         $resourceId = (int)$params['idRessource'];
         $teacherId = (int)$params['idTeacher'];
         $group = ($params['group'] === 'nogroup' || $params['group'] === null) ? null : urldecode($params['group']);
