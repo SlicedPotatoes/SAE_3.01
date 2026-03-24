@@ -32,7 +32,7 @@ class ChangePasswordController {
      */
     public static function showConnectedChangePassword(): void {
         Renderer::render(
-            '../ViewOLD/changePassword.php',
+            'changePassword.php',
             'Changer le mot de passe',
             ['haveToken' => false]
         );
@@ -67,7 +67,7 @@ class ChangePasswordController {
         }
 
         Renderer::render(
-            '../ViewOLD/changePassword.php',
+            'changePassword.php',
             'Changer le mot de passe',
             ['haveToken' => false]
         );
@@ -80,7 +80,7 @@ class ChangePasswordController {
      */
     public static function showLostPassword(): void {
         Renderer::render(
-            '../ViewOLD/PasswordLost.php',
+            'PasswordLost.php',
             'Mot de passe oublié',
         );
     }
@@ -107,7 +107,7 @@ class ChangePasswordController {
         Notification::addNotification($notificationType, $message);
 
         Renderer::render(
-            '../ViewOLD/PasswordLost.php',
+            'PasswordLost.php',
             'Mot de passe oublié',
         );
     }
@@ -128,7 +128,7 @@ class ChangePasswordController {
         }
 
         Renderer::render(
-            '../ViewOLD/changePassword.php',
+            'changePassword.php',
             'Changer le mot de passe',
             ['haveToken' => true]
         );
@@ -170,7 +170,7 @@ class ChangePasswordController {
         }
 
         Renderer::render(
-            '../ViewOLD/changePassword.php',
+            'changePassword.php',
             'Changer le mot de passe',
             ['haveToken' => true]
         );
