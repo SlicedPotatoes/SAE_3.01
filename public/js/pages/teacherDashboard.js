@@ -35,7 +35,7 @@ async function loadTimeSlots(query = "") {
 function applyFilters() {
     const dateStart = document.getElementById("timeslotDateStart")?.value;
     const dateEnd = document.getElementById("timeslotDateEnd")?.value;
-    const exam = document.getElementById("timeslotExam")?.checked;
+    const exam = document.getElementById("examFilter")?.checked;
 
     const params = new URLSearchParams();
 
