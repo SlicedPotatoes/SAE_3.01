@@ -128,7 +128,7 @@ class ChangePasswordController {
         }
 
         Renderer::render(
-            '../ViewOLD/changePassword.php',
+            'changePassword.php',
             'Changer le mot de passe',
             ['haveToken' => true]
         );
@@ -170,7 +170,7 @@ class ChangePasswordController {
         }
 
         Renderer::render(
-            '../ViewOLD/changePassword.php',
+            'changePassword.php',
             'Changer le mot de passe',
             ['haveToken' => true]
         );

@@ -1,9 +1,7 @@
-<!-- Conteneur principal avec marges pour le burger menu -->
-<div class="container-fluid scroll-parent d-md-flex align-items-md-center justify-content-center pt-5 pb-4 mt-5 main-content-wrapper" style="min-height: 100vh;">
-    <div class="row w-100 justify-content-center scroll-parent">
+<div class="container-fluid scroll-parent d-md-flex align-items-md-center justify-content-center pb-4 mt-3 main-content-wrapper">
+    <div class="row justify-content-center g-0 shadow-sm w-100 rounded overflow-hidden">
 
-        <!-- Formulaire : On utilise la couleur blanche et les ombres Bootstrap -->
-        <div class="col-12 col-md-8 col-lg-6 col-xl-5 p-0 shadow-sm rounded-start bg-white scrollable">
+        <div class="col-12 col-lg-7 bg-white p-3 scrollable">
             <div class="p-4">
                 <h5 class="mb-3">Prérequis pour le mot de passe :</h5>
 
@@ -17,7 +15,6 @@
                     <li id="req-match">Les mots de passe doivent correspondre</li>
                 </ul>
 
-                <!-- Alerte avec la variable de couleur d'origine -->
                 <div id="alertModifMDP" class="card border-0 p-2 mb-3 small" style="background: var(--bs-danger-border-subtle)" role="alert">
                     Le mot de passe ne respecte pas tous les prérequis.
                 </div>
@@ -48,8 +45,7 @@
             </div>
         </div>
 
-        <!-- Partie décorative avec ta classe card-uphf -->
-        <div class="d-none d-lg-block col-lg-3 col-xl-2 rounded-end card-uphf p-0"></div>
+        <div class="d-none d-lg-block col-lg-4 card-uphf rounded-end"></div>
 
     </div>
 </div>
