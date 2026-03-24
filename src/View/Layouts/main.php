@@ -18,14 +18,14 @@ use Uphf\GestionAbsence\Utils\Renderer;
     <link rel="stylesheet" href="/style/style.css">
     <?= implode('', Renderer::$assets['head'] ?? []) ?>
 </head>
-<body class="bg-light d-flex flex-column gap-3">
+<body class="bg-light d-flex flex-column gap-2 gap-md-3">
 <?php
 require __DIR__ . '/../Component/fullScreenLoader.html';
 require __DIR__ . '/../Component/Navbar/navbar.php';
 require __DIR__ . "/../Component/Notification/notificationContainer.php";
 ?>
 
-<div class="container scroll-parent gap-3 px-3 px-md-4 px-lg-5">
+<div class="container scroll-parent gap-3 px-0 px-md-4 px-lg-5">
     <?= $content ?>
 </div>
 

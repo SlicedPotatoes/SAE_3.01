@@ -86,7 +86,7 @@ class TimeslotController
         );
 
         Renderer::render(
-            '../ViewOLD/teacherHome.php',
+            '/teacherDashboard.php',
             "Tableau de bord Professeur",
             ['timeslots' => $timeslots]
         );

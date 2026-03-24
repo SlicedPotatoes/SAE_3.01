@@ -3,7 +3,8 @@ use Uphf\GestionAbsence\Model\AuthManager;
 use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
 ?>
 
-<footer class="container-fluid bg-white py-3 border-top">
+<footer class="container-fluid bg-white py-3 border-top"
+        id="footer">
     <div class="row align-items-center gy-1">
         <div class="col-lg-5">
             <p class="mb-0">Application interne de l'IUT de Maubeuge<br>

@@ -116,3 +116,6 @@ Content-Type: application/json
   },
   "rejectionReason": "Méchant"
 }
+
+### Récupérer les justificatifs d'un étudiant par numéro étudiant
+GET http://localhost/api/justifications?filters[idStudent]=2

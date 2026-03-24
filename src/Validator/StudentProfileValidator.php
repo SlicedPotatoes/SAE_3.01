@@ -30,6 +30,14 @@ class StudentProfileValidator {
      * @throws Exception Dans le cas d'une demande du RP, sans précision de l'idStudent
      */
     public static function validationGetAbsences(array &$data): void {
+        if (isset($data['examen'])) {
+            $data['examen'] = filter_var($data['examen'], FILTER_VALIDATE_BOOLEAN);
+        }
+
+        if (isset($data['lock'])) {
+            $data['lock'] = filter_var($data['lock'], FILTER_VALIDATE_BOOLEAN);
+        }
+
         $validator = v::key('startDate', v::date('Y-m-d'), false)
             ->key('endDate', v::date('Y-m-d'), false)
             ->key('state', v::in(['Validated', 'Refused', 'NotJustified', 'Pending']), false)
