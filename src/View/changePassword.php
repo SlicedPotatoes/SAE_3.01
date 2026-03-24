@@ -5,8 +5,8 @@ use Uphf\GestionAbsence\Utils\Renderer;
 Renderer::pushAsset('script', '<script type="module" src="/js/pages/changePassword.js"></script>');
 ?>
 
-<div class="row justify-content-center my-auto">
-    <div class="col-12 col-lg-7 card p-3 rounded-end-0 flex-fill">
+<div class="m-0 row justify-content-center my-auto">
+    <div class="col-12 col-lg-7 card p-3 rounded-end-0">
         <div class="p-4">
             <h5 class="mb-3">Prérequis pour le mot de passe :</h5>
 
