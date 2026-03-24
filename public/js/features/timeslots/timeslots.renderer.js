@@ -10,39 +10,36 @@ import {
  *
  * Il gère version desktop et mobile
  */
-export function renderTimeSlots(container, data, options = {}) {
-    const {
-        emptyMessage = "Aucun créneau"
-    } = options;
-
+export function renderTimeSlots(container, data, showTeacher = false) {
     if (!data || data.length === 0) {
         container.innerHTML = `
             <div class="text-center p-3">
-                ${emptyMessage}
+                Aucun créneau
             </div>
         `;
         return;
     }
 
     if (isMobile()) {
-        renderMobile(container, data);
+        renderMobile(container, data, showTeacher);
     } else {
-        renderDesktop(container, data);
+        renderDesktop(container, data, showTeacher);
     }
 }
 
 /**
  * Fonction PRIVEE qui gère l'affichage sur Desktop
  */
-function renderDesktop(container, timeslots) {
+function renderDesktop(container, timeslots, showTeacher) {
     let html = `
         <table id="timeslotTable" 
-        class="table table-hover align-middle pointer">
+        class="table table-hover align-middle">
             <thead class="table-light">
                 <tr>
                     <th>Date</th>
-                    <th>Heure</th>
-                    <th>Durée</th>
+                    <th>Ressource</th>
+                    <th>Groupe</th>
+                    ${showTeacher ? "<th>Professeur</th>" : ""}
                     <th>Absences</th>
                     <th>Justifiées</th>
                     <th>Examen</th>
@@ -54,14 +51,16 @@ function renderDesktop(container, timeslots) {
 
     timeslots.forEach((slot, index) => {
         html += `
-            <tr class="cursor-pointer"
-                data-bs-toggle="collapse"
-                data-bs-target="#slot-detail-${index}">
+            <tr data-bs-target="#slot-detail-${index}">
+            
+                <td>${formatDate(slot.time)} à ${formatTime(slot.time)}</td>
 
-                <td>${formatDate(slot.time)}</td>
-                <td>${formatTime(slot.time)}</td>
-                <td>${formatDuration(slot.duration)}</td>
-
+                <td> ${slot.resource?.label || ""} ${slot.courseType || ""} </td>
+            
+                <td> ${slot.group || "Non renseigné"} </td>
+                
+            ${showTeacher ? `<td>${slot.teacher?.firstName ? slot.teacher.firstName + " " + slot.teacher.lastName : "Non renseigné"}</td>` : ""}
+            
                 <td>
                     <span class="badge text-bg-danger">
                         ${slot.countStudentsAbsences}
@@ -85,42 +84,6 @@ function renderDesktop(container, timeslots) {
                     </a>
                 </td>
             </tr>
-
-            <tr class="bg-light">
-                <td colspan="7" class="p-0">
-
-                    <div class="collapse"
-                         data-bs-parent="#timeslotTable"
-                         id="slot-detail-${index}">
-
-                        <div class="p-2">
-
-                            <p class="mb-1">
-                                <strong>Professeur :</strong>
-                                ${slot.teacher?.firstName ? slot.teacher.firstName + " " + slot.teacher.lastName : "Non renseigné"}
-                            </p>
-
-                            <p class="mb-1">
-                                <strong>Ressource :</strong>
-                                ${slot.resource?.label || "Non renseigné"}
-                            </p>
-
-                            <p class="mb-1">
-                                <strong>Type de cours :</strong>
-                                ${slot.courseType || "Non renseigné"}
-                            </p>
-
-                            <p class="mb-0">
-                                <strong>Groupe :</strong>
-                                ${slot.group || "Non renseigné"}
-                            </p>
-
-                        </div>
-
-                    </div>
-
-                </td>
-            </tr>
         `;
     });
 
@@ -131,7 +94,7 @@ function renderDesktop(container, timeslots) {
 /**
  * Fonction PRIVEE qui gère l'affichage sur Mobile
  */
-function renderMobile(container, timeslots) {
+function renderMobile(container, timeslots, showTeacher) {
     let html = `<div class="d-flex flex-column gap-3 px-2 mt-2">`;
 
     timeslots.forEach(slot => {
@@ -164,10 +127,8 @@ function renderMobile(container, timeslots) {
 
                     <div class="small">
 
-                        <div>
-                            <strong>Professeur :</strong>
-                            ${slot.teacher?.firstName ? slot.teacher.firstName + " " + slot.teacher.lastName : "Non renseigné"}
-                        </div>
+                        ${showTeacher ? `<div><strong>Professeur :</strong>${slot.teacher?.firstName ? slot.teacher.firstName + " " + slot.teacher.lastName : "Non renseigné"}</div>`
+                        : ""}
 
                         <div>
                             <strong>Ressource :</strong>

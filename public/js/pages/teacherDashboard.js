@@ -19,9 +19,7 @@ async function loadTimeSlots(query = "") {
     try {
         timeslotsData = await fetchTimeSlots(query);
 
-        renderTimeSlots(container, timeslotsData, {
-            emptyMessage: "Aucun créneau"
-        });
+        renderTimeSlots(container, timeslotsData, false);
 
     } catch (error) {
         console.error(error);
