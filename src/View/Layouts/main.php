@@ -18,7 +18,7 @@ use Uphf\GestionAbsence\Utils\Renderer;
     <link rel="stylesheet" href="/style/style.css">
     <?= implode('', Renderer::$assets['head'] ?? []) ?>
 </head>
-<body class="bg-light d-flex flex-column gap-2 gap-md-3">
+<body class="bg-light scroll-parent gap-2 gap-md-3">
 <?php
 require __DIR__ . '/../Component/fullScreenLoader.html';
 require __DIR__ . '/../Component/Navbar/navbar.php';
