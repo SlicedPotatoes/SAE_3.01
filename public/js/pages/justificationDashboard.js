@@ -1,7 +1,7 @@
 import {fetchJustificationsToDo, fetchJustificationsDone } from "../features/justifications/justifications.service.js";
 
 import { renderJustifications } from "../features/justifications/justifications.renderer.js";
-import { isMobile, showLoader } from "../core/utils.js";
+import { isMobile, showLoader, fixFooterMobile } from "../core/utils.js";
 
 // Variables de caches pour les fetchs de l'api
 let justificationsToDoData = [];
@@ -144,6 +144,9 @@ function initResizeHandler() {
                 justificationsDoneData,
                 { showStudent: true }
             );
+
+            fixFooterMobile();
+
         }, 150);
     });
 }
@@ -152,6 +155,8 @@ function initResizeHandler() {
  * Initialisation global pour la page
  */
 document.addEventListener("DOMContentLoaded", () => {
+    fixFooterMobile();
+
     initEvents();
     initResizeHandler();
 

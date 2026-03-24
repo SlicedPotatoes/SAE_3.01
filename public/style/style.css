@@ -290,7 +290,7 @@ html, body {
 }
 
 .btn-nav.active {
-    color: #0d6efd;
+    color: var(--color-uphf);
     font-weight: 600;
 }
 
