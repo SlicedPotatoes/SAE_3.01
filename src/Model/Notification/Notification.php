@@ -10,7 +10,7 @@ use stdClass;
  * Utilisé dans le point d'entrée de l'application
  * pour afficher toutes les notifications faite par l'application à l'utilisateur.
  */
-class Notification {
+class Notification implements \JsonSerializable {
     private static array $arr = [];
     private static int $currId = 0;
     private int $id;
@@ -49,15 +49,14 @@ class Notification {
         return self::$arr;
     }
 
-    public function jsonSerialize() {
-        $json = new StdClass();
-        $json->type = $this->type->name;
-        $json->message = $this->message;
-
-        return $json;
+    public function jsonSerialize(): array {
+        return [
+            'type' => $this->type->name,
+            'message' => $this->message
+        ];
     }
 
-    public static function jsonSerializeStudent(): array {
+    public static function jsonSerializeAll(): array {
         $result = [];
 
         foreach (self::$arr as $notification) {

@@ -1,0 +1,21 @@
+/* Style pour la gestion des champs required d'un formulaire */
+
+/* Ajout d'un astérix rouge sur les labels des champs required */
+label.required::after {
+    content: " *";
+    color: var(--bs-danger);
+}
+
+/* Mise en avant des champs requis valide */
+input:required:valid,
+select:required:valid,
+textarea:required:valid {
+    border: 3px solid var(--bs-success);
+}
+
+/* Mise en avant des champs invalide */
+input:invalid,
+select:invalid,
+textarea:invalid {
+    border: 3px solid var(--bs-danger);
+}

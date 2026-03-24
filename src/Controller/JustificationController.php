@@ -67,7 +67,7 @@ class JustificationController
 
             // Un étudiant ne peut voir que ses propres justificatifs
             if (!AuthManager::isRole(AccountType::EducationalManager)
-                && JustificationService::isJustificationOwnedByStudent(AuthManager::getAccount(), $justification)) {
+                && !JustificationService::isJustificationOwnedByStudent(AuthManager::getAccount(), $justification)) {
                 throw new \Exception();
             }
 
@@ -80,16 +80,8 @@ class JustificationController
                 $comments = PredifinedCommentService::commentSelectorAll();
             }
 
-            /*
-            // DEBUG
-            if($_SERVER['REQUEST_METHOD'] === "POST") {
-                header('Content-Type: application/json; charset=utf-8');
-                echo json_encode($_POST);
-                exit();
-            }*/
-
             Renderer::render(
-                '../ViewOLD/detailJustification.php',
+                'DetailJustification/view.php',
                 'Détails de la justification',
                 [
                     'justification' => $justification,

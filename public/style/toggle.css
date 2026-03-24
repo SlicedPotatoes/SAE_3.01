@@ -1,0 +1,52 @@
+/* Base récupérer sur https://www.cssportal.com/css-flip-switch/ */
+.toggle {
+    --track-width: 120px;
+    --track-height: 38px;
+    --track-radius: var(--bs-border-radius);
+    --thumb-size: 30px;
+    --thumb-radius: calc(var(--bs-border-radius) - 2px);
+    --thumb-offset: 5px;
+    --track-bg-off: rgba(var(--bs-danger-rgb), 0.5);
+    --track-bg-on: rgba(var(--bs-success-rgb), 0.5);
+    --thumb-bg-off: #ffffff;
+    --thumb-bg-on: #ffffff;
+    --track-fontsize: 11px;
+    --anim-style: 0.3s ease;
+    --text-pos: 14px;
+    --txt-color-on: var(--bs-success-text-emphasis);
+    --txt-color-off: var(--bs-danger-text-emphasis);
+    display: inline-flex; align-items: center; cursor: pointer; position: relative;
+    -webkit-tap-highlight-color: transparent; user-select: none;
+}
+.toggle input { position: absolute; opacity: 0; width: 0; height: 0; }
+.track {
+    width: var(--track-width);
+    height: var(--track-height);
+    background: var(--track-bg-off);
+    border-radius: var(--track-radius);
+    position: relative;
+    transition: var(--anim-style);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 var(--text-pos);
+    box-sizing: border-box;
+}
+.thumb {
+    position: absolute;
+    width: var(--thumb-size);
+    height: var(--thumb-size);
+    background: var(--thumb-bg-off);
+    border-radius: var(--thumb-radius);
+    top: 50%;
+    left: var(--thumb-offset);
+    transform: translateY(-50%);
+    transition: var(--anim-style);
+}
+.lbl { font-size: var(--track-fontsize); font-family: sans-serif; transition: opacity var(--anim-style); font-weight: 800; }
+.on { color: var(--txt-color-on); opacity: 0; white-space: nowrap;}
+.off { color: var(--txt-color-off); opacity: 1; white-space: nowrap;}
+input:checked + .track { background: var(--track-bg-on); border-color: var(--track-b-color-on); }
+input:checked + .track .thumb { left: calc(100% - var(--thumb-size) - var(--thumb-offset)); background: var(--thumb-bg-on); border-color: var(--thumb-b-color-on); }
+input:checked + .track .on { opacity: 1; }
+input:checked + .track .off { opacity: 0; }
