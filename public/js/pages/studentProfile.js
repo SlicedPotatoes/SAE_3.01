@@ -23,7 +23,12 @@ async function loadAbsences(query = "") {
 
     try {
         const base = `idStudent=${STUDENT_ID}`;
-        const finalQuery = query ? `${base}&${query}` : base;
+        const params = new URLSearchParams(query);
+
+        params.append("orderOptions[columns][]", "time");
+        params.append("orderOptions[sortOrder]", "DESC");
+
+        const finalQuery = `${base}&${params.toString()}`;
 
         absencesData = await fetchAbsences(finalQuery);
         renderAbsences(container, absencesData);
@@ -51,7 +56,12 @@ async function loadJustifications(query = "") {
 
     try {
         const base = `filters[idStudent]=${STUDENT_ID}`;
-        const finalQuery = query ? `${base}&${query}` : base;
+        const params = new URLSearchParams(query);
+
+        params.append("orderOptions[columns][]", "senddate")
+        params.append("orderOptions[sortOrder]", "DESC")
+
+        const finalQuery = `${base}&${params.toString()}`;
 
         justificationsData = await fetchJustifications(finalQuery);
         renderJustifications(container, justificationsData);
@@ -98,6 +108,10 @@ function applyJustificationFilters() {
     if (dateStart) params.append("filters[dateStart]", dateStart);
     if (dateEnd) params.append("filters[dateEnd]", dateEnd);
     if (state) params.append("filters[state]", state);
+
+
+
+    console.log(params.toString())
 
     loadJustifications(params.toString());
 }

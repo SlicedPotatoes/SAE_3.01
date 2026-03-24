@@ -19,7 +19,12 @@ async function loadJustificationsToDo(query = "") {
     showLoader(container);
 
     try {
-        justificationsToDoData = await fetchJustificationsToDo(query);
+        const params = new URLSearchParams(query);
+
+        params.append("orderOptions[columns][]", "sendDate");
+        params.append("orderOptions[sortOrder]", "ASC");
+
+        justificationsToDoData = await fetchJustificationsToDo(params.toString());
 
         renderJustifications(container, justificationsToDoData, {
             showStudent: true,
@@ -41,7 +46,12 @@ async function loadJustificationsDone(query = "") {
     const container = document.getElementById("proofDoneContainer");
     showLoader(container);
     try {
-        justificationsDoneData = await fetchJustificationsDone(query);
+        const params = new URLSearchParams(query);
+
+        params.append("orderOptions[columns][]", "sendDate");
+        params.append("orderOptions[sortOrder]", "DESC");
+
+        justificationsDoneData = await fetchJustificationsDone(params.toString());
 
         renderJustifications(container, justificationsDoneData, {
             showStudent: true,

@@ -27,29 +27,10 @@ class JustificationController
      * @return void
      */
     public static function showJustificationList(): void {
-        $justificationsToDo = JustificationService::getJustificationsWithFilters(
-            ['state' => StateJustif::NotProcessed],
-            [
-                "columns" => ['sendDate'],
-                "sortOrder" => SortOrder::ASC
-            ]
-        );
-        $justificationsDone = JustificationService::getJustificationsWithFilters(
-            ['state' => StateJustif::Processed],
-            [
-                "columns" => ['sendDate'],
-                "sortOrder" => SortOrder::DESC
-            ]
-        );
-
         Renderer::render(
             '/justificationDashboard.php',
             'Liste des justifications',
-            [
-                'listToDo' => $justificationsToDo,
-                'listDone' => $justificationsDone,
-                'showState' => false
-            ]
+            []
         );
     }
 
