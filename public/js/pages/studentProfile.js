@@ -4,7 +4,7 @@ import { fetchJustifications } from "../features/justifications/justifications.s
 import { renderAbsences } from "../features/absences/absences.renderer.js";
 import { renderJustifications } from "../features/justifications/justifications.renderer.js";
 
-import { isMobile, showLoader } from "../core/utils.js";
+import { isMobile, showLoader, fixFooterMobile } from "../core/utils.js";
 
 // Variables de caches pour les fetchs de l'api
 let absencesData = [];
@@ -63,21 +63,6 @@ async function loadJustifications(query = "") {
                 Erreur lors du chargement des justificatifs
             </div>
         `;
-    }
-}
-
-/**
- * Permet de changer le footer sur mobile
- */
-function fixFooterMobile() {
-    const footer = document.getElementById("footer");
-
-    if (!footer) return;
-
-    if (window.innerWidth < 768) {
-        footer.style.setProperty("margin-bottom", "70px", "important");
-    } else {
-        footer.style.setProperty("margin-bottom", "0px", "important");
     }
 }
 

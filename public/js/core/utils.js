@@ -132,3 +132,18 @@ export function showLoader(container) {
         </div>
     `;
 }
+
+/**
+ * Permet de changer le footer sur mobile
+ */
+export function fixFooterMobile() {
+    const footer = document.getElementById("footer");
+
+    if (!footer) return;
+
+    if (window.innerWidth < 768) {
+        footer.style.setProperty("margin-bottom", "70px", "important");
+    } else {
+        footer.style.setProperty("margin-bottom", "0px", "important");
+    }
+}
