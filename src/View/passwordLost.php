@@ -1,5 +1,7 @@
-<div class="d-flex justify-content-center mx-auto my-auto overflow-hidden" style="max-width:900px;">
-    <div class="card border p-3 rounded-start-1 rounded-end-0" style="flex:1 1 540px; max-width:540px;">
+<!-- View formulaire du mot de passe oublié -->
+<div class="d-flex justify-content-center my-auto">
+
+    <div class="card p-md-3 rounded-start-1 rounded-end-0">
         <div class="card-body">
             <h5 class="card-title text-center mb-2">Récupération de mot de passe</h5>
             <p class="text-muted text-center mb-4">Entrez votre adresse mail UPHF pour recevoir un lien de réinitialisation.</p>
@@ -18,5 +20,6 @@
             </form>
         </div>
     </div>
+
     <div class="rounded-end-1 card-uphf d-none d-md-flex align-items-start justify-content-start" style="width: 30%; min-width:220px;"></div>
 </div>

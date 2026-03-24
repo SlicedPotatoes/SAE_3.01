@@ -51,7 +51,7 @@ class ChangePasswordController {
             Notification::addNotification(NotificationType::Success, "Votre mot de passe a bien été changé !");
         }
         catch (BadCredentialException $e) {
-            Notification::addNotification(NotificationType::Error, "Changement de mot de passe: L'ancien mot de passe ne correspond pas");
+            Notification::addNotification(NotificationType::Error, "L'ancien mot de passe ne correspond pas");
         }
         catch (NestedValidationException $e) {
             foreach ($e->getMessages() as $message) {
@@ -80,7 +80,7 @@ class ChangePasswordController {
      */
     public static function showLostPassword(): void {
         Renderer::render(
-            'PasswordLost.php',
+            'passwordLost.php',
             'Mot de passe oublié',
         );
     }
