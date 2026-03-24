@@ -8,7 +8,7 @@ import {
 } from "../../core/utils.js";
 
 /**
- * Fonction PUBLIC permettant de rander (afficher pour Kévin) le contener des absences
+ * Fonction PUBLIC permettant de render le contener des absences
  *
  * Il gère version desktop et mobile
  */
