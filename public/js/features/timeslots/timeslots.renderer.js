@@ -36,7 +36,8 @@ export function renderTimeSlots(container, data, options = {}) {
  */
 function renderDesktop(container, timeslots) {
     let html = `
-        <table id="timeslotTable" class="table table-hover align-middle">
+        <table id="timeslotTable" 
+        class="table table-hover align-middle pointer">
             <thead class="table-light">
                 <tr>
                     <th>Date</th>
@@ -45,6 +46,7 @@ function renderDesktop(container, timeslots) {
                     <th>Absences</th>
                     <th>Justifiées</th>
                     <th>Examen</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
@@ -75,10 +77,17 @@ function renderDesktop(container, timeslots) {
                 <td>
                     ${slot.examen ? `<span class="badge text-bg-warning">Examen</span>` : ""}
                 </td>
+                
+                <td>
+                    <a href="/absences-a-un-cours/${slot.teacher.idAccount}/${slot.resource.idResource}/${slot.group}/${slot.time}" 
+                    class="btn btn-uphf">
+                            Voir les détails
+                    </a>
+                </td>
             </tr>
 
             <tr class="bg-light">
-                <td colspan="6" class="p-0">
+                <td colspan="7" class="p-0">
 
                     <div class="collapse"
                          data-bs-parent="#timeslotTable"
@@ -173,6 +182,13 @@ function renderMobile(container, timeslots) {
                         <div>
                             <strong>Groupe :</strong>
                             ${slot.group || "Non renseigné"}
+                        </div>
+                        
+                        <div class="d-grid">
+                            <a href="/absences-a-un-cours/${slot.teacher.idAccount}/${slot.resource.idResource}/${slot.group}/${slot.time}" 
+                            class="btn btn-uphf">
+                                Voir les détails
+                            </a>
                         </div>
 
                     </div>

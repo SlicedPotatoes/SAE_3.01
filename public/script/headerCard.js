@@ -2,7 +2,7 @@
  * Script pour gérer le changement du cookie "cardOpen" a l'ouverture / fermeture des cards pour le profil étudiant
  */
 
-const headerCard = document.getElementById("showCard");
+const headerCard = document.getElementById("collapseOne");
 
 if(headerCard) {
     headerCard.addEventListener('show.bs.collapse', () => {

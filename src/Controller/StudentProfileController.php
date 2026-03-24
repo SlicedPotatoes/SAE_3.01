@@ -26,15 +26,6 @@ class StudentProfileController
                     $student = AccountService::getStudentAccount($studentId);
                 }
 
-                $absences = AbsenceService::absenceSelectService($studentId, []);
-                $justifications = JustificationService::getJustificationsWithFilters(
-                    ['idStudent' => $studentId],
-                    [
-                        "columns" => ['sendDate'],
-                        "sortOrder" => SortOrder::DESC
-                    ]
-                );
-
                 //TODO: FAIRE UN SERVICE POUR CA:
                 // Actuellement c'est des méthodes du model, les déplacés dans BDD
                 $studentAbsInfos = [
@@ -52,8 +43,6 @@ class StudentProfileController
                     'Profil étudiant',
                     [
                         'student' => $student,
-                        'absences' => $absences,
-                        'justifications' => $justifications,
                         'studentAbsInfos' => $studentAbsInfos
                     ]
                 );

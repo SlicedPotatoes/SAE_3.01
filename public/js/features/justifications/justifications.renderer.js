@@ -79,7 +79,7 @@ function renderDesktop(container, justifications, showStudent) {
                 </td>
 
                 <td class="text-center">
-                    <a href="/DetailJustification/${j.idJustification}"
+                    <a href="/detail-justification/${j.idJustification}"
                        class="btn btn-sm btn-uphf">
                         Voir les détails
                     </a>
@@ -136,7 +136,7 @@ function renderMobile(container, justifications, showStudent) {
                     </div>
 
                     <div class="d-grid">
-                        <a href="/DetailJustification/${j.idJustification}"
+                        <a href="/detail-justification/${j.idJustification}"
                            class="btn btn-uphf">
                             Voir les détails
                         </a>

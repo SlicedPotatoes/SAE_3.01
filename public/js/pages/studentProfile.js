@@ -4,7 +4,7 @@ import { fetchJustifications } from "../features/justifications/justifications.s
 import { renderAbsences } from "../features/absences/absences.renderer.js";
 import { renderJustifications } from "../features/justifications/justifications.renderer.js";
 
-import { isMobile, showLoader } from "../core/utils.js";
+import { isMobile, showLoader, fixFooterMobile } from "../core/utils.js";
 
 // Variables de caches pour les fetchs de l'api
 let absencesData = [];
@@ -23,7 +23,12 @@ async function loadAbsences(query = "") {
 
     try {
         const base = `idStudent=${STUDENT_ID}`;
-        const finalQuery = query ? `${base}&${query}` : base;
+        const params = new URLSearchParams(query);
+
+        params.append("orderOptions[columns][]", "time");
+        params.append("orderOptions[sortOrder]", "DESC");
+
+        const finalQuery = `${base}&${params.toString()}`;
 
         absencesData = await fetchAbsences(finalQuery);
         renderAbsences(container, absencesData);
@@ -51,7 +56,12 @@ async function loadJustifications(query = "") {
 
     try {
         const base = `filters[idStudent]=${STUDENT_ID}`;
-        const finalQuery = query ? `${base}&${query}` : base;
+        const params = new URLSearchParams(query);
+
+        params.append("orderOptions[columns][]", "senddate")
+        params.append("orderOptions[sortOrder]", "DESC")
+
+        const finalQuery = `${base}&${params.toString()}`;
 
         justificationsData = await fetchJustifications(finalQuery);
         renderJustifications(container, justificationsData);
@@ -63,21 +73,6 @@ async function loadJustifications(query = "") {
                 Erreur lors du chargement des justificatifs
             </div>
         `;
-    }
-}
-
-/**
- * Permet de changer le footer sur mobile
- */
-function fixFooterMobile() {
-    const footer = document.getElementById("footer");
-
-    if (!footer) return;
-
-    if (window.innerWidth < 768) {
-        footer.style.setProperty("margin-bottom", "70px", "important");
-    } else {
-        footer.style.setProperty("margin-bottom", "0px", "important");
     }
 }
 
@@ -114,6 +109,10 @@ function applyJustificationFilters() {
     if (dateEnd) params.append("filters[dateEnd]", dateEnd);
     if (state) params.append("filters[state]", state);
 
+
+
+    console.log(params.toString())
+
     loadJustifications(params.toString());
 }
 
@@ -130,6 +129,15 @@ function initEvents() {
         btn.addEventListener("click", () => {
             navButtons.forEach(b => b.classList.remove("active"));
             btn.classList.add("active");
+
+            const target = btn.getAttribute("data-bs-target");
+
+            const desktopTab = document.querySelector(`.nav-tabs [data-bs-target="${target}"]`);
+
+            if (desktopTab) {
+                const tabInstance = new bootstrap.Tab(desktopTab);
+                tabInstance.show();
+            }
         });
     });
 

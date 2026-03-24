@@ -40,7 +40,8 @@ export function renderAbsences(container, data, options = {}) {
 function renderDesktop(container, absences) {
 
     let html = `
-        <table id="absenceTable" class="table table-hover align-middle">
+        <table id="absenceTable" 
+        class="table table-hover align-middle pointer">
             <thead class="table-light">
                 <tr>
                     <th>Date</th>

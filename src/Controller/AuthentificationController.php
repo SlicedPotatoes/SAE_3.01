@@ -29,7 +29,7 @@ class AuthentificationController {
      * @return void
      */
     public static function login(): void {
-        Renderer::render('../ViewOLD/login.php', 'Connexion');
+        Renderer::render('../View/login.php', 'Connexion');
     }
 
     /**
@@ -62,7 +62,7 @@ class AuthentificationController {
         }
 
         // Utilisateur n'est pas connecté, on affiche la view d'authentification
-        Renderer::render('../ViewOLD/login.php', 'Connexion');
+        Renderer::render('../View/login.php', 'Connexion');
     }
 
     /**

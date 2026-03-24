@@ -1,3 +1,8 @@
+<?php
+
+use Uphf\GestionAbsence\Utils\Renderer;
+
+?>
 <!doctype html>
 <html lang="fr">
 <head>
@@ -11,9 +16,11 @@
     <link rel="stylesheet" href="/style/bootstrap.min.css">
     <link rel="stylesheet" href="/style/bootstrap-icons.min.css">
     <link rel="stylesheet" href="/style/style.css">
+    <?= implode('', Renderer::$assets['head'] ?? []) ?>
 </head>
-<body class="bg-light d-flex flex-column gap-2 gap-md-3">
+<body class="bg-light scroll-parent gap-2 gap-md-3">
 <?php
+require __DIR__ . '/../Component/fullScreenLoader.html';
 require __DIR__ . '/../Component/Navbar/navbar.php';
 require __DIR__ . "/../Component/Notification/notificationContainer.php";
 ?>
@@ -25,7 +32,8 @@ require __DIR__ . "/../Component/Notification/notificationContainer.php";
 <?php require __DIR__ . "/../Component/footer.php"; ?>
 
 <script src="/script/bootstrap.bundle.min.js"></script>
-<script src="/script/alert.js"></script>
+<script type="module" src="/js/core/notifications.js"></script>
 <script src="/script/tooltip.js"></script>
+<?= implode('', Renderer::$assets['script'] ?? []) ?>
 </body>
 </html>

@@ -36,7 +36,9 @@ class TestApiController {
     }
 
     public static function viewTest(): void {
-        Notification::addNotification(NotificationType::Error, 'test');
+        for($i = 0; $i < 10; $i++) {
+            Notification::addNotification(NotificationType::Error, "$i");
+        }
         Renderer::render('test.php', 'titre');
     }
 }

@@ -32,7 +32,7 @@ class ChangePasswordController {
      */
     public static function showConnectedChangePassword(): void {
         Renderer::render(
-            '../ViewOLD/changePassword.php',
+            'changePassword.php',
             'Changer le mot de passe',
             ['haveToken' => false]
         );
@@ -51,7 +51,7 @@ class ChangePasswordController {
             Notification::addNotification(NotificationType::Success, "Votre mot de passe a bien été changé !");
         }
         catch (BadCredentialException $e) {
-            Notification::addNotification(NotificationType::Error, "Changement de mot de passe: L'ancien mot de passe ne correspond pas");
+            Notification::addNotification(NotificationType::Error, "L'ancien mot de passe ne correspond pas");
         }
         catch (NestedValidationException $e) {
             foreach ($e->getMessages() as $message) {
@@ -67,7 +67,7 @@ class ChangePasswordController {
         }
 
         Renderer::render(
-            '../ViewOLD/changePassword.php',
+            'changePassword.php',
             'Changer le mot de passe',
             ['haveToken' => false]
         );
@@ -80,7 +80,7 @@ class ChangePasswordController {
      */
     public static function showLostPassword(): void {
         Renderer::render(
-            '../ViewOLD/PasswordLost.php',
+            'passwordLost.php',
             'Mot de passe oublié',
         );
     }
@@ -107,7 +107,7 @@ class ChangePasswordController {
         Notification::addNotification($notificationType, $message);
 
         Renderer::render(
-            '../ViewOLD/PasswordLost.php',
+            'PasswordLost.php',
             'Mot de passe oublié',
         );
     }
@@ -128,7 +128,7 @@ class ChangePasswordController {
         }
 
         Renderer::render(
-            '../ViewOLD/changePassword.php',
+            'changePassword.php',
             'Changer le mot de passe',
             ['haveToken' => true]
         );
@@ -170,7 +170,7 @@ class ChangePasswordController {
         }
 
         Renderer::render(
-            '../ViewOLD/changePassword.php',
+            'changePassword.php',
             'Changer le mot de passe',
             ['haveToken' => true]
         );

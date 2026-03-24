@@ -1,7 +1,7 @@
 import {fetchJustificationsToDo, fetchJustificationsDone } from "../features/justifications/justifications.service.js";
 
 import { renderJustifications } from "../features/justifications/justifications.renderer.js";
-import { isMobile, showLoader } from "../core/utils.js";
+import { isMobile, showLoader, fixFooterMobile } from "../core/utils.js";
 
 // Variables de caches pour les fetchs de l'api
 let justificationsToDoData = [];
@@ -19,7 +19,12 @@ async function loadJustificationsToDo(query = "") {
     showLoader(container);
 
     try {
-        justificationsToDoData = await fetchJustificationsToDo(query);
+        const params = new URLSearchParams(query);
+
+        params.append("orderOptions[columns][]", "sendDate");
+        params.append("orderOptions[sortOrder]", "ASC");
+
+        justificationsToDoData = await fetchJustificationsToDo(params.toString());
 
         renderJustifications(container, justificationsToDoData, {
             showStudent: true,
@@ -41,7 +46,12 @@ async function loadJustificationsDone(query = "") {
     const container = document.getElementById("proofDoneContainer");
     showLoader(container);
     try {
-        justificationsDoneData = await fetchJustificationsDone(query);
+        const params = new URLSearchParams(query);
+
+        params.append("orderOptions[columns][]", "sendDate");
+        params.append("orderOptions[sortOrder]", "DESC");
+
+        justificationsDoneData = await fetchJustificationsDone(params.toString());
 
         renderJustifications(container, justificationsDoneData, {
             showStudent: true,
@@ -91,6 +101,15 @@ function initEvents() {
         btn.addEventListener("click", () => {
             navButtons.forEach(b => b.classList.remove("active"));
             btn.classList.add("active");
+
+            const target = btn.getAttribute("data-bs-target");
+
+            const desktopTab = document.querySelector(`.nav-tabs [data-bs-target="${target}"]`);
+
+            if (desktopTab) {
+                const tabInstance = new bootstrap.Tab(desktopTab);
+                tabInstance.show();
+            }
         });
     });
 
@@ -144,6 +163,9 @@ function initResizeHandler() {
                 justificationsDoneData,
                 { showStudent: true }
             );
+
+            fixFooterMobile();
+
         }, 150);
     });
 }
@@ -152,6 +174,8 @@ function initResizeHandler() {
  * Initialisation global pour la page
  */
 document.addEventListener("DOMContentLoaded", () => {
+    fixFooterMobile();
+
     initEvents();
     initResizeHandler();
 
