@@ -61,9 +61,12 @@ class Absence implements \JsonSerializable {
             'examen' => $this->examen,
             'allowedJustification' => $this->allowedJustification,
             'idTeacher' => $this->teacher?->getIdAccount(),
+            'teacherFirstName' => $this->teacher?->getFirstName(),
+            'teacherLastName' => $this->teacher?->getLastName(),
             'currentState' => $this->currentState->value,
             'courseType' => $this->courseType->value,
-            'resource' => $this->resource->getIdResource(),
+            'idResource' => $this->resource->getIdResource(),
+            'labelResource' => $this->resource->getLabel(),
             'dateResit' => $this->dateResit?->format('Y-m-d H:i:s')
         ];
     }
