@@ -36,7 +36,8 @@ export function renderTimeSlots(container, data, options = {}) {
  */
 function renderDesktop(container, timeslots) {
     let html = `
-        <table id="timeslotTable" class="table table-hover align-middle">
+        <table id="timeslotTable" 
+        class="table table-hover align-middle pointer">
             <thead class="table-light">
                 <tr>
                     <th>Date</th>

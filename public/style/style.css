@@ -211,3 +211,7 @@ html, body {
         padding: 1rem; /* équivalent p-3 */
     }
 }
+
+.pointer {
+    cursor: pointer;
+}
