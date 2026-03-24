@@ -24,7 +24,7 @@ if (AuthManager::isRole(AccountType::EducationalManager) || AuthManager::isRole(
     <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
         <i class="bi bi-gear"></i>
     </button>
-    <ul class="dropdown-menu dropdown-menu-end">
+    <ul class="dropdown-menu dropdown-menu-start dropdown-menu-lg-end">
         <li>
             <a class="dropdown-item uphf <?= Router::isCurrRoute('changePassword') ? 'active' : '' ?>" href="/changement-de-mot-de-passe">Modifier le mot de passe</a>
         </li>
