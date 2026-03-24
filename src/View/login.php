@@ -1,21 +1,12 @@
-<?php
-/**
- * View de la page de connexion
- */
-
-use Uphf\GestionAbsence\Model\Entity\Account\Account;
-use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
-?>
-
+<!-- View de la page de connexion -->
 <div class="text-center p-4 pb-3">
     <img src="/img/Logo-UPHF.png" class="img-fluid" style="max-width: 280px;" alt="Logo UPHF">
 </div>
 
 <!-- Carte de connexion -->
-<div class="row g-0 rounded overflow-hidden mb-4 mx-auto" style="max-width: 750px;">
-
+<div class="row mx-auto my-sm-auto rounded overflow-hidden" style="max-width: 850px;">
     <!-- Bloc de gauche blanc -->
-    <div class="col-12 col-md-6 border p-4 bg-white">
+    <div class="col-12 col-md-7 border p-4 bg-white">
         <h4 class="text-center mb-4">Identification</h4>
 
         <form name="login" method="post">
@@ -36,7 +27,7 @@ use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
 
             <!-- Lien mot de passe oublié sous le champ (mobile uniquement) -->
             <div class="d-flex justify-content-end d-md-none mb-1">
-                <a href="/PasswordLost" class="small text-uphf">Mot de passe oublié</a>
+                <a href="/mot-de-passe-oublie" class="small text-uphf">Mot de passe oublié</a>
             </div>
 
             <!-- Bouton : pleine largeur sur mobile, centré sur desktop -->
@@ -47,7 +38,7 @@ use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
     </div>
 
     <!-- Bloc de droite avec fond bleu -->
-    <div class="col-12 col-md-6 card-uphf d-flex flex-column">
+    <div class="col-12 col-md-5 card-uphf d-flex flex-column">
 
         <!-- Texte de sécurité -->
         <div class="p-4">
@@ -60,7 +51,7 @@ use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
         </div>
 
         <!-- Lien Mot de Passe oublié (desktop uniquement) -->
-        <a href="/PasswordLost"
+        <a href="/mot-de-passe-oublie"
            class="d-none d-md-block text-white text-decoration-underline ms-auto mb-3 me-3 mt-auto">
             Mot de passe oublié
         </a>
@@ -68,5 +59,3 @@ use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
     </div>
 
 </div>
-
-<script src="/script/loginScript.js"></script>

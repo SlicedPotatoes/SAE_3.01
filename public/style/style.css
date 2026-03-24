@@ -179,11 +179,15 @@ html, body {
 
 @media (max-width: 991px) {
     html, body {
+        min-height: 100dvh!important;
+        height: auto;
         overflow: visible;
     }
-
     .scrollable {
         overflow: visible;
+    }
+    #footer {
+        margin-top: auto;
     }
 }
 
