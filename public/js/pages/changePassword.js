@@ -1,12 +1,13 @@
 /**
  * Script pour la gestion dynamique des prérequis pour le changement de mot de passe
  */
+import {addNotification} from "../core/notifications.js";
 
 // Récupération des éléments dans le DOM
 const formModifMDP = document.getElementById('formModifMDP');
 const inputNewMDP = document.getElementById('inputNewMDP');
 const inputConfirmMDP = document.getElementById('inputConfirmMDP');
-const alertModifMDP = document.getElementById('alertModifMDP');
+
 const items = {
     length: document.getElementById('req-length'),
     uppercase: document.getElementById('req-uppercase'),
@@ -36,8 +37,6 @@ function setState(el, ok) {
 
 // Vérifier les critères, renvoie un tableau de bool pour chaque critère
 function validateAll() {
-    alertModifMDP.classList.add("d-none");
-
     const newMDP = inputNewMDP.value || '';
     const confirmMDP = inputConfirmMDP.value || '';
 
@@ -77,7 +76,7 @@ formModifMDP.addEventListener('submit', (e) => {
 
     if (!allOk) {
         e.preventDefault();
-        alertModifMDP.classList.remove("d-none");
+        addNotification('Error', 'Le mot de passe ne respecte pas tous les prérequis.');
     }
 });
 
