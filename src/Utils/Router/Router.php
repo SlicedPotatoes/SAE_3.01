@@ -147,7 +147,7 @@ class Router {
 
         for($i = 0; $i < count($pathSegment); $i++) {
             $patternToken = $patternSegment[$i];
-            $pathToken = $pathSegment[$i];
+            $pathToken = urldecode($pathSegment[$i]);
 
             // Si le token de pattern est un paramètre
             if(str_starts_with($patternToken, '{') && str_ends_with($patternToken, '}')) {
