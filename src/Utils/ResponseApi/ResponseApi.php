@@ -23,7 +23,7 @@ class ResponseApi {
         $responseArray = ["data" => $this->data];
 
         if(!empty(Notification::getNotifications())) {
-            $responseArray["messages"] = Notification::jsonSerializeStudent();
+            $responseArray["messages"] = Notification::jsonSerializeAll();
         }
 
         echo json_encode($responseArray);
