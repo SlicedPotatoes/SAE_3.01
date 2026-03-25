@@ -1,4 +1,12 @@
-<!-- View de la page de connexion -->
+<?php
+/**
+ * View de la page de connexion
+ */
+
+use Uphf\GestionAbsence\Utils\Renderer;
+
+Renderer::pushAsset('script', '<script src="/js/pages/login.js"></script>');
+?>
 <div class="text-center p-4 pb-3">
     <img src="/img/Logo-UPHF.png" class="img-fluid" style="max-width: 280px;" alt="Logo UPHF">
 </div>
