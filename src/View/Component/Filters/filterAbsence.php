@@ -22,7 +22,19 @@
             ?>
 
             <div class="col-12 col-lg-auto">
-                <div class="d-flex gap-3 flex-wrap mt-2 mt-lg-4">
+
+                <div class="d-flex gap-3 flex-wrap align-items-end">
+
+                    <div>
+                        <label for="absState" class="form-label">État</label>
+                        <select class="form-select" id="absState">
+                            <option value="">Tout</option>
+                            <option value="Validated">Validée</option>
+                            <option value="Refused">Refusée</option>
+                            <option value="NotJustified">Non-justifiée</option>
+                            <option value="Pending">En attente</option>
+                        </select>
+                    </div>
 
                     <div class="form-check">
                         <input class="form-check-input"
@@ -37,7 +49,6 @@
                         <input class="form-check-input"
                                type="checkbox"
                                id="absExam">
-
                         <label for="absExam" class="form-check-label">
                             Examen
                         </label>

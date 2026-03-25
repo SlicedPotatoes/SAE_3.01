@@ -31,12 +31,6 @@ $showStateFilter = $showStateFilter ?? false;
                     <option value="">Tout</option>
                     <option value="Processed">Traité</option>
                     <option value="NotProcessed">En cours de traitement</option>
-
-                    <?php foreach($states as $state): ?>
-                        <option value="<?= $state->value ?>">
-                            <?= $state->label() ?>
-                        </option>
-                    <?php endforeach; ?>
                 </select>
             </div>
             <?php endif; ?>
