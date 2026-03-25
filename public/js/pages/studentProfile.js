@@ -84,6 +84,7 @@ function applyAbsenceFilters() {
     const dateEnd = document.getElementById("absDateEnd").value;
     const exam = document.getElementById("absExam").checked;
     const locked = document.getElementById("absLocked")?.checked;
+    const state = document.getElementById("absState")?.value;
 
     const params = new URLSearchParams();
 
@@ -91,6 +92,7 @@ function applyAbsenceFilters() {
     if (dateEnd) params.append("dateEnd", dateEnd);
     if (exam) params.append("examen", true);
     if (locked) params.append("lock", true);
+    if (state) params.append("state", state);
 
     loadAbsences(params.toString());
 }
@@ -108,8 +110,6 @@ function applyJustificationFilters() {
     if (dateStart) params.append("filters[dateStart]", dateStart);
     if (dateEnd) params.append("filters[dateEnd]", dateEnd);
     if (state) params.append("filters[state]", state);
-
-
 
     console.log(params.toString())
 
