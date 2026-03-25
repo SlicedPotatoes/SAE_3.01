@@ -50,6 +50,12 @@
 .text-uphf {
     color: var(--color-uphf);
 }
+.text-uphf-2 {
+    color: var(--color-uphf-disabled);
+}
+.text-uphf-3 {
+    color: var(--color-uphf-hover);
+}
 
 .bg-uphf {
     background: var(--color-uphf);

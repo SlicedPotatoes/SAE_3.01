@@ -1,106 +1,37 @@
-<?php
-?>
-<style>
-    /* Mise en page de la page: header/footer fixes, contenu central scrollable */
-    html, body {
-        height: 100%;
-    }
+<div class="container scroll-parent">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
 
-    body {
-        margin: 0;
-        height: 100dvh;
-        overflow: hidden;
-        display: flex;
-        flex-direction: column;
-    }
-
-    /* Header selon les 2 variantes du layout existant */
-    body > nav,
-    body > .d-grid.align-items-center.pt-2.pb-3.bg-white {
-        position: sticky;
-        top: 0;
-        z-index: 1030;
-        background: #fff;
-        flex-shrink: 0;
-    }
-
-    /* Footer fixe en bas */
-    body > footer {
-        position: sticky;
-        bottom: 0;
-        z-index: 1020;
-        background: #fff;
-        flex-shrink: 0;
-    }
-
-    /* Zone principale scrollable */
-    .rules-page-shell {
-        flex: 1 1 auto;
-        min-height: 0;
-        overflow: auto;
-        padding: 1rem 0;
-    }
-
-    .rules-page .h3 {
-        color: #0b5ed7;
-    }
-
-    .rules-page .card-body h2 {
-        color: #0d6efd;
-    }
-
-    @media (max-width: 767px) {
-        .rules-page .card-body {
-            padding: 1rem !important;
-        }
-
-        .rules-page .rules-actions {
-            gap: 0.75rem;
-        }
-
-        .rules-page .rules-actions .btn {
-            width: 100%;
-        }
-    }
-</style>
-
-<div class="rules-page-shell">
-    <div class="container my-3 my-md-4 rules-page">
-        <div class="row justify-content-center">
-            <div class="col-lg-10">
-                <div class="card shadow-sm">
-                    <div class="card-body p-4">
-
-                        <div class="d-flex align-items-start mb-3">
-                            <div>
-                                <h1 class="h3 mb-1">Gestion des absences à l’IUT de Maubeuge</h1>
-                                <p class="text-muted mb-0">Rappel synthétique des règles d'assiduité.</p>
-                            </div>
+                    <div class="d-flex align-items-start mb-3">
+                        <div>
+                            <h1 class="h3 mb-1 text-uphf-3">Gestion des absences à l'IUT de Maubeuge</h1>
+                            <p class="text-muted mb-0">Rappel synthétique des règles d'assiduité.</p>
                         </div>
+                    </div>
 
-                        <section id="principes" class="mb-4">
-                            <h2 class="h5">Principes généraux</h2>
-                            <p>La présence aux enseignements (cours, TD, TP, projets, contrôles continus, examens) est obligatoire pour l’ensemble des étudiant·e·s inscrit·e·s à l’IUT, sauf dérogation accordée par l’établissement.</p>
-                        </section>
+                    <section id="principes" class="mb-4">
+                        <h2 class="h5 text-uphf-2">Principes généraux</h2>
+                        <p>La présence aux enseignements (cours, TD, TP, projets, contrôles continus, examens) est obligatoire pour l'ensemble des étudiants inscrits à l'IUT, sauf dérogation accordée par l'établissement.</p>
+                    </section>
 
-                        <section id="signaler" class="mb-4">
-                            <h2 class="h5">Signaler et justifier une absence</h2>
-                            <p>Toute absence doit être signalée dès que possible au département et justifiée selon les modalités et délais prévus par le règlement intérieur de l’IUT et le règlement de l'UPHF.</p>
-                        </section>
+                    <section id="signaler" class="mb-4">
+                        <h2 class="h5 text-uphf-2">Signaler et justifier une absence</h2>
+                        <p>Toute absence doit être signalée dès que possible au département et justifiée selon les modalités et délais prévus par le règlement intérieur de l'IUT et le règlement de l'UPHF.</p>
+                    </section>
 
-                        <section id="consequences" class="mb-4">
-                            <h2 class="h5">Conséquences (résumé)</h2>
-                            <ul class="mb-2">
-                                <li>Les justificatifs doivent être transmis au responsable pédagogique dans les délais ; sinon, l'absence peut être considérée comme non excusée.</li>
-                                <li>Absences injustifiées ou répétées → pénalités académiques (malus, notes 0) et, en cas de cumul, risque de radiation.</li>
-                            </ul>
-                        </section>
+                    <section id="consequences" class="mb-4">
+                        <h2 class="h5 text-uphf-2">Conséquences (résumé)</h2>
+                        <ul class="mb-2">
+                            <li>Les justificatifs doivent être transmis au responsable pédagogique dans les délais ; sinon, l'absence peut être considérée comme non excusée.</li>
+                            <li>Absences injustifiées ou répétées → pénalités académiques (malus, notes 0) et, en cas de cumul, risque de radiation.</li>
+                        </ul>
+                    </section>
 
-                        <div class="d-flex flex-column flex-md-row justify-content-between mt-4 rules-actions">
-                            <a href="/" class="btn btn-outline-secondary">Retour à l'accueil</a>
-                            <a href="https://recueildesactes.uphf.fr/browse/uphf/iut/reglmts-intrs-iut" class="btn btn-primary">Règlement de l'UPHF et de l'IUT</a>
-                        </div>
-
+                    <div class="d-flex flex-column flex-md-row justify-content-between gap-3 mt-4">
+                        <a href="/" class="btn btn-outline-secondary">Retour à l'accueil</a>
+                        <a href="https://recueildesactes.uphf.fr/browse/uphf/iut/reglmts-intrs-iut" class="btn btn-uphf">Règlement de l'UPHF et de l'IUT</a>
                     </div>
                 </div>
             </div>
