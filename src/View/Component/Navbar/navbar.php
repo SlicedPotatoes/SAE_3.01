@@ -38,17 +38,14 @@
 <div class="d-grid align-items-center pt-2 pb-3 bg-white" style="grid-template-columns: minmax(44px, 1fr) minmax(auto, 1320px) minmax(44px, 1fr)">
     <div></div>
     <div class="container m-0" style="justify-self: center">
-        <?php
-        if(AuthManager::isRole(AccountType::Student) || AuthManager::isRole(AccountType::Teacher)) {
-            $firstPartMessage = 'Bonjour';
-            $secondPartMessage = AuthManager::getAccount()->getFirstName() . ' ' . AuthManager::getAccount()->getLastName();
-            $thirdPartMessage = '!';
-
-            echo '<div class="container">';
-            require __DIR__ . "/../header.php";
-            echo '</div>';
-        }
-        ?>
+        <?php if(AuthManager::isRole(AccountType::Student) || AuthManager::isRole(AccountType::Teacher)): ?>
+        <p class="h3">
+            Bonjour
+            <span class='text-uphf fw-bold'> <?= AuthManager::getAccount()->getFirstName() . ' ' . AuthManager::getAccount()->getLastName() ?> </span>
+            !
+        </p>
+        <div class="header-line-brand-color"></div>
+        <?php endif; ?>
     </div>
     <div style="justify-self: end">
         <?php require 'buttonSettings.php'; ?>

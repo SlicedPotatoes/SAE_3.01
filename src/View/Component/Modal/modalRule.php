@@ -42,12 +42,12 @@ if (!AuthManager::isRole(AccountType::Student)) {
                 <div>
                     <div class="d-flex align-items-center">
                         <!-- Bouton pour fermer le modal -->
-                        <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">
+                        <button type="button" class="btn btn-outline-secondary me-2" data-bs-dismiss="modal">
                             Fermer
                         </button>
 
                         <!-- Bouton pour aller vers la page de documentation -->
-                        <button onclick="openBoth() " type="button" class="btn btn-primary">
+                        <button onclick="openBoth() " type="button" class="btn btn-uphf">
                             Consulter la documentation
                         </button>
                     </div>

@@ -29,8 +29,7 @@ class JustificationController
     public static function showJustificationList(): void {
         Renderer::render(
             '/justificationDashboard.php',
-            'Liste des justifications',
-            []
+            'Liste des justifications'
         );
     }
 

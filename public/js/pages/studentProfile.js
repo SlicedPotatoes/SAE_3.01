@@ -5,6 +5,7 @@ import { renderAbsences } from "../features/absences/absences.renderer.js";
 import { renderJustifications } from "../features/justifications/justifications.renderer.js";
 
 import { isMobile, showLoader, fixFooterMobile } from "../core/utils.js";
+import {setCardShow, setHideRuleModal} from "../core/cookie.js";
 
 // Variables de caches pour les fetchs de l'api
 let absencesData = [];
@@ -174,6 +175,22 @@ function initEvents() {
             }
         });
     });
+
+    // Evenement show card info absences
+    document.querySelector('#studentInformationCards').addEventListener('show.bs.collapse', () => {
+        setCardShow(true);
+    });
+    document.querySelector('#studentInformationCards').addEventListener('hide.bs.collapse', () => {
+        setCardShow(false);
+    });
+
+    // Evenement modal rules "Ne plus afficher"
+    const checkBoxDontShow = document.querySelector("#dontShowRuleAgain");
+    if(checkBoxDontShow) {
+        checkBoxDontShow.addEventListener('change', (e) => {
+            setHideRuleModal(e.target.checked ? 1 : 0);
+        })
+    }
 }
 
 /**

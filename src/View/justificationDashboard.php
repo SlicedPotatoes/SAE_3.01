@@ -3,10 +3,12 @@
  * Page du "dashboard" permettant au Responsable Pédagogique de pouvoir voir les justificatifs qu'il reste à traité et les justificatifs qui ont déjà était traité
  */
 
+use Uphf\GestionAbsence\Utils\Renderer;
+
+Renderer::pushAsset('script', '<script type="module" src="/js/pages/justificationDashboard.js"></script>');
 ?>
 
-<div class="card-md p-md-3 flex-fill d-flex flex-column"
-     style="min-height:0">
+<div class="card-md p-md-3 scroll-parent">
 
     <!-- Tab bar -->
     <ul class="nav nav-tabs d-none d-md-flex"
@@ -40,8 +42,7 @@
         </li>
     </ul>
 
-    <div class="tab-content border-bottom border-start border-end rounded-bottom pt-3 flex-fill d-flex flex-column bg-white"
-         style="min-height:0"
+    <div class="tab-content border-bottom border-start border-end no-border-sm rounded-bottom pt-3 bg-white scroll-parent"
          id="tab-dashboard-proofContent">
 
         <!-- TAB JUSTIFICATIFS A TRAITER -->
@@ -49,8 +50,7 @@
              id="proofToDo-tab-pane"
              role="tabpanel">
 
-            <div class="d-flex flex-column h-100"
-                 style="min-height:0">
+            <div class="scroll-parent h-100">
 
                 <?php
                 $prefix = "todo";
@@ -58,9 +58,8 @@
                 ?>
 
                 <div id="justificationContainer"
-                     class="flex-fill overflow-y-auto"
-                     role="status"
-                     style="min-height:0">
+                     class="scrollable"
+                     role="status">
                     Chargement de données...
                 </div>
 
@@ -73,7 +72,7 @@
              id="proofDone-tab-pane"
              role="tabpanel">
 
-            <div class="d-flex flex-column h-100" style="min-height:0">
+            <div class="scroll-parent h-100">
 
                 <?php
                 $prefix = "done";
@@ -81,9 +80,8 @@
                 ?>
 
                 <div id="proofDoneContainer"
-                     class="flex-fill overflow-y-auto"
-                     role="status"
-                     style="min-height:0">
+                     class="scrollable"
+                     role="status">
                     Chargement de données...
                 </div>
             </div>
@@ -113,5 +111,3 @@
         <span>Traités</span>
     </button>
 </div>
-
-<script type="module" src="/js/pages/justificationDashboard.js"></script>

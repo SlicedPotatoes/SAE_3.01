@@ -1,4 +1,4 @@
-<form class="border-bottom px-4 m-0">
+<form class="border-bottom px-2 px-md-4 m-0">
 
     <!-- Bouton mobile pour afficher/caché les filtres -->
     <div class="d-lg-none py-2">

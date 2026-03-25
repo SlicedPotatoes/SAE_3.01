@@ -77,10 +77,13 @@ function renderDesktop(container, absences) {
                 <td>${formatDuration(abs.duration)}</td>
 
                 <td>
-                    <span class="badge rounded-pill text-bg-${stateToBadge(abs.currentState)}">
-                        ${translateLabelState(abs.currentState)}
-                    </span>
-                    ${lockIcon}
+                    <div class="d-flex align-items-center">
+                        <span class="badge rounded-pill text-bg-${stateToBadge(abs.currentState)}">
+                            ${translateLabelState(abs.currentState)}
+                        </span>
+                        ${lockIcon}
+                    </div>
+                    
                 </td>
 
                 <td>
@@ -165,7 +168,7 @@ function renderMobile(container, absences) {
                         <strong>Durée :</strong> ${formatDuration(abs.duration)}
                     </div>
 
-                    <div class="mb-1">
+                    <div class="d-flex align-items-center mb-1">
                         <span class="badge rounded-pill text-bg-${stateToBadge(abs.currentState)}">
                             ${translateLabelState(abs.currentState)}
                         </span>

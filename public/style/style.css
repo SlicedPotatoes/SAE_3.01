@@ -177,6 +177,16 @@ html, body {
     background-attachment: local, local, scroll, scroll;
 }
 
+.scrollable table {
+    --bs-table-bg: transparent;
+}
+
+@media (max-width: 767px) {
+    .no-border-sm {
+        border: none !important;
+    }
+}
+
 @media (max-width: 991px) {
     html, body {
         min-height: 100dvh!important;
@@ -315,3 +325,4 @@ html, body {
 .pointer {
     cursor: pointer;
 }
+

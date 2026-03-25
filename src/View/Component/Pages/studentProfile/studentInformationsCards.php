@@ -99,4 +99,3 @@ $halfdayPenalizingAbsence = $data['studentAbsInfos']['halfdayPenalizingAbsence']
         </div>
     </div>
 </div>
-<script src="/script/headerCard.js"></script>

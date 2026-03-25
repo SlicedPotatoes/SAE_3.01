@@ -6,7 +6,10 @@
 use Uphf\GestionAbsence\Model\AuthManager;
 use Uphf\GestionAbsence\Model\CookieManager;
 use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
+use Uphf\GestionAbsence\Utils\Renderer;
 
+Renderer::pushAsset('script', '<script>const STUDENT_ID = ' . $student->getIdAccount() . ';</script>');
+Renderer::pushAsset('script', '<script type="module" src="/js/pages/studentProfile.js"></script>');
 ?>
 
 <?php if (AuthManager::isRole(AccountType::EducationalManager)) : ?>
@@ -22,9 +25,9 @@ use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
         <button class="p-0 border-0 bg-transparent text-decoration-none small"
                 type="button"
                 data-bs-toggle="collapse"
-                data-bs-target="#collapseOne"
+                data-bs-target="#studentInformationCards"
                 aria-expanded="true"
-                aria-controls="collapseOne"
+                aria-controls="studentInformationCards"
         >
             Afficher les indicateurs d'assiduité
         </button>
@@ -33,7 +36,7 @@ use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
 
     </div>
 
-    <div id="collapseOne"
+    <div id="studentInformationCards"
          class="accordion-collapse collapse <?= CookieManager::getCardOpen() ? 'show' : '' ?>""
          data-bs-parent="#accordionInformationsCards"
     >
@@ -41,8 +44,7 @@ use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
     </div>
 </div>
 
-<div class="card-md p-md-3 flex-fill d-flex flex-column"
-     style="min-height:0">
+<div class="card-md scroll-parent">
 
     <!-- Tab bar -->
     <ul class="nav nav-tabs d-none d-md-flex"
@@ -90,8 +92,7 @@ use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
         </li>
     </ul>
 
-    <div class="tab-content border-bottom border-start border-end rounded-bottom pt-3 flex-fill d-flex flex-column bg-white"
-         style="min-height:0"
+    <div class="tab-content border-bottom border-start border-end no-border-sm rounded-bottom pt-3 bg-white scroll-parent"
          id="tab-dashboard-stuContent">
 
         <!-- TAB JUSTIFICATIFS -->
@@ -99,8 +100,7 @@ use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
              id="proof-tab-pane"
              role="tabpanel">
 
-            <div class="d-flex flex-column h-100"
-                 style="min-height:0">
+            <div class="scroll-parent h-100">
 
                 <?php
                 $showStateFilter = true;
@@ -108,9 +108,8 @@ use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
                 ?>
 
                 <div id="justificationContainer"
-                     class="flex-fill overflow-y-auto"
-                     role="status"
-                     style="min-height:0">
+                     class="scrollable"
+                     role="status">
                     Chargement de données...
                 </div>
 
@@ -123,14 +122,13 @@ use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
              id="absence-tab-pane"
              role="tabpanel">
 
-            <div class="d-flex flex-column h-100" style="min-height:0">
+            <div class="scroll-parent h-100">
 
                 <?php require __DIR__ . "/Component/filters/filterAbsence.php"; ?>
 
                 <div id="absenceContainer"
-                     class="flex-fill overflow-y-auto"
-                     role="status"
-                     style="min-height:0">
+                     class="scrollable"
+                     role="status">
                     Chargement de données...
                 </div>
             </div>
@@ -142,7 +140,7 @@ use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
                  id="add-tab-pane"
                  role="tabpanel">
 
-                <div class="d-flex flex-column h-100 p-3" style="min-height:0">
+                <div class="scrollable h-100 p-3">
 
                     <?php require __DIR__ . "/Component/Pages/studentProfile/formJustification.php"; ?>
 
@@ -192,8 +190,3 @@ use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
 <?php
 require __DIR__ . "/Component/Modal/modalRule.php";
 ?>
-
-<script>
-    const STUDENT_ID = <?= $student->getIdAccount() ?>;
-</script>
-<script type="module" src="/js/pages/studentProfile.js"></script>
