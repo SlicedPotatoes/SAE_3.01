@@ -8,6 +8,10 @@ export function initRequiredIndicator(form) {
     })
 }
 
+/**
+ * Permet l'ajout d'un indicateur visuel sur le label d'un champ requis spécifique.
+ * @param field
+ */
 export function initRequiredIndicatorField(field) {
     const label = document.querySelector(`label[for="${field.id}"]`);
 

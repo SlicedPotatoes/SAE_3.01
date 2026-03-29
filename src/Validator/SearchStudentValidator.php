@@ -22,7 +22,7 @@ class SearchStudentValidator {
      * @return void
      * @throws NestedValidationException
      */
-    public static function validationPostPredefinedComment(array &$data): void {
+    public static function validationFilterGetStudents(array &$data): void {
         $validator = v::key('search',
             v::oneOf(v::nullType(), v::stringType()),
             false

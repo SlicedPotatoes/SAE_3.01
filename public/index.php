@@ -67,14 +67,12 @@ $router->addRoute(RequestMethod::PUT, '/api/mailAlert', 'ChangerMailAlertControl
 // JustificationController
 $router->addRoute(RequestMethod::GET, '/justifications', 'JustificationController@showJustificationList', 'justifications')
         ->requireLogin()
-        ->addAuthorization(AccountType::EducationalManager)
-        ->addAuthorization(AccountType::Student);
+        ->addAuthorization(AccountType::EducationalManager);
 $router->addRoute(RequestMethod::GET, '/detail-justification/{id:int}', 'JustificationController@showDetailJustification')
         ->requireLogin()
         ->addAuthorization(AccountType::EducationalManager)
         ->addAuthorization(AccountType::Student);
 
-// For debug
 $router->addRoute(RequestMethod::GET, '/api/justifications', 'JustificationControllerApi@getJustificationList')
         ->requireLogin()
         ->addAuthorization(AccountType::EducationalManager)

@@ -17,6 +17,7 @@ class Route {
     /**
      * Constructeur avec le handler de la route.
      *
+     * @param string $name
      * @param string $handler
      */
     public function __construct(string $name, string $handler) {

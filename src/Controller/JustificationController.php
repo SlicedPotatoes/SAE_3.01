@@ -2,11 +2,9 @@
 
 namespace Uphf\GestionAbsence\Controller;
 
-use Uphf\GestionAbsence\Database\Select\SelectBuilder\SortOrder;
 use Uphf\GestionAbsence\Exception\EntityNotFoundException;
 use Uphf\GestionAbsence\Model\AuthManager;
 use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
-use Uphf\GestionAbsence\Model\Entity\Justification\StateJustif;
 use Uphf\GestionAbsence\Model\Notification\Notification;
 use Uphf\GestionAbsence\Model\Notification\NotificationType;
 use Uphf\GestionAbsence\Service\JustificationService;

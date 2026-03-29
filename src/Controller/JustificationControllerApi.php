@@ -68,6 +68,7 @@ class JustificationControllerApi {
         catch (EntityNotFoundException $e) {
             Notification::addNotification(NotificationType::Error, "Le justificatif demandé n'existe pas");
             new ResponseApi(HttpStatus::NOT_FOUND)->done();
+            return;
         }
         catch (\BadMethodCallException $e) {
             Notification::addNotification(NotificationType::Error, "Le justificatif a déjà été traité");

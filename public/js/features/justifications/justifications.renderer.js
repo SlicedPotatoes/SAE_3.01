@@ -7,7 +7,7 @@ import {
 
 /**
  * Fonction PUBLIC permettant de rander (afficher pour Kévin) le contener des justifications
- *
+ *                                 ^ Render et pas rander :3
  * Il gère version desktop et mobile
  */
 export function renderJustifications(container, data, options = {}) {
