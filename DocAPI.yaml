@@ -1,0 +1,1204 @@
+openapi: 3.1.1
+info:
+  title: GestionAbsence API
+  description: API interne pour GestionAbsence.
+  version: 1.0.0
+
+servers:
+  - url: http://localhost/api
+
+paths:
+  /absences:
+    get:
+      summary: Récupérer les absences avec filtres
+      tags:
+        - Absences
+      security: [ ]
+
+      parameters:
+        - name: startDate
+          in: query
+          required: false
+          description: Format YYYY-MM-DD
+          schema:
+            type: string
+            format: date
+
+        - name: endDate
+          in: query
+          required: false
+          description: Format YYYY-MM-DD
+          schema:
+            type: string
+            format: date
+
+        - name: state
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [ Validated, Refused, NotJustified, Pending ]
+
+        - name: examen
+          in: query
+          required: false
+          schema:
+            type: boolean
+
+        - name: lock
+          in: query
+          required: false
+          schema:
+            type: boolean
+
+        - name: idStudent
+          in: query
+          required: false
+          schema:
+            type: integer
+
+      responses:
+        '200':
+          description: Liste des absences
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AbsenceListResponse'
+
+        '400':
+          description: Données invalides
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+
+  /justifications:
+    get:
+      summary: Récupérer une liste de justificatifs avec filtres
+      tags:
+        - Justifications
+      security: [ ]
+
+      parameters:
+        - name: filters[dateStart]
+          in: query
+          required: false
+          description: Format YYYY-MM-DD
+          schema:
+            type: string
+            format: date
+
+        - name: filters[dateEnd]
+          in: query
+          required: false
+          description: Format YYYY-MM-DD
+          schema:
+            type: string
+            format: date
+
+        - name: filters[state]
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [ Processed, NotProcessed ]
+
+        - name: filters[examen]
+          in: query
+          required: false
+          schema:
+            type: boolean
+
+        - name: filters[idStudent]
+          in: query
+          required: false
+          schema:
+            type: integer
+
+        - name: orderOptions[columns]
+          in: query
+          required: false
+          description: Obligatoire si orderOptions est présent
+          schema:
+            type: array
+            items:
+              type: string
+
+        - name: orderOptions[sortOrder]
+          in: query
+          required: false
+          description: Obligatoire si orderOptions est présent
+          schema:
+            type: string
+            enum: [ ASC, DESC ]
+
+      responses:
+        '200':
+          description: Liste des justificatifs
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JustificationListResponse'
+
+        '400':
+          description: Données invalides
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+
+    post:
+      summary: Créer un justificatif pour l'étudiant connecté
+      description: >
+        Permet à un étudiant de soumettre un justificatif avec pièces jointes.
+
+        Les données sont envoyées en multipart/form-data (upload de fichiers).
+
+      tags:
+        - Justifications
+      security: [ ]
+
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CreateJustificationRequest'
+            encoding:
+              files:
+                style: form
+                explode: true
+
+      responses:
+        '201':
+          description: Justificatif créé
+
+        '400':
+          description: Données invalides
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+
+  /justifications/{id}:
+    put:
+      summary: Traiter un justificatif
+      description: >
+        Permet de valider ou refuser des absences associées à un justificatif.
+
+          Règles métier :
+          - Si une absence est "Validated", alors lock est automatiquement forcé à true
+
+      tags:
+        - Justifications
+      security: [ ]
+
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PutJustificationRequest'
+
+            example:
+              absences:
+                123_2025-01-10 08:00:00:
+                  state: "Validated"
+                  lock: true
+                123_2025-01-10 09:30:00:
+                  state: "Refused"
+                  lock: false
+
+              rejectionReason: "Fichier justificatif ne couvre pas le cours"
+
+      responses:
+        '204':
+          description: Justificatif traité
+
+        '400':
+          description: Données invalides
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+
+        '404':
+          description: Le justificatif n'existe pas
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+
+  /students:
+    get:
+      summary: Récupérer la liste des étudiants avec filtres
+      tags:
+        - Students
+      security: [ ]
+
+      parameters:
+        - name: search
+          in: query
+          required: false
+          schema:
+            type:
+              - string
+
+        - name: groupStudent
+          in: query
+          required: false
+          schema:
+            type:
+              - integer
+
+      responses:
+        '200':
+          description: Liste des étudiants
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudentListResponse'
+
+        '400':
+          description: Données invalides
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+
+  /timeslots:
+    get:
+      summary: Récupérer des créneaux de cours avec filtres
+      tags:
+        - Timeslots
+      security: [ ]
+
+      parameters:
+        - name: examFilter
+          in: query
+          required: false
+          schema:
+            type: boolean
+
+        - name: dateStartFilter
+          in: query
+          required: false
+          description: Format YYYY-MM-DD
+          schema:
+            type: string
+            format: date
+
+        - name: dateEndFilter
+          in: query
+          required: false
+          description: Format YYYY-MM-DD
+          schema:
+            type: string
+            format: date
+
+      responses:
+        '200':
+          description: Liste des créneaux de cours
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TimeslotListResponse'
+
+        '400':
+          description: Données invalides
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+
+  /predefinedComment:
+    post:
+      summary: Créer un commentaire prédéfini
+      tags:
+        - Predefined Comment
+      security: [ ]
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PredefinedCommentInput'
+            example:
+              textComment: "Absence justifiée"
+
+      responses:
+        '201':
+          description: Commentaire créé
+
+        '400':
+          description: Données invalides
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+
+  /predefinedComment/{id}:
+    put:
+      summary: Modifier un commentaire prédéfini
+      tags:
+        - Predefined Comment
+      security: [ ]
+
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PredefinedCommentInput'
+            example:
+              textComment: "Absence validée"
+
+      responses:
+        '204':
+          description: Commentaire modifié
+
+        '400':
+          description: Données invalides
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+
+    delete:
+      summary: Supprimer un commentaire prédéfini
+      tags:
+        - Predefined Comment
+      security: [ ]
+
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+
+      responses:
+        '204':
+          description: No Content
+
+  /statistics:
+    get:
+      summary: Récupérer les statistiques selon des filtres
+      tags:
+        - Statistics
+      security: [ ]
+
+      parameters:
+        - name: group
+          in: query
+          required: false
+          schema:
+            type: integer
+
+        - name: examen
+          in: query
+          required: false
+          schema:
+            type: boolean
+
+        - name: state
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [ Validated, Refused, NotJustified, Pending ]
+
+        - name: idStudent
+          in: query
+          required: false
+          schema:
+            type: integer
+
+      responses:
+        '200':
+          description: Statistiques
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatisticsResponse'
+
+        '400':
+          description: Données invalides
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+
+  /holidays:
+    get:
+      summary: Récupérer toutes les périodes de vacances
+      tags:
+        - Holidays
+      security: [ ]
+      responses:
+        '200':
+          description: Liste des périodes de vacances
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HolidayListResponse'
+
+    post:
+      summary: Créer une période de vacances
+      tags:
+        - Holidays
+      security: [ ]
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HolidayInput'
+            example:
+              startDate: "2025-07-01"
+              endDate: "2025-08-31"
+              label: "Vacances d'été"
+
+      responses:
+        '201':
+          description: Période créée
+
+        '400':
+          description: Données invalides
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+
+  /holidays/{id}:
+    put:
+      summary: Modifier une période de vacances
+      tags:
+        - Holidays
+      security: [ ]
+
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HolidayInput'
+            example:
+              startDate: "2025-07-01"
+              endDate: "2025-08-31"
+              label: "Vacances d'été"
+
+      responses:
+        '204':
+          description: Période mise à jour
+
+        '400':
+          description: Données invalides
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+
+    delete:
+      summary: Supprimer une période de vacances
+      tags:
+        - Holidays
+      security: [ ]
+
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+
+      responses:
+        '204':
+          description: Période supprimé
+
+        '404':
+          description: La période n'existe pas
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+
+  /mailAlert:
+    put:
+      summary: Met à jour les préférences d'alerte mail
+      description: >
+        Permet de configurer les alertes mail pour l'utilisateur connecté.
+
+          Règles métier :
+          - L'utilisateur doit être authentifié via session PHP
+          - Rôle requis : Teacher ou Educational Manager
+          - Si rôle Teacher :
+            - mailAlertEducationalManager est ignoré et forcé à false
+          - Si rôle Educational Manager :
+            - mailAlertEducationalManager est requis
+
+      tags:
+        - Mail Alert
+
+      security: []  # Auth gérée côté session (cookie PHP)
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MailAlertRequest'
+            examples:
+              teacher:
+                summary: Cas Teacher
+                value:
+                  mailAlertTeacher: true
+
+              educational_manager:
+                summary: Cas Responsable pédagogique
+                value:
+                  mailAlertTeacher: true
+                  mailAlertEducationalManager: true
+
+      responses:
+        '204':
+          description: Alerte mise à jour
+
+        '400':
+          description: Données invalides
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+
+components:
+  schemas:
+    Absence:
+      type: object
+      description: Absence d'un étudiant
+      properties:
+        idStudent:
+          type: integer
+          example: 2
+
+        time:
+          type: string
+          format: date-time
+          description: Format YYYY-MM-DD HH:mm:ss
+          example: "2026-01-05 08:00:00"
+
+        duration:
+          type: string
+          description: Durée au format HH:mm:ss
+          example: "02:00:00"
+
+        examen:
+          type: boolean
+          example: false
+
+        allowedJustification:
+          type: boolean
+          example: false
+
+        idTeacher:
+          type: integer
+          example: 3
+
+        teacherFirstName:
+          type: string
+          example: "Professeur"
+
+        teacherLastName:
+          type: string
+          example: "Moustache"
+
+        currentState:
+          type: string
+          enum:
+            - Validated
+            - Refused
+            - NotJustified
+            - Pending
+
+        courseType:
+          type: string
+          example: "TD"
+
+        idResource:
+          type: integer
+          example: -1
+
+        labelResource:
+          type: string
+          example: "R3.01"
+
+        dateResit:
+          oneOf:
+            - type: string
+              format: date-time
+            - type: "null"
+          example: null
+
+      required:
+        - idStudent
+        - time
+        - duration
+        - examen
+        - allowedJustification
+        - idTeacher
+        - teacherFirstName
+        - teacherLastName
+        - currentState
+        - courseType
+        - idResource
+        - labelResource
+        - dateResit
+    AbsenceListResponse:
+      type: object
+      properties:
+        data:
+          description: Données retournées par l'API
+          type: array
+          items:
+            $ref: '#/components/schemas/Absence'
+      example:
+        data:
+          - idStudent: 2
+            time: "2026-01-05 08:00:00"
+            duration: "02:00:00"
+            examen: false
+            allowedJustification: false
+            idTeacher: 3
+            teacherFirstName: "Professeur"
+            teacherLastName: "Moustache"
+            currentState: "Validated"
+            courseType: "TD"
+            idResource: -1
+            labelResource: "R3.01"
+            dateResit: null
+
+    Justification:
+      type: object
+      description: Justificatif d'absence
+      properties:
+        idJustification:
+          type: integer
+        cause:
+          type: string
+        currentState:
+          type: string
+          enum:
+            - Processed
+            - NotProcessed
+        startDate:
+          type: string
+          format: date-time
+          description: Format attendu YYYY-MM-DD HH:mm:ss
+        endDate:
+          type: string
+          format: date-time
+          description: Format attendu YYYY-MM-DD HH:mm:ss
+        processedDate:
+          type: string
+          format: date-time
+          description: Format attendu YYYY-MM-DD HH:mm:ss.ms
+        refusalReason:
+          type: string
+        student:
+          type: object
+          properties:
+            idAccount:
+              type: integer
+            lastName:
+              type: string
+            firstName:
+              type: string
+            email:
+              type: string
+            studentNumber:
+              type: integer
+            groupStudent:
+              type: object
+              properties:
+                idGroupStudent:
+                  type: integer
+                label:
+                  type: string
+    CreateJustificationRequest:
+      type: object
+      properties:
+        startDate:
+          type: string
+          format: date
+          description: Format YYYY-MM-DD (Y-m-d)
+          example: "2026-01-01"
+
+        endDate:
+          type: string
+          format: date
+          description: Format YYYY-MM-DD (Y-m-d)
+          example: "2026-01-02"
+
+        absenceReason:
+          type: string
+          description: Motif de l'absence (non vide)
+          example: "Rendez-vous médical"
+
+        files:
+          type: array
+          description: Fichiers justificatifs
+          items:
+            type: string
+            format: binary
+
+      required:
+        - startDate
+        - endDate
+        - absenceReason
+    PutJustificationRequest:
+      type: object
+      properties:
+        absences:
+          type: object
+          description: >
+            Clé = identifiant compact d'une absence au format "{id}_{datetime}".
+
+              Format attendu :
+              - id : entier (digits uniquement)
+              - datetime : format "YYYY-MM-DD HH:mm:ss"
+
+              Exemple valide : "123_2025-01-10 08:00:00"
+
+          additionalProperties:
+            type: object
+            properties:
+              state:
+                type: string
+                enum:
+                  - Validated
+                  - Refused
+              lock:
+                type: boolean
+            required:
+              - state
+              - lock
+
+        rejectionReason:
+          type: string
+          description: Motif de refus
+
+      required:
+        - absences
+        - rejectionReason
+    JustificationListResponse:
+      type: object
+      properties:
+        data:
+          description: Données retournées par l'API
+          type: array
+          items:
+            $ref: '#/components/schemas/Justification'
+      example:
+        data:
+          - idJustification: 1
+            cause: "Mal aux dents"
+            currentState: "Processed"
+            startDate: "2026-03-10 00:00:00"
+            endDate: "2026-03-10 00:00:00"
+            processedDate: "2026-03-22 23:15:57.419610"
+            refusalReason: "Pas gentil"
+            student:
+              idAccount: 2
+              lastName: "Dascotte"
+              firstName: "Yann"
+              email: "dascotte.yann@uphf.fr"
+              studentNumber: -2
+              groupStudent:
+                idGroupStudent: -1
+                label: "Groupe A1"
+
+    GroupStudent:
+      type: object
+      properties:
+        idGroupStudent:
+          type: integer
+          example: 1
+        label:
+          type: string
+          example: "Groupe A"
+      required:
+        - idGroupStudent
+        - label
+    Student:
+      type: object
+      description: Étudiant
+      properties:
+        idAccount:
+          type: integer
+          example: 12
+        lastName:
+          type: string
+          example: "Dupont"
+        firstName:
+          type: string
+          example: "Jean"
+        email:
+          type: string
+          format: email
+          example: "jean.dupont@example.com"
+        studentNumber:
+          type: integer
+          example: 123456
+        groupStudent:
+          $ref: '#/components/schemas/GroupStudent'
+      required:
+        - idAccount
+        - lastName
+        - firstName
+        - email
+        - studentNumber
+        - groupStudent
+    StudentListResponse:
+      type: object
+      properties:
+        data:
+          description: Données retournées par l'API
+          type: array
+          items:
+            $ref: '#/components/schemas/Student'
+      example:
+        data:
+          - idAccount: 12
+            lastName: "Dupont"
+            firstName: "Jean"
+            email: "jean.dupont@example.com"
+            studentNumber: 123456
+            groupStudent:
+              idGroupStudent: 1
+              label: "Groupe A"
+
+    Timeslot:
+      type: object
+      description: Créneau de cours
+      properties:
+        id:
+          type: integer
+          example: 1
+
+        startTime:
+          type: string
+          format: date-time
+          description: Format YYYY-MM-DD HH:mm:ss
+          example: "2026-01-05 08:00:00"
+
+        endTime:
+          type: string
+          format: date-time
+          description: Format YYYY-MM-DD HH:mm:ss
+          example: "2026-01-05 10:00:00"
+
+        examen:
+          type: boolean
+          example: false
+
+        courseType:
+          type: string
+          example: "TD"
+
+        labelResource:
+          type: string
+          example: "R3.01"
+
+        teacherFirstName:
+          type: string
+          example: "Professeur"
+
+        teacherLastName:
+          type: string
+          example: "Moustache"
+
+        group:
+          type: string
+          example: "Groupe A1"
+
+      required:
+        - id
+        - startTime
+        - endTime
+        - examen
+        - courseType
+        - labelResource
+        - teacherFirstName
+        - teacherLastName
+        - group
+    TimeslotListResponse:
+      type: object
+      properties:
+        data:
+          description: Données retournées par l'API
+          type: array
+          items:
+            $ref: '#/components/schemas/Timeslot'
+      example:
+        data:
+          - id: 1
+            startTime: "2026-01-05 08:00:00"
+            endTime: "2026-01-05 10:00:00"
+            examen: false
+            courseType: "TD"
+            labelResource: "R3.01"
+            teacherFirstName: "Professeur"
+            teacherLastName: "Moustache"
+            group: "Groupe A1"
+
+    PredefinedComment:
+      type: object
+      description: Commentaire prédéfini
+      properties:
+        id:
+          type: integer
+          example: 1
+        textComment:
+          type: string
+          example: "Absence justifiée"
+      required:
+        - id
+        - textComment
+    PredefinedCommentInput:
+      type: object
+      properties:
+        textComment:
+          type: string
+          description: Texte du commentaire (non vide)
+          example: "Absence justifiée"
+      required:
+        - textComment
+
+    ChartData:
+      type: object
+      description: Données d'un graphique
+      properties:
+        labels:
+          type: array
+          items:
+            type: string
+        data:
+          type: array
+          items:
+            type: integer
+        backgroundColor:
+          oneOf:
+            - type: array
+              items:
+                type: string
+            - type: "null"
+      required:
+        - labels
+        - data
+        - backgroundColor
+    Statistics:
+      type: object
+      properties:
+        typeCourse:
+          $ref: '#/components/schemas/ChartData'
+        teacher:
+          $ref: '#/components/schemas/ChartData'
+        resource:
+          $ref: '#/components/schemas/ChartData'
+        group:
+          $ref: '#/components/schemas/ChartData'
+        state:
+          $ref: '#/components/schemas/ChartData'
+        examen:
+          $ref: '#/components/schemas/ChartData'
+      required:
+        - typeCourse
+        - teacher
+        - resource
+        - group
+        - state
+        - examen
+    StatisticsResponse:
+      type: object
+      properties:
+        data:
+          description: Données retournées par l'API
+          $ref: '#/components/schemas/Statistics'
+
+      example:
+        data:
+          typeCourse:
+            labels: [ "TD" ]
+            data: [ 76 ]
+            backgroundColor: null
+          teacher:
+            labels: [ "Autonomie", "Moustache Professeur" ]
+            data: [ 1, 75 ]
+            backgroundColor: null
+          resource:
+            labels: [ "R3.01" ]
+            data: [ 76 ]
+            backgroundColor: null
+          group:
+            labels: [ "Groupe A1", "Groupe A2" ]
+            data: [ 53, 23 ]
+            backgroundColor: null
+          state:
+            labels: [ "Validée", "Refusée", "En attente", "Non justifiée" ]
+            data: [ 14, 27, 32, 3 ]
+            backgroundColor:
+              - "rgb(25, 135, 84)"
+              - "rgb(220, 53, 69)"
+              - "rgb(108, 117, 125)"
+              - "rgb(255, 38, 53)"
+          examen:
+            labels: [ "Sans examen", "Avec examen" ]
+            data: [ 59, 17 ]
+            backgroundColor:
+              - "rgb(54, 162, 235)"
+              - "rgb(255, 205, 86)"
+
+    Holiday:
+      type: object
+      description: Période de vacances
+      properties:
+        id:
+          type: integer
+          example: 1
+        startDate:
+          type: string
+          format: date
+          description: Format attendu YYYY-MM-DD (Y-m-d)
+          example: "2026-01-01"
+        endDate:
+          type: string
+          format: date
+          description: Format attendu YYYY-MM-DD (Y-m-d)
+          example: "2026-01-01"
+        periodName:
+          type: string
+          example: "Vacances d'été"
+      required:
+        - id
+        - startDate
+        - endDate
+        - periodName
+    HolidayInput:
+      type: object
+      description: Données de création / modification d'une période
+      properties:
+        startDate:
+          type: string
+          description: Format attendu YYYY-MM-DD (Y-m-d)
+          example: "2026-01-01"
+        endDate:
+          type: string
+          description: Format attendu YYYY-MM-DD (Y-m-d)
+          example: "2026-01-01"
+        label:
+          type: string
+          example: "Vacances d'été"
+      required:
+        - startDate
+        - endDate
+        - label
+    HolidayListResponse:
+      type: object
+      description: Réponse HolidayList
+      properties:
+        data:
+          description: Données retournées par l'API
+          type: array
+          items:
+            $ref: '#/components/schemas/Holiday'
+      example:
+        data:
+          - id: 1
+            startDate: "2025-07-01"
+            endDate: "2025-08-31"
+            periodName: "Vacances d'été"
+
+    MailAlertTeacher:
+      type: object
+      description: Cas utilisateur Teacher
+      properties:
+        mailAlertTeacher:
+          type: boolean
+          example: true
+      required:
+        - mailAlertTeacher
+    MailAlertEducationalManager:
+      type: object
+      description: Cas utilisateur Responsable pédagogique
+      properties:
+        mailAlertTeacher:
+          type: boolean
+          example: true
+        mailAlertEducationalManager:
+          type: boolean
+          example: true
+      required:
+        - mailAlertTeacher
+        - mailAlertEducationalManager
+    MailAlertRequest:
+      description: Configuration des alertes mail
+      oneOf:
+        - $ref: '#/components/schemas/MailAlertTeacher'
+        - $ref: '#/components/schemas/MailAlertEducationalManager'
+
+    ApiMessage:
+      type: object
+      description: Message retourné par l'API
+      properties:
+        type:
+          type: string
+          enum:
+            - Error
+            - Warning
+            - Success
+        message:
+          type: string
+      required:
+        - type
+        - message
+    ApiResponse:
+      type: object
+      description: Réponse générique de l'API
+      properties:
+        data:
+          description: Données retournées par l'API
+          oneOf:
+            - type: array
+              items: { }
+            - type: object
+        messages:
+          type: array
+          description: Messages informatifs (optionnel)
+          items:
+            $ref: '#/components/schemas/ApiMessage'
+      required:
+        - data
+
