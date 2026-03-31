@@ -1,0 +1,67 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: app_db
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d app_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  liquibase_schema:
+    build:
+      context: ../liquibase
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ../../SQL:/liquibase/changelog
+    environment:
+      LIQUIBASE_COMMAND_URL: jdbc:postgresql://db:5432/app_db
+      LIQUIBASE_COMMAND_USERNAME: user
+      LIQUIBASE_COMMAND_PASSWORD: password
+      LIQUIBASE_COMMAND_CHANGELOG_FILE: CodeDB.sql
+    command: update
+    restart: no
+
+  liquibase_data:
+    build:
+      context: ../liquibase
+    depends_on:
+      liquibase_schema:
+        condition: service_completed_successfully
+    volumes:
+      - ../../SQL:/liquibase/changelog
+    environment:
+      LIQUIBASE_COMMAND_URL: jdbc:postgresql://db:5432/app_db
+      LIQUIBASE_COMMAND_USERNAME: user
+      LIQUIBASE_COMMAND_PASSWORD: password
+      LIQUIBASE_COMMAND_CHANGELOG_FILE: DataDemo.sql
+    command: update
+    restart: no
+
+  app:
+    build:
+      context: ../../
+    ports:
+      - "8000:8000"
+    depends_on:
+      liquibase_data:
+        condition: service_completed_successfully
+    environment:
+      DB_HOST_PROD: db
+      DB_USER_PROD: user
+      DB_PASS_PROD: password
+      DB_PORT_PROD: 5432
+      DB_NAME_PROD: app_db
+      PROD: false
+      DB_TEST: false
+      MAILER_HOST: smtp.gmail.com
+      MAILER_MAIL: suivi.absences@gmail.com
+      MAILER_PASSWORD: 'utah jvpz ehui nhvk'
+      MAILER_PORT: 587
