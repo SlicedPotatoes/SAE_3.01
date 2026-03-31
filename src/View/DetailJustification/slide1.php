@@ -63,11 +63,11 @@ $sizeCol = 12 / $nbCol;
                                         type="button"
                                         data-bs-toggle="modal"
                                         data-bs-target="#fileModal"
-                                        data-bs-url="<?= '/file.php?idFile=' . $file->getIdFile() ?>"
+                                        data-bs-url="<?= '/fichier/' . $file->getIdFile() ?>"
                                         data-bs-file="<?= $file->getFileName() ?>"
                                     ></button>
                                     <!-- Télécharger -->
-                                    <a class="btn btn-outline-primary bi bi-download" title="Télécharger" href="/file.php?idFile=<?= $file->getIdFile() ?>" download></a>
+                                    <a class="btn btn-outline-primary bi bi-download" title="Télécharger" href="/fichier/<?= $file->getIdFile() ?>" download></a>
                                 </div>
                             </li>
                         <?php endforeach; ?>

@@ -32,17 +32,20 @@ class Renderer {
     /**
      * Permet le rendu d'une view
      *
-     * @param string $view      Nom du fichier de la view
+     * @param ?string $view     Nom du fichier de la view
      * @param string $title     Titre de la page
      * @param array $data       Donnée a envoyé à la vue, sous forme de tableau associatif
      * @param string $layout    Nom du layout (squelette)
      * @return void
      */
-    public static function render(string $view, string $title, array $data = [], string $layout = 'main.php'): void {
+    public static function render(?string $view, string $title, array $data = [], string $layout = 'main.php'): void {
         extract($data);
-        ob_start();
-        require Renderer::$viewsDirectory . $view;
-        $content = ob_get_clean();
+
+        if($view !== null) {
+            ob_start();
+            require Renderer::$viewsDirectory . $view;
+            $content = ob_get_clean();
+        }
 
         require Renderer::$viewsDirectory . 'Layouts/' . $layout;
     }

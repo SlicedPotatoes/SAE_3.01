@@ -208,6 +208,12 @@ $router->addRoute(RequestMethod::POST, '/api/justifications', 'StudentProfileCon
         ->requireLogin()
         ->addAuthorization(AccountType::Student);
 
+// FileController
+$router->addRoute(RequestMethod::GET, '/fichier/{id:int}', 'FileController@showFile')
+        ->requireLogin()
+        ->addAuthorization(AccountType::Student)
+        ->addAuthorization(AccountType::EducationalManager);
+
 // TODO: Route de test, à delete
 $router->addRoute(RequestMethod::GET, '/api/test', 'TestApiController@getTest');
 $router->addRoute(RequestMethod::POST, '/api/test', 'TestApiController@postTest');
