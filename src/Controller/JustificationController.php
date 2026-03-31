@@ -59,7 +59,7 @@ class JustificationController
             }
 
             Renderer::render(
-                'DetailJustification/view.php',
+                'detailJustification.php',
                 'Détails de la justification',
                 [
                     'justification' => $justification,

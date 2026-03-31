@@ -30,7 +30,7 @@ Renderer::pushAsset('head', '<link rel="stylesheet" href="/style/filePreviewModa
 Renderer::pushAsset('script', '<script type="module" src="/js/pages/detail-justification/main.js"></script>');
 Renderer::pushAsset('script', '<script type="module" src="/js/pages/detail-justification/file-preview-modal.js"></script>');
 
-require_once __DIR__ . "/../Component/Modal/filePreviewModal.php";
+require_once __DIR__ . "/Component/Modal/filePreviewModal.php";
 ?>
 
 <div class="card scroll-parent p-3">
@@ -44,8 +44,8 @@ require_once __DIR__ . "/../Component/Modal/filePreviewModal.php";
     </div>
 
     <?php
-    require 'slide1.php';
-    require 'slide2.php';
-    if ($isEducationManager): require 'slide3.php'; endif;
+    require_once __DIR__ . '/Component/Pages/detailJustification/slide1.php';
+    require_once __DIR__ . '/Component/Pages/detailJustification/slide2.php';
+    if ($isEducationManager): require_once __DIR__ . '/Component/Pages/detailJustification/slide3.php'; endif;
     ?>
 </div>
