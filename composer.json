@@ -23,7 +23,8 @@
         "respect/validation": "^2.4"
     },
     "require-dev": {
-      "phpunit/phpunit": "^12.0"
+      "phpunit/phpunit": "^12.0",
+        "behat/behat": "*"
     },
     "scripts": {
         "post-install-cmd": [
