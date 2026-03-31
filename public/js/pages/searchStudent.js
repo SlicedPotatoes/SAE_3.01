@@ -45,6 +45,11 @@ function initEvents() {
     document.querySelectorAll(".apply-filters").forEach(btn => {
         btn.addEventListener("click", () => applyFilters());
     });
+    document.getElementById("searchInput").addEventListener('keydown', (e) => {
+        if(e.key === 'Enter') {
+            applyFilters();
+        }
+    })
 }
 
 /**
