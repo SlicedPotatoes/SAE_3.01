@@ -54,7 +54,7 @@ Renderer::pushAsset('script', '<script type="module" src="/js/pages/justificatio
 
                 <?php
                 $prefix = "todo";
-                require __DIR__ . "/Component/filters/filterJustification.php";
+                require __DIR__ . "/Component/Filters/filterJustification.php";
                 ?>
 
                 <div id="justificationContainer"
@@ -76,7 +76,7 @@ Renderer::pushAsset('script', '<script type="module" src="/js/pages/justificatio
 
                 <?php
                 $prefix = "done";
-                require __DIR__ . "/Component/filters/filterJustification.php";
+                require __DIR__ . "/Component/Filters/filterJustification.php";
                 ?>
 
                 <div id="proofDoneContainer"

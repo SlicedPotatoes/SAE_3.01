@@ -104,7 +104,7 @@ Renderer::pushAsset('script', '<script type="module" src="/js/pages/studentProfi
 
                 <?php
                 $showStateFilter = true;
-                require __DIR__ . "/Component/filters/filterJustification.php";
+                require __DIR__ . "/Component/Filters/filterJustification.php";
                 ?>
 
                 <div id="justificationContainer"
@@ -124,7 +124,7 @@ Renderer::pushAsset('script', '<script type="module" src="/js/pages/studentProfi
 
             <div class="scroll-parent h-100">
 
-                <?php require __DIR__ . "/Component/filters/filterAbsence.php"; ?>
+                <?php require __DIR__ . "/Component/Filters/filterAbsence.php"; ?>
 
                 <div id="absenceContainer"
                      class="scrollable"

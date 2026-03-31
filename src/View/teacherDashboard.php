@@ -8,7 +8,7 @@
         <div class="scroll-parent h-100">
 
             <?php
-            require __DIR__ . "/Component/filters/filterTimeslot.php";
+            require __DIR__ . "/Component/Filters/filterTimeslot.php";
             ?>
 
             <div id="timeslotContainer"
