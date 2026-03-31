@@ -1,11 +1,11 @@
 <!--Page permettant au secrétaire de faire l'import VT-->
 
-<div class="card p-3 flex-fill d-flex flex-column" style="min-height: 0">
+<div class="card p-3 scroll-parent">
 
     <form method="post" enctype="multipart/form-data"
-          class="d-flex flex-column flex-grow-1" style="min-height: 0;">
-        <div class="card border-2 border-secondary upload_dropZone flex-grow-1 mb-3 d-flex"
-             style="border-style: dashed; min-height: 0;">
+          class="scroll-parent">
+        <div class="card border-2 border-secondary upload_dropZone mb-3 scrollable"
+             style="border-style: dashed;">
 
             <div class="text-center p-4 m-auto d-flex flex-column justify-content-center">
 
@@ -21,7 +21,7 @@
                 </p>
                 <input id="import_vt"
                        name="vt_file"
-                       class="position-absolute invisible"
+                       class="position-absolute d-none"
                        type="file"
                        accept=".csv,text/csv"/>
                 <label class="btn btn-uphf m-5 mb-3 mt-1 p-2" for="import_vt">
@@ -42,7 +42,7 @@
         </div>
 
         <input id="import_submit"
-               class="btn btn-primary btn-uphf mt-3 align-self-end"
+               class="btn btn-primary btn-uphf mt-3 align-self-stretch align-self-sm-end"
                type="submit"
                value="Importer dans la base de données">
     </form>
