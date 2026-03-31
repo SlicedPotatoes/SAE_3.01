@@ -19,7 +19,7 @@ class ImportVTController
      */
     public static function showImportVT(): void
     {
-        Renderer::render('ImportVT.html', "Importation de VT");
+        Renderer::render('ImportVT.php', "Importation de VT");
     }
 
     /**
@@ -43,6 +43,6 @@ class ImportVTController
             );
         }
 
-        Renderer::render('ImportVT.html', "Importation de VT");
+        Renderer::render('ImportVT.php', "Importation de VT");
     }
 }

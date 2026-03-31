@@ -1,5 +1,13 @@
-<!--Page permettant au secrétaire de faire l'import VT-->
+<?php
+/**
+ * Page permettant aux secrétaires / RP de faire l'import VT
+ */
 
+use Uphf\GestionAbsence\Utils\Renderer;
+
+Renderer::pushAsset('script', '<script type="module" src="/js/pages/importVT.js"></script>');
+
+?>
 <div class="card p-3 scroll-parent">
 
     <form method="post" enctype="multipart/form-data"
@@ -47,7 +55,3 @@
                value="Importer dans la base de données">
     </form>
 </div>
-
-<script src="/script/importVT.js"></script>
-
-
