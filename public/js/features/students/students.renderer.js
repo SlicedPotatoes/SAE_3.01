@@ -19,7 +19,7 @@ export function renderStudents(container, students) {
         const id         = student.idAccount;
 
         return `
-        <div class="card mt-2">
+        <div class="card mt-2 bg-transparent">
             <div class="card-body">
 
                 <div class="d-flex align-items-center">
