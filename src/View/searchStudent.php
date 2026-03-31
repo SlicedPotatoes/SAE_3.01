@@ -29,6 +29,9 @@ require __DIR__ . "/Component/header.php";
                     </option>
                 <?php endforeach; ?>
             </select>
+            <button class="btn btn-uphf apply-filters" type="button">
+                <i class="bi bi-search"></i>
+            </button>
         </div>
     </div>
 

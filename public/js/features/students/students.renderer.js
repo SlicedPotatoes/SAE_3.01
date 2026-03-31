@@ -1,6 +1,5 @@
 /**
  * Render la liste des étudiants dans le container donné.
- * Même structure desktop/mobile que lineStudent.php
  */
 export function renderStudents(container, students) {
 

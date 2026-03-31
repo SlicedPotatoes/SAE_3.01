@@ -2,8 +2,6 @@ import { fetchStudents } from "../features/students/students.service.js";
 import { renderStudents } from "../features/students/students.renderer.js";
 import { showLoader } from "../core/utils.js";
 
-let debounceTimer;
-
 /**
  * Permet de charger les étudiants depuis l'api et de lancer les fonctions d'affichage
  *
@@ -41,27 +39,8 @@ function applyFilters() {
  * Fonction qui permet d'initialiser les différents événements
  */
 function initEvents() {
-    const searchInput = document.getElementById("searchInput");
-    const groupSelect = document.getElementById("groupSelect");
-
-    // Frappe → debounce 500ms
-    searchInput.addEventListener("input", () => {
-        clearTimeout(debounceTimer);
-        debounceTimer = setTimeout(applyFilters, 500);
-    });
-
-    // Entrée → immédiat
-    searchInput.addEventListener("keydown", (e) => {
-        if (e.key === "Enter") {
-            clearTimeout(debounceTimer);
-            applyFilters();
-        }
-    });
-
-    // Changement groupe → immédiat
-    groupSelect.addEventListener("change", () => {
-        clearTimeout(debounceTimer);
-        applyFilters();
+    document.querySelectorAll(".apply-filters").forEach(btn => {
+        btn.addEventListener("click", () => applyFilters());
     });
 }
 
