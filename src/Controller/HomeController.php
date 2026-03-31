@@ -40,7 +40,7 @@ class HomeController {
                     exit();
                 default:
                     Notification::addNotification(NotificationType::Error, "Ce type de compte n'est pas encore fonctionnel");
-                    Renderer::render403();
+                    ErrorController::error403();
             }
         }
         else {

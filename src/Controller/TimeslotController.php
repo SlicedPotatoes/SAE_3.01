@@ -29,7 +29,7 @@ class TimeslotController
         try {
             $timeslot = TimeslotService::getTimeSlot($time, $resourceId, $teacherId, $group);
         } catch (EntityNotFoundException $e) {
-            Renderer::render404();
+            ErrorController::error404();
             return;
         }
 

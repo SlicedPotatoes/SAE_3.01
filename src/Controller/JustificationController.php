@@ -71,11 +71,11 @@ class JustificationController
         }
         catch (EntityNotFoundException) {
             Notification::addNotification(NotificationType::Error, "Le justificatif demandé n'existe pas");
-            Renderer::render404();
+            ErrorController::error404();
         }
         catch (\Exception $e) {
             Notification::addNotification(NotificationType::Error, "Vous n'avez pas l'autorisation de voir ce justificatif");
-            Renderer::render403();
+            ErrorController::error403();
         }
     }
 }

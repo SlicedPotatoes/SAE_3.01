@@ -123,7 +123,7 @@ class ChangePasswordController {
     public static function showTokenChangePassword($params): void {
         if(!AccountService::isValidToken($params['token'])) {
             Notification::addNotification(NotificationType::Error, "Token expiré");
-            Renderer::render403();
+            ErrorController::error403();
             return;
         }
 
@@ -152,7 +152,7 @@ class ChangePasswordController {
             AccountService::changePasswordWithToken($params['token'], $_POST['newPassword']);
             Notification::addNotification(NotificationType::Success, "Votre mot de passe a bien été changé !");
 
-            Renderer::render('../ViewOLD/login.php', 'Connexion');
+            Renderer::render('login.php', 'Connexion');
             return;
         }
         catch (NestedValidationException $e) {
@@ -165,7 +165,7 @@ class ChangePasswordController {
         }
         catch (EntityNotFoundException $e) {
             Notification::addNotification(NotificationType::Error, "Token expiré");
-            Renderer::render403();
+            ErrorController::error403();
             return;
         }
 

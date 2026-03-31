@@ -46,7 +46,7 @@ class StudentProfileController
             }
             catch (EntityNotFoundException $e){
                 Notification::addNotification(NotificationType::Error, "L'étudiant demandé n'existe pas");
-                Renderer::render404();
+                ErrorController::error404();
             }
         }
 }

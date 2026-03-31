@@ -3,8 +3,8 @@
 namespace Uphf\GestionAbsence\Utils\Router;
 
 use RuntimeException;
+use Uphf\GestionAbsence\Controller\ErrorController;
 use Uphf\GestionAbsence\Model\AuthManager;
-use Uphf\GestionAbsence\Utils\Renderer;
 
 /**
  * Routeur basique permettant de rediriger vers la méthode d'un controller
@@ -50,7 +50,7 @@ class Router {
 
             // Il y a un match, vérification des authorisations
             if(!$this->checkAuthorization($route)) {
-                Renderer::render403();
+                ErrorController::error403();
                 return;
             }
 
@@ -76,7 +76,7 @@ class Router {
             return;
         }
 
-        Renderer::render404();
+        ErrorController::error404();
     }
 
     /**
