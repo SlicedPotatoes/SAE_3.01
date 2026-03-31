@@ -38,6 +38,12 @@ class JustificationHydrator {
         );
     }
 
+    /**
+     * Récupérer un object File à partir de données brutes
+     *
+     * @param array $raw
+     * @return File
+     */
     public static function unserializeFile(array $raw): File {
         return new File(
             $raw["idfile"],

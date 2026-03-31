@@ -23,7 +23,7 @@ class SearchStudentControllerApi
     public static function getSearchStudent(): void {
         try {
             SearchStudentValidator::validationFilterGetStudents($_GET);
-            $students = Student::jsonSerializeStudent(AccountService::getFilteredStudents($_GET));
+            $students = AccountService::getFilteredStudents($_GET);
 
             new ResponseApi(HttpStatus::OK, $students)->done();
         }

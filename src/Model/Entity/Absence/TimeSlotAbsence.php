@@ -20,17 +20,6 @@ class TimeSlotAbsence implements JsonSerializable
     private Resource $resource;
     private array|null $studentAbsencesList;
 
-    /**
-     * @param DateTime $time
-     * @param bool $examen
-     * @param string $duration
-     * @param int $countStudentsAbsences
-     * @param int $countStudentsAbsencesJustified
-     * @param Teacher $teacher
-     * @param CourseType $courseType
-     * @param string $group
-     * @param Resource $resource
-     */
     public function __construct(
       DateTime $time,
       bool $examen,

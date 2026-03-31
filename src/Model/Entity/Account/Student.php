@@ -197,15 +197,4 @@ class Student extends Account implements JsonSerializable{
             "groupStudent" => $this->groupStudent
         );
     }
-
-    public static function jsonSerializeStudent(array $students): array
-    {
-        $result = [];
-
-        foreach ($students as $student) {
-            $result[] = $student->jsonSerialize();
-        }
-
-        return $result;
-    }
 }

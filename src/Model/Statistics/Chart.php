@@ -69,6 +69,7 @@ class Chart {
     /**
      * Renvoie les options pour un Pie Chart classique
      *
+     * @param $title
      * @return array
      */
     public static function getOptionsForPieChart($title): array {

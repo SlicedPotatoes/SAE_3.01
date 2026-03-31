@@ -2,13 +2,12 @@
 
 namespace Uphf\GestionAbsence\Model\Entity\Comment;
 
-use DateTime;
-use stdClass;
+use JsonSerializable;
 
 /**
  * Classe Comment représentant un commentaire prédéfini
  */
-class Comment
+class Comment implements JsonSerializable
 {
     private int $idComment;
     private string $textComment;
@@ -29,19 +28,10 @@ class Comment
         return $this->textComment;
     }
 
-    public function jsonSerialize(){
-        $json = new stdClass();
-        $json->idComment = $this->idComment;
-        $json->textComment = $this->textComment;
-        return $json;
+    public function jsonSerialize(): array {
+        return [
+            'idComment' => $this->idComment,
+            'textComment' => $this->textComment,
+        ];
     }
-
-    public static function jsonSerializeComment(array $Comments){
-        $result = [];
-        foreach($Comments as $Comment){
-            $result[] = $Comment->jsonSerialize();
-        }
-        return $result;
-    }
-
 }

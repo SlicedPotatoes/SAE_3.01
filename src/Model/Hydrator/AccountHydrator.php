@@ -5,7 +5,6 @@ namespace Uphf\GestionAbsence\Model\Hydrator;
 use Uphf\GestionAbsence\Model\Entity\Account\Account;
 use Uphf\GestionAbsence\Model\Entity\Account\Student;
 use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
-use Uphf\GestionAbsence\Model\Entity\Account\GroupStudent;
 use Uphf\GestionAbsence\Model\Entity\Account\Teacher;
 
 /**
@@ -49,20 +48,7 @@ class AccountHydrator {
             $raw['email'],
             AccountType::from($raw['accounttype']),
             $raw['studentnumber'],
-            self::unserializeGroupStudent($raw)
-        );
-    }
-
-    /**
-     * Récupérer un objet GroupStudent à partir de données brutes
-     *
-     * @param array $raw
-     * @return GroupStudent
-     */
-    public static function unserializeGroupStudent(array $raw): GroupStudent {
-        return new GroupStudent(
-            $raw['groupid'],
-            $raw['grouplabel']
+            GroupStudentHydrator::unserializeGroupStudent($raw)
         );
     }
 

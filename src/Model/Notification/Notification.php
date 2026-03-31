@@ -2,8 +2,6 @@
 
 namespace Uphf\GestionAbsence\Model\Notification;
 
-use stdClass;
-
 /**
  * Système de notification
  *
