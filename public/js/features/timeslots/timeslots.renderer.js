@@ -13,8 +13,8 @@ import {
 export function renderTimeSlots(container, data, showTeacher = false) {
     if (!data || data.length === 0) {
         container.innerHTML = `
-            <div class="text-center p-3">
-                Aucun créneau
+            <div class="d-flex flex-column align-items-center justify-content-center h-100">
+                <p class="fs-1 text-body-secondary p-3">Aucun créneau</p>
             </div>
         `;
         return;

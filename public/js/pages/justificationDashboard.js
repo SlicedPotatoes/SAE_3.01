@@ -32,7 +32,10 @@ async function loadJustificationsToDo(query = "") {
         });
     } catch (error) {
         console.error(error);
-        container.innerHTML = `<div class="text-center p-3">Erreur</div>`;
+        container.innerHTML = `
+            <div class="d-flex flex-column align-items-center justify-content-center h-100">
+                <p class="fs-1 text-body-secondary p-3">Erreur lors du chargement des justificatifs</p>
+            </div>`
     }
 }
 
@@ -59,7 +62,10 @@ async function loadJustificationsDone(query = "") {
         });
     } catch (error) {
         console.error(error);
-        container.innerHTML = `<div class="text-center p-3">Erreur</div>`;
+        container.innerHTML = `
+            <div class="d-flex flex-column align-items-center justify-content-center h-100">
+                <p class="fs-1 text-body-secondary p-3">Erreur lors du chargement des justificatifs</p>
+            </div>`
     }
 }
 

@@ -20,8 +20,8 @@ export function renderAbsences(container, data, options = {}) {
 
     if (!data || data.length === 0) {
         container.innerHTML = `
-            <div class="text-center p-3">
-                ${emptyMessage}
+            <div class="d-flex flex-column align-items-center justify-content-center h-100">
+                <p class="fs-1 text-body-secondary p-3">${emptyMessage}</p>
             </div>
         `;
         return;
