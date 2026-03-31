@@ -16,21 +16,11 @@ class SearchStudentController {
      * @return void
      */
     public static function showSearchStudent(): void {
-        $filters = [
-            'search' => null,
-            'groupStudent' => null
-        ];
-
-        $students = AccountService::getFilteredStudents($filters);
         $groupsStudent = GroupService::selectAllGroup();
 
-        Renderer::render(
-            '../ViewOLD/searchStudent.php',
+        Renderer::render('searchStudent.php',
             'Recherche étudiant',
-            [
-                'students' => $students,
-                'groups' => $groupsStudent
-            ]
+            ["groupStudent" => $groupsStudent]
         );
     }
 }
