@@ -1,5 +1,9 @@
 <?php
-/** Front-end pour le tableau de bord professeur */
+/** Front-end pour le tableau de bord professeur **/
+
+use Uphf\GestionAbsence\Utils\Renderer;
+
+Renderer::pushAsset('script', '<script type="module" src="/js/pages/teacherDashboard.js"></script>')
 ?>
 
 <div class="card-md p-md-3 scroll-parent">
@@ -20,5 +24,3 @@
         </div>
     </div>
 </div>
-
-<script type="module" src="/js/pages/teacherDashboard.js"></script>
