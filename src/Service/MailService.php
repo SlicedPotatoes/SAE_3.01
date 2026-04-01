@@ -3,9 +3,12 @@
 namespace Uphf\GestionAbsence\Service;
 
 use DateTime;
+use Exception;
 use Uphf\GestionAbsence\Database\Update\MailAlertUpdater;
+use Uphf\GestionAbsence\Model\AuthManager;
 use Uphf\GestionAbsence\Model\Entity\Absence\Absence;
 use Uphf\GestionAbsence\Model\Entity\Account\Account;
+use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
 use Uphf\GestionAbsence\Model\Entity\Account\Student;
 use Uphf\GestionAbsence\Model\Entity\Justification\Justification;
 use Uphf\GestionAbsence\Model\Mailer;
@@ -37,21 +40,29 @@ class MailService
     }
 
     /**
-     * Modifie les options d'alerte par mail d'un compte d'un professeur ou d'un responsable pédagogique
+     * Modifie les options d'alerte par mail d'un compte d'un professeur ou d'un responsable pédagogique actuellement connecté
      *
-     * @param Account $account
      * @param bool $mailAlertTeacher default true
      * @param bool $mailAlertEducationalManager default true
      * @return void
+     * @throws Exception
      */
-    public static function changeMailAlert(Account  $account,
-                                           bool $mailAlertTeacher = true,
-                                           bool $mailAlertEducationalManager = true) : void
+    public static function changeMailAlert(bool $mailAlertTeacher,
+                                           bool $mailAlertEducationalManager) : void
     {
+        $account = AuthManager::getAccount();
+
+        if(!(AuthManager::isRole(AccountType::Teacher) || AuthManager::isRole(AccountType::EducationalManager))) {
+            throw new Exception("Only teacher and educational manager can change mail alert");
+        }
+
         $typeAccount = $account->getAccountType();
         $idAccount = $account->getIdAccount();
 
         MailAlertUpdater::updateMailAlert($typeAccount, $idAccount, $mailAlertTeacher, $mailAlertEducationalManager);
+
+        AuthManager::setNotificationMail('teacher', $mailAlertTeacher);
+        AuthManager::setNotificationMail("educationalManager", $mailAlertEducationalManager);
     }
 
     /**

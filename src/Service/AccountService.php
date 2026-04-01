@@ -5,11 +5,13 @@ namespace Uphf\GestionAbsence\Service;
 use Uphf\GestionAbsence\Database\Delete\TokenDelete;
 use Uphf\GestionAbsence\Database\Insert\TokenInsertor;
 use Uphf\GestionAbsence\Database\Select\AccountSelector;
+use Uphf\GestionAbsence\Database\Select\MailAlertSelector;
 use Uphf\GestionAbsence\Database\Select\SelectBuilder\StudentSelectBuilder;
 use Uphf\GestionAbsence\Database\Select\StudentSelector;
 use Uphf\GestionAbsence\Database\Update\PasswordUpdate;
 use Uphf\GestionAbsence\Exception\BadCredentialException;
 use Uphf\GestionAbsence\Exception\EntityNotFoundException;
+use Uphf\GestionAbsence\Model\AuthManager;
 use Uphf\GestionAbsence\Model\Entity\Account\Account;
 use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
 use Uphf\GestionAbsence\Model\Entity\Account\Student;
@@ -25,17 +27,17 @@ use Uphf\GestionAbsence\Model\Entity\Account\Student;
  */
 class AccountService {
     /**
-     * Permet de récupérer un object Account pour un email et mot de passe donnés
+     * Permet de login un utilisateur et le mettre en session
      *
-     * Dans le cas d'un compte de type étudiant, un object Student est retourné
+     * Dans le cas d'un compte Teacher ou EducationManager, les préférences de notification mail sont également enregistrer dans la session.
      *
      * @param $email string
      * @param $password string
-     * @return Account
+     * @return void
      * @throws BadCredentialException En cas de mot de passe incorrect
      * @throws EntityNotFoundException Si le compte n'existe pas
      */
-    public static function loginAccount(string $email, string $password): Account {
+    public static function loginAccount(string $email, string $password): void {
         $account = AccountSelector::getAccountByEmail($email);
 
         if($account === null) {
@@ -49,7 +51,12 @@ class AccountService {
             $account = StudentSelector::getStudentById($account->getIdAccount());
         }
 
-        return $account;
+        AuthManager::login($account->getAccountType(), $account);
+
+        if(AuthManager::isRole(AccountType::Teacher) || AuthManager::isRole(AccountType::EducationalManager)) {
+            AuthManager::setNotificationMail('teacher', MailAlertSelector::MailAlertTeacherIsActivated($account->getIdAccount()));
+            AuthManager::setNotificationMail("educationalManager", MailAlertSelector::MailAlertEducationalManagerIsActivated($account->getIdAccount()));
+        }
     }
 
     /**

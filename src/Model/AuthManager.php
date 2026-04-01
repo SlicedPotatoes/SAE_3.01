@@ -93,6 +93,18 @@ class AuthManager {
         self::loadFromSession();
     }
 
+    public static function setNotificationMail(string $key, bool $val): void {
+        $_SESSION['notification'][$key] = $val;
+    }
+
+    public static function getNotificationMail(string $key): string {
+        if(isset($_SESSION['notification'][$key])) {
+            return $_SESSION['notification'][$key];
+        }
+
+        return false;
+    }
+
     /**
      * Détruit la session
      *

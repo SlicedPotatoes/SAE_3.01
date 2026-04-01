@@ -23,12 +23,11 @@ class ChangerMailAlertControllerApi
      */
     public static function putMailAlert(): void
     {
-        $account = AuthManager::getAccount();
         $data = json_decode(file_get_contents("php://input"), true);
 
         try {
             ChangerMailAlertValidator::validationMailAlert($data);
-            MailService::changeMailAlert($account, $data['mailAlertTeacher'], $data['mailAlertEducationalManager']);
+            MailService::changeMailAlert($data['mailAlertTeacher'], $data['mailAlertEducationalManager']);
             new ResponseApi(HttpStatus::NO_CONTENT)->done();
             return;
         }

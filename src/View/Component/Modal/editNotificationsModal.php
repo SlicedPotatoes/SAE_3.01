@@ -25,12 +25,12 @@ use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
             <div class="modal-body">
                 <div class="form-switch mb-2">
                     <input class="form-check-input"
-                    id="notif1"
-                           type="checkbox"
-                           role="switch"
-                    name="notifications[mailAlertTeacher]"
-                    value="1"
-                    checked="checked">
+                        id="notif1"
+                        type="checkbox"
+                        role="switch"
+                        name="notifications[mailAlertTeacher]"
+                        value="1"
+                        <?= AuthManager::getNotificationMail('teacher') ? 'checked' : '' ?>>
                     <label class="form-check-label" for="notif1">
                         Notification des absences en examen justifié
                     </label>
@@ -44,7 +44,7 @@ use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
                            role="switch"
                            name="notifications[mailAlertEducationalManager]"
                            value="1"
-                           checked="checked">
+                           <?= AuthManager::getNotificationMail('educationalManager') ? 'checked' : '' ?>>
                     <label class="form-check-label" for="notif2">
                         Notification d’absence prolongée d’un étudiant (> 1 semaine)
                     </label>

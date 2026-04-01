@@ -40,14 +40,7 @@ class AuthentificationController {
     public static function postLogin(): void {
         try {
             AuthentificationValidator::validateLogin($_POST);
-
-            $account = AccountService::loginAccount($_POST["email"], $_POST["password"]);
-
-            // Connexion au niveau de la session
-            AuthManager::login(
-                $account->getAccountType(),
-                $account
-            );
+            AccountService::loginAccount($_POST["email"], $_POST["password"]);
 
             header("Location: /");
             return;
