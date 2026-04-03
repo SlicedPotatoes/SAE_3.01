@@ -1,0 +1,7 @@
+default:
+  formatters:
+    pretty: true
+    allure: true
+
+  extensions:
+    Allure\Behat\AllureFormatterExtension: {}
