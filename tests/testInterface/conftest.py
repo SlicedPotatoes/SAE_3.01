@@ -1,23 +1,69 @@
-
 import pytest
+import os
+from datetime import datetime
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 
-@pytest.fixture
+
+# --- CONFIGURATION DU NAVIGATEUR ---
+
+@pytest.fixture(scope="function")
 def driver():
-    # SETUP : On prépare le navigateur
-    browser = webdriver.Chrome()
-    yield browser # Le test s'exécute ici
-    # TEARDOWN : On nettoie après le test
-    browser.quit()
+    """Fixture pour initialiser le navigateur avant chaque test."""
+    options = Options()
+    # Si tu veux utiliser Opera, décommente les lignes suivantes :
+    # options.binary_location = r"C:\Path\To\opera.exe" 
 
-def test_ma_page_accueil(driver):
-    driver.get("http://localhost:80")
-    assert "Connexion" in driver.title
+    driver = webdriver.Chrome(options=options)
+    driver.implicitly_wait(10)
+
+    yield driver
+
+    driver.quit()
+
+
+# --- CONFIGURATION AUTOMATIQUE DU RAPPORT (Lancement auto) ---
+
+def pytest_configure(config):
+    """
+    Force les options du rapport HTML sans avoir à les taper dans le terminal.
+    Le CSS sera intégré (self-contained) et le nom du fichier est personnalisé.
+    """
+    if not config.getoption("--html"):
+        # On définit le chemin du rapport (crée un dossier reports s'il n'existe pas)
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        reports_dir = os.path.join(base_dir, "reports")
+        os.makedirs(reports_dir, exist_ok=True)
+        config.option.htmlpath = os.path.join(reports_dir, f"rapport_sae_{datetime.now().strftime('%Y%m%d_%H%M')}.html")
+        config.option.self_contained_html = True
+
+
+# --- GESTION DES SCREENSHOTS EN CAS D'ÉCHEC ---
 
 @pytest.hookimpl(hookwrapper=True)
 def pytest_runtest_makereport(item, call):
+    """
+    Capte le résultat de chaque test et prend une capture d'écran si ça échoue.
+    L'image est ensuite injectée directement dans le rapport HTML.
+    """
+    pytest_html = item.config.pluginmanager.getplugin("pytest-html")
     outcome = yield
     report = outcome.get_result()
-    if report.when == 'call' and report.failed:
-        driver = item.funcargs["driver"]
-        screenshot = driver.get_screenshot_as_base64()
+    extra = getattr(report, "extra", [])
+
+    if report.when == "call" and report.failed:
+        driver = item.funcargs.get("driver")
+        if driver:
+            node_id = item.nodeid.replace("::", "_").replace("/", "_")
+            # Génère l'image en base64 (sans écrire de fichier sur le disque)
+            screenshot_b64 = driver.get_screenshot_as_base64()
+            html = ('<div>'
+                    '<img src="data:image/png;base64,%s" alt="screenshot" '
+                    'style="width:304px;height:228px;" onclick="window.open(this.src)" align="right"/>'
+                    '</div>') % screenshot_b64
+            extra.append(pytest_html.extras.html(html))
+        report.extra = extra
+
+
+def pytest_html_report_title(report):
+    report.title = "SAE - Rapport de Tests d'interface"
