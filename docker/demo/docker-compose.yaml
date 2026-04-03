@@ -7,6 +7,8 @@ services:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
       POSTGRES_DB: app_db
+    volumes:
+      - db_data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U user -d app_db"]
       interval: 5s
@@ -65,3 +67,6 @@ services:
       MAILER_MAIL: suivi.absences@gmail.com
       MAILER_PASSWORD: 'utah jvpz ehui nhvk'
       MAILER_PORT: 587
+
+volumes:
+    db_data:
