@@ -24,7 +24,8 @@
     },
     "require-dev": {
       "phpunit/phpunit": "^12.0",
-        "behat/behat": "*"
+        "behat/behat": "*",
+        "allure-framework/allure-behat": "dev-master"
     },
     "scripts": {
         "post-install-cmd": [
@@ -36,5 +37,11 @@
             "php get_chartjs.php"
         ],
         "test": "phpunit"
-    }
+    },
+      "repositories": [
+        {
+          "url": "https://github.com/allure-framework/allure-behat.git",
+          "type": "vcs"
+        }
+      ]
 }
