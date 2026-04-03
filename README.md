@@ -58,3 +58,40 @@ docker compose down
 ```bash
 docker system prune -a --volumes -f
 ```
+
+## Déploiement (mode test)
+
+### Information
+
+Le mode test permet d'avoir une base de données avec des données prédictive pour les tests unitaires et d'intégration.
+
+### Prérequis
+
+Avant de lancer le projet, assurez-vous d'avoir Docker d'installé sur votre machine.
+
+### Lancer la base de données de test
+
+Depuis la racine du projet, exécutez :
+
+```bash
+cd docker/test
+docker compose up --build
+```
+
+### Accéder à la base de données
+
+Une fois lancée, la base de données est accessible à l'adresse :
+
+```
+localhost:5433
+```
+
+### Arrêter la base de données
+
+A la fin de vos tests, vous pouvez arrêter la base de données en exécutant :
+
+```bash
+docker compose down
+```
+
+Les données de la base de données de test ne sont pas persistantes, elles seront réinitialisées à chaque lancement du conteneur.
