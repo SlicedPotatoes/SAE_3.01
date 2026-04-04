@@ -35,6 +35,9 @@ class FeatureContext implements Context
         $dotenv->load();
 
         $abs = [];
+        $abs1 = ["Identifiant" => "22400227","Date"=>"2026-04-04","Heure"=>"08H00","Durée"=>"01H30",
+            "Type"=>"BEN","Matière"=>"Ressource 1","Groupes"=>"BUT INFO 2 Groupe A1","Profs"=>"","Contrôle"=>"Non","Absent/Présent"=>"Absence"];
+        $abs[] = $abs1;
         $abs[] = new Absence(StudentSelector::getStudentById(1),
             DateTime::createFromFormat("Y-m-d H:i:s", "2026-04-04 08:00:00"),
             "0 years 0 mons 0 days 1 hours 30 mins 0.0 secs",
@@ -79,6 +82,7 @@ class FeatureContext implements Context
             new Resource(1,"Ressource 1"),
             null
         );
+
         AbsenceInsertor::addAbsences($abs);
     }
 
