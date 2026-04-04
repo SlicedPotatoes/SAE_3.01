@@ -1,5 +1,6 @@
 <?php
 
+use Dotenv\Dotenv;
 use Uphf\GestionAbsence\Database\Select\SelectBuilder\JustificationSelectBuilder;
 use Behat\Behat\Context\Context;
 use Behat\Gherkin\Node\PyStringNode;
@@ -16,12 +17,13 @@ use Uphf\GestionAbsence\Model\Entity\Absence\StateAbs;
 use Uphf\GestionAbsence\Database\Insert\AbsenceInsertor;
 use Uphf\GestionAbsence\Service\JustificationService;
 
+
 /**
  * Defines application features from the specific context.
  */
 class FeatureContext implements Context
 {
-    private Exception $exp;
+    private ?Exception $exp;
     public function __construct()
     {
     }
@@ -29,6 +31,9 @@ class FeatureContext implements Context
     #[\Behat\Hook\BeforeFeature]
     public static function prepareForTheFeature()
     {
+        $dotenv = Dotenv::createImmutable(dirname(__DIR__,2) , '/.env.test');
+        $dotenv->load();
+
         $abs = [];
         $abs[] = new Absence(StudentSelector::getStudentById(1),
             DateTime::createFromFormat("Y-m-d H:i:s", "2026-04-04 08:00:00"),
@@ -38,7 +43,7 @@ class FeatureContext implements Context
             null,
             StateAbs::NotJustified,
             CourseType::BEN,
-            new Resource(1,"idk"),
+            new Resource(1,"Ressource 1"),
             null
         );
         $abs[] = new Absence(StudentSelector::getStudentById(1),
@@ -49,7 +54,7 @@ class FeatureContext implements Context
             null,
             StateAbs::NotJustified,
             CourseType::BEN,
-            new Resource(1,"idk"),
+            new Resource(1,"Ressource 1"),
             null
         );
         $abs[] = new Absence(StudentSelector::getStudentById(1),
@@ -60,7 +65,7 @@ class FeatureContext implements Context
             null,
             StateAbs::NotJustified,
             CourseType::BEN,
-            new Resource(1,"idk"),
+            new Resource(1,"Ressource 1"),
             null
         );
         $abs[] = new Absence(StudentSelector::getStudentById(1),
@@ -71,7 +76,7 @@ class FeatureContext implements Context
             null,
             StateAbs::NotJustified,
             CourseType::BEN,
-            new Resource(1,"idk"),
+            new Resource(1,"Ressource 1"),
             null
         );
         AbsenceInsertor::addAbsences($abs);
