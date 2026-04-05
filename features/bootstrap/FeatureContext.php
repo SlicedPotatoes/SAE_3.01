@@ -24,6 +24,8 @@ use Uphf\GestionAbsence\Service\JustificationService;
 class FeatureContext implements Context
 {
     private ?Exception $exp;
+    private ?string $start;
+    private $end;
     public function __construct()
     {
     }
@@ -33,56 +35,23 @@ class FeatureContext implements Context
     {
         $dotenv = Dotenv::createImmutable(dirname(__DIR__,2) , '/.env.test');
         $dotenv->load();
-
         $abs = [];
-        $abs1 = ["Identifiant" => "22400227","Date"=>"2026-04-04","Heure"=>"08H00","Durée"=>"01H30",
-            "Type"=>"BEN","Matière"=>"Ressource 1","Groupes"=>"BUT INFO 2 Groupe A1","Profs"=>"","Contrôle"=>"Non","Absent/Présent"=>"Absence"];
+        $abs1 = ["Identifiant" => "22400227","Date"=>"04/04/2026","Heure"=>"08H00","Durée"=>"01H30",
+            "Type"=>CourseType::BEN,"Matière"=>"Ressource 1","Groupes"=>"BUT INFO 2 Groupe A1","Profs"=>"","Contrôle"=>"Non",
+            "Absent/Présent"=>"Absence"];
+        $abs2 = ["Identifiant" => "22400227","Date"=>"04/03/2026","Heure"=>"08H00","Durée"=>"01H30",
+            "Type"=>CourseType::BEN,"Matière"=>"Ressource 1","Groupes"=>"BUT INFO 2 Groupe A1","Profs"=>"","Contrôle"=>"Non",
+            "Absent/Présent"=>"Absence"];
+        $abs3 = ["Identifiant" => "22400227","Date"=>"04/02/2026","Heure"=>"08H00","Durée"=>"01H30",
+            "Type"=>CourseType::BEN,"Matière"=>"Ressource 1","Groupes"=>"BUT INFO 2 Groupe A1","Profs"=>"","Contrôle"=>"Non",
+            "Absent/Présent"=>"Absence"];
+        $abs4 = ["Identifiant" => "22400227","Date"=>"04/01/2026","Heure"=>"08H00","Durée"=>"01H30",
+            "Type"=>CourseType::BEN,"Matière"=>"Ressource 1","Groupes"=>"BUT INFO 2 Groupe A1","Profs"=>"","Contrôle"=>"Non",
+            "Absent/Présent"=>"Absence"];
         $abs[] = $abs1;
-        $abs[] = new Absence(StudentSelector::getStudentById(1),
-            DateTime::createFromFormat("Y-m-d H:i:s", "2026-04-04 08:00:00"),
-            "0 years 0 mons 0 days 1 hours 30 mins 0.0 secs",
-            false,
-            true,
-            null,
-            StateAbs::NotJustified,
-            CourseType::BEN,
-            new Resource(1,"Ressource 1"),
-            null
-        );
-        $abs[] = new Absence(StudentSelector::getStudentById(1),
-            DateTime::createFromFormat("Y-m-d H:i:s", "2026-03-04 08:00:00"),
-            "0 years 0 mons 0 days 1 hours 30 mins 0.0 secs",
-            false,
-            true,
-            null,
-            StateAbs::NotJustified,
-            CourseType::BEN,
-            new Resource(1,"Ressource 1"),
-            null
-        );
-        $abs[] = new Absence(StudentSelector::getStudentById(1),
-            DateTime::createFromFormat("Y-m-d H:i:s", "2026-02-04 08:00:00"),
-            "0 years 0 mons 0 days 1 hours 30 mins 0.0 secs",
-            false,
-            true,
-            null,
-            StateAbs::NotJustified,
-            CourseType::BEN,
-            new Resource(1,"Ressource 1"),
-            null
-        );
-        $abs[] = new Absence(StudentSelector::getStudentById(1),
-            DateTime::createFromFormat("Y-m-d H:i:s", "2026-01-04 08:00:00"),
-            "0 years 0 mons 0 days 1 hours 30 mins 0.0 secs",
-            false,
-            true,
-            null,
-            StateAbs::NotJustified,
-            CourseType::BEN,
-            new Resource(1,"Ressource 1"),
-            null
-        );
-
+        $abs[] = $abs2;
+        $abs[] = $abs3;
+        $abs[] = $abs4;
         AbsenceInsertor::addAbsences($abs);
     }
 
@@ -93,11 +62,13 @@ class FeatureContext implements Context
 
     #[When('renseigne correctement les informations')]
     public function renseigneCorrect(){
+        $this->start = "2026-04-01";
+        $this->end = "2026-04-30";
         try {
             $data = [];
             $data['absenceReason'] = "test";
-            $data['startDate'] = DateTime::createFromFormat("Y-m-d H:i:s", "2026-04-01 08:00:00");
-            $data['endDate'] = DateTime::createFromFormat("Y-m-d H:i:s", "2026-04-10 08:00:00");
+            $data['startDate'] = $this->start;
+            $data['endDate'] = $this->end;
             JustificationService::addJustification(1, $data, []);
         }catch (\Exception $e){
             $this->exp = $e;
@@ -106,7 +77,76 @@ class FeatureContext implements Context
 
     #[Then('le justificatif est enregistré correctement dans la base de données')]
     public function checkOutcome(){
-        $justsifications = new JustificationSelectBuilder()->dateStart("2026-04-01 08:00:00")->execute();
+        $justsifications = new JustificationSelectBuilder()->dateStart($this->start." 08:00:00")->dateEnd($this->end." 08:00:00")->execute();
         TestCase::assertEquals(1,count($justsifications));
+    }
+
+    #[When('je renseigne correctement les informations mais qu’aucune absence n’est enregistrée entre ces dates')]
+    public function pasDAbsence(){
+        $this->start = "2026-05-01";
+        $this->end = "2026-05-30";
+        try {
+            $data = [];
+            $data['absenceReason'] = "test";
+            $data['startDate'] = $this->start;
+            $data['endDate'] = $this->end;
+            JustificationService::addJustification(1, $data, []);
+        }catch (\Exception $e){
+            $this->exp = $e;
+        }
+    }
+
+    #[Then('le justificatif n’est pas enregistré et un message d’erreur est affiché')]
+    public function messageErreur(){
+        $justsifications = new JustificationSelectBuilder()->dateStart($this->start." 08:00:00")->dateEnd($this->end." 08:00:00")->execute();
+        TestCase::assertEquals(0,count($justsifications));
+    }
+
+    #[When('je renseigne correctement les informations mais que la date de début est ultérieure à la date de fin')]
+    public function dateDebutUterieurADateFin ()
+    {
+        $this->start = "2026-03-30";
+        $this->end = "2026-03-01";
+        try {
+            $data = [];
+            $data['absenceReason'] = "test";
+            $data['startDate'] = $this->start;
+            $data['endDate'] = $this->end;
+            JustificationService::addJustification(1, $data, []);
+        }catch (\Exception $e){
+            $this->exp = $e;
+        }
+    }
+
+    #[When('je renseigne correctement les informations mais que le commentaire est vide')]
+    public function pasDeCommentaire ()
+    {
+        $this->start = "2026-02-01";
+        $this->end = "2026-02-28";
+        try {
+            $data = [];
+            $data['absenceReason'] = "";
+            $data['startDate'] = $this->start;
+            $data['endDate'] = $this->end;
+            JustificationService::addJustification(1, $data, []);
+        }catch (\Exception $e){
+            $this->exp = $e;
+        }
+    }
+
+    #[When('je renseigne des informations incohérentes')]
+    public function donneeIncoerente ()
+    {
+        $this->start = "2026-01-01";
+        $this->end = 20260130;
+        try {
+            $data = [];
+            $data['absenceReason'] = "";
+            $data['startDate'] = $this->start;
+            $data['endDate'] = $this->end;
+            JustificationService::addJustification(1, $data, []);
+        }catch (\Exception $e){
+            $this->exp = $e;
+        }
     }
 }
