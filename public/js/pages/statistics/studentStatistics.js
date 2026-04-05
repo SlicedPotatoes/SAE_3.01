@@ -1,15 +1,20 @@
 import {hideFullScreenLoader, isMobile, showFullScreenLoader} from "../../core/utils.js";
-import {canvasList, getTitleStatistics, moveFilter} from "./commonStatistics.js";
+import {canvasList, getTitleStatistics, moveFilter, buildQuery} from "./commonStatistics.js";
 import {buildChart} from "../../features/statistics/statistics.renderer.js";
 import {getStatistics} from "../../features/statistics/statistics.service.js";
 import {addNotification} from "../../core/notifications.js";
 import {HttpError} from "../../core/api.js";
 
-const filter = document.getElementById('filter');
+const filtersDiv = document.getElementById('filter');
 const desktopSlot = document.getElementById('filter-desktop');
 const mobileSlot = document.getElementById('filter-mobile');
 
 const mediaQuery = window.matchMedia('(width < 992px)');
+const filters = {
+    state: document.querySelector("#statisticsState"),
+    group: document.querySelector("#statisticsGroups"),
+    exam: document.querySelector("#examFilter")
+};
 
 let dataAPI = {
     general: {},
@@ -22,6 +27,7 @@ let dataAPI = {
 function updateDisplay() {
     // general ou student
     Object.keys(dataAPI).forEach(targetStatistics => {
+        // Types de statistiques
         Object.keys(dataAPI[targetStatistics]).forEach(key => {
             let idCanvas = `${key}-chart`;
 
@@ -47,37 +53,18 @@ function updateDisplay() {
 }
 
 /**
- * Construire la query à partir des filtres
- *
- * @param studentFilter {boolean} - Indique si on doit inclure le filtre pour l'étudiant
- * @returns {string}
- */
-function getQuery(studentFilter) {
-    const state = document.getElementById("statisticsState").value;
-    const group  = document.getElementById("statisticsGroups").value;
-    const exam = document.getElementById("examFilter").checked;
-
-    const params = new URLSearchParams();
-    if (state && state !== '') params.append("state", state);
-    if (group && group !== '')  params.append("group", group);
-    if(exam) params.append("examen", "true");
-
-    if(studentFilter) {
-        params.append('idStudent', ID_STUDENT);
-    }
-
-    return params.toString();
-}
-
-/**
  * Récupération des données, et mise à jour de l'affichage
  * @returns {Promise<void>}
  */
 async function loadStatistics() {
     try {
         showFullScreenLoader();
-        dataAPI['general'] = (await getStatistics(getQuery(false)))['data'];
-        dataAPI['student'] = (await getStatistics(getQuery(true)))['data'];
+        dataAPI['general'] = (await getStatistics(
+            buildQuery(filters.state, filters.group, filters.exam, false)
+        ))['data'];
+        dataAPI['student'] = (await getStatistics(
+            buildQuery(filters.state, filters.group, filters.exam, true)
+        ))['data'];
 
         updateDisplay();
     }
@@ -104,10 +91,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
     mediaQuery.addEventListener('change', () => {
-        moveFilter(filter, desktopSlot, mobileSlot);
+        moveFilter(filtersDiv, desktopSlot, mobileSlot);
         updateDisplay();
     });
 
-    moveFilter(filter, desktopSlot, mobileSlot);
+    moveFilter(filtersDiv, desktopSlot, mobileSlot);
     await loadStatistics();
 });

@@ -38,3 +38,24 @@ export function moveFilter(filter, desktopSlot, mobileSlot) {
         desktopSlot.appendChild(filter);
     }
 }
+
+/**
+ * Construire la query à partir des filtres
+ *
+ * @param state {HTMLSelectElement}
+ * @param group {HTMLSelectElement}
+ * @param exam {HTMLInputElement}
+ * @param studentFilter {boolean}
+ * @returns {string}
+ */
+export function buildQuery(state, group, exam, studentFilter = false) {
+    const params = new URLSearchParams();
+
+    if(state && state.value !== '') params.append('state', state.value);
+    if(group && group.value !== '') params.append('group', group.value);
+    if(exam && exam.checked) params.append('examen', 'true');
+
+    if(studentFilter) params.append('idStudent', ID_STUDENT);
+
+    return params.toString();
+}
