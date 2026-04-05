@@ -30,7 +30,7 @@ class StatisticService {
         }
 
         // Application des filtres
-        $whiteListMethode = ['group', 'examen', 'idStudent'];
+        $whiteListMethode = ['group', 'examen', 'idStudent', 'state'];
         foreach ($filters as $filter => $value){
             if($value !== null && in_array($filter, $whiteListMethode)){
                 foreach ($builders as $type => $builder){

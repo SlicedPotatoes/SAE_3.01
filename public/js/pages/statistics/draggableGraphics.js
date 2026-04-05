@@ -9,13 +9,13 @@ const leftzone = document.getElementById('left-zone');
 tabs.forEach(tab => {
     // Fait apparaitre la zone de drop quand on drag un tab
     tab.addEventListener('dragstart', (e) => {
-        e.dataTransfer.setData('text/plain', tab.getAttribute('data-bs-target'));
-        dragzone.style.border = '3px dashed var(--color-uphf)!important';
+        e.dataTransfer.setData('text/plain', tab.dataset.drag);
+        dragzone.style.border = '2px dashed var(--color-uphf)';
     });
 
     // Fait disparaitre la zone de drop quand on lache la tab
     tab.addEventListener('dragend', (e) => {
-        dragzone.style.border = 'none';
+        dragzone.style.border = '2px dashed black';
     })
 });
 
@@ -26,27 +26,31 @@ dragzone.addEventListener('dragover', (e) => e.preventDefault());
 dragzone.addEventListener('drop', (e) => {
     e.preventDefault();
 
-    // Récupérer les éléments du DOM
-    const id = e.dataTransfer.getData('text/plain').slice(1);
-    const div = document.getElementById(id)
-    const canvas = div.querySelector('canvas');
-
-    // Récupérer l'ancien canvas s'il y en avais un pour le supprimer
-    const prevCanvas = dragzone.querySelector('canvas');
-    if(prevCanvas) {
-        prevCanvas.remove();
-    }
+    dragzone.innerHTML = '';
 
     // Création d'une copy du chart qui ce trouvé dans l'onglet
+    const key = e.dataTransfer.getData('text/plain');
+
+    const div = document.createElement('div');
+    div.classList.add('p-4', 'position-relative', 'h-100', 'w-100');
+
     const copy = document.createElement('canvas');
-    new Chart(copy, chartJsDatas[canvas.id]);
+    copy.id = 'chart-copy';
+    copy.dataset.typeStatistics = key;
+    copy.classList.add('position-absolute', 'top-50', 'start-50', 'translate-middle')
+
+
+    // Récupération du chart à copier
+    const chart = Chart.getChart(`${key}-chart`);
+    new Chart(copy, chart.config);
 
     // Modifier la disposition de la page
-    leftzone.classList.remove('col-11')
-    leftzone.classList.add('col-6')
-    dragzone.classList.remove('col-1')
-    dragzone.classList.add('col-6')
+    leftzone.classList.remove('col-10');
+    leftzone.classList.add('col-6');
+    dragzone.classList.remove('col-2');
+    dragzone.classList.add('col-6');
 
     // Ajouter la copy dans la zone de drag
-    dragzone.querySelector('div').appendChild(copy)
+    div.appendChild(copy);
+    dragzone.appendChild(div);
 });

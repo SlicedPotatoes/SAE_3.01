@@ -46,7 +46,7 @@ export async function putAPI(url, data) {
  * @param data
  * @returns {Promise<any|null>}
  */
-export async function sendJsonAPI(url, method, data) {
+export async function sendJsonAPI(url, method, data = null) {
     const options = {
         method: method,
         headers: {

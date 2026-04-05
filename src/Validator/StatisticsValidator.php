@@ -24,7 +24,7 @@ class StatisticsValidator {
      */
     public static function validationGetStatistics(array &$data): void {
         $validator = v::key('group', v::intVal(), false)
-            ->key('examen', v::boolType(), false)
+            ->key('examen', v::boolVal(), false)
             ->key('state', v::in(['Validated', 'Refused', 'NotJustified', 'Pending']), false)
             ->key('idStudent', v::intVal(), false);
 

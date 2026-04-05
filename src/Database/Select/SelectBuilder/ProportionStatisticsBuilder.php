@@ -5,6 +5,7 @@ namespace Uphf\GestionAbsence\Database\Select\SelectBuilder;
 use BadMethodCallException;
 use PDO;
 use Uphf\GestionAbsence\Database\Connection;
+use Uphf\GestionAbsence\Model\Entity\Absence\StateAbs;
 
 /**
  * Builder permettant de construire facilement une requête pour obtenir les données des graphiques de proportions
@@ -78,6 +79,16 @@ class ProportionStatisticsBuilder {
 
         $this->where[] = "a.idstudent = :idstudent";
         $this->params['idstudent'] = [$idStudent, PDO::PARAM_INT];
+
+        return $this;
+    }
+
+    public function state(StateAbs $stateAbs): ProportionStatisticsBuilder {
+        if(isset($this->flags['state'])) { throw new BadMethodCallException("Second appel de la méthode 'state()'."); }
+        $this->flags['state'] = true;
+
+        $this->where[] = "a.currentState = :state";
+        $this->params['state'] = [$stateAbs->value, PDO::PARAM_STR];
 
         return $this;
     }
