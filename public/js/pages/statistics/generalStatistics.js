@@ -1,7 +1,7 @@
 import {addNotification} from "../../core/notifications.js";
 import {getStatistics} from "../../features/statistics/statistics.service.js";
 import {buildChart} from "../../features/statistics/statistics.renderer.js";
-import {buildQuery, canvasList, getTitleStatistics, moveFilter} from "./commonStatistics.js";
+import {buildQuery, canvasList, destroyChart, getTitleStatistics, moveFilter} from "./commonStatistics.js";
 import {hideFullScreenLoader, showFullScreenLoader, isMobile} from "../../core/utils.js";
 import {HttpError} from "../../core/api.js";
 
@@ -22,6 +22,8 @@ let dataAPI = {};
  * Mettre à jour l'affichage à partir des données de dataAPI
  */
 function updateDisplay() {
+    const copyChart = document.querySelector('#chart-copy');
+
     Object.keys(dataAPI).forEach(key => {
         const idCanvas = `${key}-chart${isMobile(992) ? '-mobile' : ''}`;
 
@@ -29,14 +31,17 @@ function updateDisplay() {
             canvasList[idCanvas] = document.querySelector(`#${idCanvas}`);
         }
 
-        const oldChart = Chart.getChart(idCanvas);
-        if(oldChart) {
-            oldChart.destroy();
+        destroyChart(idCanvas);
+
+        if(copyChart && copyChart.dataset.typeStatistics === key) {
+            destroyChart('chart-copy');
+            buildChart(copyChart, dataAPI[key], getTitleStatistics(key));
         }
 
         buildChart(canvasList[idCanvas], dataAPI[key], getTitleStatistics(key));
     });
 }
+
 
 /**
  * Récupération des données, et mise à jour de l'affichage

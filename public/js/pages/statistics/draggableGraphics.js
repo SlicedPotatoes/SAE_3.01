@@ -35,6 +35,8 @@ dragzone.addEventListener('drop', (e) => {
     div.classList.add('p-4', 'position-relative', 'h-100', 'w-100');
 
     const copy = document.createElement('canvas');
+    copy.id = 'chart-copy';
+    copy.dataset.typeStatistics = key;
     copy.classList.add('position-absolute', 'top-50', 'start-50', 'translate-middle')
 
 

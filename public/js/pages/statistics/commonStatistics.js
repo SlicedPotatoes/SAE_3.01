@@ -59,3 +59,12 @@ export function buildQuery(state, group, exam, studentFilter = false) {
 
     return params.toString();
 }
+
+/**
+ * Clean up l'instance d'un chart, s'il existe
+ * @param id
+ */
+export function destroyChart(id) {
+    const chart = Chart.getChart(id);
+    if(chart) chart.destroy();
+}

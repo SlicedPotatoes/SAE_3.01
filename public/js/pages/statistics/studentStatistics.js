@@ -1,5 +1,5 @@
 import {hideFullScreenLoader, isMobile, showFullScreenLoader} from "../../core/utils.js";
-import {canvasList, getTitleStatistics, moveFilter, buildQuery} from "./commonStatistics.js";
+import {canvasList, getTitleStatistics, moveFilter, buildQuery, destroyChart} from "./commonStatistics.js";
 import {buildChart} from "../../features/statistics/statistics.renderer.js";
 import {getStatistics} from "../../features/statistics/statistics.service.js";
 import {addNotification} from "../../core/notifications.js";
@@ -38,10 +38,7 @@ function updateDisplay() {
                 canvasList[idCanvas] = document.querySelector(`#${idCanvas}`);
             }
 
-            const oldChart = Chart.getChart(idCanvas);
-            if(oldChart) {
-                oldChart.destroy();
-            }
+            destroyChart(idCanvas);
 
             let title = getTitleStatistics(key);
             if(targetStatistics === 'student')  title += ' (étudiant)';
