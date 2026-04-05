@@ -19,18 +19,14 @@ class StatisticsController {
      * Méthode pour l'affichage de la page des statistiques générales
      *
      * @return void
-     * @throws EntityNotFoundException
      */
     public static function showGeneralStatistics(): void {
         $groups = GroupService::selectAllGroup();
 
-        $satistics = StatisticService::getStatistic([]);
-
         Renderer::render(
-            '../ViewOLD/generalStatistics.php',
+            'generalStatistics.php',
             'Statistiques',
             [
-                'statistics' => $satistics,
                 'groups' => $groups
             ]
         );

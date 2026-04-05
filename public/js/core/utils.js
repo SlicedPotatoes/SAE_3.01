@@ -6,10 +6,12 @@
 
 /**
  * Permets de savoir si l'utilisateur à sa fenêtre en format mobile
+ *
+ * @param width Définie la borne pour être considéré comme mobile (default 768px)
  * @returns {boolean}
  */
-export function isMobile() {
-    return window.innerWidth < 768;
+export function isMobile(width = 768) {
+    return window.innerWidth < width;
 }
 
 /**

@@ -85,12 +85,12 @@ enum ProportionStatisticsType: string {
      */
     public function shortTitle(): string {
         return match($this) {
-            self::TypeCourse => "P. type de cours",
-            self::Teacher => "P. enseignant",
-            self::Resource => "P. ressource",
-            self::Group => "P. groupe",
-            self::State => "P. état",
-            self::Examen => "P. examen"
+            self::TypeCourse => "Type de cours",
+            self::Teacher => "Enseignant",
+            self::Resource => "Ressource",
+            self::Group => "Groupe",
+            self::State => "État",
+            self::Examen => "Examen"
         };
     }
 
