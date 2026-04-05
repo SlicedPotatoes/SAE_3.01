@@ -43,16 +43,11 @@ class StatisticsController {
             $student = AccountService::getStudentAccount($params['id']);
             $groups = GroupService::selectAllGroup();
 
-            $statisticsGlobal = StatisticService::getStatistic([]);
-            $statisticsStudent = StatisticService::getStatistic(['idStudent' => $params['id']]);
-
             Renderer::render(
-                '../ViewOLD/studentStatistics.php',
+                'studentStatistics.php',
                 'Statistiques',
                 [
                     'student' => $student,
-                    'statisticsGlobal' => $statisticsGlobal,
-                    'statisticsStudent' => $statisticsStudent,
                     'groups' => $groups
                 ]
             );

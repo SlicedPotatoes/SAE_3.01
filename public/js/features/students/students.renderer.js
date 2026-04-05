@@ -31,14 +31,14 @@ export function renderStudents(container, students) {
                     </div>
                     <!-- Boutons desktop -->
                     <div class="d-none d-md-flex gap-2 ms-3 flex-shrink-0">
-                        <a href="/statistique-etudiant/${id}" class="btn btn-success btn-no-border">Voir les statistiques</a>
+                        <a href="/statistiques-etudiant/${id}" class="btn btn-success btn-no-border">Voir les statistiques</a>
                         <a href="/StudentProfile/${id}" class="btn btn-uphf">Voir le profil</a>
                     </div>
                 </div>
 
                 <!-- Boutons mobile -->
                 <div class="d-flex d-md-none gap-2 mt-2">
-                    <a href="/statistique-etudiant/${id}" class="btn btn-success btn-no-border flex-fill">Voir les statistiques</a>
+                    <a href="/statistiques-etudiant/${id}" class="btn btn-success btn-no-border flex-fill">Voir les statistiques</a>
                     <a href="/StudentProfile/${id}" class="btn btn-uphf flex-fill">Voir le profil</a>
                 </div>
 
