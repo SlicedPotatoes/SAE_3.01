@@ -25,7 +25,8 @@
     "require-dev": {
       "phpunit/phpunit": "^12.0",
         "behat/behat": "*",
-        "allure-framework/allure-behat": "dev-master"
+        "allure-framework/allure-behat": "dev-master",
+        "emuse/behat-html-formatter": "^2.0"
     },
     "scripts": {
         "post-install-cmd": [
