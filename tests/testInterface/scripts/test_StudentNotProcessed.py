@@ -7,15 +7,16 @@ from selenium.webdriver.support import expected_conditions as EC
 BASE_URL = "localhost:8000"
 
 
-def test_StudentProcessed(driver):
+def test_StudentNotProcessed(driver):
     """
-    Scénario : Connexion d'un étudiant et consultation d'un justificatif TRAITÉ.
+    Scénario : Connexion d'un étudiant et consultation d'un justificatif EN COURS (non traité).
 
-    Vérifie :
-      - Slide 1 : badge "Traité", date de traitement visible, 3 colonnes (motif + fichiers +
-        commentaire RP), boutons Accueil / Voir les cours concernés.
-      - Slide 2 : colonne "État" présente, badges de décision affichés, aucun toggle
-        d'édition (sécurité rôle étudiant), boutons Retour / Accueil.
+    Vérifie que l'interface est purement consultative :
+      - Slide 1 : badge "En cours", pas de date de traitement, pas de colonne
+        "Commentaire du responsable" (seulement 2 colonnes : motif + fichiers),
+        boutons Accueil / Voir les cours concernés.
+      - Slide 2 : pas de colonne "État" ni "Action", aucun badge de décision sur
+        les lignes, aucun toggle d'édition, boutons Retour / Accueil.
     """
 
     # --- 1. CONNEXION ---
@@ -38,8 +39,8 @@ def test_StudentProcessed(driver):
     btn_fermer.click()
     print("Étape réussie : Modale d'accueil fermée.")
 
-    # --- 3. ACCÈS AU DÉTAIL DU JUSTIFICATIF TRAITÉ (id=2) ---
-    driver.find_element(By.CSS_SELECTOR, "a[href*='detail-justification/2']").click()
+    # --- 3. ACCÈS AU DÉTAIL DU JUSTIFICATIF NON TRAITÉ (id=1) ---
+    driver.find_element(By.CSS_SELECTOR, "a[href*='detail-justification/1']").click()
 
     WebDriverWait(driver, 10).until(EC.url_contains("detail-justification"))
     assert "Justificati" in driver.title
@@ -50,26 +51,34 @@ def test_StudentProcessed(driver):
     assert "Bonjour" in msg_bienvenue
     print("Assert réussi : Message de bienvenue trouvé.")
 
-    # --- 4. VÉRIFICATIONS : SLIDE 1 (JUSTIFICATIF TRAITÉ) ---
-    # A. Badge de statut "Traité"
+    # --- 4. VÉRIFICATIONS : SLIDE 1 (JUSTIFICATIF EN COURS) ---
+
+    # A. Badge de statut "En cours" (et non "Traité")
     badge = driver.find_element(By.CSS_SELECTOR, "span.badge.rounded-pill")
-    assert "Traité" in badge.text, f"Badge attendu : 'Traité', obtenu : '{badge.text}'"
-    print("Assert réussi : Badge de statut 'Traité' visible (justificatif traité).")
+    assert "En cours" in badge.text, f"Badge attendu : 'En cours', obtenu : '{badge.text}'"
+    print("Assert réussi : Badge de statut correct → 'En cours'.")
 
-    # B. "Date de traitement" doit être affichée
+    # B. "Date de traitement" absente (le justificatif n'a pas encore été traité)
     slide1 = driver.find_element(By.CSS_SELECTOR, "div.slide")
-    assert "Date de traitement" in slide1.text
-    print("Assert réussi : 'Date de traitement' visible (justificatif traité).")
+    assert "Date de traitement" not in slide1.text
+    print("Assert réussi : 'Date de traitement' absente (justificatif en cours).")
 
-    # C. Bloc "Commentaire du responsable" présent (3ème colonne, isProcessed = true)
-    #    find_elements retourne [] au lieu de lever une exception si l'élément est absent.
+    # C. Bloc "Commentaire du responsable" absent
     commentaires_rp = driver.find_elements(
         By.XPATH, "//strong[contains(text(), 'Commentaire du responsable')]"
     )
-    assert len(commentaires_rp) > 0
-    print("Assert réussi : Bloc 'Commentaire du responsable' présent (Slide 1).")
+    assert len(commentaires_rp) == 0
+    print("Assert réussi : Bloc 'Commentaire du responsable' absent (justificatif non traité).")
 
-    # D. Labels des boutons Slide 1
+    # D. Seulement 2 colonnes de contenu sur Slide 1 (motif + fichiers, sans commentaire RP)
+    slide1_el = driver.find_elements(By.CSS_SELECTOR, "div.slide")[0]
+    colonnes_slide1 = slide1_el.find_elements(By.CSS_SELECTOR, ".row > div[class*='col-12']")
+    assert len(colonnes_slide1) == 2, (
+        f"Nombre de colonnes attendu : 2, obtenu : {len(colonnes_slide1)}"
+    )
+    print("Assert réussi : Nombre de colonnes correct sur Slide 1 (2 colonnes : motif + fichiers).")
+
+    # E. Labels des boutons Slide 1
     btn_next = driver.find_element(By.CSS_SELECTOR, "button.next")
     btn_prev = driver.find_element(By.CSS_SELECTOR, "button.prev")
 
@@ -81,30 +90,32 @@ def test_StudentProcessed(driver):
 
     # --- 5. NAVIGATION VERS SLIDE 2 ---
     btn_next.click()
-    time.sleep(0.6)  # Attente de la transition d'animation
+    time.sleep(0.6)
 
     titre_slide2 = driver.find_element(By.XPATH, "//h4[contains(text(), 'Heure de cours concerné')]")
     assert titre_slide2.is_displayed()
     print("Étape réussie : Navigation vers Slide 2 confirmée.")
 
-    # --- 6. VÉRIFICATIONS : SLIDE 2 (LISTE DES ABSENCES, TRAITÉ) ---
+    # --- 6. VÉRIFICATIONS : SLIDE 2 (NON TRAITÉ, ÉTUDIANT) ---
 
     en_tete = driver.find_element(By.CSS_SELECTOR, ".table-like .row-content.table-light")
 
-    # A. Colonne "État" présente
-    assert "État" in en_tete.get_attribute("textContent")
-    print("Assert réussi : Colonne 'État' présente dans le tableau (justificatif traité).")
+    # A. Colonne "État" absente
+    assert "État" not in en_tete.get_attribute("textContent")
+    print("Assert réussi : Colonne 'État' absente (justificatif non traité).")
 
     # B. Colonne "Action" absente (réservée au RP non traité)
     assert "Action" not in en_tete.get_attribute("textContent")
-    print("Assert réussi : Colonne 'Action' absente (vue étudiant).")
+    print("Assert réussi : Colonne 'Action' absente.")
 
-    # C. Présence des badges de décision sur les lignes (ex : "Validée")
-    badges = driver.find_elements(By.CSS_SELECTOR, ".row-content .badge")
-    assert len(badges) > 0
-    print("Assert réussi : Badges de décision présents sur les lignes du tableau (Slide 2).")
+    # C. Aucun badge de décision (Validée/Refusée) sur les lignes
+    badges_etat = driver.find_elements(By.CSS_SELECTOR, ".row-content .badge:not(.text-bg-warning)")
+    assert len(badges_etat) == 0, (
+        f"{len(badges_etat)} badge(s) d'état trouvé(s) — aucun attendu (justificatif non traité)."
+    )
+    print("Assert réussi : Aucun badge d'état (Validée/Refusée) dans le tableau.")
 
-    # D. Aucun outil d'édition (Toggle) visible → sécurité interface étudiant
+    # D. Aucun toggle d'édition (sécurité : étudiant ne peut pas modifier les états)
     toggles_rp = driver.find_elements(By.CSS_SELECTOR, "label.toggle")
     assert len(toggles_rp) == 0
     print("Assert réussi : Aucun Toggle visible pour l'étudiant.")
@@ -113,7 +124,6 @@ def test_StudentProcessed(driver):
     tous_les_prev = driver.find_elements(By.CSS_SELECTOR, "button.prev")
     tous_les_next = driver.find_elements(By.CSS_SELECTOR, "button.next")
 
-    # Slide 2 : les boutons sont les deuxièmes de la page (index [1])
     btn_prev = tous_les_prev[1]
     btn_next = tous_les_next[1]
 
@@ -123,8 +133,17 @@ def test_StudentProcessed(driver):
     assert "Accueil" in btn_next.get_attribute("textContent")
     print("Assert réussi : Label 'Accueil' sur le bouton Suivant (Slide 2).")
 
-    # --- 7. RETOUR À L'ACCUEIL ---
-    btn_fin = driver.find_element(By.CSS_SELECTOR, "button.next[data-action='backToHome']")
-    btn_fin.click()
+    # --- 7. TEST DE NAVIGATION RETOUR (Slide 2 → Slide 1) ---
+    btn_prev.click()
+    time.sleep(0.6)
+
+    # On doit retrouver le contenu de Slide 1 (badge, motif de l'absence)
+    badge_retour = driver.find_element(By.CSS_SELECTOR, "span.badge.rounded-pill")
+    assert "En cours" in badge_retour.text
+    print("Assert réussi : Retour sur Slide 1 confirmé (badge 'En cours' retrouvé).")
+
+    # --- 8. RETOUR À L'ACCUEIL ---
+    btn_accueil = driver.find_element(By.CSS_SELECTOR, "button.prev[data-action='backToHome']")
+    btn_accueil.click()
     WebDriverWait(driver, 5).until(EC.url_contains("profil-etudiant"))
     print("Test terminé : Retour au profil réussi. Scénario validé.")
