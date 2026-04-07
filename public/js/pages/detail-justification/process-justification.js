@@ -14,7 +14,7 @@ import {initRequiredIndicatorField} from "../../core/validation-form.js";
 import {processJustification as processJustificationAPI} from "../../features/process-justification/process-justification.service.js"
 import {HttpError} from "../../core/api.js";
 import {addNotification} from "../../core/notifications.js";
-import {showFullScreenLoader} from "../../core/utils.js";
+import {hideFullScreenLoader, showFullScreenLoader} from "../../core/utils.js";
 
 const domElements = {};
 const requiredCommentIndicator = document.getElementById('requiredCommentIndicator');
@@ -125,4 +125,5 @@ export async function processJustification() {
             console.log(e);
         }
     }
+    hideFullScreenLoader();
 }
