@@ -17,7 +17,7 @@ Renderer::pushAsset('script', '<script type="module" src="/js/pages/predefinedCo
             <input type="text"
                    id="newCommentInput"
                    class="form-control"
-                   placeholder="Saisissez le texte du commentaire...">
+                   placeholder="Saisissez le commentaire...">
             <button id="addCommentBtn" class="btn btn-uphf">Ajouter</button>
         </div>
     </div>

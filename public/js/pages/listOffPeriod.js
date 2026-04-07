@@ -30,6 +30,10 @@ async function loadHolidays() {
  * Fonction qui permet d'initialiser les différents événements
  */
 function initEvents() {
+    window.addEventListener("resize", () => {
+        renderHolidays(document.getElementById("offPeriodContainer"), holidaysData);
+    });
+
     document.getElementById("offPeriodSubmitBtn").addEventListener("click", async () => {
         const label     = document.getElementById("offPeriodName").value.trim();
         const startDate = document.getElementById("offPeriodStart").value;
