@@ -17,7 +17,7 @@ let justificationsData = [];
  * @param query
  * @returns {Promise<void>}
  */
-async function loadAbsences(query = "") {
+export async function loadAbsences(query = "") {
     const container = document.getElementById("absenceContainer");
 
     showLoader(container);
@@ -50,7 +50,7 @@ async function loadAbsences(query = "") {
  * @param query
  * @returns {Promise<void>}
  */
-async function loadJustifications(query = "") {
+export async function loadJustifications(query = "") {
     const container = document.getElementById("justificationContainer");
 
     showLoader(container);

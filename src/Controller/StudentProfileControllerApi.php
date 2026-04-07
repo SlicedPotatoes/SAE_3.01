@@ -81,7 +81,7 @@ class StudentProfileControllerApi
             );
 
             Notification::addNotification(NotificationType::Success, "Justificatif envoyé avec succès");
-            new ResponseApi(HttpStatus::NO_CONTENT)->done();
+            new ResponseApi(HttpStatus::OK)->done();
             return;
         }
         catch (NestedValidationException $e) {

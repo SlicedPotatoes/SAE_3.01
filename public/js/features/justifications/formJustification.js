@@ -4,7 +4,9 @@
  * Elle permet de gérer la liste dynamiquement pour afficher l'ensemble des fichiers sélectionné par l'étudiant
  */
 
-import {showLoader} from "../../core/utils.js";
+import {showFullScreenLoader, hideFullScreenLoader} from "../../core/utils.js";
+import {addNotification} from "../../core/notifications.js";
+import {loadAbsences, loadJustifications} from "../../pages/studentProfile.js";
 
 let filesJustification = [];
 
@@ -105,26 +107,41 @@ formJustification.addEventListener('submit', async (e) => {
     e.preventDefault();
 
     const formData = new FormData(formJustification);
-    const container = document.getElementById("add-tab-pane");
 
-    const originalContent = container.innerHTML;
+    showFullScreenLoader();
 
-    showLoader(container);
+    let response;
 
     try {
-        const response = await fetch("/api/justifications", {
+        response = await fetch("/api/justifications", {
             method: "POST",
             body: formData
         });
-
-        if (response.status !== 204 && !response.ok) {
-            throw new Error("POST failed");
-        }
-
-        window.location.reload();
-
-    } catch (error) {
-        console.error("ERROR:", error);
-        container.innerHTML = originalContent;
+    } catch (e) {
+        addNotification("Error", "Erreur interne du serveur.")
     }
+
+
+    let json = await response.json();
+
+    for (let i = 0; i < json['messages'].length; i++) {
+        addNotification(json['messages'][i].type, json['messages'][i].message);
+    }
+
+    if (response.status === 200) {
+        let statDate = document.querySelector("input[name=startDate]")
+        let endDate = document.querySelector("input[name=endDate]")
+        let absenceReason = document.querySelector("textarea[name=absenceReason]")
+        let justificationFileList = document.querySelector('#justificationFileList');
+
+        statDate.value = "";
+        endDate.value = "";
+        absenceReason.value = "";
+        justificationFileList.innerHTML = "";
+        hiddenFilesJustification.files = new DataTransfer().files;
+    }
+
+    loadAbsences();
+    loadJustifications();
+    hideFullScreenLoader();
 });

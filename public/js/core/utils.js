@@ -86,6 +86,7 @@ export function stateToBadge(state) {
             return "success";
 
         case "Refused":
+        case "NotJustified":
             return "danger";
 
         default:
