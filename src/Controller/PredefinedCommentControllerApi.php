@@ -16,6 +16,18 @@ use Uphf\GestionAbsence\Validator\PredefinedCommentValidator;
 class PredefinedCommentControllerApi {
 
     /**
+     * GET /api/predefinedComment
+     * Retourne la liste de tous les commentaires prédéfinis
+     *
+     * @return void
+     */
+    public static function getComments(): void {
+        $comments = PredifinedCommentService::commentSelectorAll();
+
+        new ResponseApi(HttpStatus::OK, $comments)->done();
+    }
+
+    /**
      * POST /api/predefinedComment
      * Permet d'insérer un nouveau commentaire dans la base de données
      *

@@ -2,7 +2,6 @@
 // FILE: src/Controller/HolidayController.php
 namespace Uphf\GestionAbsence\Controller;
 
-use Uphf\GestionAbsence\Service\HolidaysService;
 use Uphf\GestionAbsence\Utils\Renderer;
 
 /**
@@ -19,14 +18,10 @@ class HolidayController
      */
     public static function showHoliday(): void
     {
-        $listHoliday = HolidaysService::selectAll();
-
         Renderer::render(
-            '../ViewOLD/listOffPeriod.php',
-            'Liste des périodes de congé',
-            [
-                "listHoliday" => $listHoliday
-            ]
+            'listOffPeriod.php',
+            'Périodes de vacances',
+            []
         );
     }
 }
