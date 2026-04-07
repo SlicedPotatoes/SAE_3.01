@@ -145,7 +145,7 @@ final class DataAdapterTest extends TestCase {
             ['label' => 'Pending', 'value' => 4]
         ];
         $output = [
-            'labels' => ['Validé', 'Refusé', 'Non justifié', 'En attente'],
+            'labels' => ['Validée', 'Refusée', 'Non justifiée', 'En attente'],
             'data' => [10, 12, 8, 4],
             'backgroundColor' => ['rgb(25, 135, 84)', 'rgb(220, 53, 69)', 'rgb(255, 38, 53)', 'rgb(108, 117, 125)']
         ];
