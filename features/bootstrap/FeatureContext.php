@@ -26,6 +26,8 @@ class FeatureContext implements Context
     private ?Exception $exp;
     private ?string $start;
     private $end;
+
+    private $etu;
     public function __construct()
     {
     }
@@ -148,5 +150,52 @@ class FeatureContext implements Context
         }catch (\Exception $e){
             $this->exp = $e;
         }
+    }
+
+    /**
+     * @Given /^je suis connecté à un compte étudiant de numéro étudiant "([^"]*)"$/
+     */
+    public function jeSuisConnectéÀUnCompteÉtudiantDeNuméroÉtudiant($arg1)
+    {
+
+    }
+    /**
+     * @Given /^je suis sur la page de dépot de justificatif$/
+     */
+    public function jeSuisSurLaPageDeDépotDeJustificatif()
+    {
+        throw new \Behat\Behat\Tester\Exception\PendingException();
+    }
+
+    /**
+     * @When /^je met en date de départ "2026\-04\-01"([^"]*)"2026\-04\-30"$/
+     */
+    public function jeMetEnDateDeDépartEtEnDateDeFin($arg1, $arg2)
+    {
+        throw new \Behat\Behat\Tester\Exception\PendingException();
+    }
+
+    /**
+     * @Given /^j'appuie sur le bouton envoyer le justificatif$/
+     */
+    public function jAppuieSurLeBoutonEnvoyerLeJustificatif()
+    {
+        throw new \Behat\Behat\Tester\Exception\PendingException();
+    }
+
+    /**
+     * @Then /^le justificatif est présent dans ma liste justificative$/
+     */
+    public function leJustificatifEstPrésentDansMaListeJustificative()
+    {
+        throw new \Behat\Behat\Tester\Exception\PendingException();
+    }
+
+    /**
+     * @Given /^j ai une absence le "([^"]*)" à "([^"]*)" d une durée de "([^"]*)" et "([^"]*)" examen$/
+     */
+    public function jAiUneAbsenceLeÀDUneDuréeDeEtExamen($arg1, $arg2, $arg3, $arg4)
+    {
+        throw new \Behat\Behat\Tester\Exception\PendingException();
     }
 }
