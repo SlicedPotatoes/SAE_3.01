@@ -10,6 +10,6 @@ class InformationController {
     }
 
     public static function userManual(): void {
-        Renderer::render('userManual.php.html', 'Manuel d\'utilisation');
+        Renderer::render('userManual.php', 'Manuel d\'utilisation');
     }
 }

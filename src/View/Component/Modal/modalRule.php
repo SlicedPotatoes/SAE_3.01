@@ -64,61 +64,58 @@ if (!AuthManager::isRole(AccountType::Student)) {
 </form>
 
 <script>
-
     function openBoth() {
-        window.open('/rules', '_blank');
-        window.location.href = '/userManual';
+        window.open('/reglement-interieur', '_blank');
+        window.location.href = '/manuel-d-utilisation';
     }
 
-document.addEventListener('DOMContentLoaded', function(){
-    const hideServer = <?php echo $hide ? 'true' : 'false'; ?>;
-    const modalEl = document.getElementById('ruleModal');
-    if (!modalEl) return;
+    document.addEventListener('DOMContentLoaded', function () {
+        const hideServer = <?php echo $hide ? 'true' : 'false'; ?>;
+        const modalEl = document.getElementById('ruleModal');
+        if (!modalEl) return;
 
-    // Initialisation du modal
-    if (typeof bootstrap === 'undefined' || !bootstrap.Modal) {
-        console.warn('Bootstrap modal non disponible');
-    } else {
-        const modalInstance = new bootstrap.Modal(modalEl);
-        if (!hideServer) {
-            // afficher la modale automatiquement
-            setTimeout(() => modalInstance.show(), 20);
+        // Initialisation du modal
+        if (typeof bootstrap === 'undefined' || !bootstrap.Modal) {
+            console.warn('Bootstrap modal non disponible');
+        } else {
+            const modalInstance = new bootstrap.Modal(modalEl);
+            if (!hideServer) {
+                // afficher la modale automatiquement
+                setTimeout(() => modalInstance.show(), 20);
+            }
         }
-    }
 
-    // Envoie de la préférence via fetch
-    async function submitHidePref(val) {
-        try {
-            const form = document.getElementById('hideRuleForm');
-            const fd = new FormData(form);
-            fd.set('hide', val ? '1' : '0');
+        // Envoie de la préférence via fetch
+        async function submitHidePref(val) {
+            try {
+                const form = document.getElementById('hideRuleForm');
+                const fd = new FormData(form);
+                fd.set('hide', val ? '1' : '0');
 
-            await fetch(window.location.pathname, {
-                method: 'POST',
-                body: fd,
-                credentials: 'same-origin',
-                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                await fetch(window.location.pathname, {
+                    method: 'POST',
+                    body: fd,
+                    credentials: 'same-origin',
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                });
+                // pas besoin de retourner la réponse pour notre usage
+            } catch (e) {
+                console.warn('Échec de l\'envoi de la préférence', e);
+            }
+        }
+
+        // Quand la checkbox change : envoyer la préférence immédiatement
+        const cb = document.getElementById('dontShowRuleAgain');
+        const cbLabel = document.querySelector('label[for="dontShowRuleAgain"]');
+        if (cb) {
+            // Empêcher le clic sur la checkbox/label de fermer la modale
+            function stopClick(e) { e.stopPropagation(); }
+            cb.addEventListener('click', stopClick, true);
+            if (cbLabel) cbLabel.addEventListener('click', stopClick, true);
+
+            cb.addEventListener('change', function () {
+                submitHidePref(cb.checked);
             });
-            // pas besoin de retourner la réponse pour notre usage
-        } catch (e) {
-            console.warn('Échec de l\'envoi de la préférence', e);
         }
-    }
-
-    // Quand la checkbox change : envoyer la préférence immédiatement
-    const cb = document.getElementById('dontShowRuleAgain');
-    const cbLabel = document.querySelector('label[for="dontShowRuleAgain"]');
-    if (cb) {
-        // Empêcher le clic sur la checkbox/label de fermer la modale
-        function stopClick(e){ e.stopPropagation(); }
-        cb.addEventListener('click', stopClick, true);
-        if (cbLabel) cbLabel.addEventListener('click', stopClick, true);
-
-        cb.addEventListener('change', function(){
-            submitHidePref(cb.checked);
-        });
-    }
-
-
-});
+    });
 </script>
