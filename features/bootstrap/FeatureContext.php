@@ -23,11 +23,11 @@ use Uphf\GestionAbsence\Service\JustificationService;
  */
 class FeatureContext implements Context
 {
-    private ?Exception $exp;
     private ?string $start;
     private $end;
-
     private $etu;
+    private $absence = [];
+    private $commentaire;
     public function __construct()
     {
     }
@@ -157,14 +157,18 @@ class FeatureContext implements Context
      */
     public function jeSuisConnectéÀUnCompteÉtudiantDeNuméroÉtudiant($arg1)
     {
-
+        $this->etu = $arg1;
     }
     /**
      * @Given /^je suis sur la page de dépot de justificatif$/
      */
     public function jeSuisSurLaPageDeDépotDeJustificatif()
     {
-        throw new \Behat\Behat\Tester\Exception\PendingException();
+        $dotenv = Dotenv::createImmutable(dirname(__DIR__,2) , '/.env.test');
+        $dotenv->load();
+        AbsenceInsertor::addAbsences([["Identifiant" => $this->etu,"Date"=>$this->absence["Date"],"Heure"=>$this->absence["Heure"],
+            "Durée"=>$this->absence["Duree"],"Type"=>CourseType::BEN,"Matière"=>"Ressource 1","Groupes"=>"BUT INFO 2 Groupe A1",
+            "Profs"=>"","Contrôle"=>$this->absence["Exam"], "Absent/Présent"=>"Absence"]]);
     }
 
     /**
@@ -172,15 +176,20 @@ class FeatureContext implements Context
      */
     public function jeMetEnDateDeDépartEtEnDateDeFin($arg1, $arg2)
     {
-        throw new \Behat\Behat\Tester\Exception\PendingException();
+        $this->start = $arg1;
+        $this->end = $arg2;
     }
 
     /**
-     * @Given /^j'appuie sur le bouton envoyer le justificatif$/
+     * @When  /^j'appuie sur le bouton envoyer le justificatif$/
      */
     public function jAppuieSurLeBoutonEnvoyerLeJustificatif()
     {
-        throw new \Behat\Behat\Tester\Exception\PendingException();
+        $data = [];
+        $data['absenceReason'] = $this->commentaire;
+        $data['startDate'] = $this->start;
+        $data['endDate'] = $this->end;
+        JustificationService::addJustification(1, $data, []);
     }
 
     /**
@@ -188,7 +197,8 @@ class FeatureContext implements Context
      */
     public function leJustificatifEstPrésentDansMaListeJustificative()
     {
-        throw new \Behat\Behat\Tester\Exception\PendingException();
+        $justsifications = new JustificationSelectBuilder()->dateStart($this->start." 08:00:00")->dateEnd($this->end." 08:00:00")->execute();
+        TestCase::assertEquals(1,count($justsifications));
     }
 
     /**
@@ -196,6 +206,13 @@ class FeatureContext implements Context
      */
     public function jAiUneAbsenceLeÀDUneDuréeDeEtExamen($arg1, $arg2, $arg3, $arg4)
     {
-        throw new \Behat\Behat\Tester\Exception\PendingException();
+        $this->absence["Date"] = $arg1;
+        $this->absence["Heure"] = $arg2;
+        $this->absence["Duree"] = $arg3;
+        if($arg4 === "sans") {
+            $this->absence["Exam"] = "Non";
+        }else{
+            $this->absence["Exam"] = "Oui";
+        }
     }
 }
