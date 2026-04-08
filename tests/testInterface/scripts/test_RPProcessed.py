@@ -54,7 +54,7 @@ def test_RPProcessed(driver):
     assert "Justificatif" in driver.title
     print("Assert réussi : Page de détail du justificatif traité (RP) chargée.")
 
-    # --- 4. VÉRIFICATIONS PHYSIQUES : SLIDE 1 (RP / TRAITÉ) ---
+    # --- 4. VÉRIFICATIONS : SLIDE 1 (RP / TRAITÉ) ---
 
     # On vérifie que la slide 1 est bien celle affichée (avec la date de début)
     date_debut = driver.find_element(By.XPATH, "//strong[contains(text(), 'Date début')]")
@@ -116,7 +116,7 @@ def test_RPProcessed(driver):
     assert titre_slide2.is_displayed()
     print("Étape réussie : Navigation vers Slide 2 confirmée.")
 
-    # --- 6. VÉRIFICATIONS PHYSIQUES : SLIDE 2 (RP / TRAITÉ) ---
+    # --- 6. VÉRIFICATIONS : SLIDE 2 (RP / TRAITÉ) ---
 
     en_tete = driver.find_element(By.CSS_SELECTOR, ".table-like .row-content.table-light")
 
