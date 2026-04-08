@@ -11,7 +11,7 @@ Feature: Depot Justificatif
     When je met en date de départ "2026-04-01" et en date de fin "2026-04-30"
     And j ai entré un commentaire qui dit "Malade"
     And j appuie sur le bouton envoyer le justificatif
-    Then le justificatif nombre de justificatif doit être égale à "1"
+    Then le nombre de justificatif doit être égale à "1"
     And l'absence du "04/04/2026" à "8H00" d une durée de "1h30" et "sans" examen doit être en "Pending"
     And l'absence du "04/06/2026" à "8H00" d une durée de "1h30" et "sans" examen doit être en "NotJustified"
     And l'absence du "04/07/2026" à "8H00" d une durée de "1h30" et "sans" examen doit être en "NotJustified"
@@ -21,7 +21,7 @@ Feature: Depot Justificatif
     When je met en date de départ "2026-05-01" et en date de fin "2026-05-30"
     And j ai entré un commentaire qui dit "Malade"
     And j'appuie sur le bouton envoyer le justificatif
-    Then le justificatif nombre de justificatif doit être égale à "0"
+    Then le nombre de justificatif doit être égale à "0"
 
   Scenario Outline:
     Given je suis connecté à un compte étudiant de numéro étudiant <etu> sur la page de dépot de justificatif
@@ -29,7 +29,7 @@ Feature: Depot Justificatif
     When je met en date de départ <debut> et en date de fin <fin>
     And j ai entré un commentaire qui dit <com>
     And j appuie sur le bouton envoyer le justificatif
-    Then le justificatif nombre de justificatif doit être égale à <nbJusti>
+    Then le nombre de justificatif doit être égale à <nbJusti>
     And l'absence du <date> à <heure> d une durée de <duree> et <exam> examen doit être en <etat>
     Examples:
       | etu      | date         | heure  | duree  | exam   | debut        | fin          | com      | nbJusti | etat           |
