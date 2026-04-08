@@ -26,7 +26,6 @@ class FeatureContext implements Context
     private ?string $start;
     private $end;
     private $etu;
-    private $absence = [];
     private $commentaire;
     public function __construct()
     {
@@ -215,4 +214,5 @@ class FeatureContext implements Context
             $this->absence["Exam"] = "Oui";
         }
     }
+
 }
