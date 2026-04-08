@@ -14,7 +14,7 @@ Renderer::pushAsset('script', '<script type="module" src="/js/pages/studentProfi
 
 <?php if (AuthManager::isRole(AccountType::EducationalManager)) : ?>
     <p class="h3 mb-0 text-center text-md-start">
-        Profile de
+        Profil de
         <span class='text-uphf fw-bold'> <?= $student->getFirstName() . ' ' . $student->getLastName() ?> </span>
     </p>
 <?php endif; ?>
@@ -86,7 +86,7 @@ Renderer::pushAsset('script', '<script type="module" src="/js/pages/studentProfi
                         data-bs-target="#add-tab-pane"
                         type="button"
                         role="tab">
-                    Déposer un justficatif
+                    Déposer un justificatif
                 </button>
             <?php endif; ?>
         </li>
@@ -110,7 +110,7 @@ Renderer::pushAsset('script', '<script type="module" src="/js/pages/studentProfi
                 <div id="justificationContainer"
                      class="scrollable"
                      role="status">
-                    Chargement de données...
+                    Chargement des données...
                 </div>
 
             </div>
@@ -129,7 +129,7 @@ Renderer::pushAsset('script', '<script type="module" src="/js/pages/studentProfi
                 <div id="absenceContainer"
                      class="scrollable"
                      role="status">
-                    Chargement de données...
+                    Chargement des données...
                 </div>
             </div>
         </div>

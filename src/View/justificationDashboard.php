@@ -60,7 +60,7 @@ Renderer::pushAsset('script', '<script type="module" src="/js/pages/justificatio
                 <div id="justificationContainer"
                      class="scrollable"
                      role="status">
-                    Chargement de données...
+                    Chargement des données...
                 </div>
 
             </div>

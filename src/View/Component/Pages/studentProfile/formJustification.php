@@ -36,7 +36,7 @@
 
     <div class="mt-3 d-flex">
         <span class="text-muted me-auto small">
-            Vos déclarations doivent être exactes
+            Vos déclarations doivent être exactes.
         </span>
 
         <button type="submit" class="btn btn-uphf">

@@ -18,7 +18,7 @@ Renderer::pushAsset('script', '<script type="module" src="/js/pages/teacherDashb
             <div id="timeslotContainer"
                  class="scrollable"
                  role="status">
-                Chargement de données...
+                Chargement des données...
             </div>
 
         </div>

@@ -15,7 +15,7 @@
 <div class="scroll-parent gap-3 slide" style="display: none!important;">
     <div class="scroll-parent">
         <div class="d-flex gap-2 align-items-center flex-wrap mb-2">
-            <h4 class="mb-0">Heure de cours concerné</h4>
+            <h4 class="mb-0">Heure de cours concernée</h4>
             <?php if($isEducationManager && !$isProcessed): ?>
                 <div class="d-flex gap-2 d-lg-none">
                     <i class="btn btn-success bi bi-check2-all" data-update-all-action="state" data-update-all-value="Validated"></i>
