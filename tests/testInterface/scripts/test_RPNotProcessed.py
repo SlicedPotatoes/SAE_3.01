@@ -224,6 +224,10 @@ def test_RPNotProcessed(driver):
     assert cadre_rouge.is_displayed()
     print("Assert réussi : Cadre rouge visible autour de la zone de commentaire (indication d'erreur).")
 
+    textarea_is_required = textarea.get_attribute("required")
+    assert textarea_is_required is not None
+    print("Assert réussi : Zone de saisie du commentaire est maintenant marquée comme 'required' (obligatoire) après refus d'une absence.")
+
     # --- 9. TEST : SAISIE D'UN COMMENTAIRE DE REFUS ---
     textarea = driver.find_element(By.ID, "comment")
     textarea.send_keys("Justification du refus de l'absence.")
