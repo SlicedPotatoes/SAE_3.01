@@ -22,6 +22,7 @@ Feature: Depot Justificatif
     And j ai entré un commentaire qui dit "Malade"
     And j appuie sur le bouton envoyer le justificatif
     Then le nombre de justificatif doit être égale à "0"
+    And le message d erreur correspond a Il n'y a pas d'absence pouvant être justifié dans la période sélectionné
 
   Scenario Outline:
     Given je suis connecté à un compte étudiant de numéro étudiant <etu> sur la page de dépot de justificatif
@@ -31,8 +32,9 @@ Feature: Depot Justificatif
     And j appuie sur le bouton envoyer le justificatif
     Then le nombre de justificatif doit être égale à <nbJusti>
     And l absence du <date> à <heure> d une durée de <duree> et <exam> examen doit être en <etat>
+    And le message d erreur correspond a <message>
     Examples:
-      | etu      | date         | heure  | duree  | exam   | debut        | fin          | com      | nbJusti | etat           |
-      | "22400227" | "04/01/2026" | "8H00" | "1H30" | "sans" | "20260101"     | "2026-01-30" | "Malade" | "0"       | "NotJustified" |
-      | "22400227" | "04/02/2026" | "8H00" | "1H30" | "sans" | "2026-02-01" | "2026-02-28" | ""       | "0"       | "NotJustified" |
-      | "22400227" | "04/03/2026" | "8H00" | "1H30" | "sans" | "2026-03-30" | "2026-03-01" | "Malade" | "0"      | "NotJustified" |
+      | etu        | date         | heure  | duree  | exam   | debut        | fin          | com      | nbJusti | etat           | message                                                                                                     |
+      | "22400227" | "04/01/2026" | "8H00" | "1H30" | "sans" | "20260101"   | "2026-01-30" | "Malade" | "0"     | "NotJustified" | These rules must pass for `{ "absenceReason": "Malade", "startDate": "20260101", "endDate": "2026-01-30" }` |
+      | "22400227" | "04/02/2026" | "8H00" | "1H30" | "sans" | "2026-02-01" | "2026-02-28" | ""       | "0"     | "NotJustified" | These rules must pass for `{ "absenceReason": "", "startDate": "2026-02-01", "endDate": "2026-02-28" }`     |
+      | "22400227" | "04/03/2026" | "8H00" | "1H30" | "sans" | "2026-03-30" | "2026-03-01" | "Malade" | "0"     | "NotJustified" | La date de début dois être inférieure ou égal a la date de fin                                              |

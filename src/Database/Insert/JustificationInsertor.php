@@ -34,6 +34,7 @@ class JustificationInsertor {
 
         // S'il n'y a pas d'absence justifiable sur le période sélectionné, levé une exception
         if(count($absences) == 0) {
+            $conn->rollBack();
             throw new InvalidArgumentException("Il n'y a pas d'absence pouvant être justifié dans la période sélectionné");
         }
 

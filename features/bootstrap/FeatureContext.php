@@ -9,6 +9,7 @@ use Uphf\GestionAbsence\Model\Entity\Absence\StateAbs;
 use Uphf\GestionAbsence\Database\Insert\AbsenceInsertor;
 use Uphf\GestionAbsence\Service\JustificationService;
 use Uphf\GestionAbsence\Database\Select\SelectBuilder\AbsenceSelectBuilder;
+use Uphf\GestionAbsence\Validator\StudentProfileValidator;
 
 class FeatureContext implements Context
 {
@@ -70,9 +71,10 @@ class FeatureContext implements Context
             $data['absenceReason'] = $this->commentaire;
             $data['startDate'] = $this->start;
             $data['endDate'] = $this->end;
+            StudentProfileValidator::validationPostJustification($data);
             JustificationService::addJustification(1, $data, []);
         }catch (\Exception $e){
-            $this->exeption = $e;
+            $this->exeption = $e->getMessage();
         }
     }
 
@@ -99,5 +101,14 @@ class FeatureContext implements Context
         $abs = new AbsenceSelectBuilder()->dateStart($dateObj->format('Y-m-d') . " 08:00:00")->
         dateEnd($dateObj->format('Y-m-d') . " 08:00:00")->execute();
         TestCase::assertEquals(StateAbs::from($arg5), $abs[0]->getCurrentState());
+    }
+
+    /**
+     * @Then /^le message d erreur correspond a (.+)$/
+     */
+    public function leMessageDErreurCorrespondA($arg1)
+    {
+        var_dump($this->exeption);
+        TestCase::assertEquals($arg1, $this->exeption);
     }
 }
