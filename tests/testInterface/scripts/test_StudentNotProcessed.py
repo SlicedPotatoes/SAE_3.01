@@ -1,3 +1,4 @@
+import re
 import time
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -54,6 +55,12 @@ def test_StudentNotProcessed(driver):
     msg_bienvenue = driver.find_element(By.CSS_SELECTOR, "div.container.m-0").text
     assert "Bonjour" in msg_bienvenue
     print("Assert réussi : Message de bienvenue trouvé.")
+
+    # Vérification du titre (Date de dépôt)
+    titre = driver.find_element(By.CSS_SELECTOR, "h3").text
+    regex_pattern = r"Justificatif du \d{2}/\d{2}/\d{4}"
+    assert re.match(regex_pattern, titre)
+    print("Assert réussi : Titre de la page contient la date de dépôt du justificatif (format attendu).")
 
     # --- 4. VÉRIFICATIONS : SLIDE 1 (JUSTIFICATIF EN COURS) ---
 

@@ -10,13 +10,7 @@
 
 ## Installation
 
-### 1. Se placer dans le dossier des tests
-
-```bash
-cd tests/testInterface
-```
-
-### 2. Créer le virtual environment
+### 1. Créer le virtual environment
 
 Sur PyCharm : 
 - Aller dans le menu : `File > Settings > Python > Interpreter` > `Add interpreter` > `Add local interpreter`
@@ -24,8 +18,21 @@ Sur PyCharm :
 - Location : `tests/testInterface/.venv`
 - Valider
 
+### 2. Se placer dans le dossier des tests
 
-### 3. Installer les dépendances
+```bash
+cd tests/testInterface
+```
+
+### 3.Ouvrir un nouveau terminal dans PyCharm afin d'activer le virtual environment
+
+Dans l'onglet `Terminal` de PyCharm (en bas), cliquer sur l'icône plus pour ouvrir un nouveau terminal. Le virtual environment devrait être activé automatiquement. Si ce n'est pas le cas, exécuter la commande suivante :
+
+```bash
+source .venv/bin/activate
+```
+
+### 4. Installer les dépendances
 
 ```bash
 pip install -r requirements.txt
