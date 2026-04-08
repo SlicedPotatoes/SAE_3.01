@@ -170,14 +170,19 @@ def test_RPNotProcessed(driver):
     assert textarea.is_displayed()
     print("Assert réussi : Zone de saisie du commentaire présente.")
 
-    # C. L'indicateur d'erreur est caché quand tout est validé et commentaire vide
+    # C. On vérifie que le commentaire n'est pas 'required'
+    textarea_is_required = textarea.get_attribute("required")
+    assert textarea_is_required is None
+    print("Assert réussi : Zone de saisie du commentaire n'est pas marquée comme 'required' (non obligatoire).")
+
+    # D. L'indicateur d'erreur est caché quand tout est validé et commentaire vide
     indicateur = driver.find_element(By.ID, "requiredCommentIndicator")
     assert "d-none" in indicateur.get_attribute("class"), (
         "L'indicateur d'erreur devrait être caché (aucun refus)."
     )
     print("Assert réussi : Indicateur d'erreur caché (tout validé, commentaire non obligatoire).")
 
-    # D. Labels des boutons Slide 3
+    # E. Labels des boutons Slide 3
     tous_les_prev = driver.find_elements(By.CSS_SELECTOR, "button.prev")
     tous_les_next = driver.find_elements(By.CSS_SELECTOR, "button.next")
 
