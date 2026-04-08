@@ -1,3 +1,4 @@
+import re
 import time
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -6,7 +7,7 @@ from selenium.webdriver.support import expected_conditions as EC
 # Configuration de l'URL de base
 BASE_URL = "localhost:8000"
 
-# Credentials RP de test
+# Identifiants du responsable pédagogique
 RP_EMAIL    = "rp@uphf.fr"
 RP_PASSWORD = "password"
 
@@ -33,7 +34,6 @@ def test_RPProcessed(driver):
     driver.find_element(By.ID, "password").send_keys(RP_PASSWORD)
     driver.find_element(By.CSS_SELECTOR, "button[type='submit']").click()
 
-    # Adapter "profil-responsable" si l'URL de l'accueil RP est différente
     WebDriverWait(driver, 5).until(EC.url_contains("justifications"))
     print("Assert réussi : Redirection vers l'accueil du responsable pédagogique.")
 
@@ -47,14 +47,19 @@ def test_RPProcessed(driver):
     time.sleep(0.5)
     print("Étape réussie : Onglet 'traité' sélectionné.")
 
-    # --- 3. ACCÈS AU JUSTIFICATIF TRAITÉ (id=2) ---
-    driver.find_element(By.CSS_SELECTOR, "a[href*='detail-justification/2']").click()
+    # --- 3. ACCÈS AU JUSTIFICATIF TRAITÉ (id=-2) ---
+    driver.find_element(By.CSS_SELECTOR, "a[href*='detail-justification/-2']").click()
 
     WebDriverWait(driver, 10).until(EC.url_contains("detail-justification"))
     assert "Justificatif" in driver.title
     print("Assert réussi : Page de détail du justificatif traité (RP) chargée.")
 
     # --- 4. VÉRIFICATIONS PHYSIQUES : SLIDE 1 (RP / TRAITÉ) ---
+
+    # On vérifie que la slide 1 est bien celle affichée (avec la date de début)
+    date_debut = driver.find_element(By.XPATH, "//strong[contains(text(), 'Date début')]")
+    assert date_debut.is_displayed
+    print("Assert réussi : Slide 1 affichée (date de début visible).")
 
     # A. Badge de statut "Traité"
     badge = driver.find_element(By.CSS_SELECTOR, "span.badge.rounded-pill")
@@ -66,12 +71,11 @@ def test_RPProcessed(driver):
     assert len(btn_profil) > 0 and "Profil de l'étudiant" in btn_profil[0].text
     print("Assert réussi : Bouton 'Profil de l'étudiant' présent (vue RP).")
 
-    # C. Titre contient le nom de l'étudiant
+    # C. Titre contient le nom de l'étudiant et la date de dépot du justificatif
     titre = driver.find_element(By.CSS_SELECTOR, "h3").text
-    assert "1" in titre or "Étudiant" in titre, (
-        f"Nom de l'étudiant attendu dans le titre, obtenu : '{titre}'"
-    )
-    print("Assert réussi : Titre de la page contient le nom de l'étudiant.")
+    regex_pattern = r"Justificatif de [A-Za-zÀ-ÿ\s]+, du \d{2}/\d{2}/\d{4}"
+    assert re.match(regex_pattern, titre)
+    print("Assert réussi : Titre contient le nom de l'étudiant et la date de dépôt (format attendu).")
 
     # D. "Date de traitement" visible
     slide1 = driver.find_element(By.CSS_SELECTOR, "div.slide")
@@ -107,6 +111,7 @@ def test_RPProcessed(driver):
     btn_next.click()
     time.sleep(0.6)
 
+    # On vérifie que c'est bien la slide 2 qui est affichée
     titre_slide2 = driver.find_element(By.XPATH, "//h4[contains(text(), 'Heure de cours concerné')]")
     assert titre_slide2.is_displayed()
     print("Étape réussie : Navigation vers Slide 2 confirmée.")

@@ -1,3 +1,4 @@
+import re
 import time
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -39,14 +40,19 @@ def test_RPNotProcessed(driver):
     WebDriverWait(driver, 5).until(EC.url_contains("justifications"))           # Attente de la redirection vers la page des justificatifs
     print("Étape réussie : Connexion RP et redirection vers la page des justificatifs confirmées.")
 
-    # --- 2. ACCÈS AU JUSTIFICATIF NON TRAITÉ (id=1) ---
-    driver.find_element(By.CSS_SELECTOR, "a[href*='detail-justification/1']").click()
+    # --- 2. ACCÈS AU JUSTIFICATIF NON TRAITÉ (id=-1) ---
+    driver.find_element(By.CSS_SELECTOR, "a[href*='detail-justification/-1']").click()
 
     WebDriverWait(driver, 10).until(EC.url_contains("detail-justification"))
     assert "Justificatif" in driver.title
     print("Assert réussi : Page de détail du justificatif (RP) chargée.")
 
     # --- 3. VÉRIFICATIONS : SLIDE 1 (RP / NON TRAITÉ) ---
+
+    # On vérifie que la slide 1 est bien celle affichée (avec la date de début)
+    date_debut = driver.find_element(By.XPATH, "//strong[contains(text(), 'Date début')]")
+    assert date_debut.is_displayed
+    print("Assert réussi : Slide 1 affichée (date de début visible).")
 
     # A. Badge "En cours"
     badge = driver.find_element(By.CSS_SELECTOR, "span.badge.rounded-pill")
@@ -60,10 +66,9 @@ def test_RPNotProcessed(driver):
 
     # C. Titre contient le nom de l'étudiant
     titre = driver.find_element(By.CSS_SELECTOR, "h3").text
-    assert "1" in titre or "Étudiant" in titre, (
-        f"Nom de l'étudiant attendu dans le titre, obtenu : '{titre}'"
-    )
-    print("Assert réussi : Titre contient le nom de l'étudiant.")
+    regex_pattern = r"Justificatif de [A-Za-zÀ-ÿ\s]+, du \d{2}/\d{2}/\d{4}"
+    assert re.match(regex_pattern, titre)
+    print("Assert réussi : Titre contient le nom de l'étudiant et la date de dépôt (format attendu).")
 
     # D. "Date de traitement" absente
     slide1 = driver.find_element(By.CSS_SELECTOR, "div.slide")
@@ -91,6 +96,7 @@ def test_RPNotProcessed(driver):
     btn_next.click()
     time.sleep(0.6)
 
+    # On vérifie que c'est bien la slide 2 qui est affichée
     titre_slide2 = driver.find_element(By.XPATH, "//h4[contains(text(), 'Heure de cours concerné')]")
     assert titre_slide2.is_displayed()
     print("Étape réussie : Navigation vers Slide 2 confirmée.")
@@ -209,11 +215,19 @@ def test_RPNotProcessed(driver):
     )
     print("Assert réussi : Indicateur d'erreur visible, refus sans commentaire.")
 
+    cadre_rouge = driver.find_element(By.CSS_SELECTOR, "textarea#comment:invalid")
+    assert cadre_rouge.is_displayed()
+    print("Assert réussi : Cadre rouge visible autour de la zone de commentaire (indication d'erreur).")
+
     # --- 9. TEST : SAISIE D'UN COMMENTAIRE DE REFUS ---
     textarea = driver.find_element(By.ID, "comment")
     textarea.send_keys("Justification du refus de l'absence.")
 
     assert textarea.get_attribute("value") != ""
     print("Assert réussi : Commentaire correctement saisi dans la zone de texte.")
+
+    cadre_vert = driver.find_element(By.CSS_SELECTOR, "textarea#comment:valid")
+    assert cadre_vert.is_displayed()
+    print("Assert réussi : Cadre vert visible autour de la zone de commentaire après saisie d'un texte.")
 
     print("Test terminé : Scénario RP non traité validé.")

@@ -56,10 +56,10 @@ pytest
 ### Un seul fichier
 
 ```bash
-pytest test_StudentProcessed.py
-pytest test_StudentNotProcessed.py
-pytest test_RPNotProcessed.py
-pytest test_RPProcessed.py
+pytest scripts/test_StudentProcessed.py
+pytest scripts/test_StudentNotProcessed.py
+pytest scripts/test_RPNotProcessed.py
+pytest scripts/test_RPProcessed.py
 ```
 
 ---
@@ -91,7 +91,7 @@ testInterface/
     │   ├── test_StudentProcessed.py      # Étudiant \- justificatif traité
     │   ├── test_RPNotProcessed.py        # RP \- justificatif en cours (3 slides)
     │   └── test_RPProcessed.py           # RP \- justificatif traité
-    └── `reports/                         # Rapports HTML générés automatiquement
+    └── reports/                         # Rapports HTML générés automatiquement
 ```
 
 ---

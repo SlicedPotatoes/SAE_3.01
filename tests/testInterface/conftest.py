@@ -12,15 +12,13 @@ from selenium.webdriver.common.by import By
 def driver():
     """Fixture pour initialiser le navigateur avant chaque test."""
     options = Options()
-    # Si tu veux utiliser Opera, décommente les lignes suivantes :
-    # options.binary_location = r"C:\Path\To\opera.exe"
 
     options.add_experimental_option("prefs", {
         "credentials_enable_service": False,
         "profile.password_manager_enabled": False,
     })
     options.add_argument("--disable-features=PasswordLeakDetection")
-    options.add_argument("--incognito")  # ← aucun profil = aucune mémoire du mot de passe
+    options.add_argument("--incognito")  # aucun profil pour éviter les pop-up de mot de passe
     driver = webdriver.Chrome(options=options)
     driver.implicitly_wait(10)
 
@@ -34,7 +32,6 @@ def driver():
 def pytest_configure(config):
     """
     Force les options du rapport HTML sans avoir à les taper dans le terminal.
-    Le CSS sera intégré (self-contained) et le nom du fichier est personnalisé.
     """
     if not config.getoption("--html"):
         # On définit le chemin du rapport (crée un dossier reports s'il n'existe pas)

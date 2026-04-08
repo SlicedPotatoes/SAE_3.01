@@ -6,6 +6,10 @@ from selenium.webdriver.support import expected_conditions as EC
 # Configuration de l'URL de base (à adapter selon ton serveur local)
 BASE_URL = "localhost:8000"
 
+# Identifiants de l'étudiant
+STUDENT_EMAIL    = "etu2@uphf.fr"
+STUDENT_PASSWORD = "password"
+
 
 def test_StudentProcessed(driver):
     """
@@ -22,8 +26,8 @@ def test_StudentProcessed(driver):
     driver.set_window_size(1920, 1080)
     driver.get(f"http://{BASE_URL}")
 
-    driver.find_element(By.ID, "email").send_keys("etu1@uphf.fr")
-    driver.find_element(By.ID, "password").send_keys("password")
+    driver.find_element(By.ID, "email").send_keys(STUDENT_EMAIL)
+    driver.find_element(By.ID, "password").send_keys(STUDENT_PASSWORD)
     driver.find_element(By.CSS_SELECTOR, "button[type='submit']").click()
 
     WebDriverWait(driver, 5).until(EC.url_contains("profil-etudiant"))
@@ -38,8 +42,8 @@ def test_StudentProcessed(driver):
     btn_fermer.click()
     print("Étape réussie : Modale d'accueil fermée.")
 
-    # --- 3. ACCÈS AU DÉTAIL DU JUSTIFICATIF TRAITÉ (id=2) ---
-    driver.find_element(By.CSS_SELECTOR, "a[href*='detail-justification/2']").click()
+    # --- 3. ACCÈS AU DÉTAIL DU JUSTIFICATIF TRAITÉ (id=-2) ---
+    driver.find_element(By.CSS_SELECTOR, "a[href*='detail-justification/-2']").click()
 
     WebDriverWait(driver, 10).until(EC.url_contains("detail-justification"))
     assert "Justificati" in driver.title
@@ -51,6 +55,12 @@ def test_StudentProcessed(driver):
     print("Assert réussi : Message de bienvenue trouvé.")
 
     # --- 4. VÉRIFICATIONS : SLIDE 1 (JUSTIFICATIF TRAITÉ) ---
+
+    # On vérifie que la slide 1 est bien celle affichée (avec la date de début)
+    date_debut = driver.find_element(By.XPATH, "//strong[contains(text(), 'Date début')]")
+    assert date_debut.is_displayed
+    print("Assert réussi : Slide 1 affichée (date de début visible).")
+
     # A. Badge de statut "Traité"
     badge = driver.find_element(By.CSS_SELECTOR, "span.badge.rounded-pill")
     assert "Traité" in badge.text, f"Badge attendu : 'Traité', obtenu : '{badge.text}'"
@@ -61,8 +71,7 @@ def test_StudentProcessed(driver):
     assert "Date de traitement" in slide1.text
     print("Assert réussi : 'Date de traitement' visible (justificatif traité).")
 
-    # C. Bloc "Commentaire du responsable" présent (3ème colonne, isProcessed = true)
-    #    find_elements retourne [] au lieu de lever une exception si l'élément est absent.
+    # C. Bloc "Commentaire du responsable" présent
     commentaires_rp = driver.find_elements(
         By.XPATH, "//strong[contains(text(), 'Commentaire du responsable')]"
     )
@@ -83,6 +92,7 @@ def test_StudentProcessed(driver):
     btn_next.click()
     time.sleep(0.6)  # Attente de la transition d'animation
 
+    # On vérifie que c'est bien la slide 2 qui est affichée
     titre_slide2 = driver.find_element(By.XPATH, "//h4[contains(text(), 'Heure de cours concerné')]")
     assert titre_slide2.is_displayed()
     print("Étape réussie : Navigation vers Slide 2 confirmée.")
