@@ -5,16 +5,21 @@
 
 ## Lancer les tests
 
-Depuis la racine du projet, exécutez les commandes suivantes pour lancer les tests d'intégration :
+Depuis la racine du projet, exécutez les commandes suivantes :
 
 ```bash
 cd docker/test
 docker compose up --build
 cd ../..
+```
+
+Pour exécuter les tests d'intégration, utilisez la commande suivante :
+
+```bash
 vendor/bin/behat
 ```
 
-Pour générer un rapport HTML après l'exécution des tests, utilisez la commande suivante :
+Pour exécuter les tests d'intégration, en génèrent un rapport HTML, utilisez la commande suivante :
 
 ```bash
 vendor/bin/behat --format html --out=reports

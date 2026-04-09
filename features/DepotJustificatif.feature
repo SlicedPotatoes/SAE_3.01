@@ -3,38 +3,54 @@ Feature: Depot Justificatif
   Je veux soumettre mes justificatifs d'absence
   Afin de justifier mes absences.
 
-  Scenario:
-    Given je suis connecté à un compte étudiant de numéro étudiant "22400227" sur la page de dépot de justificatif
-    And j ai une absence le "04/04/2026" à "8H00" d une durée de "1H30" et "sans" examen
-    And j ai une absence le "04/06/2026" à "8H00" d une durée de "1H30" et "sans" examen
-    And j ai une absence le "04/07/2026" à "8H00" d une durée de "1H30" et "sans" examen
-    When je met en date de départ "2026-04-01" et en date de fin "2026-04-30"
-    And j ai entré un commentaire qui dit "Malade"
-    And j appuie sur le bouton envoyer le justificatif
-    Then le nombre de justificatif doit être égale à "1"
-    And l absence du "04/04/2026" à "8H00" d une durée de "1h30" et "sans" examen doit être en "Pending"
-    And l absence du "04/06/2026" à "8H00" d une durée de "1h30" et "sans" examen doit être en "NotJustified"
-    And l absence du "04/07/2026" à "8H00" d une durée de "1h30" et "sans" examen doit être en "NotJustified"
-
-  Scenario:
-    Given je suis connecté à un compte étudiant de numéro étudiant "22400227" sur la page de dépot de justificatif
-    When je met en date de départ "2026-05-01" et en date de fin "2026-05-30"
-    And j ai entré un commentaire qui dit "Malade"
-    And j appuie sur le bouton envoyer le justificatif
-    Then le nombre de justificatif doit être égale à "0"
-    And le message d erreur correspond a Il n'y a pas d'absence pouvant être justifié dans la période sélectionné
-
-  Scenario Outline:
+  Scenario Outline: Déposer un justificatif sur une plage contenant une ou des absence(s) justifiable(s)
     Given je suis connecté à un compte étudiant de numéro étudiant <etu> sur la page de dépot de justificatif
-    And j ai une absence le <date> à <heure> d une durée de <duree> et <exam> examen
+    And j ai une absence le <date1>, <lock1>, avec comme etat <state1>
+    And j ai une absence le <date2>, <lock2>, avec comme etat <state2>
+    And j ai une absence le <date3>, <lock3>, avec comme etat <state3>
+    When je met en date de départ <start> et en date de fin <end>
+    And j ai entré un commentaire qui dit <comment>
+    And j appuie sur le bouton envoyer le justificatif
+    Then le justificatif est présent dans la base de données
+    And le motif du justificatif doit être <comment>
+    And l absence du <date1> doit être en <result1>
+    And l absence du <date2> doit être en <result2>
+    And l absence du <date3> doit être en <result3>
+    And l absence du <date1> doit <lier1> au justificatif
+    And l absence du <date2> doit <lier2> au justificatif
+    And l absence du <date3> doit <lier3> au justificatif
+
+    Examples:
+    | etu | date1               | lock1       | state1       | result1 | lier1     | date2               | lock2           | state2       | result2      | lier2            | date3               | lock3       | state3       | result3 | lier3     | start      | end        | comment |
+    | 1   | 2026-04-04 08:00:00 | justifiable | NotJustified | Pending | etre lier | 2026-04-05 08:00:00 | justifiable     | NotJustified | Pending      | etre lier        | 2026-04-06 08:00:00 | justifiable | NotJustified | Pending | etre lier | 2026-04-04 | 2026-04-06 | Malade  |
+    | 1   | 2026-04-08 08:00:00 | justifiable | NotJustified | Pending | etre lier | 2026-04-09 08:00:00 | non justifiable | Refused      | Refused      | ne pas etre lier | 2026-04-10 08:00:00 | justifiable | NotJustified | Pending | etre lier | 2026-04-08 | 2026-04-10 | Malade  |
+
+  Scenario Outline: Déposer un justificatif avec une date de début / fin invalide ou commentaire vide
+    Given je suis connecté à un compte étudiant de numéro étudiant 1 sur la page de dépot de justificatif
     When je met en date de départ <debut> et en date de fin <fin>
     And j ai entré un commentaire qui dit <com>
     And j appuie sur le bouton envoyer le justificatif
-    Then le nombre de justificatif doit être égale à <nbJusti>
-    And l absence du <date> à <heure> d une durée de <duree> et <exam> examen doit être en <etat>
-    And le message d erreur correspond a <message>
+    Then le justificatif n est pas présent dans la base de données
+    And le message d erreur correspond a "<message>"
     Examples:
-      | etu        | date         | heure  | duree  | exam   | debut        | fin          | com      | nbJusti | etat           | message                                                                                                     |
-      | "22400227" | "04/01/2026" | "8H00" | "1H30" | "sans" | "20260101"   | "2026-01-30" | "Malade" | "0"     | "NotJustified" | These rules must pass for `{ "absenceReason": "Malade", "startDate": "20260101", "endDate": "2026-01-30" }` |
-      | "22400227" | "04/02/2026" | "8H00" | "1H30" | "sans" | "2026-02-01" | "2026-02-28" | ""       | "0"     | "NotJustified" | These rules must pass for `{ "absenceReason": "", "startDate": "2026-02-01", "endDate": "2026-02-28" }`     |
-      | "22400227" | "04/03/2026" | "8H00" | "1H30" | "sans" | "2026-03-30" | "2026-03-01" | "Malade" | "0"     | "NotJustified" | La date de début dois être inférieure ou égal a la date de fin                                              |
+      | debut      | fin        | com    | message                                                                                                     |
+      | 20260101   | 2026-01-30 | Malade | These rules must pass for `{ "absenceReason": "Malade", "startDate": "20260101", "endDate": "2026-01-30" }` |
+      | 2026-01-01 | 20260130   | Malade | These rules must pass for `{ "absenceReason": "Malade", "startDate": "2026-01-01", "endDate": "20260130" }` |
+      | 2026-02-01 | 2026-02-28 |        | These rules must pass for `{ "absenceReason": "", "startDate": "2026-02-01", "endDate": "2026-02-28" }`     |
+
+  Scenario: Déposer un justificatif avec une date de début supérieur à la date de fin
+    Given je suis connecté à un compte étudiant de numéro étudiant 1 sur la page de dépot de justificatif
+    When je met en date de départ 2026-03-30 et en date de fin 2026-03-01
+    And j ai entré un commentaire qui dit Malade
+    And j appuie sur le bouton envoyer le justificatif
+    Then le justificatif n est pas présent dans la base de données
+    And le message d erreur correspond a "La date de début dois être inférieure ou égal a la date de fin"
+
+  Scenario: Déposer un justificatif sur une plage ne contenant aucune absence justifiable
+    Given je suis connecté à un compte étudiant de numéro étudiant 1 sur la page de dépot de justificatif
+    And j ai une absence le 2026-06-01 08:00:00, non justifiable, avec comme etat Refused
+    When je met en date de départ 2026-06-01 et en date de fin 2026-06-01
+    And j ai entré un commentaire qui dit Malade
+    And j appuie sur le bouton envoyer le justificatif
+    Then le justificatif n est pas présent dans la base de données
+    And le message d erreur correspond a "Il n'y a pas d'absence pouvant être justifié dans la période sélectionné"
