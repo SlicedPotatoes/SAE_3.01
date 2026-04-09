@@ -5,6 +5,7 @@ namespace Uphf\GestionAbsence\Database\Insert;
 use DateTime;
 use PDO;
 use Uphf\GestionAbsence\Database\Connection;
+use Uphf\GestionAbsence\Model\Entity\Absence\Absence;
 
 /**
  * Classe gérent l'insertion d'absence dans la BDD depuis un export VT
@@ -182,5 +183,42 @@ class AbsenceInsertor {
         $interval = self::getInterval($hour);
         $dateRaw = "$date $interval";
         return DateTime::createFromFormat("d/m/Y H:i", $dateRaw)->format("Y-m-d H:i:s");
+    }
+
+    /**
+     * @param Absence[] $list
+     * @return void
+     */
+    public static function insertAbsences(array $list): void {
+        $pdo = Connection::getInstance();
+
+        $values = [];
+        $params = [];
+
+        // Préparation pour construire la requête
+        foreach($list as $i => $abs) {
+            $values[] = "(:idStudent$i, :time$i, :duration$i, :examen$i, :allowedJustification$i, :idTeacher$i, :currentState$i, :courseType$i, :idRessource$i, :dateResit$i)";
+            $params[":idStudent$i"] = [$abs->getIdAccount(), PDO::PARAM_INT];
+            $params[":time$i"] = [$abs->getTime()->format('Y-m-d H:i:s'), PDO::PARAM_STR];
+            $params[":duration$i"] = [$abs->getDuration(), PDO::PARAM_STR];
+            $params[":examen$i"] = [$abs->getExamen(), PDO::PARAM_BOOL];
+            $params[":allowedJustification$i"] = [$abs->getAllowedJustification(), PDO::PARAM_BOOL];
+            $params[":idTeacher$i"] = [$abs->getTeacher()?->getIdAccount(), PDO::PARAM_INT];
+            $params[":currentState$i"] = [$abs->getCurrentState()->value, PDO::PARAM_STR];
+            $params[":courseType$i"] = [$abs->getCourseType()->value, PDO::PARAM_STR];
+            $params[":idRessource$i"] = [$abs->getResource()->getIdResource(), PDO::PARAM_INT];
+            $params[":dateResit$i"] = [$abs->getDateResit()?->format('Y-m-d H:i:s'), PDO::PARAM_STR];
+        }
+
+        // Construction de la requête
+        $query = "INSERT INTO Absence(idStudent, time, duration, examen, allowedjustification, idTeacher, currentState, courseType, idResource, dateResit) 
+                  VALUES ".implode(", ", $values);
+
+        $sql = $pdo->prepare($query);
+        // Bind des paramètres
+        foreach($params as $key => [$value, $type]) {
+            $sql->bindValue($key, $value, $type);
+        }
+        $sql->execute();
     }
 }
