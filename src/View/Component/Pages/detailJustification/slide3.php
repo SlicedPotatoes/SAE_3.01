@@ -21,8 +21,8 @@ if($isEducationManager && !$isProcessed):
     <div class="scroll-parent">
         <label class="h4 mb-0" for="comment">Commentaire</label>
         <span id="requiredCommentIndicator" class="fs-6 text-danger d-none">En cas de refus d'au moins une absence, la présence d'un commentaire de votre part est obligatoire.</span>
-        <form>
-            <textarea id="comment" class="form-control scrollable" style="min-height: 300px; resize: none"></textarea>
+        <form class="scroll-parent">
+            <textarea id="comment" class="form-control scrollable" style="resize: none"></textarea>
             <input id="idJustification" type="hidden" value="<?= $justification->getIdJustification() ?>"/>
         </form>
     </div>
