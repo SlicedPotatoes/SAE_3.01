@@ -23,7 +23,7 @@ class CompactAbsence extends Simple {
 
         [$id, $datetime] = $parts;
 
-        if(!ctype_digit($id)) {
+        if(filter_var($id, FILTER_VALIDATE_INT) === false) {
             return false;
         }
 

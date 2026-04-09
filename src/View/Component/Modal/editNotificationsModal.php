@@ -32,7 +32,7 @@ use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
                         value="1"
                         <?= AuthManager::getNotificationMail('teacher') ? 'checked' : '' ?>>
                     <label class="form-check-label" for="notif1">
-                        Notification des absences en examen justifié
+                        Notification des absences en examen justifiées
                     </label>
                 </div>
 

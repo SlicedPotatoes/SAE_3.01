@@ -47,7 +47,7 @@ $sizeCol = 12 / $nbCol;
 
                 <?php if(empty($data['files'])): ?>
                     <div class="card flex-grow-1 overflow-auto p-2" style="max-height: 220px;">
-                        Aucun fichier justificatif n'a été fournis
+                        Aucun fichier justificatif n'a été fourni
                     </div>
                 <?php else: ?>
                     <ul class="card flex-grow-1 list-group list-group-flush overflow-auto rounded scroll-shadows detail-justification-fixed-height">
@@ -82,7 +82,7 @@ $sizeCol = 12 / $nbCol;
                 <div class="h-100 d-flex flex-column">
                     <strong>Commentaire du responsable</strong>
                     <div class="card flex-grow-1 overflow-auto p-2 detail-justification-fixed-height scroll-shadows">
-                        <?= $justification->getRefusalReason() !== '' ? $justification->getRefusalReason() : 'Aucun commentaire du responsable n\'a été fournis' ?>
+                        <?= $justification->getRefusalReason() !== '' ? $justification->getRefusalReason() : 'Aucun commentaire du responsable n\'a été fourni' ?>
                     </div>
                 </div>
             </div>
