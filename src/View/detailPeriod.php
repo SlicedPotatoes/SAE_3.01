@@ -30,9 +30,11 @@ use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
             </div>
         </div>
 
-      <?php if (!AuthManager::isRole(AccountType::Teacher)) : ?>
-        <div class="col-md-6"><strong>Enseignant :</strong> <?= $data['timeslot']->getTeacher()->getLastName() . ", " . $data['timeslot']->getTeacher()->getFirstName() ?></div>
-      <?php endif; ?>
+        <?php if ($data['timeslot']->getTeacher() === null) : ?>
+            <div class="col-md-6"><strong>Créneau en autonomie</strong></div>
+        <?php else: ?>
+            <div class="col-md-6"><strong>Enseignant :</strong> <?= $data['timeslot']->getTeacher()->getLastName() . ", " . $data['timeslot']->getTeacher()->getFirstName() ?></div>
+        <?php endif; ?>
         <div class="col-md-6"><strong>Ressource :</strong> <?= $data['timeslot']->getResource()->getLabel() ?></div>
         <div class="col-md-6"><strong>Type de cours :</strong> <?= $data['timeslot']->getCourseType()->value ?></div>
         <?php if ($data['timeslot']->getGroup() !== null && $data['timeslot']->getGroup() !== '') : ?>
