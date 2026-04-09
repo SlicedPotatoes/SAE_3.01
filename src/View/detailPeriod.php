@@ -3,7 +3,7 @@
 global $dataView;
 
 /**
- * View pour les détails d'un crénaux
+ * View pour les détails d'un créneau
  */
 
 use Uphf\GestionAbsence\Model\AuthManager;
@@ -12,13 +12,13 @@ use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
 
 ?>
 
-<div class="card flex-fill d-flex flex-column gap-3 mt-4 p-3" style="min-height: 0">
+<div class="card scroll-parent gap-3 p-3">
 
-    <!-- Information principale d'un crénaux -->
+    <!-- Information principale d'un créneau -->
     <div>
         <div class="d-flex justify-content-between align-items-center">
             <h2 class="mb-1">
-              Crénau du <?= $data['timeslot']->getTime()->format('d/m/Y') ?>
+              Créneau du <?= $data['timeslot']->getTime()->format('d/m/Y') ?>
               à <?= $data['timeslot']->getTime()->format('H\hi') ?>
             </h2>
             <div class="d-flex gap-3 align-items-center">
@@ -41,12 +41,12 @@ use Uphf\GestionAbsence\Model\Entity\Account\AccountType;
     </div>
 
     <!-- Liste des absences -->
-    <div class="d-flex flex-column" style="flex: 1 1 30%; min-height: 0">
+    <div class="scroll-parent">
         <div class="d-flex align-items-center mb-2">
             <h4 class="mb-0">Absents</h4>
         </div>
 
-        <div class="border-top flex-fill overflow-y-auto" style="min-height: 0">
+        <div class="border-top scrollable">
             <?php foreach ($data['absences'] as $absence): ?>
                 <div class="d-flex align-items-center border-bottom py-2">
                     <!-- Nom de l'étudiant -->

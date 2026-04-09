@@ -35,8 +35,8 @@ class TimeslotController
 
         $absences = TimeslotService::getListAbsenceWithTimeSlot($timeslot);
         Renderer::render(
-            '../ViewOLD/detailPeriod.php',
-            'Détail crénaux',
+            'detailPeriod.php',
+            'Détail créneau',
             [
                 'absences' => $absences,
                 'timeslot' => $timeslot,
@@ -51,17 +51,10 @@ class TimeslotController
      */
     public static function showResitSession(): void
     {
-        $timeslots = TimeslotService::getListTimeSlotWithFilter(
-            null,
-            true,
-            null,
-            null
-        );
-
         Renderer::render(
-            '../ViewOLD/resitSessionList.php',
+            '/teacherDashboard.php',
             'Rattrapage',
-            ['timeslots' => $timeslots]
+            ['isResitSession' => true]
         );
     }
 
@@ -71,24 +64,10 @@ class TimeslotController
      * @return void
      */
     public static function showTeacherHome(): void {
-        $filters = [
-            'examFilter' => null,
-            'dateStartFilter' => null,
-            'dateEndFilter' => null
-        ];
-
-        $account = AuthManager::getAccount();
-        $timeslots = TimeslotService::getListTimeSlotWithFilter(
-            $account->getIdAccount(),
-            $filters['examFilter'],
-            $filters['dateStartFilter'],
-            $filters['dateEndFilter']
-        );
-
         Renderer::render(
             '/teacherDashboard.php',
             "Tableau de bord Professeur",
-            ['timeslots' => $timeslots]
+            ['isResitSession' => false]
         );
     }
 }

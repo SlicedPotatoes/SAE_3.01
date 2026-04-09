@@ -1,7 +1,12 @@
 <?php
 /** Front-end pour le tableau de bord professeur **/
 
+use Uphf\GestionAbsence\Model\AuthManager;
 use Uphf\GestionAbsence\Utils\Renderer;
+
+if(!$isResitSession) {
+    Renderer::pushAsset('script', '<script>const ID_TEACHER =' . AuthManager::getAccount()->getIdAccount() . ' </script>');
+}
 
 Renderer::pushAsset('script', '<script type="module" src="/js/pages/teacherDashboard.js"></script>')
 ?>
@@ -12,7 +17,13 @@ Renderer::pushAsset('script', '<script type="module" src="/js/pages/teacherDashb
         <div class="scroll-parent h-100">
 
             <?php
-            require __DIR__ . "/Component/Filters/filterTimeslot.php";
+            if($isResitSession) {
+                require __DIR__ . "/Component/Filters/filterResitSession.php";
+            }
+            else {
+                require __DIR__ . "/Component/Filters/filterTimeslot.php";
+            }
+
             ?>
 
             <div id="timeslotContainer"

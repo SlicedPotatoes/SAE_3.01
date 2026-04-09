@@ -17,12 +17,13 @@ class TimeslotValidator {
         if(AuthManager::isRole(AccountType::Teacher)) {
             $data['idTeacher'] = AuthManager::getAccount()->getIdAccount();
         }
-        if(AuthManager::isRole(AccountType::EducationalManager)) {
-            $data['idTeacher'] = null;
+
+        // Seulement dans le cas RP et secrétaire, sur la view ResitSession
+        if(!isset($data['idTeacher'])) {
             $data['examFilter'] = true;
         }
 
-        foreach (['examFilter', 'dateStartFilter', 'dateEndFilter'] as $filter) {
+        foreach (['idTeacher', 'examFilter', 'dateStartFilter', 'dateEndFilter'] as $filter) {
             if(!isset($data[$filter])) {
                 $data[$filter] = null;
             }

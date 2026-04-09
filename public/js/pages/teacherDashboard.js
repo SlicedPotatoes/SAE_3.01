@@ -44,6 +44,8 @@ function applyFilters() {
     if (dateEnd) params.append("dateEndFilter", dateEnd);
     if (exam) params.append("examFilter", "true");
 
+    if (typeof ID_TEACHER !== 'undefined') params.append('idTeacher', ID_TEACHER);
+
     loadTimeSlots(params.toString());
 }
 
@@ -91,5 +93,5 @@ document.addEventListener("DOMContentLoaded", () => {
     initEvents();
     initResizeHandler();
 
-    loadTimeSlots();
+    applyFilters();
 });
