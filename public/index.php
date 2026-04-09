@@ -150,6 +150,9 @@ $router->addRoute(RequestMethod::DELETE, '/api/holidays/{id:int}', 'HolidayContr
 $router->addRoute(RequestMethod::GET, '/commentaire-predefini', 'PredefinedCommentController@showPredefinedComment', 'predefinedComment')
         ->requireLogin()
         ->addAuthorization(AccountType::EducationalManager);
+$router->addRoute(RequestMethod::GET, '/api/predefinedComment', 'PredefinedCommentControllerApi@getComments')
+        ->requireLogin()
+        ->addAuthorization(AccountType::EducationalManager);
 $router->addRoute(RequestMethod::POST, '/api/predefinedComment', 'PredefinedCommentControllerApi@postPredefinedComment')
         ->requireLogin()
         ->addAuthorization(AccountType::EducationalManager);

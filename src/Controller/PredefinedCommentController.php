@@ -2,7 +2,6 @@
 
 namespace Uphf\GestionAbsence\Controller;
 
-use Uphf\GestionAbsence\Service\PredifinedCommentService;
 use Uphf\GestionAbsence\Utils\Renderer;
 
 /**
@@ -18,14 +17,10 @@ class PredefinedCommentController
      */
     public static function showPredefinedComment(): void
     {
-        $comments = PredifinedCommentService::commentSelectorAll();
-
         Renderer::render(
-            '../ViewOLD/predefinedComments.php',
-            'Liste des commentaires prédéfinis',
-            [
-                'comments' => $comments
-            ]
+            'predefinedComments.php',
+            'Commentaires prédéfinis',
+            []
         );
     }
 }
