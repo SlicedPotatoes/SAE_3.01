@@ -31,6 +31,21 @@ async function loadHolidays() {
 }
 
 /**
+ * Recharge les périodes depuis l'api sans afficher le loader
+ *
+ * @returns {Promise<void>}
+ */
+async function reloadHolidays() {
+    const container = document.getElementById("offPeriodContainer");
+    try {
+        holidaysData = await fetchHolidays();
+        renderHolidays(container, holidaysData);
+    } catch (error) {
+        addNotification('Error', 'Erreur lors du chargement des périodes de vacances.');
+    }
+}
+
+/**
  * Configure le modal en mode ajout ou modification
  *
  * @param {"add"|"edit"} mode
@@ -47,7 +62,7 @@ function setModalMode(mode, data = {}) {
 }
 
 /**
- * Supprime une période de vacances puis recharge la liste
+ * Supprime une période de vacances et met à jour l'affichage localement
  *
  * @param {number} id
  * @returns {Promise<void>}
@@ -55,7 +70,8 @@ function setModalMode(mode, data = {}) {
 async function handleDelete(id) {
     try {
         await deleteHoliday(id);
-        await loadHolidays();
+        holidaysData = holidaysData.filter(h => h.id !== id);
+        renderHolidays(document.getElementById("offPeriodContainer"), holidaysData);
     } catch (error) {
         addNotification('Error', "Une erreur inattendue s'est produite, réessayez.");
     }
@@ -126,14 +142,22 @@ function initEvents() {
             return;
         }
 
+        const currentId = editingId;
+        const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById("modalAddOffPeriod"));
+
         try {
-            if (editingId !== null) {
-                await updateHoliday(editingId, label, startDate, endDate);
+            if (currentId !== null) {
+                await updateHoliday(currentId, label, startDate, endDate);
+                holidaysData = holidaysData.map(h => h.id === currentId
+                    ? { ...h, periodName: label, startDate, endDate }
+                    : h
+                );
+                renderHolidays(document.getElementById("offPeriodContainer"), holidaysData);
             } else {
                 await createHoliday(label, startDate, endDate);
+                await reloadHolidays();
             }
-            bootstrap.Modal.getInstance(document.getElementById("modalAddOffPeriod")).hide();
-            await loadHolidays();
+            modal.hide();
         } catch (error) {
             addNotification('Error', "Une erreur inattendue s'est produite, réessayez.");
         }
