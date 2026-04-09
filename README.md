@@ -36,6 +36,20 @@ Une fois lancée, l'application est accessible à l'adresse :
 http://localhost:8000
 ```
 
+### Identifiants aux comptes de démo
+
+Pour testé l'application, vous pouvez utiliser les comptes suivants pour testé les différentes fonctionnalités : 
+
+| Rôle | Email/Identifiant | Mot de passe |
+|------|------|-------------|
+| Responsable pédagogique | rp@uphf.fr | password |
+| Secrétaire | secretaire@uphf.fr | password |
+| Enseignant | prof@uphf.fr | password |
+| Étudiant | etu1@uphf.fr | password |
+| Étudiant | etu2@uphf.fr | password |
+| Étudiant | etu3@uphf.fr | password |
+
+
 ### Relancer proprement
 
 Si vous souhaitez repartir de l'état initialise (base de données réinitialisée) :
